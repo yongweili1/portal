@@ -1,0 +1,913 @@
+import { Component, Input, Output, EventEmitter, SimpleChanges, OnChanges, ViewChild, ElementRef } from '@angular/core';
+import { HttpClient } from "@angular/common/http";
+import { actionService } from './action.service';
+import { StorageService } from '../../shared/storage.service';
+import { PatientDBService } from '../../shared/patientDB.service';
+import { glsource } from './glsource.modal';
+import {LoadSeriesServiceMock} from '../../../../mocks/load-series-service.mock'
+declare var $: any;
+declare var createjs: any;
+declare var THREE: any;
+declare var MarchingSquaresJS: any;
+declare var d3: any;
+declare var mat4: any;
+declare var vec3: any;
+declare var mat3: any;
+declare var vec2: any;
+declare var vec4: any;
+
+@Component({
+  selector: 'mpt-pic-axial',
+  templateUrl: './pic-axial.component.html',
+  styleUrls: ['./pic-axial.component.less']
+})
+export class PicAxialComponent implements OnChanges {
+
+  scale = 1.0; transX = 0.0; transY = 0.0;
+  canvas: any; canbas: any; crosscan: any; nugevas: any;
+  @Input() tag: any; @Input() imageWidth; @Input() imageHeight; @Input() pageindex;
+  @Input() wl; @Input() ww;// 窗宽
+  @Input() spacingX; @Input() spacingY; @Input() gap; @Input() sliceAll;
+  @Input() pixelRepresentation; @Input() rescaleSlope; @Input() rescaleIntercept;
+  @Input() firstImagePosition; @Input() lastImagePosition;
+  containerWidth = $(".containe").width(); containerHeight = $(".containe").height();
+  viewportWidth = Math.floor(this.containerWidth / 2) * 2; viewportHeight = Math.floor(this.containerHeight / 2) * 2;
+  unts: any; ctx: any; wlx: any; wwx: any; wlold: any; wwold: any;// 窗位窗宽
+  fitImageWidth: any; fitImageHeight: any; sx: any; mx: any; my: any;
+  pageindexit: any;
+  //十字线
+  stage: any; horizontalLine: any; verticalLine: any; crossPoint: any; postPoint: any;
+  nix = 0.5; niy = 0.5;
+  mpr2Patient: any; opM3: any;
+  roiContourSets = new Array();
+  Line: any;
+  NIdata: any = { ctpointX: 0.5, ctpointY: 0.5 };
+  public affineMat3; public affineMat4;
+  @Output() changeCross: EventEmitter<any> = new EventEmitter<any>();
+  @Output() twoCross: EventEmitter<any> = new EventEmitter<any>();
+  @Output() message: EventEmitter<any> = new EventEmitter<any>();
+  glsource = new glsource();
+
+
+  constructor(
+    public http: HttpClient, 
+    private patientDB: PatientDBService, 
+    private storageService: StorageService, 
+    private actionService: actionService, 
+    private element: ElementRef,
+    private loadSeriesServiceMock:LoadSeriesServiceMock
+    ) {
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    this.wlold = this.wl;//窗位
+    this.wwold = this.ww;// 窗宽
+    this.pageindexit = this.pageindex * 2;
+    if (this.tag == "axial") {
+        this.canvas = $(".a_class .icanvas").get(0);
+        this.canbas = $(".a_class");
+        this.crosscan = $(".a_class .crosscan").get(0);
+        this.nugevas = $(".a_class #nugeCanvas").get(0);
+        this.canbas.find(".mpr").text('Axial');
+        var myCanvas = $('.a_class #canvas-frame').get(0);
+        var lightPoint = new Array(0, -100, 25);
+    }
+    if (this.tag == "coronal") {
+        this.canvas = $(".b_class .icanvas").get(0);
+        this.canbas = $(".b_class");
+        this.crosscan = $(".b_class .crosscan").get(0);
+        this.nugevas = $(".b_class #nugeCanvas").get(0);
+        this.canbas.find(".mpr").text('Coronal');
+        var myCanvas = $('.b_class #canvas-frame').get(0);
+        var lightPoint = new Array(0, 0, 100);
+    }
+    if (this.tag == "sagittal") {
+        this.canvas = $(".c_class .icanvas").get(0);
+        this.canbas = $(".c_class");
+        this.crosscan = $(".c_class .crosscan").get(0);
+        this.nugevas = $(".c_class #nugeCanvas").get(0);
+        this.canbas.find(".mpr").text('Sagittal');
+        var myCanvas = $('.c_class #canvas-frame').get(0);
+        var lightPoint = new Array(100, 0, 0)
+    }
+    this.calcviewportsize();
+    if (this.firstImagePosition != undefined) {
+        this.postPoint = vec4.fromValues(this.firstImagePosition[0] + (this.sliceAll[2]) * this.gap[0], this.firstImagePosition[1] + (this.sliceAll[1]) * this.gap[1], this.firstImagePosition[2] + (this.sliceAll[0]) * this.gap[2], 1);
+    }
+    this.getBuffer(this.postPoint, this.tag, 1);
+    this.actionService.threeStart(myCanvas, lightPoint);
+    this.windowAddMouseWheel(this.tag);
+}
+
+ngOnInit() {
+  let that = this;
+  $(window).resize(function() {
+      that.calcviewportsize();
+      that.opm3();
+      //that.setupScene();
+      //that.drawScene(that.gl, that.programInfo, that.buffers, that.texture);
+  });
+  this.patient2Mpr = mat4.create();
+  this.opM3 = mat3.create();
+  this.scrCrossPt = vec3.create();
+}
+
+//设置和区分canvas窗口大小
+calcviewportsize() {
+  if (this.tag == "axial") {
+      this.containerWidth = $(".a_class .containe").width();
+      this.containerHeight = $(".a_class .containe").height();
+  }
+  if (this.tag == "coronal") {
+      this.containerWidth = $(".b_class .containe").width();
+      this.containerHeight = $(".b_class .containe").height();
+  }
+  if (this.tag == "sagittal") {
+      this.containerWidth = $(".c_class .containe").width();
+      this.containerHeight = $(".c_class .containe").height();
+  }
+  this.viewportWidth = Math.floor(this.containerWidth / 2) * 2;
+  this.viewportHeight = Math.floor(this.containerHeight / 2) * 2;
+  this.canvas.setAttribute('width', this.viewportWidth);
+  this.canvas.setAttribute('height', this.viewportHeight);
+  this.crosscan.setAttribute('width', this.viewportWidth);//十字线的canvas
+  this.crosscan.setAttribute('height', this.viewportHeight);
+  this.nugevas.setAttribute('width', this.viewportWidth);//nuge的canvas
+  this.nugevas.setAttribute('height', this.viewportHeight);
+  this.opm3();
+  this.crosschu(this.nix, this.niy, this.canbas.get(0));
+}
+
+opm3() {//计算窗口比例
+  var clientWidth = this.canvas.clientWidth;
+  var clientHeight = this.canvas.clientHeight;
+  var ratio = clientWidth / clientHeight;
+  var scale = ratio > 1 ? 1.0 / clientHeight : 1.0 / clientWidth;
+  this.opM3 = mat3.fromValues(scale, 0, 0,
+      0, -1 * scale, 0,
+      -0.5 * clientWidth * scale, 0.5 * clientHeight * scale, 1);
+}
+
+//CT值  
+CT() {
+  let that = this;
+  that.canbas.mousemove(function(e) {
+      var screenPt = vec3.fromValues(e.offsetX, e.offsetY, 1);
+      vec3.transformMat3(screenPt, screenPt, that.opM3);
+      var pt = vec3.create();
+      vec3.transformMat3(pt, screenPt, that.affineMat3);
+      var position = vec4.fromValues(pt[0], pt[1], 0, 1);
+      vec4.transformMat4(position, position, that.mpr2Patient);
+      that.canbas.find(".position").text(position[0].toFixed(2) + " " + position[1].toFixed(2) + " " + position[2].toFixed(2));
+      var app = that.imageWidth * Math.floor(that.imageHeight * (pt[1] + 0.5)) + Math.floor(that.imageWidth * (pt[0] + 0.5));
+      that.canbas.find(".ct").text(that.unts[app] + that.rescaleIntercept);
+  });
+}
+
+GetContourSet() {
+  // var contourdata = [{'x':10,'y':10},{'x':50,'y':10},{'x':100,'y':60},{'x':150,'y':30},{'x':310,'y':80}];
+  this.stage.removeChild(this.Line);
+  this.Line = new createjs.Shape();
+  this.Line.graphics.setStrokeStyle(1).beginStroke("red");
+  this.roiContourSets = this.patientDB.contourset;
+  if (this.tag == "axial") {
+      var contourData = this.roiContourSets[this.pageindex].contourData;
+      for (var j = 0; j < contourData.length; ++j) {
+          var dataShape = contourData[j];
+          this.Line.graphics.moveTo(dataShape[0].x + 500, dataShape[0].y + 320);
+          for (var i = 0; i < dataShape.length; i++) {
+              var x0 = dataShape[i].x + 500;
+              var y0 = dataShape[i].y + 320;
+              this.Line.graphics.lineTo(x0, y0);
+          }
+      }
+  }
+  this.stage.addChild(this.Line);
+  this.stage.update();
+}
+
+// dose剂量场
+// file() {
+//   var file = <HTMLInputElement>document.getElementById('file');
+//   var files = file.files[0];
+//   var reader = new FileReader();
+//   reader.readAsArrayBuffer(files);
+//   reader.onerror = function() {
+//       console.log("error");
+//   }
+//   let that = this;
+//   reader.onload = function() {
+//       var buffer = reader.result;
+//       var dataview = new DataView(buffer);
+//       var unts = new Float32Array(buffer.byteLength / 4);
+//       for (var i = 0; i < unts.length; i++) {
+//           unts[i] = dataview.getFloat32(i * 4, true);
+//       }
+//       that.actionService.dosefield(unts);
+//   }
+// }
+
+// filee() {
+//   let that = this;
+//   var file = <HTMLInputElement>document.getElementById('file');
+//   var files = file.files[0];
+//   var reader = new FileReader();
+//   reader.readAsArrayBuffer(files);
+//   reader.onerror = function() {
+//       console.log("error");
+//   }
+//   reader.onload = function() {
+//       var buffer = reader.result;
+//       var datLength = buffer.byteLength / 2;
+//       that.unts = new Uint16Array(buffer, 0, datLength);
+//       that.unts = new Float32Array(that.unts);
+//       that.drawScene(that.gl, that.programInfo, that.buffers, that.texture);
+//   }
+// }
+
+base64tobin(base64) {
+  var text = window.atob(base64);
+  var buffer = new ArrayBuffer(text.length);
+  var view = new DataView(buffer);
+  for (var i = 0, n = text.length; i < n; i++) view.setUint8(i, text.charCodeAt(i));
+  return buffer;
+}
+
+getBuffer(postPoint, tag, downsamplefactor) {
+  let that = this;
+  if (this.imageWidth == "" || this.imageWidth == undefined || this.imageWidth == null) {
+      return false;
+  } else {
+      this.postPoint = postPoint;
+      var data = { sliceTypes: [tag], crossPointX: this.postPoint[0], crossPointY: this.postPoint[1], crossPointZ: this.postPoint[2], downSampleFactor: downsamplefactor }
+      $.ajax({
+          url: this.storageService.retrieve("PATIENT_API_URLS") + "services/app/Series/GetMpr",
+          type: "POST",
+          dataType: 'JSON',
+          // headers: {
+          //     Authorization: 'Bearer ' + abp.auth.getToken(),
+          // },
+          async: false,
+          contentType: 'application/json',
+          data: JSON.stringify(data),
+          success: function(res) {
+              if (tag == "axial") {
+                  that.imageWidth = res.result.mprSliceDetails.Axial.width;
+                  that.imageHeight = res.result.mprSliceDetails.Axial.height;
+                  var base64 = res.result.mprSliceDetails.Axial.buffer;
+                  var mat = res.result.mprSliceDetails.Axial.mprModel2PatientMatrix;
+                  that.mpr2Patient = mat4.fromValues(mat[0], mat[1], mat[2], mat[3], mat[4], mat[5], mat[6], mat[7], mat[8], mat[9], mat[10], mat[11], mat[12], mat[13], mat[14], mat[15]);
+              }
+              if (tag == "coronal") {
+                  that.imageWidth = res.result.mprSliceDetails.Coronal.width;
+                  that.imageHeight = res.result.mprSliceDetails.Coronal.height;
+                  var base64 = res.result.mprSliceDetails.Coronal.buffer;
+                  var mat = res.result.mprSliceDetails.Coronal.mprModel2PatientMatrix;
+                  that.mpr2Patient = mat4.fromValues(mat[0], mat[1], mat[2], mat[3], mat[4], mat[5], mat[6], mat[7], mat[8], mat[9], mat[10], mat[11], mat[12], mat[13], mat[14], mat[15]);
+              }
+              if (tag == "sagittal") {
+                  that.imageWidth = res.result.mprSliceDetails.Sagittal.width;
+                  that.imageHeight = res.result.mprSliceDetails.Sagittal.height;
+                  var base64 = res.result.mprSliceDetails.Sagittal.buffer;
+                  that.mpr2Patient = res.result.mprSliceDetails.Sagittal.mprModel2PatientMatrix;
+              }
+
+              if (that.pixelRepresentation == 1) {
+                  that.unts = new Int16Array(that.base64tobin(base64));
+                  for (var i = 0; i < that.unts.length; ++i) {
+                      that.unts[i] = that.unts[i] + 1000;
+                  }
+                  that.unts = new Uint16Array(that.unts);
+              } else {
+                  that.unts = new Uint16Array(that.base64tobin(base64));
+              }
+              that.setupScene();
+              that.affineMat3 = that.ceateAffineTrans(that.scale, that.transX * that.scale, that.transY * that.scale);
+              that.drawScene(that.gl, that.programInfo, that.buffers, that.texture);
+              that.CT();
+              $(".ww").val(that.ww);
+              $(".wl").val(that.wl);
+              that.canbas.find(".pageindex").text(that.pageindex + "/" + that.pageindexit);
+          },
+          error: function(er) {
+              return;
+          }
+      });
+  }
+}
+getBufferTemp(tag) {
+    let that = this;
+    if (this.imageWidth == "" || this.imageWidth == undefined || this.imageWidth == null) {
+        this.imageWidth = 300;
+    } else {
+        var data = { sliceTypes: tag}
+        $.ajax({
+            url: "http://localhost:8090/api/load-series",
+            type: "POST",
+            dataType: 'JSON',
+            // headers: {
+            //     Authorization: 'Bearer ' + abp.auth.getToken(),
+            // },
+            async: false,
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function(res) {
+                if (tag == "axial") {
+                    var base64 = res;
+                }
+                if (tag == "coronal") {
+                    // that.imageWidth = res.result.mprSliceDetails.Coronal.width;
+                    // that.imageHeight = res.result.mprSliceDetails.Coronal.height;
+                    var base64 = res;
+                    // var mat = res.result.mprSliceDetails.Coronal.mprModel2PatientMatrix;
+                    // that.mpr2Patient = mat4.fromValues(mat[0], mat[1], mat[2], mat[3], mat[4], mat[5], mat[6], mat[7], mat[8], mat[9], mat[10], mat[11], mat[12], mat[13], mat[14], mat[15]);
+                }
+                if (tag == "sagittal") {
+                    // that.imageWidth = res.result.mprSliceDetails.Sagittal.width;
+                    // that.imageHeight = res.result.mprSliceDetails.Sagittal.height;
+                    var base64 = res;
+                    // that.mpr2Patient = res.result.mprSliceDetails.Sagittal.mprModel2PatientMatrix;
+                }
+  
+                if (that.pixelRepresentation == 1) {
+                    that.unts = new Int16Array(that.base64tobin(base64));
+                    for (var i = 0; i < that.unts.length; ++i) {
+                        that.unts[i] = that.unts[i] + 1000;
+                    }
+                    that.unts = new Uint16Array(that.unts);
+                } else {
+                    that.unts = new Uint16Array(that.base64tobin(base64));
+                }
+                that.setupScene();
+                //that.affineMat3 = that.ceateAffineTrans(that.scale, that.transX * that.scale, that.transY * that.scale);
+                that.drawScene(that.gl, that.programInfo, that.buffers, that.texture);
+                //that.CT();
+                $(".ww").val(that.ww);
+                $(".wl").val(that.wl);
+                //that.canbas.find(".pageindex").text(that.pageindex + "/" + that.pageindexit);
+            },
+            error: function(er) {
+                return;
+            }
+        });
+    }
+  }
+
+// getduffer(pageindex, tag, buffer) {
+//   let that = this;
+//   that.imageWidth = buffer[0];
+//   that.imageHeight = buffer[1];
+//   var base64 = buffer[2];
+//   if (that.pixelRepresentation == 1) {
+//       that.unts = new Int16Array(that.base64tobin(base64));
+//       for (var i = 0; i < that.unts.length; ++i) {
+//           that.unts[i] = that.unts[i] + 1000;
+//       }
+//       that.unts = new Uint16Array(that.unts);
+//   } else {
+//       that.unts = new Uint16Array(that.base64tobin(base64));
+//   }
+//   that.setupScene();
+//   that.drawScene(that.gl, that.programInfo, that.buffers, that.texture);
+//   that.CT();
+//   $(".ww").val(that.ww);
+//   $(".wl").val(that.wl);
+//   that.canbas.find(".pageindex").text(pageindex + "/" + that.pageindexit);
+//   that.pageindex = pageindex;
+// }
+
+// 翻页
+windowAddMouseWheel(tag) {
+  let that = this;
+  var scrollFunc = function(e) {
+      e = e || window.event;
+      if (that.pageindex >= that.pageindexit) {
+          that.message.emit('Already last data');
+          that.pageindex = that.pageindexit - 1;
+          return false;
+      }
+      if (that.pageindex < 1) {
+          that.message.emit('Already first data');
+          that.pageindex = 1;
+          return false;
+      }
+      if (e.wheelDelta > 0) { //当滑轮向上滚动时  
+          if (tag == "axial") {
+              that.postPoint[2] += that.gap[2];
+          }
+          if (tag == "coronal") {
+              that.postPoint[1] += that.gap[1];
+          }
+          if (tag == "sagittal") {
+              that.postPoint[0] += that.gap[0];
+          }
+          that.pageindex += 1;
+          that.getBuffer(that.postPoint, tag, 2);
+          that.P2Cross();
+          if (that.patientDB.contourset != undefined) {
+              that.GetContourSet();
+          }
+      }
+      if (e.wheelDelta < 0) { //当滑轮向下滚动时  
+          if (tag == "axial") {
+              that.postPoint[2] -= that.gap[2];
+          }
+          if (tag == "coronal") {
+              that.postPoint[1] -= that.gap[1];
+          }
+          if (tag == "sagittal") {
+              that.postPoint[0] -= that.gap[0];
+          }
+          that.pageindex -= 1;
+          that.getBuffer(that.postPoint, tag, 2);
+          that.P2Cross();
+          if (that.patientDB.contourset != undefined) {
+              that.GetContourSet();
+          }
+      }
+      clearTimeout($.data(this, 'timer'));
+      $.data(this, 'timer', setTimeout(function() {
+          that.getBuffer(that.postPoint, tag, 1);
+      }, 300));
+  };
+  this.canbas.get(0).onmousewheel = scrollFunc;
+}
+
+P2Cross() {
+  // this.postPoint = vec4.fromValues(this.firstImagePosition[0] + (this.sliceAll[2]) * this.gap[0], this.firstImagePosition[1] + (this.sliceAll[1]) * this.gap[1], this.firstImagePosition[2] + (this.sliceAll[0]) * this.gap[2], 1);
+  this.twoCross.emit(this.postPoint);
+}
+
+//十字线
+crosschu(nix, niy, loca) {
+  this.stage = new createjs.Stage(this.crosscan);
+  var width = this.stage.canvas.width;
+  var height = this.stage.canvas.height;
+  createjs.Touch.enable(this.stage);
+  this.stage.enableMouseOver(50);
+  this.stage.mouseMoveOutside = true;
+
+  this.horizontalLine = new createjs.Shape();// 横线
+  if (this.tag == "axial") {
+      this.horizontalLine.graphics.beginStroke("#2196F3").setStrokeStyle(1, "round").moveTo(0, 0).lineTo(width, 0);
+  }
+  if (this.tag == "coronal") {
+      this.horizontalLine.graphics.beginStroke("#F44336").setStrokeStyle(1, "round").moveTo(0, 0).lineTo(width, 0);
+  }
+  if (this.tag == "sagittal") {
+      this.horizontalLine.graphics.beginStroke("#F44336").setStrokeStyle(1, "round").moveTo(0, 0).lineTo(width, 0);
+  }
+  var horizontalHitArea = new createjs.Shape();
+  horizontalHitArea.graphics.beginFill("black").drawRect(0, -5, width, 10);
+  this.horizontalLine.hitArea = horizontalHitArea;
+  // this.horizontalLine.cursor = "url('/assets/img/vertical.cur'),auto";
+
+  this.verticalLine = new createjs.Shape();// 竖线
+  if (this.tag == "axial") {
+      this.verticalLine.graphics.beginStroke("#CDDC39").setStrokeStyle(1, "round").moveTo(0, 0).lineTo(0, height);
+  }
+  if (this.tag == "coronal") {
+      this.verticalLine.graphics.beginStroke("#CDDC39").setStrokeStyle(1, "round").moveTo(0, 0).lineTo(0, height);
+  }
+  if (this.tag == "sagittal") {
+      this.verticalLine.graphics.beginStroke("#2196F3").setStrokeStyle(1, "round").moveTo(0, 0).lineTo(0, height);
+  }
+  var verticalHitArea = new createjs.Shape();
+  verticalHitArea.graphics.beginFill("black").drawRect(-5, 0, 10, height);
+  this.verticalLine.hitArea = verticalHitArea;
+  // this.verticalLine.cursor = "url('/assets/img/horizontal.cur'),auto";
+
+  this.crossPoint = new createjs.Shape();// 交点
+  this.crossPoint.graphics.beginFill("black").drawCircle(0, 0, 8);
+  this.crossPoint.alpha = 0.1;
+  // this.crossPoint.cursor = "url('/assets/img/move.cur'),auto";
+  this.stage.addChild(this.verticalLine);
+  this.stage.addChild(this.horizontalLine);
+  this.stage.addChild(this.crossPoint);
+  var width = this.stage.canvas.width;
+  var height = this.stage.canvas.height;
+  this.cross(nix * width, niy * height, loca);
+
+  this.horizontalLine.addEventListener("pressmove", this.handlePressMove.bind(this));
+  this.verticalLine.addEventListener("pressmove", this.handlePressMove.bind(this));
+  this.crossPoint.addEventListener("pressmove", this.handlePressMove.bind(this));
+  this.horizontalLine.addEventListener("pressup", this.handlePressUp.bind(this));
+  this.verticalLine.addEventListener("pressup", this.handlePressUp.bind(this));
+  this.crossPoint.addEventListener("pressup", this.handlePressUp.bind(this));
+}
+
+cross(width, height, loca) {
+  this.clearmouse();
+  this.horizontalLine.y = height;
+  this.verticalLine.x = width;
+  this.crossPoint.x = this.verticalLine.x;
+  this.crossPoint.y = this.horizontalLine.y;
+  this.stage.update();
+}
+handlePressMove(evt) {
+  if (evt.currentTarget == this.verticalLine) {//竖线
+      evt.currentTarget.x = this.crossPoint.x = evt.stageX;
+      this.getposition(this.crossPoint.x, this.crossPoint.y, 2, 'ver');
+  }
+  if (evt.currentTarget == this.horizontalLine) {//横线
+      evt.currentTarget.y = this.crossPoint.y = evt.stageY;
+      this.getposition(this.crossPoint.x, this.crossPoint.y, 2, 'cur');
+  }
+  if (evt.currentTarget == this.crossPoint) {
+      evt.currentTarget.x = this.verticalLine.x = evt.stageX;
+      evt.currentTarget.y = this.horizontalLine.y = evt.stageY;
+      this.getposition(this.crossPoint.x, this.crossPoint.y, 4, 'cro');
+  }
+  this.stage.update();
+}
+handlePressUp(evt) {
+  if (evt.currentTarget == this.verticalLine) {//竖线
+      evt.currentTarget.x = this.crossPoint.x = evt.stageX;
+      this.getposition(this.crossPoint.x, this.crossPoint.y, 1, 'ver');
+  }
+  if (evt.currentTarget == this.horizontalLine) {//横线
+      evt.currentTarget.y = this.crossPoint.y = evt.stageY;
+      this.getposition(this.crossPoint.x, this.crossPoint.y, 1, 'cur');
+  }
+  if (evt.currentTarget == this.crossPoint) {
+      evt.currentTarget.x = this.crossPoint.x = evt.stageX;
+      evt.currentTarget.y = this.crossPoint.y = evt.stageY;
+      this.getposition(this.crossPoint.x, this.crossPoint.y, 1, 'cro');
+  }
+  this.stage.update();
+}
+
+getposition(x, y, down, way) {
+  var screenPt = vec3.fromValues(x, y, 1);
+  vec3.transformMat3(screenPt, screenPt, this.opM3);
+  var pt = vec3.create();
+  vec3.transformMat3(pt, screenPt, this.affineMat3);
+  this.postPoint = vec4.fromValues(pt[0], pt[1], 0, 1);
+  vec4.transformMat4(this.postPoint, this.postPoint, this.mpr2Patient);
+  var point = new Array(this.postPoint, down, way);
+  this.changeCross.emit(point);
+}
+
+//patient2screen
+patient2Mpr: any;
+scrCrossPt: any
+patient2screen(postPoint) {
+  this.postPoint = postPoint;
+  mat4.invert(this.patient2Mpr, this.mpr2Patient);
+  vec4.transformMat4(this.scrCrossPt, this.postPoint, this.patient2Mpr);
+  this.scrCrossPt = vec3.fromValues(this.scrCrossPt[0], this.scrCrossPt[1], 1);
+  var inaff = mat3.create();
+  inaff = mat3.invert(inaff, this.affineMat3);
+  vec3.transformMat3(this.scrCrossPt, this.scrCrossPt, inaff);
+  var inopm3 = mat3.create();
+  inopm3 = mat3.invert(inopm3, this.opM3);
+  vec3.transformMat3(this.scrCrossPt, this.scrCrossPt, inopm3);
+  this.cross(this.scrCrossPt[0], this.scrCrossPt[1], this.canbas.get(0));
+}
+
+//调整窗宽窗位
+changewl() {
+  let that = this;
+  $('#threebmp').removeClass().addClass("mouse_windows");
+  that.canbas.get(0).onmousedown = function(e) {
+      var clickY = e.clientY;
+      var clickX = e.clientX;
+      that.canbas.get(0).onmousemove = function(e) {
+          var curY = e.clientY;
+          var curX = e.clientX;
+          that.wlx = (clickY - curY);
+          that.wl = that.wlold + that.wlx;
+          that.wwx = (clickX - curX);
+          that.ww = that.wwold + that.wwx;
+          $(this).parent().find(".ww").val(that.ww);
+          $(this).parent().find(".wl").val(that.wl);
+          that.drawScene(that.gl, that.programInfo, that.buffers, that.texture);
+      }
+      that.canbas.get(0).onmouseup = function(e) {
+          that.canbas.get(0).onmousemove = null;
+          that.canbas.get(0).onmouseup = null;
+          that.wlold = that.wl;
+          that.wwold = that.ww;
+      }
+  }
+}
+
+onClickwl(inval) {
+  this.wl = inval;
+  $(this).parent().find(".wl").val(this.wl);
+  this.drawScene(this.gl, this.programInfo, this.buffers, this.texture);
+}
+onClickww(inval) {
+  this.ww = inval;
+  $(this).parent().find(".ww").val(this.ww);
+  this.drawScene(this.gl, this.programInfo, this.buffers, this.texture);
+}
+
+clearmouse() {
+  $('#threebmp').removeClass();
+  this.canbas.get(0).onmousedown = null;
+  // this.canbas.get(0).onmouseup = null;
+}
+
+oldX = 0; //平移
+oldY = 0;
+move() {
+  let that = this;
+  $('#threebmp').removeClass().addClass("MoveCursor");
+  that.canbas.get(0).onmousedown = function(e) {
+      var shortSide = (this.clientHeight > this.clientWidth) ? this.clientWidth : this.clientHeight;
+      var clickX = e.clientX;
+      var clickY = e.clientY;
+      that.canbas.get(0).onmousemove = function(e) {
+          var curX = e.clientX;
+          var curY = e.clientY;
+          that.mx = (curX - clickX);
+          that.my = (curY - clickY);
+          that.transX = (that.oldX + that.mx).toFixed(2);
+          that.transY = (that.oldY + that.my).toFixed(2);
+          that.transX = (-1 * that.transX) / shortSide;
+          that.transY = that.transY / shortSide;
+          that.affineMat3 = that.ceateAffineTrans(that.scale, that.transX * that.scale, that.transY * that.scale);
+          that.drawScene(that.gl, that.programInfo, that.buffers, that.texture);
+          that.patient2screen(that.postPoint);
+      };
+      that.canbas.get(0).onmouseup = function() {
+          that.canbas.get(0).onmousemove = null;
+          that.canbas.get(0).onmouseup = null;
+          that.oldX = that.oldX + that.mx;
+          that.oldY = that.oldY + that.my;
+      };
+  }
+}
+
+oldscale = 0; //缩放
+zoom() {
+  let that = this;
+  $('#threebmp').removeClass().addClass("ZoomCursor");
+  that.canbas.get(0).onmousedown = function(e) {
+      var clickY = e.clientY;
+      that.canbas.get(0).onmousemove = function(e) {
+          var curY = e.clientY;
+          that.sx = (clickY - curY) / 200;
+          that.scale = (1 + that.sx + that.oldscale).toFixed(2);
+          if (that.scale <= 0.1) {
+              that.sx = 0;
+              that.scale = that.scale;
+              return false;
+          }
+          that.affineMat3 = that.ceateAffineTrans(that.scale, that.transX * that.scale, that.transY * that.scale);
+          that.drawScene(that.gl, that.programInfo, that.buffers, that.texture);
+          that.patient2screen(that.postPoint);
+      }
+      that.canbas.get(0).onmouseup = function(e) {
+          that.canbas.get(0).onmousemove = null;
+          that.canbas.get(0).onmouseup = null;
+          that.oldscale = that.sx + that.oldscale;
+      }
+  }
+}
+
+ceateAffineTrans(scale, transX, transY) {
+  //scaleMatrix3*translateMatrix3先平移再缩放
+  var aff3 = mat3.create();
+  aff3 = mat3.fromValues(scale, 0, 0,
+      0, scale, 0,
+      transX, transY, 1);
+  return aff3;
+}
+
+// Start here
+gl: any;
+programInfo: any;
+buffers: any;
+texture: any;
+setupScene() {
+  var glCanvas = this.element.nativeElement.querySelector("#demoCanvas");
+  this.gl = glCanvas.getContext("webgl");
+  if (!this.gl) {
+      alert('Unable to initialize WebGL. Your browser or machine may not support it.');
+      return;
+  }
+
+  // 初始化着色器程序；这是建立顶点等所有照明的地方。
+  var shaderProgram = this.initShaderProgram(this.gl, this.glsource.mainVertS, this.glsource.mainFragS);
+  // Collect all the info needed to use the shader program.Look up which attribute our shader program is using for aVertexPosition and look up uniform locations.
+  this.programInfo = {
+      program: shaderProgram,
+      attribLocations: {
+          vertexPosition: this.gl.getAttribLocation(shaderProgram, 'aVertexPosition'),
+          textureCoord: this.gl.getAttribLocation(shaderProgram, "aTextureCoord"),
+      },
+      uniformLocations: {
+          projectionMatrix: this.gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
+          modelViewMatrix: this.gl.getUniformLocation(shaderProgram, 'uModelViewMatrix'),
+          uSampler: this.gl.getUniformLocation(shaderProgram, "uSampler"),
+          rescale: this.gl.getUniformLocation(shaderProgram, "rescale"),
+          winLevel: this.gl.getUniformLocation(shaderProgram, "windowLevel"),
+      },
+  };
+
+  this.buffers = this.initBuffers(this.gl);
+  this.texture = this.loadTexture(this.gl);
+  this.affineMat3 = mat3.create();
+  this.affineMat4 = mat4.create();
+}
+
+// initBuffers Initialize the buffers we'll need. For this demo, we just have one object -- a simple two-dimensional square.
+initBuffers(gl) {
+  // Create a buffer for the square's positions.
+  var positionBuffer = gl.createBuffer();
+  // Select the positionBuffer as the one to apply buffer operations to from here out.
+  gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+  // Now create an array of positions for the square.
+  var halfWidth = 0.5;
+  var halfHeight = 0.5;
+  // a quad
+  const positions = [
+      halfWidth, halfHeight,
+      -halfWidth, halfHeight,
+      halfWidth, -halfHeight,
+      -halfWidth, -halfHeight,
+  ];
+  // 现在将位置列表传递到WebGL中以构建形状。我们这样做是通过从JavaScript数组中创建一个FLUAT32数组，然后用它来填充当前的缓冲区。
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+  // 设置纹理坐标缓冲
+  var textureCoordBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
+  var textureCoordinates = [
+      1.0, 1.0,
+      0.0, 1.0,
+      1.0, 0.0,
+      0.0, 0.0,
+  ];
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoordinates), gl.STATIC_DRAW);
+  return {
+      position: positionBuffer,
+      textureCoord: textureCoordBuffer,
+  };
+}
+
+loadTexture(gl) {
+  var texture = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+  // 因为图像必须通过因特网下载，所以它们可能需要一段时间，直到它们准备好。
+  // 然后在纹理中放置一个像素，这样我们就可以立即使用它。当图像完成下载时，我们将用图像的内容更新纹理。
+  var level = 0;
+  var internalFormat = gl.RGBA;
+  var width = this.imageWidth;
+  var height = this.imageHeight;
+  var border = 0;
+  var format = gl.RGBA;
+  var type = gl.UNSIGNED_SHORT_4_4_4_4;
+  gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, width, height, border, format, type, this.unts);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.bindTexture(gl.TEXTURE_2D, null);
+  return texture;
+}
+
+createOrthoProjectMatrix(gl) {
+  var width = gl.canvas.clientWidth;
+  var height = gl.canvas.clientHeight;
+  var viewportSize = 0.5;
+  var left = -1 * viewportSize;
+  var right = 1 * viewportSize;
+  var bottom = -1 * viewportSize;
+  var top = 1 * viewportSize;
+  var near = 0.1;
+  var far = 100.0;
+  var ratio = width / height;
+  var delt = 0;
+  if (ratio > 1) {
+      left = left * ratio;
+      right = right * ratio;
+      delt = (bottom - top) / 2.0;
+  }
+  else {
+      top = (1 / ratio) * top;
+      bottom = (1 / ratio) * bottom;
+      delt = (right - left) / 2.0;
+  }
+
+  var ptLB = vec2.fromValues(left, bottom);
+  var ptRT = vec2.fromValues(right, top);
+  vec2.transformMat3(ptLB, ptLB, this.affineMat3);
+  vec2.transformMat3(ptRT, ptRT, this.affineMat3);
+
+  left = ptLB[0];
+  bottom = ptLB[1];
+  right = ptRT[0];
+  top = ptRT[1];
+
+  const projectionMatrix = mat4.create();
+  mat4.ortho(projectionMatrix,
+      left,
+      right,
+      bottom,
+      top,
+      near,
+      far);
+  return projectionMatrix;
+}
+
+createOrthoModelViewMatrix(gl) {
+  const eye = vec3.fromValues(0.0, 0.0, 100.0);
+  const center = vec3.fromValues(0.0, 0.0, 0.0);
+  const up = vec3.fromValues(0.0, 1.0, 0.0);
+  const modelViewMatrix = mat4.create();
+  mat4.lookAt(modelViewMatrix, eye, center, up);
+  return modelViewMatrix;
+}
+
+// Draw the scene.
+drawScene(gl, programInfo, buffers, texture) {
+  gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+  gl.clearColor(0.5, 0.5, 0.5, 1.0);  // Clear to black, fully opaque
+  gl.clearDepth(1.0);                 // Clear everything
+  gl.enable(gl.DEPTH_TEST);           // Enable depth testing
+  gl.depthFunc(gl.LEQUAL);            // Near things obscure far things
+
+  // Clear the canvas before we start drawing on it.
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  // 告诉WebGL如何将位置从位置缓冲区拔出到顶点位置属性。
+  {
+      var numComponents = 2;
+      var type = gl.FLOAT;
+      var normalize = false;
+      var stride = 0;
+      var offset = 0;
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffers.position);
+      gl.vertexAttribPointer(programInfo.attribLocations.vertexPosition, numComponents, type, normalize, stride, offset);
+      gl.enableVertexAttribArray(programInfo.attribLocations.vertexPosition);
+  }
+  // 设置属性-纹理坐标缓冲
+  {
+      var numComponents = 2;
+      var type = gl.FLOAT;
+      var normalize = false;
+      var stride = 0;
+      var offset = 0;
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffers.textureCoord);
+      gl.vertexAttribPointer(programInfo.attribLocations.textureCoord, numComponents, type, normalize, stride, offset);
+      gl.enableVertexAttribArray(programInfo.attribLocations.textureCoord);
+  }
+  const projectionMatrix = this.createOrthoProjectMatrix(gl);
+  const modelViewMatrix = this.createOrthoModelViewMatrix(gl);
+  // Set the shader uniforms
+  gl.uniformMatrix4fv(programInfo.uniformLocations.projectionMatrix, false, projectionMatrix);
+  gl.uniformMatrix4fv(programInfo.uniformLocations.modelViewMatrix, false, modelViewMatrix);
+
+  gl.activeTexture(gl.TEXTURE0);
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+
+  gl.uniform1i(programInfo.uniformLocations.uSampler, 0);
+  gl.uniform2f(programInfo.uniformLocations.rescale, this.rescaleSlope, this.rescaleIntercept);
+  gl.uniform2f(programInfo.uniformLocations.winLevel, this.wl, this.ww);
+
+  {
+      var offset = 0;
+      var vertexCount = 4;
+      gl.drawArrays(gl.TRIANGLE_STRIP, offset, vertexCount);
+  }
+  gl.bindTexture(gl.TEXTURE_2D, null);
+}
+
+// 初始化着色器程序，所以WebGL知道如何绘制我们的数据
+initShaderProgram(gl, vsSource, fsSource) {
+  var vertexShader = this.loadShader(gl, gl.VERTEX_SHADER, vsSource);
+  var fragmentShader = this.loadShader(gl, gl.FRAGMENT_SHADER, fsSource);
+  // Create the shader program
+  var shaderProgram = gl.createProgram();
+  gl.attachShader(shaderProgram, vertexShader);
+  gl.attachShader(shaderProgram, fragmentShader);
+  gl.linkProgram(shaderProgram);
+  // If creating the shader program failed, alert
+  if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+      alert('Unable to initialize the shader program: ' + gl.getProgramInfoLog(shaderProgram));
+      return null;
+  }
+  // Tell WebGL to use our program when drawing
+  gl.useProgram(shaderProgram);
+  return shaderProgram;
+}
+
+// 创建给定类型的着色器，上传载源并编译它。
+loadShader(gl, type, source) {
+  var shader = gl.createShader(type);
+  // Send the source to the shader object
+  gl.shaderSource(shader, source);
+  // Compile the shader program
+  gl.compileShader(shader);
+  // See if it compiled successfully
+  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+      alert('An error occurred compiling the shaders: ' + gl.getShaderInfoLog(shader));
+      gl.deleteShader(shader);
+      return null;
+  }
+  return shader;
+}
+
+
+}

@@ -1,0 +1,17 @@
+<div class="my-page">
+    <div class="top_Button">
+        <!-- <mpt-contouring-top-bar (zoom)="mainzoom()" (wlww)="mainwlww()" (move)="mainmove()" (sfile)="sfile()" (plan)="addPlan()" (loadSeries)="loadSeries()" (auto)="auto($event)" (remouse)="remouse($event)"></mpt-contouring-top-bar> -->
+        <mpt-contouring-top-bar (measure)="mainmeasure()" (loadSeries)="loadSeries()"></mpt-contouring-top-bar>
+    </div>
+    <div id="threebmp">
+        <mpt-pic-axial #picLeft1 class="a_class" [tag]="'axial'" [imageWidth]="imageX" [imageHeight]="imageY" [pageindex]="sliceX" [wl]="wl" [ww]="ww" [spacingX]="spacingX" [spacingY]="spacingY" [gap]="gap" [sliceAll]="sliceAll" [pixelRepresentation]="pixelRepresentation" [rescaleSlope]="rescaleSlope" [rescaleIntercept]="rescaleIntercept" [firstImagePosition]="firstImagePosition" [lastImagePosition]="lastImagePosition" (changeCross)="axialChange($event)" (twoCross)="aCross($event)" (message)="message($event)"></mpt-pic-axial>
+        <mpt-pic-axial #picLeft2 class="b_class" [tag]="'coronal'" [imageWidth]="imageX" [imageHeight]="imageZ" [pageindex]="sliceY" [wl]="wl" [ww]="ww" [spacingX]="spacingX" [spacingY]="spacingZ" [gap]="gap" [sliceAll]="sliceAll" [pixelRepresentation]="pixelRepresentation" [rescaleSlope]="rescaleSlope" [rescaleIntercept]="rescaleIntercept" [firstImagePosition]="firstImagePosition" [lastImagePosition]="lastImagePosition" (changeCross)="coronalChange($event)" (twoCross)="bCross($event)"></mpt-pic-axial>
+        <mpt-pic-axial #picLeft3 class="c_class" [tag]="'sagittal'" [imageWidth]="imageY" [imageHeight]="imageZ" [pageindex]="sliceZ" [wl]="wl" [ww]="ww" [spacingX]="spacingY" [spacingY]="spacingZ" [gap]="gap" [sliceAll]="sliceAll" [pixelRepresentation]="pixelRepresentation" [rescaleSlope]="rescaleSlope" [rescaleIntercept]="rescaleIntercept" [firstImagePosition]="firstImagePosition" [lastImagePosition]="lastImagePosition" (changeCross)="sagittalChange($event)" (twoCross)="cCross($event)"></mpt-pic-axial>
+    </div>
+    <!-- <div>
+        <load-bar #load></load-bar>
+    </div> -->
+    <div>
+        <button (click)="test()">text</button>
+    </div>
+</div>

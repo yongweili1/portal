@@ -1,0 +1,25 @@
+<nav class="layout-menu-wrapper">
+  <div class="layout-menu-container">
+    <ul class="layout-menu">
+      <ng-container *ngFor="let menu of menuData">
+        <li *ngIf="menu.link" class="nav-item" has-permission resource="{{menu.resName}}">
+          <a *ngIf="menu.link" [title]="menu.title | translate" class="nav-link" routerLinkActive="active-menuitem" [routerLink]="[menu.link]">
+            <i class="{{menu.icon}}"></i>
+            <span translate="{{menu.title}}"></span></a>
+        </li>
+        <li *ngIf="menu.name && menu.items" class="nav-item nav-dropdown" [ngClass]="{'open': menuState[menu.name]}">
+          <a [title]="menu.title | translate" class="nav-link nav-dropdown-toggle" href (click)="onToggleMenu($event, menu.name)">
+            <i class="{{menu.icon}}"></i>
+            <span translate="{{menu.title}}"></span>
+          </a>
+          <ul class="nav-dropdown-items">
+            <li *ngFor="let submenu of menu.items" class="nav-item" has-permission resource="{{submenu.resName}}">
+              <a *ngIf="submenu.link" class="nav-link" routerLinkActive="active-menuitem" [routerLink]="[submenu.link]">
+                <span translate="{{submenu.title}}"></span></a>
+            </li>
+          </ul>
+        </li>
+      </ng-container>
+    </ul>
+  </div>
+</nav>

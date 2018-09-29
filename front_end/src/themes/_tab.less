@@ -1,0 +1,53 @@
+.my-tab{
+    .ui-widget-header{
+        border-radius: 0px !important;
+        border: 1px solid @bg;
+    }
+
+    .ui-tabview .ui-tabview-nav li.ui-tabview-selected a{
+         color: @my-tab-title-color; 
+    }
+
+    .ui-tabview.ui-tabview-top>.ui-tabview-nav {
+        background-color:@bg !important;
+    }
+
+    .ui-tabview.ui-widget-content {
+        padding: 0;
+        box-shadow: 0px 2px 4px @box-shadow-color;
+    }
+
+    .my-table.ui-datatable{
+        margin-top: 0px;
+    }
+
+    .ui-state-default {
+         border:none; 
+    }
+
+    .ui-tabview .ui-tabview-nav li a {
+        background-color: @bg;
+    }
+
+    .ui-tabview .ui-tabview-nav li a{
+        padding-left: 20px;
+        padding-right: 20px;
+        height: 30px;
+    }
+    
+    .ui-helper-reset{
+        line-height: 1.8;
+        border-bottom: 1px solid @my-tab-header-border-color;
+    }
+
+    .ui-tabview .ui-tabview-nav > li.ui-state-active {
+        border-bottom: 2px solid @my-tab-nav-color;
+        font-weight: bold;
+    }
+    
+    // tabview下的边框
+    .ui-tabview .ui-tabview-panel {
+        padding: 0px !important; 
+        background-color: @bg;
+    }
+}

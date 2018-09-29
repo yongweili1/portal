@@ -1,0 +1,18 @@
+.layout-menu-wrapper {
+    background-color: @menubar-bg;
+}
+
+.layout-menu-wrapper .layout-menu li>a {
+    border-left: 4px solid @menubar-bg;
+}
+
+.layout-menu-wrapper .layout-menu li>a:hover {
+    background-color: @menubar-hover-color;
+    border-left: 4px solid @menubar-hover-color;
+}
+
+.layout-menu-wrapper.layout-menu-dark .layout-menu li a:hover,
+.active-menuitem {
+    background-color: @menubar-active-bg;
+    border-left: 4px solid @my-page-span-color !important;
+}

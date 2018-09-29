@@ -1,0 +1,124 @@
+/* data table */
+
+.actions-link {
+    color: @actions-link-color !important;
+    cursor: pointer;
+    text-decoration: none;
+    &.disable {
+        color: @actions-link-disable-color;
+        cursor: not-allowed;
+    }
+    &:not(:last-of-type) {
+        padding-right: 5px;
+    }
+    &:not(:first-of-type) {
+        padding-left: 5px;
+    }
+}
+
+.actions-column {
+    overflow: visible !important;
+    position: relative;
+    text-align: center;
+}
+
+
+
+/* paginator */
+
+.paginator-text {
+    padding: 5px 0;
+}
+
+.paginator-buttons .ui-paginator {
+    border: none;
+}
+
+
+/*****my-table******/
+
+.my-table.ui-datatable {
+    .status;
+    margin-top: 8px;
+    background-color: @bg !important;
+    box-shadow: 0px 2px 4px @box-shadow-color;
+    tr {
+        td {
+            font-size: @panel-font-s;
+        }
+    }
+    .ui-datatable-thead {
+        .ui-state-default {
+            //tr-th
+            background: @my-table-thead-bg !important;
+            border-color: @my-table-thead-border-color;
+            border-bottom: 1px solid @my-table-thead-border-bottom-color;
+        }
+        tr {
+            border-color: @my-table-tr-border-color;
+            >th {
+                height: 36px;
+                font-size: @panel-font-s;
+                color: @my-table-th-color;
+                font-weight: bold;
+                opacity: 0.8;
+            }
+        }
+    }
+    .ui-datatable-odd,
+    .ui-datatable-even,
+    .ui-datatable-emptymessage-row {
+        height: 36px;
+    }
+    .ui-datatable-tfoot,
+    .ui-datatable-data {
+        // .ui-datatable-thead>tr>th,
+        >tr>td {
+            border-style: none;
+        }
+    }
+    tr.ui-expanded-row-content {
+        // dataTable展开行
+        height: 36px;
+        td {
+            background: @my-table-row-content-bg !important;
+            box-shadow: inset 0 1px 4 0 @my-table-row-box-shadow-color;
+        }
+    }
+    .ui-datatable-header {
+        font-weight: bold;
+        border-bottom: 1px solid @my-table-tr-border-color;
+    }
+    .ui-widget-header {
+        a {
+            // ui-paginator
+            // color: @font-color;
+        }
+    }
+    .ui-chkbox .ui-chkbox-box {
+        border: 1px solid @my-table-chkbox-box-border-color;
+    } //**dropdown**
+    .ui-dropdown-items-wrapper {
+        margin: 0;
+        padding: .4em;
+        width: 100%;
+    }
+    .ui-dropdown-items.ui-dropdown-list.ui-widget-content.ui-widget.ui-corner-all.ui-helper-reset {
+        background: @my-table-dropdown-bg;
+    }
+}
+
+@media (min-width: @min-width-m) {
+    .my-table.ui-datatable {
+        .ui-datatable-thead {
+            tr>th {
+                font-size: @panel-font-m;
+            }
+        }
+        tr {
+            td {
+                font-size: @panel-font-m;
+            }
+        }
+    }
+}

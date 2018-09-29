@@ -1,0 +1,139 @@
+<div id="commonTools_0" class="btn-toolbar M3_B">
+  <div class="upfloor">
+      <button type="button" class="btn activeToolButton" id="btn_load" title="加载序列" (click)="loadMPR()"><img src="/assets/img/sendImagefilm.svg"></button>
+      <!-- <button type="button" class="btn activeToolButton" id="btn_file" title="打开文件夹">
+      <input type="file" id="file"><span>File</span></button>
+      <button type="button" class="btn activeToolButton" id="btn_load" title="显示图像" (click)="file()"><span>Show</span></button>
+      <button type="button" class="btn activeToolButton" id="btn_rect" title="矩形" (click)="OnRectangleClick()"><img src="/assets/img/butt-rectangle.svg"></button>
+      <button type="button" class="btn activeToolButton" id="btn_oval" title="椭圆" (click)="OnCircleClick()"><img src="/assets/img/butt-ellipse.svg"></button>
+      <button type="button" class="btn activeToolButton" id="btn_freepen" title="自由笔" (click)="OnBrushClick()"><img src="/assets/img/butt-freepen.svg"></button> -->
+  </div>
+  <div class="downfloor">
+      <span>LOAD FILE</span>
+  </div>
+</div>
+<div id="commonTools_0" class="btn-toolbar M1_B">
+  <div class="upfloor">
+      <!-- <button type="button" class="btn activeToolButton toolSelected" id="btn_select" title="选择" (click)="removemose()"><img src="/assets/img/butt-leftmouse-select.svg"></button>
+      <button type="button" class="btn activeToolButton" id="btn_translate" title="图像平移" (click)="imgmove()"><img src="/assets/img/butt-leftmouse-pan.svg"></button>
+      <button type="button" class="btn activeToolButton" id="btn_zoom" title="图像缩放" (click)="imgzoom()"><img src="/assets/img/butt-zooming.svg"></button>
+      <button type="button" class="btn activeToolButton" id="btn_setwl" title="窗宽窗位" (click)="imgwlww()"><img src="/assets/img/butt-leftmouse-window.svg"></button> -->
+      <!--   <div class="UIH_ComboBox L" name="combobox">
+          <button type="button" class="btn  activeToolButton " id="btn_freepen" title="自由笔"><img src="/assets/img/butt-freepen.svg"></button><span class="arrow" style="right: 3px;bottom: 3px;"></span>
+          <div class="Up open">
+              <button type="button" class="btn  activeToolButton" id="btn_circle" title="圆形"><img src="/assets/img/butt-circle.svg"></button>
+              <button type="button" class="btn activeToolButton" id="btn_rect" title="矩形"><img src="/assets/img/butt-rectangle.svg"></button>
+              <button type="button" class="btn  activeToolButton" id="btn_oval" title="椭圆"><img src="/assets/img/butt-ellipse.svg"></button>
+              <button type="button" class="btn  activeToolButton" id="btn_freepen" title="自由笔"><img src="/assets/img/butt-freepen.svg"></button>
+          </div>
+      </div> -->
+      <button type="button" class="btn activeToolButton" id="btn_measure" title="测量" (click)="OnMeasure()"><img src="/assets/img/butt-leftmouse-window.svg"></button>
+  </div>
+  <div class="downfloor">
+      <span>TOOLS</span>
+  </div>
+</div>
+<!-- <div id="commonTools_0" class="btn-toolbar M2_B">
+  <div class="upfloor">
+      <button type="button" class="btn  activeToolButton" id="btn_resetwl" title="恢复窗宽窗位"><img src="/assets/img/butt-reset-window.svg"></button>
+      <button type="button" class="btn  activeToolButton" id="btn_pixel" title="像素"><img src="/assets/img/butt-point.svg"></button>
+      <button type="button" class="btn  activeToolButton" id="btn_arrow" title="箭头标注"><img src="/assets/img/butt-arrow.svg"></button>
+      <button type="button" class="btn activeToolButton" id="btn_text" title="文本标注"><img src="/assets/img/butt-text.svg"></button>
+      <button type="button" class="btn  activeToolButton" id="btn_angle" title="角度测量"><img src="/assets/img/butt-angle.svg"></button>
+      <button type="button" class="btn  activeToolButton" id="btn_line" title="load"><img src="/assets/img/butt-measure.svg"></button>
+      <button type="button" class="btn activeToolButton" id="btn_removeAll" title="清除所有图元">
+          <img src="/assets/img/butt-clear.svg">
+      </button>
+  </div>
+  <div class="downfloor">
+      <span>DRAWING</span>
+  </div>
+</div>
+<div id="commonTools_0" class="btn-toolbar M3_B">
+  <div class="upfloor">
+      <eui-panel [bodyStyle]="{padding:'5px'}">
+          <eui-menubutton [menu]="edit" [plain]="true" iconCls="icon-edit">ROI</eui-menubutton>
+          <eui-menubutton [menu]="help" [plain]="true" iconCls="icon-help">POI</eui-menubutton>
+      </eui-panel>
+      <eui-menu #edit (itemClick)="onItemClick($event)">
+          <eui-menu-item text="Undo" iconCls="icon-undo"></eui-menu-item>
+          <eui-menu-item text="Redo" iconCls="icon-redo"></eui-menu-item>
+          <eui-menu-sep></eui-menu-sep>
+          <eui-menu-item text="Add ROI"></eui-menu-item>
+          <eui-menu-item text="AutoSegmentation">
+              <eui-submenu>
+                  <eui-menu-item text="Atlas"></eui-menu-item>
+                  <eui-menu-item text="AI"></eui-menu-item>
+              </eui-submenu>
+          </eui-menu-item>
+          <eui-menu-item text="Paste"></eui-menu-item>
+          <eui-menu-sep></eui-menu-sep>
+          <eui-menu-item text="Toolbar">
+              <eui-submenu>
+                  <eui-menu-item text="Address"></eui-menu-item>
+                  <eui-menu-item text="Link"></eui-menu-item>
+                  <eui-menu-sep></eui-menu-sep>
+                  <eui-menu-item text="New Toolbar..."></eui-menu-item>
+              </eui-submenu>
+          </eui-menu-item>
+          <eui-menu-item text="Delete" iconCls="icon-remove"></eui-menu-item>
+          <eui-menu-item text="Select All" value="Select"></eui-menu-item>
+      </eui-menu>
+      <eui-menu #help>
+          <eui-menu-item text="Help"></eui-menu-item>
+          <eui-menu-item text="Update"></eui-menu-item>
+          <eui-menu-item text="About"></eui-menu-item>
+      </eui-menu>
+  </div>
+  <div class="downfloor">
+      <span>ROI GROUP</span>
+  </div>
+</div> -->
+<!-- <p-dialog header="Add Roi" [(visible)]="addPlanDisplay" [modal]="true" [responsive]="true" [width]="400" [minWidth]="200" [minY]="70" [maximizable]="true" [baseZIndex]="10000">
+  <div style="height:450px;">
+      <div style="margin-bottom: 10px;">
+          <label [for]="name" align="right" style="width:150px">Name</label>
+          <eui-textbox #name [(ngModel)]="_roiName" iconCls="icon-man" placeholder="Name"></eui-textbox>
+      </div>
+      <div style="margin-bottom: 10px;">
+          <label [for]="description" align="right" style="width:150px">Description</label>
+          <eui-textbox #description [multiline]="true" [(ngModel)]="_roiDescription" placeholder="Description" style="height:80px"></eui-textbox>
+      </div>
+      <div style="margin-bottom: 10px;">
+          <label [for]="chnDescription" align="right" style="width:150px">CHN Description</label>
+          <eui-textbox #chnDescription [multiline]="true" [(ngModel)]="_roiCHNDescription" placeholder="CHN Description" style="height:80px"></eui-textbox>
+      </div>
+      <div style="margin-bottom: 10px;">
+          <label align="right" style="width:150px">Color</label>
+          <p-colorPicker [(ngModel)]="_roiColor"></p-colorPicker>
+      </div>
+      <div style="margin-bottom: 10px;">
+          <label [for]="planningRole" align="right" style="width:150px">Planning Role</label>
+          <eui-combobox #planningRole [(ngModel)]="_roiPlanningValue" [data]="planningRoleData"></eui-combobox>
+      </div>
+      <div>
+          <label [for]="biologyRole" align="right" style="width:150px">Biology Role</label>
+          <eui-combobox #biologyRole [(ngModel)]="_roiBiologyValue" [data]="biologyRoleData"></eui-combobox>
+      </div>
+  </div>
+  <p-footer>
+      <button type="button" pButton icon="pi pi-check" (click)="addPlanDisplay=false" label="Yes"></button>
+      <button type="button" pButton icon="pi pi-close" (click)="addPlanDisplay=false" label="No" class="ui-button-secondary"></button>
+  </p-footer>
+</p-dialog> -->
+<!-- <p-dialog header="AutoSegmentation" [(visible)]="display" [modal]="true" [responsive]="true" [width]="350" [minWidth]="200" [minY]="70" [maximizable]="true" [baseZIndex]="10000">
+  <div>
+      <eui-tree [data]="data" [checkbox]="true" (checkChange)="checkedNodes = $event">
+      </eui-tree>
+      <div style="padding: 4px 16px">
+          <div>Checked Nodes:</div>
+          <div *ngFor="let node of checkedNodes;">{{node.text}}</div>
+      </div>
+     <p-tree [value]="data" selectionMode="checkbox" [(selection)]="selectedFiles2"></p-tree>
+     <div>Selected Nodes: <span *ngFor="let data of selectedFiles2">{{data.label}} </span></div>
+  </div>
+  <p-footer>
+      <button type="button" pButton icon="pi pi-check" (click)="hidelog(selectedFiles2)" label="Yes"></button>
+      <button type="button" pButton icon="pi pi-close" (click)="display=false" label="No" class="ui-button-secondary"></button>
+  </p-footer>
+</p-dialog> -->

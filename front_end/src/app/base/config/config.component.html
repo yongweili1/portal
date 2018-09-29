@@ -1,0 +1,30 @@
+<div class="my-page">
+    <div class="my-page-title">
+        {{ 'base.config-mgnt.title' | translate }}
+    </div>
+
+    <div class="ui-helper-clearfix">
+        <div class="pull-left ui-inputgroup search-box">
+            <input #gb type="text" pInputText [placeholder]="'base.config.name' | translate" />
+            <button pButton type="button" icon="fa-search" class="ui-button-secondary"></button>
+        </div>
+    </div>
+
+    <div *ngFor="let item of items" style="padding: 10px 0">
+        <strong>{{item.confName}}</strong>
+        <span id="helpBlock" class="help-block">{{item.description}}</span>
+
+        <p-inplace>
+            <span pInplaceDisplay> {{item.confValue}}
+        <i class="fa fa-edit"></i>
+      </span>
+            <span pInplaceContent>
+        <textarea class="form-control" rows="3" cols="100" pInputTextarea [(ngModel)]="item.confValue"></textarea>
+        <div class="ui-helper-clearfix" style="padding-top: 10px">
+          <button type="button" class="my-button" pButton (click)="save()" [label]="'btn.save' | translate"  resource="base.config"></button>
+        </div>
+      </span>
+        </p-inplace>
+
+    </div>
+</div>

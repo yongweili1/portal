@@ -1,0 +1,69 @@
+<p-dialog class="my-dialog" [visible]="true" [responsive]="true" showEffect="fade" width="1000" (onHide)="onHide()" height="500" [modal]="true">
+    <p-header>
+        {{(isNew ? 'btn.add' : 'btn.edit') | translate}} {{ 'united-imaging.system-management.email-template.title' | translate }}
+    </p-header>
+    <form [formGroup]="form" class="my-form">
+        <div class="ui-g">
+            <div class="ui-g-1" style="margin-top:50px;">
+                <i class="fa fa-envelope fa-5x" aria-hidden="true"></i>
+            </div>
+            <div class="ui-g-7">
+                <div class="ui-g">
+                    <div class="ui-g-3 text-right">
+                        <label for="brand" class="required">
+              {{ 'united-imaging.system-management.email-template.name' | translate }}:
+            </label>
+                    </div>
+                    <div class="ui-g-4">
+                        <input type="text" pInputText formControlName="name" [(ngModel)]="emailTemplate.name" placeholder="{{ 'united-imaging.system-management.email-template.tip' | translate }}" />
+                    </div>
+                </div>
+                <div class="ui-g">
+                    <div class="ui-g-3 text-right">
+                        <label for="brand" class="required">
+              {{ 'united-imaging.system-management.email-template.subject' | translate }}:
+            </label>
+                    </div>
+                    <div class="ui-g-6">
+                        <input type="text" pInputText formControlName="subject" [(ngModel)]="emailTemplate.subject" placeholder="{{ 'united-imaging.system-management.email-template.tip' | translate }}" />
+                    </div>
+                </div>
+                <div class="ui-g">
+                    <div class="ui-g-3 text-right">
+                        <label for="brand" class="required">
+            </label>
+                    </div>
+                    <div class="ui-g-4">
+                        <p-inputSwitch formControlName="enable" [(ngModel)]="enable" onLabel="{{ 'united-imaging.system-management.email-template.enable' | translate }}" offLabel="{{ 'united-imaging.system-management.email-template.disable' | translate }}" [style]="{'color':'black'}"></p-inputSwitch>
+                    </div>
+                </div>
+                <div class="ui-g">
+                    <div class="ui-g-3 text-right">
+                        <label for="brand" class="required">
+              {{ 'united-imaging.system-management.email-template.content' | translate }}:
+            </label>
+                    </div>
+                    <div class="ui-g-8">
+                        <textarea #textarea rows="15" style="width: 100%" pInputTextarea formControlName="content" [(ngModel)]="emailTemplate.content"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="ui-g-4">
+                <p-dataTable [value]="parameters" [style]="{'height': '347px'}" styleClass="my-table" selectionMode="single" [(selection)]="selectedParameters" (onRowSelect)="onRowSelect($event)" [emptyMessage]="'text.empty-data' | translate" [rowStyleClass]="getRowStyle"
+                    [scrollable]="true" scrollHeight="276px">
+                    <p-header class="ui-helper-clearfix">
+                        <label>&emsp;Parameters</label>
+                    </p-header>
+                    <p-column field="name" [header]="'united-imaging.system-management.email-template.name' | translate" [style]="{'text-align':'left','padding-left':'15px'}"></p-column>
+                    <p-column field="describe" [header]="'united-imaging.system-management.email-template.description' | translate" [style]="{'text-align':'left'}"></p-column>
+                </p-dataTable>
+            </div>
+        </div>
+    </form>
+    <p-footer class="ui-helper-clearfix" *ngIf="form">
+        <span class="pull-right">
+      <button type="submit" class="my-button" pButton (click)="onSave()" [label]="'btn.save' | translate"></button>
+      <button type="button" class="my-button ui-button-secondary" pButton [label]="'btn.cancel' | translate" (click)="onHide()"></button>
+    </span>
+    </p-footer>
+</p-dialog>

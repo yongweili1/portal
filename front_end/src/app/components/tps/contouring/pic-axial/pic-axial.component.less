@@ -1,0 +1,107 @@
+.head {
+    width: 100%;
+    height: 30px;
+    p {
+        padding-left: 10px;
+        font-size: 13px;
+        line-height: 30px;
+        color:#CCC;
+    }
+}
+
+.body {
+    width: 100%;
+}
+
+.containe {
+    background: #2b2b2b;
+    width: 100%;
+    position: relative;
+    display: block;
+    color: #CCC;
+    text-shadow: 0px 1px 2px #808080;
+    font-size: 13px;
+    border: 1px solid gray;
+}
+
+.cleft {
+    position: absolute;
+    left: 9px;
+    top: 6px;
+    z-index: 3;
+}
+
+.cright {
+    position: absolute;
+    right: 9px;
+    top: 6px;
+    z-index: 3;
+    span {
+        vertical-align: middle;
+    }
+    input {
+        background: transparent;
+        border: none;
+        width: 30px;
+        border-bottom: 1px solid #cddc39;
+        text-align: center;
+        padding: 0;
+    }
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+    }
+    input[type="number"] {
+        -moz-appearance: textfield;
+    }
+}
+
+.cleftdown {
+    position: absolute;
+    left: 9px;
+    bottom: 7px;
+    z-index: 3;
+}
+
+.crightdown {
+    position: absolute;
+    right: 9px;
+    bottom: 7px;
+    z-index: 3;
+}
+
+.ZoomCursor {
+    cursor: url(/assets/img/mouse_zoom.cur), auto ;
+}
+
+.MoveCursor {
+    cursor: url(/assets/img/mouse_move.cur), auto ;
+}
+
+.mouse_windows {
+    cursor: url(/assets/img/mouse_windows.cur), auto ;
+}
+
+#canvas-frame {
+    border: none;
+    width: 50px;
+    height: 100px;
+}
+
+
+#isobands {
+    z-index: 99;
+    position: relative;
+}
+
+.containe .img {
+    // display: block;
+    // margin: auto;
+    position: absolute;
+    z-index: 2;
+    display: none;
+}
+
+#nugeCanvas{
+    z-index: 0;
+}

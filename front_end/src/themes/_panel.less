@@ -1,0 +1,129 @@
+.my-panel {
+    &.no-header {
+        .ui-panel-titlebar {
+            padding: 0!important;
+        }
+    }
+    .ui-panel-titlebar {
+        font-weight: bold;
+    }
+    box-shadow: 0px 2px 4px @box-shadow-color;
+    .status;
+    .ui-widget-content {
+        border: none;
+    }
+    .ui-inputgroup .ui-inputtext:not(:last-child) {
+        border-right: 1px solid @my-panel-input-border-color;
+        border-left: 1px solid @my-panel-input-border-color;
+        border-radius: 3px;
+    }
+    font-size: @panel-font-s;
+    color: @font-color;
+    .my-panel-div {
+        display: inline-block;
+        margin: 5px 0px;
+        div {
+            display: inline-block;
+            span {
+                margin-right: 10px;
+            }
+        }
+    }
+    .pull-left {
+        float: none;
+    }
+    input {
+        //width: 160px !important;
+        height: 28px;
+        background-color: @my-panel-input-bg;
+        color: @my-panel-input-color;
+    } //***************/ 覆盖样式 \*************
+    .ui-panel-content-wrapper {
+        background: @bg !important;
+    }
+    .ui-panel .ui-panel-titlebar {
+        //panel--header
+        padding: 0em 0em;
+    } //**dropdown**
+    .ui-dropdown-items-wrapper {
+        margin: 0;
+        padding: .4em;
+        width: 100%;
+    }
+    .ui-dropdown-items.ui-dropdown-list.ui-widget-content.ui-widget.ui-corner-all.ui-helper-reset {
+        background: @my-panel-dropdown-items-bg;
+    }
+    .ui-dropdown-label.ui-inputtext {
+        height: 26px;
+        border-color: @my-panel-dropdown-label-border-color;
+        background: @bg;
+    }
+    .ui-dropdown-label.ui-inputtext.ui-corner-all {
+        font-size: @panel-font-s;
+        color: @font-color;
+        opacity: 0.7;
+    }
+    .ui-dropdown.ui-widget.ui-state-default.ui-corner-all.ui-helper-clearfix {
+        //width: 160px !important;
+        height: 28px;
+    }
+    .ui-state-highlight {
+        // 下拉框点击后字体颜色
+        color: @my-panel-drop-down-action-color;
+    } // **calendar**
+    .ui-calendar.ui-calendar-w-btn {
+        height: 28px;
+    }
+    .pull-left {
+        .ui-inputtext.ui-corner-all.ui-state-default.ui-widget.ui-state-filled {
+            border: 1px solid @my-panel-input-border-color;
+            height: 28px;
+            //width: 220px;
+            font-size: @panel-font-s;
+            color: @font-color;
+            opacity: 0.7;
+            padding: 0;
+        }
+    }
+    .ui-button {
+      padding-bottom: 2px;
+    }
+    .ui-button-icon-only {
+        //图标
+        margin-left: -3px;
+        height: 28px;
+    } //**@panel-bg**
+    .ui-button.ui-widget.ui-state-default.ui-button-text-only {
+        margin-left: 10px;
+    }
+    .ui-selectbutton .ui-widget.ui-state-default.ui-button-text-only {
+        border-style: none;
+    }
+
+    .ui-button.ui-widget.ui-state-default.ui-button-text-only.ui-state-active {
+        // selectbutton-点击后
+        border-color: @selectbutton;
+        background: @selectbutton;
+        border-radius: 3px;
+         :hover {
+            border-color: @selectbutton;
+            background: @selectbutton;
+        }
+    }
+}
+
+@media (min-width: @min-width-m) {
+    .my-panel {
+        font-size: @panel-font-m;
+        .my-button-search {
+            font-size: @panel-font-m;
+        }
+        .ui-dropdown-label.ui-inputtext.ui-corner-all {
+            font-size: @panel-font-m;
+        }
+        .ui-inputtext.ui-corner-all.ui-state-default.ui-widget.ui-state-filled {
+            //width: 240px;
+            font-size: @panel-font-m;
+        }
+    }
+}

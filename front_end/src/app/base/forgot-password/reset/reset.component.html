@@ -1,0 +1,65 @@
+<div class="page-forgot-password" style="height:493px;">
+  <div class="forgot-password">
+    <form [formGroup]="form" *ngIf="form">
+      <div *ngIf="invalidTimeErrorAlarm">
+        <div class="ui-g" style="margin:30px 0px 20px 0px;height: 30px;">
+          <div class="ui-g-12 text-center" style="color:red;" *ngIf="rePwdErrorAlarm">
+            <i style="color:red;" class="fa fa-exclamation-triangle fa-lg"></i>&ensp;{{'base.forgot-password.confirmpwd-error' | translate}}
+          </div>
+        </div>
+
+        <div class="ui-g" style="margin:10px 0px">
+          <div class="ui-g-4 text-right">
+            <label for="brand" class="required">{{'base.forgot-password.password' | translate}}:</label>
+          </div>
+          <div class="ui-g-5">
+            <input pInputText type="password" class="input" formControlName="password" [(ngModel)]="password" />
+          </div>
+          <div class="ui-g-3">
+            <div *ngIf="form.controls['password'].invalid&&(form.controls['password'].dirty|| form.controls['password'].touched)">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="form.controls['password'].errors.required">
+                <i class="fa fa-close"></i> {{'text.required' | translate}}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ui-g" style="height:25px;margin: -20px 0px 0px -5px;">
+          <div class="ui-g-4 text-right"></div>
+          <div class="ui-g-8">
+            <div *ngIf="form.controls['password'].invalid&&(form.controls['password'].dirty|| form.controls['password'].touched)">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="form.controls['password'].errors.minlength">
+                {{'base.forgot-password.pwdlength-error' | translate}}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ui-g" style="margin:10px 0px 20px 0px">
+          <div class="ui-g-4 text-right">
+            <label for="brand" class="required">{{'base.forgot-password.confirm' | translate}}:</label>
+          </div>
+          <div class="ui-g-5">
+            <input pInputText type="password" class="input" formControlName="confirmPwd" [(ngModel)]="confirmPwd" />
+          </div>
+          <div class="ui-g-3">
+            <div class="ui-message ui-messages-error ui-corner-all" *ngIf="form.controls['confirmPwd'].invalid&&(form.controls['confirmPwd'].dirty|| form.controls['confirmPwd'].touched)">
+              <i class="fa fa-close"></i> {{'text.required' | translate}}
+            </div>
+          </div>
+        </div>
+
+        <div class="ui-g" style="margin:10px 0px" *ngIf="form">
+          <div class="ui-g-12 text-center">
+            <button pButton type="button" [disabled]="!form.valid" (click)="submitResetForm()" [label]="'btn.submit' | translate"></button>
+          </div>
+        </div>
+      </div>
+      <div class="ui-g" style="margin:10px 0px" *ngIf="!invalidTimeErrorAlarm">
+        <div class="ui-g-12 text-center">
+          <i style="color:red;" class="fa fa-exclamation-triangle fa-lg"></i>&ensp;{{'base.forgot-password.resetpwd-outoftime' | translate}}
+        </div>
+      </div>
+    </form>
+
+  </div>
+</div>

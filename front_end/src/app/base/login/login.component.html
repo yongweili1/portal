@@ -1,0 +1,58 @@
+<div class="container">
+  <div class="login">
+    <form [formGroup]="loginform" (ngSubmit)="login(loginform.value)">
+
+      <div class="ui-g ui-fluid login-form">
+        <div class="ui-g-12 text-center app-title">
+          {{'base.login.title' | translate}}
+        </div>
+
+        <div class="ui-g-12 login-msgs text-center">
+          <p-messages [(value)]="msgs"></p-messages>
+        </div>
+
+        <div class="ui-g-8 ui-md-offset-2" style="margin-bottom:10px">
+          <div class="ui-inputgroup">
+            <span class="ui-inputgroup-addon"><i class="fa fa-user fa-2x fa-fw"></i></span>
+            <input pInputText type="text" name="username" formControlName="username" [placeholder]="'base.login.username' | translate">
+          </div>
+        </div>
+
+        <div class="ui-g-8 ui-md-offset-2" style="margin-bottom:10px">
+          <div class="ui-inputgroup">
+            <span class="ui-inputgroup-addon"><i class="fa fa-lock fa-2x fa-fw"></i></span>
+            <input pInputText type="password" name="password" formControlName="password" [placeholder]="'base.login.password' | translate">
+          </div>
+        </div>
+
+        <div class="ui-g-8 ui-md-offset-2" style="margin-bottom:10px">
+          <div class="ui-inputgroup">
+            <span class="ui-inputgroup-addon"><i class="fa fa-css3 fa-2x fa-fw"></i></span>
+            <input pInputText type="text" [(ngModel)]="code" [readOnly]="countdown === 0" formControlName="code" placeholder="code" (change)="checkCode()">
+          </div>
+        </div>
+
+        <div class="ui-g-8 ui-md-offset-2 ui-g-nopad" style="height:48px;">
+          <div class="ui-g-2 text-right"></div>
+          <div class="ui-g-4">
+            <img *ngIf="imgSrc" [src]="imgSrc" (click)="getCode()" />
+          </div>
+          <div class="ui-g-6" style="padding-top:1em">
+            <div *ngIf="countdown !== 0">&emsp;{{countdown}} &emsp;{{'base.forgot-password.seconds' | translate}}</div>
+            <!-- <div *ngIf="countdown === 0" (click)="getCode()">&emsp;<i class="fa fa-refresh fa-fw" style="font-size:1.5rem"></i></div> -->
+          </div>
+        </div>
+
+        <div class="ui-g-10 ui-md-offset-2 ui-g-nopad">
+          <div class="ui-g-6">
+            <button pButton type="submit" [label]="'base.login.login' | translate" [disabled]="!loginform.valid"></button>
+          </div>
+          <div class="ui-g-6" style="padding:1.5em 5px">
+            <a routerLink="/forgot-password"> {{'base.login.forgot-password' | translate}}</a>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+</div>

@@ -1,0 +1,175 @@
+{
+    "btn": {
+        "ok": "确定",
+        "cancel": "取消",
+        "add": "新增",
+        "edit": "编辑",
+        "del": "删除",
+        "batch-add": "批量新增",
+        "batch-edit": "批量编辑",
+        "batch-del": "批量删除",
+        "insert": "插入",
+        "save": "保存",
+        "update": "更新",
+        "revert": "恢复默认值",
+        "submit": "提交",
+        "refresh": "刷新",
+        "search": "搜索",
+        "filter": "筛选",
+        "find": "查找",
+        "query": "查询",
+        "more": "更多",
+        "select": "选择",
+        "actions": "操作",
+        "random": "随机生成",
+        "execute": "立即执行",
+        "stop": "停止",
+        "start": "启动",
+        "enable": "启用",
+        "disable": "禁用",
+        "unlock": "解锁",
+        "locking": "锁定"
+    },
+    "text": {
+        "name": "名称",
+        "title": "标题",
+        "value": "值",
+        "required": "必填项.",
+        "empty-data": "没有查询到数据.",
+        "editable": "可编辑",
+        "description": "描述",
+        "confirm": "确认",
+        "row-index": "序号",
+        "info": "提示",
+        "alert": "警告",
+        "error": "错误",
+        "pagination-records": "本页共 {{size}} 条记录， 总共 {{total}} 条记录",
+        "password-strength": {
+            "prompt-label": "请输入密码",
+            "weak-label": "弱",
+            "medium-label": "中等",
+            "strong-label": "强"
+        }
+    },
+    "base": {
+        "title": "系统管理",
+        "error-page": {
+            "404": "404: 页面不存在",
+            "no-permission": "没有权限"
+        },
+        "user": {
+            "title": "用户",
+            "user-name": "登录名",
+            "password": "登录密码",
+            "real-name": "姓名",
+            "gender": "性别",
+            "telephone": "电话",
+            "email": "邮箱",
+            "wechat": "微信号",
+            "positions": "职务",
+            "dept-name": "部门",
+            "enabled": "状态",
+            "is-lock": "锁定",
+            "deleted": "该用户已被删除",
+            "genders": {
+                "0": "男",
+                "1": "女"
+            },
+            "add-success": "新增用户成功",
+            "add-error": "新增用户失败",
+            "batch-add-success": "批量新增用户成功",
+            "batch-add-error": "批量新增用户失败",
+            "edit-success": "修改用户成功",
+            "edit-error": "修改用户失败",
+            "grant-roles-success": "用户分配角色成功",
+            "grant-roles-error": "用户分配角色失败",
+            "reset-password-success": "重置密码成功",
+            "reset-password-error": "重置密码失败",
+            "del-header": "删除用户",
+            "del-message": "您确认彻底删除{{value}}吗？",
+            "del-success": "用户{{value}}已被成功删除",
+            "del-message1": "用户:{{value}}已分配权限，请收回权限之后再操作。"
+        },
+        "config": {
+            "name": "参数项名称"
+        },
+        "module": {
+            "label": "模块"
+        },
+        "locales": {
+            "name": "条目",
+            "text": "文本"
+        },
+        "themes": {
+            "title": "主题",
+            "lightness": "浅色",
+            "darkness": "深色"
+        },
+        "welcome": {
+            "title": "欢迎使用",
+            "description": "系统管理应用",
+            "login": "立即登录",
+            "enter": "进入首页"
+        },
+        "login": {
+            "title": "用户登录",
+            "username": "用户名",
+            "password": "密码",
+            "login": "登录"
+        },
+        "forgot-password": {
+            "username": "用户名",
+            "email": "邮箱",
+            "code": "验证码",
+            "password": "密码",
+            "confirm": "确认",
+            "username-email-error": "错误的用户名或邮箱地址,请重新输入！",
+            "resetpwd-outoftime": "重置密码已超时！",
+            "email-error": "邮件地址必须合法.",
+            "seconds": "秒",
+            "reflash-code": "请点击验证码重新获取",
+            "sendemail-sent": " 电子邮件已发送。",
+            "sendemail-check": "请稍后查看您的邮箱。",
+            "pwdlength-error": "密码至少有6个字符。",
+            "confirmpwd-error": " 密码与确认密码必须保持一致，请确认！",
+            "changed-pwd": "密码已修改",
+            "changed-signin": "请使用您的新密码登录。",
+            "sign-in": "登录"
+        },
+        "logout": "注销",
+        "update-profile": {
+            "title": "更新资料",
+            "real-name-min-length": "姓名至少4个字符.",
+            "password-min-length": "密码至少8个字符.",
+            "wechat-min-length": "微信号至少5个字符",
+            "telephone-pattern": "不正确的电话号码",
+            "email-pattern": "不正确的邮箱地址."
+        },
+        "change-password": {
+            "title": "修改密码",
+            "current-password": "当前密码",
+            "new-password": "新密码",
+            "confirm-password": "确认新密码",
+            "password-min-length": "密码至少8个字符.",
+            "password-matching": "密码不匹配"
+        },
+        "home": {
+            "title": "首页",
+            "stats-users": "用户数"
+        },
+        "users-security": "用户及权限",
+        "configurations": "系统配置",
+        "config-mgnt": {
+            "title": "系统参数",
+            "": ""
+        },
+        "locales-mgnt": {
+            "title": "语言配置",
+            "dlg-edit": "编辑语言配置项"
+        },
+        "palist": {},
+        "datetime-range-picker": {
+            "title": "选择日期时间范围"
+        }
+    }
+}

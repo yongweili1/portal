@@ -1,0 +1,273 @@
+{
+    "btn": {
+        "ok": "OK",
+        "cancel": "Cancel",
+        "add": "Add",
+        "edit": "Edit",
+        "del": "Delete",
+        "batch-add": "Batch Add",
+        "batch-edit": "Batch Edit",
+        "batch-del": "Batch Del",
+        "insert": "Insert",
+        "save": "Save",
+        "preview": "Preview",
+        "apply": "Apply",
+        "update": "Update",
+        "revert": "Revert",
+        "submit": "Submit",
+        "refresh": "Refresh",
+        "search": "Search",
+        "filter": "Filter",
+        "find": "Find",
+        "query": "Query",
+        "more": "More",
+        "select": "Select",
+        "actions": "Actions",
+        "random": "Random",
+        "execute": "Execute",
+        "stop": "Stop",
+        "start": "Start",
+        "enable": "Enable",
+        "disable": "Disable",
+        "unlock": "Unlock",
+        "locking": "Locking",
+        "export": "Export",
+        "print": "Print",
+        "back": "Back",
+        "next": "Next",
+        "install": "Install"
+    },
+    "text": {
+        "name": "Name",
+        "title": "Title",
+        "value": "Value",
+        "required": "Required.",
+        "empty-data": "Empty data.",
+        "editable": "Editable",
+        "description": "Description",
+        "confirm": "Confirm",
+        "row-index": "Index",
+        "info": "Information",
+        "alert": "Alert",
+        "error": "Error",
+        "pagination-records": "Current page {{size}} records, Total {{total}} records",
+        "password-strength": {
+            "prompt-label": "Please enter a password",
+            "weak-label": "Weak",
+            "medium-label": "Medium",
+            "strong-label": "Strong"
+        }
+    },
+    "base": {
+        "title": "Base",
+        "error-page": {
+            "404": "404: NOT FOUND",
+            "no-permission": "NO PERMISSION"
+        },
+        "user": {
+            "title": "User",
+            "user-name": "User Name",
+            "password": "Password",
+            "real-name": "Full Name",
+            "gender": "Gender",
+            "telephone": "Telephone",
+            "email": "Email",
+            "wechat": "Wechat Number",
+            "positions": "Positions",
+            "dept-name": "Department",
+            "enabled": "Enabled?",
+            "is-lock": "Locked?",
+            "deleted": "The user has been deleted",
+            "genders": {
+                "0": "Male",
+                "1": "Female"
+            },
+            "add-success": "New user success",
+            "add-error": "New user failure",
+            "batch-add-success": "Batch new user success",
+            "batch-add-error": "Batches of new users fail",
+            "edit-success": "Modify user's success",
+            "edit-error": "Modifying user failure",
+            "grant-roles-success": "User assigned role success",
+            "grant-roles-error": "User assigned role failure",
+            "reset-password-success": "Reset the password success",
+            "reset-password-error": "Reset password failure",
+            "del-header": "Delete user",
+            "del-message": "Do you confirm that the {{value}} is completely deleted?",
+            "del-success": "User {{value}} has been successfully deleted",
+            "del-message1": "User: {{value}} has allocated permissions. Please reoperate it after taking back the permissions."
+        },
+        "config": {
+            "name": "Config item name"
+        },
+        "module": {
+            "label": "Module"
+        },
+        "locales": {
+            "name": "Item",
+            "text": "Text"
+        },
+        "themes": {
+            "title": "Themes",
+            "lightness": "Light",
+            "darkness": "Dark"
+        },
+        "welcome": {
+            "title": "Welcome",
+            "description": "Base Application：Users, Organizations, Permissions, Logging & Mornitoring, Configurations.",
+            "login": "Login Now",
+            "enter": "Enter Now"
+        },
+        "login": {
+            "title": "Sign In",
+            "username": "Username",
+            "password": "Password",
+            "forgot-password": "Forgot password",
+            "login": "Sign In"
+        },
+        "forgot-password": {
+            "username": "Username",
+            "email": "Email Address",
+            "code": "Verify Code",
+            "password": "Password",
+            "confirm": "Confirm",
+            "username-email-error": "Wrong user name or email address, please input again.",
+            "resetpwd-outoftime": "The reset password has gone out of time!",
+            "email-error": "email must be legal.",
+            "seconds": "seconds",
+            "refresh-code": "Please click the picture to get it again",
+            "sendemail-sent": "Email has sent.",
+            "sendemail-check": "Please check your email box later.",
+            "pwdlength-error": "The length of the password is at least 6 characters.",
+            "confirmpwd-error": "Password and confirm password must be consistent. Please confirm.",
+            "changed-pwd": "Password Changed",
+            "changed-signin": "Please use your new password to sign in.",
+            "sign-in": "Sign in"
+        },
+        "renew-password": {
+            "username": "UserName",
+            "old-password": "OldPassword",
+            "new-password": "NewPassword",
+            "confirm-password": "ConfirmPassword",
+            "pwdlength-error": "The length of the *password is at least 6 characters.",
+            "username-password-error": "Wrong user name or old password, please input again.",
+            "new-confirm-password-error": "new password and confirm password must be consistent. Please confirm.",
+            "new-history-password-error": "The new password is not the same as the historical code, please input again."
+        },
+        "logout": "Logout",
+        "update-profile": {
+            "title": "Update Profile",
+            "real-name-min-length": "more than 4 chars.",
+            "password-min-length": "more than 6 chars.",
+            "wechat-min-length": "more than 5 chars.",
+            "telephone-pattern": "error phone number",
+            "email-pattern": "error email address."
+        },
+        "change-password": {
+            "title": "Change Password",
+            "current-password": "Current password",
+            "new-password": "New password",
+            "confirm-password": "Confirm password",
+            "password-min-length": "more than 6 chars.",
+            "password-matching": "not matched."
+        },
+        "home": {
+            "title": "Home",
+            "stats-users": "Users"
+        },
+        "users-security": "Users & Security",
+        "users-mgnt": {
+            "title": "Contouring",
+            "users-picker": "Choose User",
+            "unlock": "Unlock",
+            "lock": "Lock",
+            "reset-password": "Reset Password",
+            "edit-user": "Edit User Information",
+            "password-min-length": "Password must be more than 6 chars",
+            "grant-data-permission": "Grant data permissions"
+        },
+        "locales-mgnt": {
+            "title": "Locales",
+            "dlg-edit": "Edit text"
+        },
+        "palist": {
+            "title": "Pa List",
+            "todo": "Todo",
+            "done": "Done",
+            "serial-number": "Serial Number",
+            "taskDefinitionKey": "Type",
+            "priority": "Priority",
+            "name": "Task",
+            "assignee": "Assignee",
+            "createTime": "Initiating Time",
+            "dueDate": "Deadline",
+            "remianTime": "Length of stay(Day)",
+            "startTime": "Start Time",
+            "endTime": "End Time",
+            "durationInMillis": "Length of stay(Minute)"
+        },
+        "datetime-range-picker": {
+            "title": "Select date time range"
+        }
+    },
+    "united-imaging": {
+        "title": "uAI-Research",
+        "Package": {
+            "title": "PA"
+        },
+        "system-management": {
+            "title": "TPS",
+            "sms-template": {
+                "no": "No",
+                "title": "SMS Template",
+                "id": "Id",
+                "name": "Name",
+                "create-time": "Create Time",
+                "operate": "Operate",
+                "content": "Content",
+                "tip": "No more than 30 characters",
+                "enable": "Enable",
+                "disable": "Disable",
+                "actions": "Actions",
+                "description": "Description"
+            },
+            "email-template": {
+                "no": "No",
+                "title": "Email Template",
+                "id": "Id",
+                "name": "Name",
+                "subject": "Subject",
+                "create-time": "Create Time",
+                "operate": "Operate",
+                "content": "Content",
+                "tip": "No more than 30 characters",
+                "enable": "Enable",
+                "disable": "Disable",
+                "actions": "Actions",
+                "description": "Description"
+            }
+        },
+        "home": {
+            "total-sales": "Total Sales",
+            "ugs": "UGS",
+            "transactions": "Transactions",
+            "dasu": "Daily Average Sales UGS",
+            "total-refund": "Total Refund",
+            "total-arrear": "Total Arrears",
+            "arrears-ratio": "Arrears Ratio",
+            "pcau": "Per Capita Arrears UGS",
+            "todays-sales": "Today's Sales",
+            "day-day": "Day on Day",
+            "sales": "Sales",
+            "sales-rangking": "Sales Ranking",
+            "operation-monitoring": "Operation Monitoring",
+            "total-meters": "Total Meters",
+            "sold": "Sold:",
+            "minutes-age": "minutes ago",
+            "customized": "Customized",
+            "dashboard": "Dashboard",
+            "name": "Name",
+            "size": "Size"
+        }
+    }
+}

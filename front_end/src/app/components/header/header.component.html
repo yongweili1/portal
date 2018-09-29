@@ -1,0 +1,44 @@
+<nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse fixed-top">
+    <button class="navbar-toggler navbar-toggler-right" type="button" (click)="toggleMenu($event)">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+    <span class="navbar-brand" (click)="toHome()">
+  </span>
+    <div class="navbar-collapse" [hidden]="isMenuHidden">
+
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item" style="padding:10px 5px">
+                <a class="nav-link sidebar-toggler" href="#"><i class="fa fa-outdent fa-lg"></i><i class="fa fa-indent fa-lg"></i></a>
+            </li>
+            <li class="nav-item">
+                <span class="app-title" translate="united-imaging.title"></span>
+            </li>
+        </ul>
+
+        <ul class="navbar-nav my-2 my-lg-0">
+            <li class="nav-item">
+                <span class="nav-link"><mpt-system-time></mpt-system-time></span>
+            </li>
+
+            <li class="nav-item" *ngIf="loggedIn">
+                <a class="nav-link" (click)="menuThemes.toggle($event)">{{ currentTheme }} <i class="fa fa-caret-down"></i></a>
+                <p-menu #menuThemes popup="popup" [model]="themes"></p-menu>
+            </li>
+
+            <li class="nav-item" *ngIf="loggedIn">
+                <a class="nav-link" (click)="menuLangs.toggle($event)">{{ currentLang }} <i class="fa fa-caret-down"></i></a>
+                <p-menu #menuLangs popup="popup" [model]="langs"></p-menu>
+            </li>
+
+            <li class="nav-item" routerLinkActive="active" *ngIf="!loggedIn">
+                <a class="nav-link" [routerLink]="['/login']"><i class="fa fa-sign-in"></i> {{ 'base.login.title' | translate }}</a>
+            </li>
+
+            <li class="nav-item" *ngIf="loggedIn">
+                <a class="nav-link" (click)="menuSettings.toggle($event)"><i class="fa fa-user-circle-o"></i> {{user?.realName}} <i class="fa fa-caret-down"></i></a>
+                <p-menu #menuSettings popup="popup" [model]="settings"></p-menu>
+            </li>
+        </ul>
+
+    </div>
+</nav>

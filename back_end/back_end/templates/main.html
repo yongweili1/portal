@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>API Test Page</title>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+
+<div style="height:410px;width:810px;display: flex;">
+    <div id="cell_1_1" style="background-color:#d0d0d0;height:400px;width:400px;margin:5px">
+        <canvas id="canvas_1_1" height="400" width="400"></canvas>
+    </div>
+    <div id="cell_1_2" style="background-color:#d0d0d0;height:400px;width:400px;margin:5px">
+        <canvas id="canvas_1_2" height="400" width="400"></canvas>
+    </div>
+</div>
+<div style="height:410px;width:810px;display: flex;">
+    <div id="cell_2_1" style="background-color:#d0d0d0;height:400px;width:400px;margin:5px">
+        <canvas id="canvas_2_1" height="400" width="400"></canvas>
+    </div>
+    <div id="cell_2_2" style="background-color:#d0d0d0;height:400px;width:400px;margin:5px">
+        <select name="main_id" id="main_id" style="height:40px;width:390px;">
+            <option value="">请选择序列号</option>
+        </select>
+        <div style="display: flex">
+            <label id="msg"></label>
+        </div>
+        <button id="btn_sayhi">Hi</button>
+        <button id="btn_load">Load</button>
+        <button id="btn_show">Show</button>
+        <button id="btn_page_transverse">Page Turning(transverse)</button>
+        <button id="btn_page_saggital">Page Turning(saggital)</button>
+        <button id="btn_page_coronal">Page Turning(coronal)</button>
+        <button id="btn_zoom_in">Zoom In</button>
+        <button id="btn_zoom_out">Zoom Out</button>
+        <button id="btn_rotate_left">Rotate(left)</button>
+        <button id="btn_rotate_right">Rotate(right)</button>
+        <button id="btn_pan_l">Pan(left)</button>
+        <button id="btn_pan_r">Pan(right)</button>
+        <button id="btn_pan_u">Pan(up)</button>
+        <button id="btn_pan_d">Pan(down)</button>
+        <button id="btn_roll_1">Roll1</button>
+        <button id="btn_roll_2">Roll2</button>
+        <button id="btn_pseudocolor_grayscale">Pseudocolor(grayscale)</button>
+        <button id="btn_pseudocolor_red">Pseudocolor(red)</button>
+        <button id="btn_pseudocolor_green">Pseudocolor(green)</button>
+        <button id="btn_pseudocolor_blue">Pseudocolor(blue)</button>
+        <button id="btn_reset">Reset</button>
+        <button id="btn_change_window">Changewindow</button>
+    </div>
+</div>
+</body>
+
+<script>
+    $(function () {
+        $.get("/image/serids/", function(data) {
+            data = JSON.parse(data);
+            $("#main_id").empty();
+            $("#main_id").append("<option value=''>请选择序列号</option>");
+            for(var i = 0; i < data.length; i++){
+                $("#main_id").append('<option>' + data[i] + '</option>');
+            };
+        });
+
+        $('#btn_sayhi').click(function () {
+            $.get("/image/sayhi/", function(data) {
+                console.log(data)
+                document.getElementById("msg").innerText = data;
+            });
+        });
+
+        $('#btn_load').click(function () {
+            selected_uid = $("#main_id  option:selected").text();
+            $.get("/image/volumes/?seriesuid=" + selected_uid, function(data) {
+                console.log(data)
+                document.getElementById("msg").innerText = "Volumn data has been loaded!";
+            });
+        });
+
+        $('#btn_show').click(function () {
+            $.get("/image/images/?seriesuid=1.3.12.2.1107.5.1.4.64606.30000018051006052134700006373&width=400&height=400&focus_view=&display_view=all", function(data) {
+                refreash(data)
+            });
+        });
+
+        $('#btn_pseudocolor_grayscale').click(function () {
+            $.get("/image/colors/?width=400&height=400&focus_view=&display_view=all&colormode=0", function(data) {
+                refreash(data)
+            });
+        });
+
+        $('#btn_pseudocolor_red').click(function () {
+            $.get("/image/colors/?width=400&height=400&focus_view=&display_view=all&colormode=1", function(data) {
+                refreash(data)
+            });
+        });
+
+        $('#btn_pseudocolor_green').click(function () {
+            $.get("/image/colors/?width=400&height=400&focus_view=&display_view=all&colormode=2", function(data) {
+                refreash(data)
+            });
+        });
+
+        $('#btn_pseudocolor_blue').click(function () {
+            $.get("/image/colors/?width=400&height=400&focus_view=&display_view=all&colormode=3", function(data) {
+                refreash(data)
+            });
+        });
+
+        $('#btn_page_transverse').click(function () {
+            $.get("/image/pages/?width=400&height=400&focus_view=transverse&display_view=all&delta=10", function(data) {
+                refreash(data)
+            });
+        });
+
+        $('#btn_page_saggital').click(function () {
+            $.get("/image/pages/?width=400&height=400&focus_view=saggital&display_view=all&delta=10", function(data) {
+                refreash(data)
+            });
+        });
+
+        $('#btn_page_coronal').click(function () {
+            $.get("/image/pages/?width=400&height=400&focus_view=coronal&display_view=all&delta=10", function(data) {
+                refreash(data)
+            });
+        });
+
+        $('#btn_pan_l').click(function () {
+            $.get("/image/seats/?width=400&height=400&focus_view=&display_view=all&shift=-1.9,0,0", function(data) {
+                refreash(data)
+            });
+        });
+
+        $('#btn_pan_r').click(function () {
+            $.get("/image/seats/?width=400&height=400&focus_view=&display_view=all&shift=1.9,0,0", function(data) {
+                refreash(data)
+            });
+        });
+
+        $('#btn_pan_u').click(function () {
+            $.get("/image/seats/?width=400&height=400&focus_view=&display_view=all&shift=0,-1.9,0", function(data) {
+                refreash(data)
+            });
+        });
+
+        $('#btn_pan_d').click(function () {
+            $.get("/image/seats/?width=400&height=400&focus_view=&display_view=all&shift=0,1.9,0", function(data) {
+                refreash(data)
+            });
+        });
+
+        $('#btn_roll_1').click(function () {
+            $.get("/image/roll/?width=400&height=400&focus_view=transverse&display_view=all&cursor=-110.8999619,58.000032,-129.4375", function(data) {
+                refreash(data)
+            });
+        });
+
+        $('#btn_roll_2').click(function () {
+            $.get("/image/roll/?width=400&height=400&focus_view=transverse&display_view=all&cursor=17.1000381,-95.999968,-129.4375", function(data) {
+                refreash(data)
+            });
+        });
+
+        $('#btn_rotate_left').click(function () {
+            $.get("/image/rotate/?width=400&height=400&focus_view=transverse&display_view=all&angle=-0.002", function(data) {
+                refreash(data)
+            });
+        });
+
+        $('#btn_rotate_right').click(function () {
+            $.get("/image/rotate/?width=400&height=400&focus_view=transverse&display_view=all&angle=0.002", function(data) {
+                refreash(data)
+            });
+        });
+
+        $('#btn_zoom_in').click(function () {
+            $.get("/image/zooms/?width=400&height=400&focus_view=&display_view=all&shift=1", function(data) {
+                refreash(data)
+            });
+        });
+
+        $('#btn_zoom_out').click(function () {
+            $.get("/image/zooms/?width=400&height=400&focus_view=&display_view=all&shift=-1", function(data) {
+                refreash(data)
+            });
+        });
+
+        $('#btn_reset').click(function () {
+            $.get("/image/backs/?width=400&height=400&focus_view=&display_view=all", function(data) {
+                refreash(data)
+            });
+        });
+
+        $('#btn_change_window').click(function () {
+            $.get("/image/windows/?width=400&height=400&focus_view=&display_view=all&shift=10,10", function(data) {
+                refreash(data)
+            });
+        });
+
+        function refreash(data) {
+            data = JSON.parse(data);
+            data = JSON.parse(data);
+
+            if (data.transverse != null)
+            {
+                var transverse_canvas = document.getElementById("canvas_1_1");
+                var transverse_ctx = transverse_canvas.getContext("2d");
+                transverse_ctx.clearRect(0,0,transverse_canvas.width,transverse_canvas.height);
+                var transverse_img = transverse_ctx.createImageData(transverse_canvas.width,transverse_canvas.height);
+                for (i = 0; i < data.transverse.length; i++){
+                    for (j = 0; j < data.transverse.length; j++) {
+                        transverse_img.data[4 * data.transverse.length * i + j * 4] = data.transverse[i][j][0];
+                        transverse_img.data[4 * data.transverse.length * i + j * 4 + 1] = data.transverse[i][j][1];
+                        transverse_img.data[4 * data.transverse.length * i + j * 4 + 2] = data.transverse[i][j][2];
+                        transverse_img.data[4 * data.transverse.length * i + j * 4 + 3] = 255;
+                    }
+                }
+                transverse_ctx.putImageData(transverse_img, 0, 0);
+            }
+
+            if (data.saggital != null)
+            {
+                var saggital_canvas = document.getElementById("canvas_1_2");
+                var saggital_ctx = saggital_canvas.getContext("2d");
+                saggital_ctx.clearRect(0,0,saggital_canvas.width,saggital_canvas.height);
+                var saggital_img = saggital_ctx.createImageData(saggital_canvas.width,saggital_canvas.height);
+                for (i = 0; i < data.saggital.length; i++){
+                    for (j = 0; j < data.saggital.length; j++) {
+                        saggital_img.data[4 * data.saggital.length * i + j * 4] = data.saggital[i][j][0];
+                        saggital_img.data[4 * data.saggital.length * i + j * 4 + 1] = data.saggital[i][j][1];
+                        saggital_img.data[4 * data.saggital.length * i + j * 4 + 2] = data.saggital[i][j][2];
+                        saggital_img.data[4 * data.saggital.length * i + j * 4 + 3] = 255;
+                    }
+                }
+                saggital_ctx.putImageData(saggital_img, 0, 0);
+            }
+
+            if (data.coronal != null)
+            {
+                var coronal_canvas = document.getElementById("canvas_2_1");
+                var coronal_ctx = coronal_canvas.getContext("2d");
+                coronal_ctx.clearRect(0,0,coronal_canvas.width,coronal_canvas.height);
+                var coronal_img = coronal_ctx.createImageData(coronal_canvas.width,coronal_canvas.height);
+                for (i = 0; i < data.coronal.length; i++){
+                    for (j = 0; j < data.coronal.length; j++) {
+                        coronal_img.data[4 * data.coronal.length * i + j * 4] = data.coronal[i][j][0];
+                        coronal_img.data[4 * data.coronal.length * i + j * 4 + 1] = data.coronal[i][j][1];
+                        coronal_img.data[4 * data.coronal.length * i + j * 4 + 2] = data.coronal[i][j][2];
+                        coronal_img.data[4 * data.coronal.length * i + j * 4 + 3] = 255;
+                    }
+                }
+                coronal_ctx.putImageData(coronal_img, 0, 0);
+            }
+        }
+    });
+</script>
+
+</html>

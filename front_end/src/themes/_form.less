@@ -1,0 +1,60 @@
+.my-form {
+    .ui-button.ui-widget.ui-state-default.ui-button-text-only {
+        /**selectbutton**/
+        margin-left: 0px;
+         :hover {
+            background: none;
+        }
+    }
+    .ui-fluid .ui-inputgroup .ui-button {
+        width: 180px;
+    }
+}
+
+.required-marker {
+    padding: 0 5px;
+    color: @required-marker-color !important;
+    line-height: 2.3;
+}
+
+.ui-fluid .ui-inputtext {
+    background-color: @form-input-bg !important;
+    color: @form-input-color;
+}
+
+.ui-inputtext.ng-dirty.ng-invalid,
+p-dropdown.ng-dirty.ng-invalid>.ui-dropdown,
+p-autocomplete.ng-dirty.ng-invalid>.ui-autocomplete>.ui-inputtext,
+p-calendar.ng-dirty.ng-invalid .ui-inputtext,
+p-chips.ng-dirty.ng-invalid>.ui-inputtext,
+p-inputmask.ng-dirty.ng-invalid>.ui-inputtext,
+p-checkbox.ng-dirty.ng-invalid .ui-chkbox-box,
+p-radiobutton.ng-dirty.ng-invalid .ui-radiobutton-box,
+p-inputswitch.ng-dirty.ng-invalid .ui-inputswitch,
+p-listbox.ng-dirty.ng-invalid .ui-inputtext,
+p-multiselect.ng-dirty.ng-invalid>.ui-multiselect,
+p-spinner.ng-dirty.ng-invalid>.ui-inputtext,
+p-selectbutton.ng-dirty.ng-invalid .ui-button,
+p-togglebutton.ng-dirty.ng-invalid .ui-button {
+    border-color: #a94442;
+}
+
+.ng-dirty.ng-invalid {
+    &.ui-inputtext.ui-state-focus,
+    &.ui-inputtext:focus {
+        box-shadow: 0px 0px 5px #a94442;
+    }
+}
+
+.required {
+    position: relative;
+    &::before {
+        content: '*';
+        color: red;
+        margin-right: 5px;
+        font-weight: bolder;
+        font-size: 16px;
+        top: 3px;
+        position: relative;
+    }
+}

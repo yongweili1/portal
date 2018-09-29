@@ -1,0 +1,1 @@
+protoc --python_out=. image_msg.proto

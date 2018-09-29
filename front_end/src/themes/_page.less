@@ -1,0 +1,88 @@
+.my-page-header {
+    background-image: @header-color-bg;
+    height: @header-height-s;
+    a {
+        color: @my-page-header-a-color;
+        border-bottom: 2px solid;
+        border-color: @my-page-header-a-border-color;
+        font-size: @header-font-s;
+    }
+    .ui-lis {
+        padding: 0px 8px;
+        a:focus,
+        a:active,
+        a.active-menuitem {
+            background: @my-page-header-a-focus-bg;
+            border-color: @my-page-header-a-focus-border-color;
+            color: @my-page-header-a-focus-color;
+            font-weight: bold;
+        }
+    }
+    .nav-img {
+        margin-top: 5px;
+        width: 20px;
+        height: 20px;
+    }
+    .my-clock {
+        padding: 7px 0px;
+        width: 95px;
+        height: 43px;
+        background-image: @clock-color-bg;
+        span {
+            font-size: @header-font-s;
+            color: @clock-span-color;
+        }
+    }
+}
+
+@media (min-width: @min-width-m) {
+    .my-page-header {
+        height: @header-height-m;
+        a {
+            font-size: @header-font-m;
+        }
+        .nav-img {
+            width: 26px;
+            height: 25px;
+        }
+        .my-clock {
+            width: 110px;
+            height: 52px;
+            span {
+                font-size: @header-font-m;
+            }
+        }
+    }
+}
+
+.ui-widget-content {
+    border: none;
+    background: @page-bg;
+    .layout-content {
+        padding: 0px 0px;
+    }
+}
+
+.my-page {
+    padding: 20px 12px;
+    .my-page-title {
+        font-size: @page-font-s;
+        font-weight: bold;
+        color: @my-page-title-color;
+        padding-left: 5px;
+        border-left: 10px solid @my-page-span-color;
+        margin: 0px 10px 10px -12px;
+    }
+
+    .ui-datatable-resizable {
+      overflow: visible;
+    }
+}
+
+@media (min-width: @min-width-m) {
+    .my-page {
+        .my-page-title {
+            font-size: @page-font-m;
+        }
+    }
+}
