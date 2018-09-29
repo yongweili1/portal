@@ -279,8 +279,8 @@ class DcmImage(object):
                     'instancenumber': '',
                     'patientorientation': '',
                     'acquisitiondatetime': '',
-                    'rows': '',
-                    'columns': '',
+                    'rowcount': '',
+                    'columncount': '',
                     'bitsallocated': '',
                     'bitsstored': '',
                     'highbit': '',
@@ -331,14 +331,14 @@ class DcmImage(object):
             acquisitiondatetime = None
 
         if 'Rows' in dataset:
-            rows = dataset.data_element("Rows").value
+            rowcount = dataset.data_element("Rows").value
         else:
-            rows = ''
+            rowcount = ''
 
         if 'Columns' in dataset:
-            columns = dataset.data_element("Columns").value
+            columncount = dataset.data_element("Columns").value
         else:
-            columns = ''
+            columncount = ''
 
         if 'BitsAllocated' in dataset:
             bitsallocated = dataset.data_element("BitsAllocated").value
@@ -430,8 +430,8 @@ class DcmImage(object):
         self.dic['instancenumber'] = instancenumber
         self.dic['patientorientation'] = patientorientation
         self.dic['acquisitiondatetime'] = acquisitiondatetime
-        self.dic['rows'] = rows
-        self.dic['columns'] = columns
+        self.dic['rowcount'] = rowcount
+        self.dic['columncount'] = columncount
         self.dic['bitsallocated'] = bitsallocated
         self.dic['bitsstored'] = bitsstored
         self.dic['highbit'] = highbit

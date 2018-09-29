@@ -6,6 +6,7 @@ from md.image3d.python.image3d_io import write_image
 
 from back_end.util.setFilePath import SaveVolumeFilePath
 from back_end.util.readDcm import DcmPatient, DcmStudy, DcmSeries
+from patientinformations.models import Series, Image
 
 
 class DicomToVolume(object):
@@ -37,8 +38,5 @@ class DicomToVolume(object):
         volfilepath = os.path.join(SaveVolumeFilePath.volumepath, volpath)
         if not write_image(vol, volfilepath):
             pass
-
-        # # 文件的本地路径保存到数据库
-        # Series.objects.filter(seriesuid=series_dic['seriesuid']).update(seriespixeldatafilepath=volfilepath)
 
         return volfilepath

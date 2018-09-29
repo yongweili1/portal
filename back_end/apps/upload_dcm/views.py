@@ -13,6 +13,9 @@ import win32file
 from upload_dcm.split_dicoms import SplitDicoms
 from back_end.util.upload_dcm_to_db import UploadDcm
 
+from back_end.util.buildVolume import DicomToVolume
+from back_end.util.upload_vol_to_db import UploadVolume
+
 win32file._setmaxstdio(2048)  # 如果要部署到linux，则需要更改linux  /etc/security/limitd.conf的配置文件，修改最大打开文件数量
 
 
@@ -40,30 +43,41 @@ class Patinfo(GenericAPIView):
             file_name_list.append(file.name)
 
         # 读取，解析保存的文件
-        datasetlist = []
+        dataset_list = []
+
+        series_path_list = []
         for file_name in file_name_list:
             file_path = os.path.join(SaveDicomFilePath.location_2, file_name)
             dataset = pydicom.dcmread(file_path, force=True)
             filename_dataset_dic = {}
             filename_dataset_dic[file_name] = dataset
             splitdicoms = SplitDicoms()
-            splitdicoms.split_patient(filename_dataset_dic, dataset)
-            datasetlist.append(dataset)
-
-        # ==================================================================
-        # try:
-        #     buildvol = DicomToVolume()
-        #     volumefilepath = buildvol.dicom_to_volume(datasetlist)
-        # except ValueError:
-        #     return Response('dicom文件不完整,创建volume失败')
-        # ==================================================================
+            seriespath = splitdicoms.split_patient(filename_dataset_dic, dataset)
+            dataset_list.append(dataset)
+            series_path_list.append(seriespath)
 
         try:
             uploaddcm = UploadDcm()
-            # uploaddcm.upload_dcm(datasetlist, volumefilepath)
-            uploaddcm.upload_dcm(datasetlist)
+            uploaddcm.upload_dcm(dataset_list)
         except Exception as e:
-            return Response('数据入库异常')
+            return Response('DCM数据入库异常')
+
+        for seriespath in set(series_path_list):
+            filelist = os.listdir(seriespath)
+            datasetlist = []
+            for filename in filelist:
+                filepath = os.path.join(seriespath, filename)
+                dataset = pydicom.dcmread(filepath, force=True)
+                datasetlist.append(dataset)
+            try:
+                buildvol = DicomToVolume()
+                volfilepath = buildvol.dicom_to_volume(datasetlist)
+            except ValueError:
+                return Response('dicom文件不完整,创建volume失败')
+            try:
+                UploadVolume(volfilepath, datasetlist)
+            except Exception as e:
+                return Response('Volume入库异常')
 
         return Response('OK')
 
