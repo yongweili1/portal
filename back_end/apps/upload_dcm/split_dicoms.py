@@ -7,9 +7,9 @@ from back_end.util.readDcm import DcmSeries, DcmPatient
 
 class SplitDicoms(object):
 
-    def __init__(self):
-        self.patientidList = []
-        self.seriesuidList = []
+    # def __init__(self):
+    #     self.patientidList = []
+    #     self.seriesuidList = []
 
     def split_patient(self, filename_dataset_dic, dataset):
         """
@@ -20,20 +20,15 @@ class SplitDicoms(object):
         """
 
         dcmpatient = DcmPatient()
-        dcmseries = DcmSeries()
         patientid = dcmpatient.get_dicom_patient(dataset)['patientid']
-        seriesuid = dcmseries.get_dicom_series(dataset)['seriesuid']
-        # if patientid not in self.patientidList:
-        #     self.patientidList.append(patientid)
-        # patientidSet = set(self.patientidList)
 
-        # for patient_id in patientidSet:
         patientpath = SaveDicomFilePath.location_3 + str(patientid)
         if os.path.exists(patientpath):
-            seriespath = self.split_series(patientpath, filename_dataset_dic, dataset)
+            pass
+            # seriespath = self.split_series(patientpath, filename_dataset_dic, dataset)
         else:
             os.mkdir(patientpath)
-            seriespath = self.split_series(patientpath, filename_dataset_dic, dataset)
+        seriespath = self.split_series(patientpath, filename_dataset_dic, dataset)
 
         return seriespath
 
@@ -49,25 +44,14 @@ class SplitDicoms(object):
         dcmseries = DcmSeries()
         seriesuid = dcmseries.get_dicom_series(dataset)['seriesuid']
 
-        # if seriesuid not in self.seriesuidList:
-        #     self.seriesuidList.append(seriesuid)
-        # seriesuidSet = set(self.seriesuidList)
-
-        # dcmseries = DcmSeries()
-        # for series_uid in seriesuidSet:
         seriespath = patientpath + '\\' + str(seriesuid)
         if os.path.exists(seriespath):
-            # seruid = dcmseries.get_dicom_series(dataset)['seriesuid']
-            # if seriesuid != seruid:
-            #     continue
-            self.save_dicom(filename_dataset_dic, seriespath, dataset)
+            pass
+            # self.save_dicom(filename_dataset_dic, seriespath, dataset)
 
         else:
             os.mkdir(seriespath)
-            # seruid = dcmseries.get_dicom_series(dataset)['seriesuid']
-            # if seriesuid != seruid:
-            #     continue
-            self.save_dicom(filename_dataset_dic, seriespath, dataset)
+        self.save_dicom(filename_dataset_dic, seriespath, dataset)
 
         return seriespath
 

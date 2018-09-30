@@ -14,9 +14,9 @@ def UploadVolume(volfilepath, datasetlist):
     dcmseries = DcmSeries()
     series_dic = dcmseries.get_dicom_series(datasetlist[0])
     dcmimage = DcmImage()
-    imageuid_list  = []
+    imageuid_list = []
     for dataset in datasetlist:
-        imageuid = dcmimage.get_dicom_image(dataset)
+        imageuid = dcmimage.get_dicom_image(dataset)['imageuid']
         imageuid_list.append(imageuid)
 
     series_data = {

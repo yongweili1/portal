@@ -55,7 +55,7 @@ class LoadVolume(APIView):
         # if len(seriesobject) == 0:
         #     return Response('请输入正确的序列ID')
 
-        #volumepath = seriesobject[0].seriespixeldatafilepath
+        # volumepath = seriesobject[0].seriespixeldatafilepath
 
         # f = open(volumepath, 'rb')
         # vol = f.read()
