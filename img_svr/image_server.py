@@ -4,6 +4,7 @@ from md.image3d.python.image3d_tools import estimate_intensity_window, slice_nn
 from md.image3d.python.image3d_vis import slice_to_bytes, bytes_to_colors, multi_image_alpha_blend
 from md.mdmath.python.rotation3d import axis_angle_to_rotation_matrix
 from utilities import get_axis, get_orthogonal_axis, get_spacing, get_orthogonal_spacing, ViewEnum
+from md.image3d.python.image3d_io import read_image
 
 
 class ImageServer(object):
@@ -35,18 +36,17 @@ class ImageServer(object):
         self.min_zoom_factor = 0.01
         self.max_zoom_factor = 25
 
-    def load_volume(self, volume, series_uid):
+    def load_volume(self, volume_path, series_uid):
         """
         Load volume data to memory
         :param volume: volumn data
         :param series_uid: series uid
         :return: True or False
         """
-        if volume is None:
+        if volume_path is None:
             return False, 'Volume data is None.'
-        volume = np.array(volume)
-        im = md.Image3d()
-        im.from_numpy(volume)
+
+        im = read_image(volume_path)
 
         if series_uid in self.volumes:
             return False, 'This volume has been loaded.'
