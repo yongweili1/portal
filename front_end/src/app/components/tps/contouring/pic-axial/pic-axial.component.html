@@ -11,7 +11,7 @@
             </div>
             <div class="cright">
                 <span>WL:</span> <input class="wl" type="number" #wl (keyup)="onClickwl(wl.value)"> <br>
-                <span>ww:</span> <input class="ww" type="number" #ww (keyup)="onClickww(ww.value)"> 
+                <span>WW:</span> <input class="ww" type="number" #ww (keyup)="onClickww(ww.value)"> 
             </div>
             <div class="cleftdown">
                 Location: <span class="position"></span>mm<br>
@@ -22,7 +22,9 @@
             </div>
             <img class="img" [src]="imgurl">
             <canvas id="demoCanvas" class="icanvas"></canvas>
-            <canvas id="crossCanvas" class="crosscan" ></canvas>
+            <canvas id="crossCanvas" class="crosscan"></canvas>
+            <canvas id="primitiveCanvas" class="primitivecan" #back></canvas>
+            <canvas id="primitiveDrawCanvas" class="primitivedrawcan" myContour [backCanvas]="back"></canvas>
             <canvas id="nugeCanvas"></canvas>
             <div id="isobands" ></div>
         </div>

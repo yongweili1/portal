@@ -1,8 +1,8 @@
 import { Component, Input, Output, EventEmitter, SimpleChanges, OnChanges, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { actionService } from './action.service';
-import { StorageService } from '../../shared/storage.service';
-import { PatientDBService } from '../../shared/patientDB.service';
+import { StorageService } from '../../shared/service/storage.service';
+import { ConMessageService } from '../../shared/service/ConMessage.service';
 import { glsource } from './glsource.modal';
 import {LoadSeriesServiceMock} from '../../../../mocks/load-series-service.mock'
 declare var $: any;
@@ -24,7 +24,7 @@ declare var vec4: any;
 export class PicAxialComponent implements OnChanges {
 
   scale = 1.0; transX = 0.0; transY = 0.0;
-  canvas: any; canbas: any; crosscan: any; nugevas: any;
+  canvas: any; canbas: any; crosscan: any; nugevas: any;primitivecan:any;primitivedrawcan:any
   @Input() tag: any; @Input() imageWidth; @Input() imageHeight; @Input() pageindex;
   @Input() wl; @Input() ww;// 窗宽
   @Input() spacingX; @Input() spacingY; @Input() gap; @Input() sliceAll;
@@ -51,7 +51,7 @@ export class PicAxialComponent implements OnChanges {
 
   constructor(
     public http: HttpClient, 
-    private patientDB: PatientDBService, 
+    private conMessage: ConMessageService, 
     private storageService: StorageService, 
     private actionService: actionService, 
     private element: ElementRef,
@@ -67,6 +67,8 @@ export class PicAxialComponent implements OnChanges {
         this.canvas = $(".a_class .icanvas").get(0);
         this.canbas = $(".a_class");
         this.crosscan = $(".a_class .crosscan").get(0);
+        this.primitivecan = $(".a_class .primitivecan").get(0);
+        this.primitivedrawcan = $(".a_class .primitivedrawcan").get(0);
         this.nugevas = $(".a_class #nugeCanvas").get(0);
         this.canbas.find(".mpr").text('Axial');
         var myCanvas = $('.a_class #canvas-frame').get(0);
@@ -76,6 +78,8 @@ export class PicAxialComponent implements OnChanges {
         this.canvas = $(".b_class .icanvas").get(0);
         this.canbas = $(".b_class");
         this.crosscan = $(".b_class .crosscan").get(0);
+        this.primitivecan = $(".b_class .primitivecan").get(0);
+        this.primitivedrawcan = $(".b_class .primitivedrawcan").get(0);
         this.nugevas = $(".b_class #nugeCanvas").get(0);
         this.canbas.find(".mpr").text('Coronal');
         var myCanvas = $('.b_class #canvas-frame').get(0);
@@ -85,16 +89,19 @@ export class PicAxialComponent implements OnChanges {
         this.canvas = $(".c_class .icanvas").get(0);
         this.canbas = $(".c_class");
         this.crosscan = $(".c_class .crosscan").get(0);
+        this.primitivecan = $(".c_class .primitivecan").get(0);
+        this.primitivedrawcan = $(".c_class .primitivedrawcan").get(0);
         this.nugevas = $(".c_class #nugeCanvas").get(0);
         this.canbas.find(".mpr").text('Sagittal');
         var myCanvas = $('.c_class #canvas-frame').get(0);
         var lightPoint = new Array(100, 0, 0)
     }
     this.calcviewportsize();
-    if (this.firstImagePosition != undefined) {
-        this.postPoint = vec4.fromValues(this.firstImagePosition[0] + (this.sliceAll[2]) * this.gap[0], this.firstImagePosition[1] + (this.sliceAll[1]) * this.gap[1], this.firstImagePosition[2] + (this.sliceAll[0]) * this.gap[2], 1);
-    }
-    this.getBuffer(this.postPoint, this.tag, 1);
+    // if (this.firstImagePosition != undefined) {
+    //     this.postPoint = vec4.fromValues(this.firstImagePosition[0] + (this.sliceAll[2]) * this.gap[0], this.firstImagePosition[1] + (this.sliceAll[1]) * this.gap[1], this.firstImagePosition[2] + (this.sliceAll[0]) * this.gap[2], 1);
+    // }
+   // this.getBuffer(this.postPoint, this.tag, 1);
+    //this.crosscan.addChild(this.stage);
     this.actionService.threeStart(myCanvas, lightPoint);
     this.windowAddMouseWheel(this.tag);
 }
@@ -103,13 +110,13 @@ ngOnInit() {
   let that = this;
   $(window).resize(function() {
       that.calcviewportsize();
-      that.opm3();
+      //that.opm3();
       //that.setupScene();
       //that.drawScene(that.gl, that.programInfo, that.buffers, that.texture);
   });
-  this.patient2Mpr = mat4.create();
-  this.opM3 = mat3.create();
-  this.scrCrossPt = vec3.create();
+//   this.patient2Mpr = mat4.create();
+//   this.opM3 = mat3.create();
+//   this.scrCrossPt = vec3.create();
 }
 
 //设置和区分canvas窗口大小
@@ -132,10 +139,14 @@ calcviewportsize() {
   this.canvas.setAttribute('height', this.viewportHeight);
   this.crosscan.setAttribute('width', this.viewportWidth);//十字线的canvas
   this.crosscan.setAttribute('height', this.viewportHeight);
+  this.primitivecan.setAttribute('width', this.viewportWidth);//图元显示层的canvas
+  this.primitivecan.setAttribute('height', this.viewportHeight);
+  this.primitivedrawcan.setAttribute('width', this.viewportWidth);//图元操作绘画层的canvas
+  this.primitivedrawcan.setAttribute('height', this.viewportHeight);
   this.nugevas.setAttribute('width', this.viewportWidth);//nuge的canvas
   this.nugevas.setAttribute('height', this.viewportHeight);
-  this.opm3();
-  this.crosschu(this.nix, this.niy, this.canbas.get(0));
+  //this.opm3();
+  this.drawCross(this.nix, this.niy, this.canbas.get(0));
 }
 
 opm3() {//计算窗口比例
@@ -147,6 +158,25 @@ opm3() {//计算窗口比例
       0, -1 * scale, 0,
       -0.5 * clientWidth * scale, 0.5 * clientHeight * scale, 1);
 }
+
+/**
+ * 设置canvas的Z-index
+ * @param canvasid 
+ * @param targetindex 
+ */
+SetCanvasIndex(canvasid:any,targetindex:number)
+{
+    if (this.tag == "axial") {
+        $(`.a_class ${canvasid}`).get(0).style.zIndex= targetindex;
+    }
+    if (this.tag == "coronal") {
+        $(`.b_class ${canvasid}`).get(0).style.zIndex= targetindex;
+    }
+    if (this.tag == "sagittal") {
+        $(`.c_class ${canvasid}`).get(0).style.zIndex= targetindex;
+    }
+}
+
 
 //CT值  
 CT() {
@@ -169,7 +199,7 @@ GetContourSet() {
   this.stage.removeChild(this.Line);
   this.Line = new createjs.Shape();
   this.Line.graphics.setStrokeStyle(1).beginStroke("red");
-  this.roiContourSets = this.patientDB.contourset;
+  this.roiContourSets = this.conMessage.contourset;
   if (this.tag == "axial") {
       var contourData = this.roiContourSets[this.pageindex].contourData;
       for (var j = 0; j < contourData.length; ++j) {
@@ -295,6 +325,7 @@ getBuffer(postPoint, tag, downsamplefactor) {
       });
   }
 }
+
 getBufferTemp(tag) {
     let that = this;
     if (this.imageWidth == "" || this.imageWidth == undefined || this.imageWidth == null) {
@@ -404,7 +435,7 @@ windowAddMouseWheel(tag) {
           that.pageindex += 1;
           that.getBuffer(that.postPoint, tag, 2);
           that.P2Cross();
-          if (that.patientDB.contourset != undefined) {
+          if (that.conMessage.contourset != undefined) {
               that.GetContourSet();
           }
       }
@@ -421,7 +452,7 @@ windowAddMouseWheel(tag) {
           that.pageindex -= 1;
           that.getBuffer(that.postPoint, tag, 2);
           that.P2Cross();
-          if (that.patientDB.contourset != undefined) {
+          if (that.conMessage.contourset != undefined) {
               that.GetContourSet();
           }
       }
@@ -438,8 +469,20 @@ P2Cross() {
   this.twoCross.emit(this.postPoint);
 }
 
-//十字线
-crosschu(nix, niy, loca) {
+clearPri() {
+    let primitivecanContext = this.primitivecan.getContext("2d");
+    primitivecanContext.clearRect(0,0,this.viewportWidth,this.viewportHeight);
+    primitivecanContext.stroke();
+    //this.primitivecan.width=this.viewportWidth;//利用重新复制大小清空
+  }
+
+/**
+ * 画十字线和交点，绑定监听事件
+ * @param nix 
+ * @param niy 
+ * @param loca 
+ */
+drawCross(nix, niy, loca) {
   this.stage = new createjs.Stage(this.crosscan);
   var width = this.stage.canvas.width;
   var height = this.stage.canvas.height;
@@ -478,8 +521,8 @@ crosschu(nix, niy, loca) {
   // this.verticalLine.cursor = "url('/assets/img/horizontal.cur'),auto";
 
   this.crossPoint = new createjs.Shape();// 交点
-  this.crossPoint.graphics.beginFill("black").drawCircle(0, 0, 8);
-  this.crossPoint.alpha = 0.1;
+  this.crossPoint.graphics.beginFill("white").drawCircle(0, 0, 8);
+  this.crossPoint.alpha = 0.2;
   // this.crossPoint.cursor = "url('/assets/img/move.cur'),auto";
   this.stage.addChild(this.verticalLine);
   this.stage.addChild(this.horizontalLine);
@@ -496,6 +539,12 @@ crosschu(nix, niy, loca) {
   this.crossPoint.addEventListener("pressup", this.handlePressUp.bind(this));
 }
 
+/**
+ * 调整初始的十字线、交点位置，更新stage
+ * @param width 
+ * @param height 
+ * @param loca 
+ */
 cross(width, height, loca) {
   this.clearmouse();
   this.horizontalLine.y = height;
@@ -507,32 +556,32 @@ cross(width, height, loca) {
 handlePressMove(evt) {
   if (evt.currentTarget == this.verticalLine) {//竖线
       evt.currentTarget.x = this.crossPoint.x = evt.stageX;
-      this.getposition(this.crossPoint.x, this.crossPoint.y, 2, 'ver');
+      //this.getposition(this.crossPoint.x, this.crossPoint.y, 2, 'ver');
   }
   if (evt.currentTarget == this.horizontalLine) {//横线
       evt.currentTarget.y = this.crossPoint.y = evt.stageY;
-      this.getposition(this.crossPoint.x, this.crossPoint.y, 2, 'cur');
+      //this.getposition(this.crossPoint.x, this.crossPoint.y, 2, 'cur');
   }
   if (evt.currentTarget == this.crossPoint) {
       evt.currentTarget.x = this.verticalLine.x = evt.stageX;
       evt.currentTarget.y = this.horizontalLine.y = evt.stageY;
-      this.getposition(this.crossPoint.x, this.crossPoint.y, 4, 'cro');
+      //this.getposition(this.crossPoint.x, this.crossPoint.y, 4, 'cro');
   }
   this.stage.update();
 }
 handlePressUp(evt) {
   if (evt.currentTarget == this.verticalLine) {//竖线
       evt.currentTarget.x = this.crossPoint.x = evt.stageX;
-      this.getposition(this.crossPoint.x, this.crossPoint.y, 1, 'ver');
+      //this.getposition(this.crossPoint.x, this.crossPoint.y, 1, 'ver');
   }
   if (evt.currentTarget == this.horizontalLine) {//横线
       evt.currentTarget.y = this.crossPoint.y = evt.stageY;
-      this.getposition(this.crossPoint.x, this.crossPoint.y, 1, 'cur');
+      //this.getposition(this.crossPoint.x, this.crossPoint.y, 1, 'cur');
   }
   if (evt.currentTarget == this.crossPoint) {
       evt.currentTarget.x = this.crossPoint.x = evt.stageX;
       evt.currentTarget.y = this.crossPoint.y = evt.stageY;
-      this.getposition(this.crossPoint.x, this.crossPoint.y, 1, 'cro');
+      //this.getposition(this.crossPoint.x, this.crossPoint.y, 1, 'cro');
   }
   this.stage.update();
 }

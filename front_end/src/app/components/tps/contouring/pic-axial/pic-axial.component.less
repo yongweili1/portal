@@ -14,7 +14,7 @@
 }
 
 .containe {
-    background: #2b2b2b;
+    background: #000000;
     width: 100%;
     position: relative;
     display: block;
@@ -35,7 +35,7 @@
     position: absolute;
     right: 9px;
     top: 6px;
-    z-index: 3;
+    z-index: 10;
     span {
         vertical-align: middle;
     }
@@ -104,4 +104,18 @@
 
 #nugeCanvas{
     z-index: 0;
+}
+
+/deep/ #demoCanvas {
+    z-index: 1
+}
+
+/deep/ #crossCanvas {
+    z-index: 4
+}
+/deep/ #primitiveCanvas {
+    z-index: 2
+}
+/deep/ #primitiveDrawCanvas {
+    z-index: 3
 }

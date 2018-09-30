@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { PatientDBService } from '../../shared/patientDB.service';
+import { ConMessageService } from '../../shared/service/ConMessage.service';
 //import { PatientHttpService } from 'TpsShared/TpsService/patientHttp.service';
 
 @Component({
@@ -17,9 +17,10 @@ export class ContouringTopBarComponent implements OnInit {
   @Output() auto: EventEmitter<any> = new EventEmitter<any>();
   @Output() remouse: EventEmitter<any> = new EventEmitter<any>();
   @Output() measure: EventEmitter<any> = new EventEmitter<any>();
+  @Output() clear: EventEmitter<any> = new EventEmitter<any>();
 
   constructor(
-    private patientDB: PatientDBService
+    private conMessage: ConMessageService
     ) { 
     }
     seriesId: any;
@@ -27,10 +28,10 @@ export class ContouringTopBarComponent implements OnInit {
     atlasData: any = new Array();
 
     ngOnInit() {
-      if (this.patientDB.serieses != undefined) {
-          this.seriesId = this.patientDB.serieses;
+      if (this.conMessage.serieses != undefined) {
+          this.seriesId = this.conMessage.serieses;
       }
-      this.patientDB.serieses$.subscribe(value => {
+      this.conMessage.serieses$.subscribe(value => {
           this.seriesId = value;
       });
   }
@@ -171,25 +172,24 @@ export class ContouringTopBarComponent implements OnInit {
   loadMPR() {
       this.loadSeries.emit(this.seriesId);
   }
-
+  OnClearAllClick() {
+    this.clear.emit();
+ }
   OnMeasure(){
-    this.measure.emit();
+      this.conMessage.SetCurAction("measure");
   }
 
   OnDefaultMouseClick() {
-      this.patientDB.SetCurAction("default");
+      this.conMessage.SetCurAction("default");
   }
   OnBrushClick() {
-      this.patientDB.SetCurAction("combo");
+      this.conMessage.SetCurAction("combo");
   }
 
   OnRectangleClick() {
-      this.patientDB.SetCurAction("rectangle")
+      this.conMessage.SetCurAction("rectangle");
   }
 
-  OnCircleClick() {
-      this.patientDB.SetCurAction("circle")
-  }
 
 }
 

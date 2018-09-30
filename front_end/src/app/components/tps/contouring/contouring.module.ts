@@ -22,15 +22,16 @@ import { SharedModule } from '../../../shared/shared.module';
 import { EasyUIModule } from 'ng-easyui/components/easyui/easyui.module';
 
 import { ContouringComponent } from './contouring.component';
-import { ContouringService } from '../shared/contouring.service';
+import { ContouringService } from '../shared/service/contouring.service';
 import { PicAxialComponent } from './pic-axial/pic-axial.component';
 import { ContouringTopBarComponent } from './contouring-top-bar/contouring-top-bar.component';
-import { PatientDBService } from '../shared/patientDB.service';
-import { PatientHttpService } from '../shared/patientHttp.service';
-import { RoiHttpService } from '../shared/roiHttp.service';
-import { SeriesHttpService } from '../shared/seriesHttp.service';
-import { StorageService } from '../shared/storage.service';
+import { ConMessageService } from '../shared/service/ConMessage.service';
+import { PatientHttpService } from '../shared/service/patientHttp.service';
+import { RoiHttpService } from '../shared/service/roiHttp.service';
+import { SeriesHttpService } from '../shared/service/seriesHttp.service';
+import { StorageService } from '../shared/service/storage.service';
 import { actionService } from './pic-axial/action.service';
+import { ContourDirective } from '../shared/directives/contour.directive';
 
 
 // const routes: Routes = [
@@ -65,6 +66,7 @@ import { actionService } from './pic-axial/action.service';
     ContouringComponent,
     PicAxialComponent,
     ContouringTopBarComponent,
+    ContourDirective,
   ],
   exports: [
     ContouringComponent,
@@ -72,7 +74,7 @@ import { actionService } from './pic-axial/action.service';
   providers: [
     ContouringService, 
     ConfirmationService,
-    PatientDBService,
+    ConMessageService,
     PatientHttpService,
     RoiHttpService,
     SeriesHttpService,

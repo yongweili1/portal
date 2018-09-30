@@ -5,7 +5,7 @@ declare var MarchingSquaresJS: any;
 declare var d3: any;
 @Injectable()
 
-export class PatientDBService {
+export class ConMessageService {
     serieses: Array<any>;
     seriList: Array<any>;
     curAction: string;

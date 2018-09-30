@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse, HttpRequest } from '@angular/common/http';
-import { SecurityService } from '../../../services/security.service';
+import { SecurityService } from '../../../../services/security.service';
 import { Observable } from 'rxjs/Observable';
 import { StorageService } from './storage.service';
 

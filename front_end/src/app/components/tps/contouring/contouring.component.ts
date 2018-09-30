@@ -4,11 +4,11 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 import { HttpClient } from "@angular/common/http";
 import { DialogModule } from 'primeng/dialog';
 
-import { PatientDBService } from '../shared/patientDB.service';
+import { ConMessageService } from '../shared/service/ConMessage.service';
 //import { PatientCollection } from '../shared/PatientCollection';
-import { SeriesHttpService } from '../shared/seriesHttp.service';
-import { RoiHttpService } from '../shared/roiHttp.service';
-import { StorageService } from '../shared/storage.service';
+import { SeriesHttpService } from '../shared/service/seriesHttp.service';
+import { RoiHttpService } from '../shared/service/roiHttp.service';
+import { StorageService } from '../shared/service/storage.service';
 
 import {
   LazyLoadEvent, ConfirmationService, Paginator
@@ -18,7 +18,7 @@ import { ToastService } from '../../../core/toast.service';
 import { Page, PageRequest } from '../../../shared/models';
 
 
-import { ContouringService } from '../shared/contouring.service';
+import { ContouringService } from '../shared/service/contouring.service';
 
 declare var $: any;
 
@@ -43,7 +43,8 @@ export class ContouringComponent implements OnInit {
   firstImagePosition: any;
   lastImagePosition: any;
   seriList: any;
-
+  action:any;
+  
   @ViewChild('picLeft1') picLeft1;
   @ViewChild('picLeft2') picLeft2;
   @ViewChild('picLeft3') picLeft3;
@@ -54,7 +55,7 @@ export class ContouringComponent implements OnInit {
     private http: HttpClient, 
     public activeRoute: ActivatedRoute, 
     //private seriesHttp: SeriesHttpService, 
-    private patientDB: PatientDBService,
+    private conMessage: ConMessageService,
     //private patientCollection: PatientCollection, 
     public roiHttp: RoiHttpService, 
     private storageService: StorageService, 
@@ -84,35 +85,12 @@ export class ContouringComponent implements OnInit {
       }
   }
 
-  // getduffer(pageindex, tag, downsamplefactor) {
-  //     let that = this;
-  //     var data = { mprrequests: [{ sliceType: tag[0], sliceNumber: pageindex[0] }, { sliceType: tag[1], sliceNumber: pageindex[1] }], downsamplefactor: downsamplefactor };
-  //     $.ajax({
-  //         url: this.storageService.retrieve("PATIENT_API_URLS") + "services/app/Series/GetMprRawBuffer",
-  //         type: "POST",
-  //         dataType: 'JSON',
-  //         // beforeSend: function(XMLHttpRequest) {
-  //         //     XMLHttpRequest.setRequestHeader("Authorization", 'Bearer ' + abp.auth.getToken());
-  //         // },
-  //         async: false,
-  //         contentType: 'application/json',
-  //         data: JSON.stringify(data),
-  //         success: function(res) {
-  //             if (tag[1] == "coronal") {
-  //                 var mprData = new Array(res.result.mprSliceDetails.Coronal.width, res.result.mprSliceDetails.Coronal.height, res.result.mprSliceDetails.Coronal.buffer)
-  //                 that.picLeft2.getduffer(pageindex[1], tag[1], mprData);
-  //             }
-  //             if (tag[0] == "sagittal") {
-  //                 var mprData = new Array(res.result.mprSliceDetails.Sagittal.width, res.result.mprSliceDetails.Sagittal.height, res.result.mprSliceDetails.Sagittal.buffer)
-  //                 that.picLeft3.getduffer(pageindex[0], tag[0], mprData);
-  //             }
-  //         },
-  //         error: function(er) {
-  //             return;
-  //         }
-  //     });
-  // }
-
+  mainClearPri()
+  {
+      this.picLeft1.clearPri();
+      this.picLeft2.clearPri();
+      this.picLeft3.clearPri();
+  }
   coronalChange(event: any) {
       if (event[2] == 'ver') {
           this.picLeft3.getBuffer(event[0], 'sagittal', event[1])
@@ -158,14 +136,38 @@ export class ContouringComponent implements OnInit {
       this.picLeft2.patient2screen(event);
       this.picLeft1.patient2screen(event);
   }
+  mainQuitDraw()
+  {
+ 
+  }
 
   ngOnInit() {
-      if (this.patientDB.seriList != undefined) {
-          this.seriList = this.patientDB.seriList[0];
+      if (this.conMessage.seriList != undefined) {
+          this.seriList = this.conMessage.seriList[0];
       }
-      this.patientDB.seriList$.subscribe(value => {
+      this.conMessage.seriList$.subscribe(value => {
           this.seriList = value;
       });
+      this.conMessage.curAction$.subscribe(value=>{
+          this.action = value;
+          if(this.action=="quitDrawPri"){
+              this.picLeft1.SetCanvasIndex("#crossCanvas",4);
+              this.picLeft2.SetCanvasIndex("#crossCanvas",4);
+              this.picLeft3.SetCanvasIndex("#crossCanvas",4);
+              this.picLeft1.SetCanvasIndex("#primitiveDrawCanvas",3);
+              this.picLeft2.SetCanvasIndex("#primitiveDrawCanvas",3);
+              this.picLeft3.SetCanvasIndex("#primitiveDrawCanvas",3);
+          }
+          else{
+            this.picLeft1.SetCanvasIndex("#crossCanvas",3);
+            this.picLeft2.SetCanvasIndex("#crossCanvas",3);
+            this.picLeft3.SetCanvasIndex("#crossCanvas",3);
+            this.picLeft1.SetCanvasIndex("#primitiveDrawCanvas",4);
+            this.picLeft2.SetCanvasIndex("#primitiveDrawCanvas",4);
+            this.picLeft3.SetCanvasIndex("#primitiveDrawCanvas",4);
+          }
+      }
+      )
       // $.contextMenu({
       //     selector: '#threebmp',
       //     callback: function (key, options) {
@@ -247,8 +249,7 @@ export class ContouringComponent implements OnInit {
         img.src = data;
         img.onload = function(){
             let c= $(".a_class .icanvas").get(0);
-            let ctx=c.getContext("2d");
-    
+            let ctx=c.getContext("2d");    
             ctx.drawImage(img,20,20,1000,650);
     
             c= $(".b_class .icanvas").get(0);
@@ -315,14 +316,11 @@ export class ContouringComponent implements OnInit {
     //   });
 
   }
-  mainmeasure(){
-      
-  }
   auto(node: any) {
       // var formData = { patientID: this.patientCollection.patient.Get(0).id, algorithmName: node[0], seriesID: this.patientCollection.patient.Get(0).series.Get(0).id };
       // this.roiHttp.PostCreateRoiByAtlas(formData).subscribe(value => {
-      //     this.patientDB.SetRois(value.roiProperties);
-      //     this.patientDB.Setcontour(value.roiGeometry.roiContourSets.items);
+      //     this.conMessage.SetRois(value.roiProperties);
+      //     this.conMessage.Setcontour(value.roiGeometry.roiContourSets.items);
       //     this.picLeft1.GetContourSet();
       // });
   }
