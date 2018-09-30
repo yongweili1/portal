@@ -4,7 +4,7 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 import { HttpClient } from "@angular/common/http";
 import { DialogModule } from 'primeng/dialog';
 
-import { ConMessageService } from '../shared/service/ConMessage.service';
+import { ConMessageService } from '../shared/service/conMessage.service';
 //import { PatientCollection } from '../shared/PatientCollection';
 import { SeriesHttpService } from '../shared/service/seriesHttp.service';
 import { RoiHttpService } from '../shared/service/roiHttp.service';

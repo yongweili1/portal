@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, SimpleChanges, OnChanges, ViewC
 import { HttpClient } from "@angular/common/http";
 import { actionService } from './action.service';
 import { StorageService } from '../../shared/service/storage.service';
-import { ConMessageService } from '../../shared/service/ConMessage.service';
+import { ConMessageService } from '../../shared/service/conMessage.service';
 import { glsource } from './glsource.modal';
 import {LoadSeriesServiceMock} from '../../../../mocks/load-series-service.mock'
 declare var $: any;

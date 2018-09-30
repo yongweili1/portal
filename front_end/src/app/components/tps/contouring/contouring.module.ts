@@ -25,7 +25,7 @@ import { ContouringComponent } from './contouring.component';
 import { ContouringService } from '../shared/service/contouring.service';
 import { PicAxialComponent } from './pic-axial/pic-axial.component';
 import { ContouringTopBarComponent } from './contouring-top-bar/contouring-top-bar.component';
-import { ConMessageService } from '../shared/service/ConMessage.service';
+import { ConMessageService } from '../shared/service/conMessage.service';
 import { PatientHttpService } from '../shared/service/patientHttp.service';
 import { RoiHttpService } from '../shared/service/roiHttp.service';
 import { SeriesHttpService } from '../shared/service/seriesHttp.service';

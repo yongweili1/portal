@@ -1,5 +1,5 @@
 import { Directive, ElementRef, Input, HostListener, OnInit ,Output, EventEmitter } from '@angular/core';
-import { ConMessageService } from '../service/ConMessage.service';
+import { ConMessageService } from '../service/conMessage.service';
 
 @Directive({
     selector: '[myContour]'
