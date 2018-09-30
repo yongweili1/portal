@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from image_server import ImageServer
-from message import ResponseMsg
+from message import response
 from utilities import get_display_view, get_focus_view, get_orthogonal_spacing, ViewEnum
 import json
 
@@ -28,7 +28,7 @@ def greeting(**kwargs):
     """
     Say hi to the world
     """
-    return ResponseMsg('Hi developer, good luck!')
+    return response('Hi developer, good luck!')
 
 
 @command.register('load')
@@ -40,17 +40,14 @@ def load(**kwargs):
     :return:
     """
     try:
-        volume = kwargs['volume']
-        volume = unicode(volume, 'utf-8')
-        volume = volume.encode('utf-8')
-        volume = json.loads(volume)
+        volume_path = kwargs['volume_path']
         seriesuid = kwargs['seriesuid']
     except Exception as err:
-        return ResponseMsg(success=False, msg='Invalid parameters.')
+        return response(success=False, message='Invalid parameters.')
 
     print(seriesuid)
-    rst, msg = server.load_volume(volume, seriesuid)
-    return ResponseMsg(msg).package()
+    rst, msg = server.load_volume(volume_path, seriesuid)
+    return response(msg)
 
 
 @command.register('reset')
@@ -71,11 +68,11 @@ def reset(**kwargs):
         focus_view = get_focus_view(kwargs['focus_view'])
         display_view = get_display_view(kwargs['display_view'])
     except:
-        return ResponseMsg(success=False, msg='Invalid parameters.')
+        return response(success=False, message='Invalid parameters.')
 
     server.reset_volume()
     imgs = server.get_images(display_view, width, height)
-    return ResponseMsg(json.dumps(imgs))
+    return response(json.dumps(imgs))
 
 
 @command.register('unload')
@@ -89,7 +86,7 @@ def unload(**kwargs):
     print(seriesuid)
     # rst, msg = server.load_volume(volume, seriesuid)
     # status = 200 if rst else 500
-    # return ResponseMsg(msg, status)
+    # return ResponseData(msg, status)
 
 
 @command.register('show')
@@ -112,15 +109,15 @@ def show(**kwargs):
         focus_view = get_focus_view(kwargs['focus_view'])
         display_view = get_display_view(kwargs['display_view'])
     except:
-        return ResponseMsg(success=False, msg='Invalid parameters.')
+        return response(success=False, message='Invalid parameters.')
 
     vol, cfg = server.change_volume(series_uid)
     if vol is None or cfg is None:
-        return ResponseMsg(success=False,
-                           msg='Volumn: {} doesn`s exist'.format(series_uid))
+        return response(success=False,
+                            message='Volumn: {} doesn`s exist'.format(series_uid))
 
     imgs = server.get_images(display_view, width, height)
-    return ResponseMsg(json.dumps(imgs))
+    return response(json.dumps(imgs))
 
 
 @command.register('page')
@@ -143,11 +140,11 @@ def page(**kwargs):
         focus_view = get_focus_view(kwargs['focus_view'])
         display_view = get_display_view(kwargs['display_view'])
     except:
-        return ResponseMsg(success=False, msg='Invalid parameters.')
+        return response(success=False, message='Invalid parameters.')
 
     server.update_cursor(focus_view, delta)
     imgs = server.get_images(display_view, width, height)
-    return ResponseMsg(json.dumps(imgs))
+    return response(json.dumps(imgs))
 
 
 @command.register('zoom')
@@ -170,11 +167,11 @@ def zoom(**kwargs):
         focus_view = get_focus_view(kwargs['focus_view'])
         display_view = get_display_view(kwargs['display_view'])
     except:
-        return ResponseMsg(success=False, msg='Invalid parameters.')
+        return response(success=False, message='Invalid parameters.')
 
     server.update_zoom_factor(shift)
     imgs = server.get_images(display_view, width, height)
-    return ResponseMsg(json.dumps(imgs))
+    return response(json.dumps(imgs))
 
 
 @command.register('rotate')
@@ -197,11 +194,11 @@ def rotate(**kwargs):
         focus_view = get_focus_view(kwargs['focus_view'])
         display_view = get_display_view(kwargs['display_view'])
     except:
-        return ResponseMsg(success=False, msg='Invalid parameters.')
+        return response(success=False, message='Invalid parameters.')
 
     server.update_axis(focus_view, angle)
     imgs = server.get_images(display_view, width, height)
-    return ResponseMsg(json.dumps(imgs))
+    return response(json.dumps(imgs))
 
 
 @command.register('pan')
@@ -225,11 +222,11 @@ def pan(**kwargs):
         focus_view = get_focus_view(kwargs['focus_view'])
         display_view = get_display_view(kwargs['display_view'])
     except:
-        return ResponseMsg(success=False, msg='Invalid parameters.')
+        return response(success=False, message='Invalid parameters.')
 
     server.update_center(shift)
     imgs = server.get_images(display_view, width, height)
-    return ResponseMsg(json.dumps(imgs))
+    return response(json.dumps(imgs))
 
 
 @command.register('roll')
@@ -253,11 +250,11 @@ def roll(**kwargs):
         focus_view = get_focus_view(kwargs['focus_view'])
         display_view = get_display_view(kwargs['display_view'])
     except:
-        return ResponseMsg(success=False, msg='Invalid parameters.')
+        return response(success=False, message='Invalid parameters.')
 
     server.set_cursor(cursor)
     imgs = server.get_images(display_view, width, height)
-    return ResponseMsg(json.dumps(imgs))
+    return response(json.dumps(imgs))
 
 
 @command.register('color')
@@ -280,11 +277,11 @@ def color(**kwargs):
         focus_view = get_focus_view(kwargs['focus_view'])
         display_view = get_display_view(kwargs['display_view'])
     except:
-        return ResponseMsg(success=False, msg='Invalid parameters.')
+        return response(success=False, message='Invalid parameters.')
 
     server.set_colormode(colormode)
     imgs = server.get_images(display_view, width, height)
-    return ResponseMsg(json.dumps(imgs))
+    return response(json.dumps(imgs))
 
 
 @command.register('wcww')
@@ -308,8 +305,8 @@ def wcww(**kwargs):
         focus_view = get_focus_view(kwargs['focus_view'])
         display_view = get_display_view(kwargs['display_view'])
     except:
-        return ResponseMsg(success=False, msg='Invalid parameters.')
+        return response(success=False, message='Invalid parameters.')
 
     server.set_wcww(shift)
     imgs = server.get_images(display_view, width, height)
-    return ResponseMsg(json.dumps(imgs))
+    return response(json.dumps(imgs))
