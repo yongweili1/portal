@@ -1,77 +1,76 @@
 import json
-import sys
+
 from command import command as cmd
-from message import RequestMsg
-from socket_factory import create_socket
+from message import RequestData
 from utilities import get_args
 
-from msg import image_msg_pb2 as msg
+from twisted.internet.protocol import Factory, Protocol
+from twisted.internet import reactor
+import struct
+from twisted.python import log
+import sys
+log.startLogging(sys.stdout)
 
 
-class Server(object):
-    def __init__(self, **kwargs):
-        host = kwargs['host'] if kwargs['host'] is not None else '0.0.0.0'
-        port = kwargs['port'] if kwargs['port'] is not None else 0
-        self.sock = create_socket(host, port)
+class Server(Protocol):
+    def __init__(self):
+        self.package_size = 0
+        self.received_size = 0
+        self.received_data = ''
 
-    def get_data(self, size, conn):
-        data = ''
-        c = 0
-        while 1:
-            data += conn.recv(8388608)
-            c += 1
-            print('Count {}, total data size {} bytes'.format(c, sys.getsizeof(data)))
-            if size - sys.getsizeof(data) < 10000:
-                conn.sendall('handle data finished')
-                conn.close()
-                break
-            else:
-                continue
-        return data
+    def connectionMade(self):
+        log.msg("New connection, the info is:", self.transport.getPeer())
 
-    def start(self):
-        DATA = ''
-        count = 0
-        while 1:
-            conn, addr = self.sock.accept()
-            conn.settimeout(600)
+    def connectionLost(self, reason):
+        print('Connection lost, reason: ', reason)
 
-            recv_data = conn.recv(8388608)
-            if not recv_data:
-                continue
-            if recv_data == 'start':
-                DATA = ''
-                count = 0
-                print 'Start accept data from {}:{}'.format(addr[0], str(addr[1]))
-                conn.sendall('Started.')
-            elif recv_data == 'finish':
-                print 'Accepted all data.'
-                rst = self.handle_request(DATA)
-                conn.sendall(rst)
-            else:
-                DATA += recv_data
-                count += 1
-                current_data_size = sys.getsizeof(recv_data)
-                total_data_size = sys.getsizeof(DATA)
-                print('Count {}, current data size {} bytes, total data size {} bytes'
-                      .format(count, current_data_size, total_data_size))
-                conn.sendall('handle data {}'.format(count))
+    def dataReceived(self, data):
+        # get header info, include total package size
+        if self.package_size == 0:
+            self.package_size, data = self.unpacking(data)
 
-    def handle_request(self, recv_data):
-        data = msg.RequestMsg()
-        data.ParseFromString(recv_data)
-        params = json.loads(data.content.params)
-        volume = data.content.volume
+        self.received_data += data
+        self.received_size = len(self.received_data)
+        print('Total received: {} bytes'.format(self.received_size))
 
-        if params['server_name'] is not 'image':
-            print('Wrong Destination.')
-            return 'Wrong Destination.'
-        # handle command and return result to dispatcher
-        rst = cmd.commands[params['command']](volume)
-        return rst
+        if self.received_size == self.package_size:
+            print('Received all data')
+
+            data = RequestData(self.received_data)
+            self.package_size = 0
+            self.received_size = 0
+            self.received_data = ''
+
+            response_data = cmd.commands[data.command](**data.kwargs)
+            self.back_to_client(response_data)
+
+    def back_to_client(self, response_data):
+        send_content = self.package(response_data)
+        self.transport.write(send_content)
+
+    def unpacking(self, data):
+        size, = struct.unpack('i', data[:4])
+        print('package size {} bytes'.format(size))
+        data = data[4:]
+        return size, data
+
+    def package(self, data):
+        size = len(data)
+        return struct.pack('i', size) + data
+
+
+class ServerFactory(Factory):
+    def __init__(self):
+        pass
+
+    def buildProtocol(self, addr):
+        return Server()
 
 
 if __name__ == '__main__':
     kwargs = get_args(sys.argv[1:])
-    dispatcher = Server(**kwargs)
-    dispatcher.start()
+    host = kwargs['host'] if kwargs['host'] is not None else '0.0.0.0'
+    port = kwargs['port'] if kwargs['port'] is not None else 0
+    reactor.listenTCP(port, ServerFactory())
+    reactor.run()
+

@@ -35,7 +35,7 @@ class UploadDcm(object):
                     print(patient_dic)
                     # 判断数据库中是否存在该对象，如有，不执行数据入库
                     if len(Patient.objects.filter(patientid=patient_dic['patientid'])) != 0:
-                        Patient.objects.filter(patientid=patient_dic['patientid'])[0].update(updatetime=datetime.datetime.now())
+                        Patient.objects.filter(patientid=patient_dic['patientid']).update(updatetime=datetime.datetime.now())
                     else:
                         # 创建序列化器对象，验证信息并保存到数据库
                         ser = PerInfoSerializer(data=patient_dic)
@@ -50,7 +50,7 @@ class UploadDcm(object):
                     study_dic = b.get_dicom_study(dataset)
                     print(study_dic)
                     if len(Study.objects.filter(studyuid=study_dic['studyuid'])) != 0:
-                        Study.objects.filter(studyuid=study_dic['studyuid'])[0].update(updatetime=datetime.datetime.now())
+                        Study.objects.filter(studyuid=study_dic['studyuid']).update(updatetime=datetime.datetime.now())
                     else:
                         serstudy = StudySerializer(data=study_dic)
                         if not serstudy.is_valid(raise_exception=True):
@@ -63,7 +63,7 @@ class UploadDcm(object):
                     series_dic = c.get_dicom_series(dataset)
                     print(series_dic)
                     if len(Series.objects.filter(seriesuid=series_dic['seriesuid'])) != 0:
-                        Series.objects.filter(seriesuid=series_dic['seriesuid'])[0].update(buildvolumesign=int(1), updatetime=datetime.datetime.now())
+                        Series.objects.filter(seriesuid=series_dic['seriesuid']).update(buildvolumesign=int(1), updatetime=datetime.datetime.now())
                     else:
                         serseries = SeriesSerializer(data=series_dic)
                         if not serseries.is_valid(raise_exception=True):
@@ -81,9 +81,10 @@ class UploadDcm(object):
                     d = DcmImage()
                     image_dic = d.get_dicom_image(dataset)
                     image_dic['updatesign'] = int(1)
+                    image_dic['updatetime'] = datetime.datetime.now()
                     print(image_dic)
                     if len(Image.objects.filter(imageuid=image_dic['imageuid'])) != 0:
-                        Image.objects.filter(imageuid=image_dic['imageuid'])[0].update(updatetime=datetime.datetime.now(), **image_dic)
+                        Image.objects.filter(imageuid=image_dic['imageuid']).update(**image_dic)
                     else:
                         serimage = ImageSerializer(data=image_dic)
                         if not serimage.is_valid(raise_exception=True):

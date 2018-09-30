@@ -7,30 +7,30 @@ from back_end.util.readDcm import DcmSeries, DcmPatient
 
 class SplitDicoms(object):
 
-    def __init__(self):
-        self.patientidList = []
-        self.seriesuidList = []
+    # def __init__(self):
+    #     self.patientidList = []
+    #     self.seriesuidList = []
 
     def split_patient(self, filename_dataset_dic, dataset):
         """
         Make patient folder according to patientid
         :param filename_dataset_dic: mapping between filename and dataset
         :param dataset:dicom filedataset
-        :return:
+        :return:a series path of this upload
         """
+
         dcmpatient = DcmPatient()
         patientid = dcmpatient.get_dicom_patient(dataset)['patientid']
-        if patientid not in self.patientidList:
-            self.patientidList.append(patientid)
-        patientidSet = set(self.patientidList)
 
-        for patientid in patientidSet:
-            patientpath = SaveDicomFilePath.location_3 + str(patientid)
-            if os.path.exists(patientpath):
-                self.split_series(patientpath, filename_dataset_dic, dataset)
-            else:
-                os.mkdir(patientpath)
-                self.split_series(patientpath, filename_dataset_dic, dataset)
+        patientpath = SaveDicomFilePath.location_3 + str(patientid)
+        if os.path.exists(patientpath):
+            pass
+            # seriespath = self.split_series(patientpath, filename_dataset_dic, dataset)
+        else:
+            os.mkdir(patientpath)
+        seriespath = self.split_series(patientpath, filename_dataset_dic, dataset)
+
+        return seriespath
 
     def split_series(self, patientpath, filename_dataset_dic, dataset):
         """
@@ -38,29 +38,22 @@ class SplitDicoms(object):
         :param patientpath:patient folder path
         :param filename_dataset_dic:mapping between filename and dataset
         :param dataset:dicom filedataset
-        :return:
+        :return:a series path of this upload
         """
+
         dcmseries = DcmSeries()
         seriesuid = dcmseries.get_dicom_series(dataset)['seriesuid']
-        if seriesuid not in self.seriesuidList:
-            self.seriesuidList.append(seriesuid)
-        seriesuidSet = set(self.seriesuidList)
 
-        dcmseries = DcmSeries()
-        for seriesuid in seriesuidSet:
-            seriespath = patientpath + '\\' + str(seriesuid)
-            if os.path.exists(seriespath):
-                seruid = dcmseries.get_dicom_series(dataset)['seriesuid']
-                if seriesuid != seruid:
-                    continue
-                self.save_dicom(filename_dataset_dic, seriespath, dataset)
+        seriespath = patientpath + '\\' + str(seriesuid)
+        if os.path.exists(seriespath):
+            pass
+            # self.save_dicom(filename_dataset_dic, seriespath, dataset)
 
-            else:
-                os.mkdir(seriespath)
-                seruid = dcmseries.get_dicom_series(dataset)['seriesuid']
-                if seriesuid != seruid:
-                    continue
-                self.save_dicom(filename_dataset_dic, seriespath, dataset)
+        else:
+            os.mkdir(seriespath)
+        self.save_dicom(filename_dataset_dic, seriespath, dataset)
+
+        return seriespath
 
     def save_dicom(self, filename_dataset_dic, seriespath, dataset):
         """
@@ -76,3 +69,4 @@ class SplitDicoms(object):
             filedata = f.read()
         with open(seriespath + '\\' + file_name, 'wb+') as file:
             file.write(filedata)
+

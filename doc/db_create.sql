@@ -25,6 +25,8 @@ drop table if exists ai_process_log;
 drop table if exists series_process_status;
 /* application related, naming standard AppName+ResultCategory*/
 drop table if exists lung_segment;
+/* CSV relates */
+drop table if exists alg_csv;
 
 create table patient
 (
