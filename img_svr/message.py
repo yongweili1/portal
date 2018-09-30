@@ -43,5 +43,6 @@ class ResponseData(object):
         return data
 
 
+# single instance of ResponseData
 response = ResponseData()
 
