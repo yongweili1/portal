@@ -2,9 +2,9 @@ import numpy as np
 import md
 from md.image3d.python.image3d_tools import estimate_intensity_window, slice_nn
 from md.image3d.python.image3d_vis import slice_to_bytes, bytes_to_colors, multi_image_alpha_blend
+from md.image3d.python.image3d_io import read_image
 from md.mdmath.python.rotation3d import axis_angle_to_rotation_matrix
 from utilities import get_axis, get_orthogonal_axis, get_spacing, get_orthogonal_spacing, ViewEnum
-from md.image3d.python.image3d_io import read_image
 
 
 class ImageServer(object):

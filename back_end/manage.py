@@ -1,8 +1,14 @@
 #!/usr/bin/env python
 import os
 import sys
+import thread
 import win32file
+
+from twisted.internet import reactor
+
 from back_end.util.setFilePath import SaveDicomFilePath, SaveVolumeFilePath
+from twisted_client import be_factory
+
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "back_end.settings")
     try:
@@ -29,6 +35,10 @@ if __name__ == "__main__":
         pass
     else:
         os.mkdir(SaveVolumeFilePath.volumepath)
+
+    # Start a new thread for reactor loop
+    reactor.connectTCP('127.0.0.1', 8883, be_factory)
+    thread.start_new_thread(reactor.run, (0,))
 
     execute_from_command_line(sys.argv)
 

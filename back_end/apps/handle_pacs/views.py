@@ -4,8 +4,8 @@ from __future__ import unicode_literals
 # Create your views here.
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
-from md.dicom.python.dicom_service import DicomService
-from handle_pacs.setPacs import PacsConf
+# from md.dicom.python.dicom_service import DicomService
+# from handle_pacs.setPacs import PacsConf
 from django.http import HttpResponse
 # from md.dicom.python.dicom_service import DicomService
 from back_end.util.upload_dcm_to_db import UploadDcm
@@ -56,7 +56,7 @@ class GetPacsSeries(GenericAPIView):
     def get(self, request):
         patient_id = str(request.GET.get('patient_id'))
         accession_number = str(request.GET.get('accession_number'))
-        pacs = PacsConf()
+        # pacs = PacsConf()
         # access_dicom = DicomService(pacs_ae_title=pacs.pacs_ae_title, pacs_ip=pacs.pacs_ip, pacs_port=pacs.pacs_port,
         #                             client_ae_title=pacs.client_ae_title, client_port=pacs.client_port)
         # access_dicom.connect()
@@ -78,7 +78,7 @@ class SavePacsImage(GenericAPIView):
     def get(self, request):
         seriesuid = str(request.GET.get('series_uid'))
 
-        pacs = PacsConf()
+        # pacs = PacsConf()
         # access_dicom = DicomService(pacs_ae_title=pacs.pacs_ae_title, pacs_ip=pacs.pacs_ip, pacs_port=pacs.pacs_port,
         #                             client_ae_title=pacs.client_ae_title, client_port=pacs.client_port)
         # access_dicom.connect()

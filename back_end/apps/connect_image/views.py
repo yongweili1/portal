@@ -2,15 +2,21 @@
 from __future__ import unicode_literals
 
 import base64
+import struct
 
 from django.shortcuts import render
 import json
 # Create your views here.
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from patientinformations.models import Series
-from connect_image.user_ip_to_port import ip_port
+# from patientinformations.models import Series
+# from connect_image.user_ip_to_port import ip_port
 import ConfigParser
+import image_msg_pb2 as msg
+
+from twisted.internet import reactor
+
+from twisted_client import BackEndFactory, be_factory
 
 conf = ConfigParser.ConfigParser()
 conf.read('back_end/util/serverApi.ini')
@@ -26,7 +32,7 @@ unload_url = conf.get("imageApi", "unload_url")
 reset_url = conf.get("imageApi", "reset_url")
 change_window_url = conf.get("imageApi", "change_window_url")
 
-from back_end.util.socket_client import SocketClient, create_socket, create_app_socket
+from back_end.util.socket_client import SocketClient, create_app_socket
 
 
 class Haha(APIView):
@@ -48,65 +54,27 @@ class LoadVolume(APIView):
         """
         serid = request.GET.get('seriesuid', None)
         user_ip = request.META.get('REMOTE_ADDR', None)
-        # if serid is None:
-        #     return Response('请输入序列UID')
-        #
-        # seriesobject = Series.objects.filter(seriesuid=serid)
-        # if len(seriesobject) == 0:
-        #     return Response('请输入正确的序列ID')
 
-        # volumepath = seriesobject[0].seriespixeldatafilepath
+        volumepath = r'E:\data\SHEN YU-Thorax^10_ZRY_LDCT_Head_first (Adult)-CT.nii.gz'
+        f = open(volumepath, 'rb')
+        vol = f.read()
+        f.close()
 
-        # f = open(volumepath, 'rb')
-        # vol = f.read()
-        # f.close()
-        #
-        # data = {}
-        # data['command'] = 'load'
-        # data['session'] = user_ip
-        # data['server'] = 'image'
-        # data['content'] = {
-        #     'seriesuid': serid,
-        #     'volume': vol
-        # }
-        #
-        # msg_one = {}
-        # msg_one['flag'] = 'start'
-        # msg_one['size'] = 0
-        # msg_one['content'] = 'start'
-        # msg_two = {}
-        # msg_two['flag'] = 'data'
-        # msg_two['size'] = 0
-        # msg_two['content'] = vol
-        # msg_three = {}
-        # msg_three['flag'] = 'finish'
-        # msg_three['size'] = 0
-        # msg_three['content'] = 'finish'
-        #
-        # sock = create_app_socket(ip_port[user_ip])
-        # print(msg_one)
-        # sock.sendall(str(msg_one))
-        # print(sock.recv(1024))
-        # sock.close()
-        #
-        # sock1 = create_app_socket(ip_port[user_ip])
-        # sock1.sendall(vol)
-        # rst = sock1.recv(1024)
-        # sock1.close()
-        #
-        # sock2 = create_app_socket(ip_port[user_ip])
-        # print(msg_three)
-        # sock2.sendall(str(msg_three))
-        # print(sock2.recv(1024))
-        # sock2.close()
+        data = msg.RequestMsg()
+        data.session = user_ip
+        data.server_name = 'image'
+        data.command = 'load'
+        data.content.params = json.dumps({'seriesuid': serid})
+        data.content.volume = vol
+        data = data.SerializeToString()
+        size = len(data)
+        size = struct.pack('i', size)
+        data = size + data
 
-        with open('C:\\Users\\daoming.wang\\Desktop\\timg.png', 'rb') as f:
-            data = f.read()
-        data = base64.b64encode(data)
-        head_str = 'data:image/png;base64,'
-        data = head_str + data
+        be_factory.protocol.request(data)
 
-        return Response(data)
+        rst = be_factory.protocol.waiting_for_result()
+        return Response(rst.kwargs)
 
     def delete(self, request):
         """
@@ -158,50 +126,23 @@ class GetImage(APIView):
         if width is None or height is None:
             return Response('请输入完整的请求数据')
 
-        data = {}
-        data['command'] = 'load'
-        data['session'] = user_ip
-        data['server'] = 'image'
-        data['content'] = {
-            'seriesuid': serid,
-            'width': width,
-            'height': height,
-            'focus_view': focus_view,
-            'display_view': display_view
-        }
+        data = msg.RequestMsg()
+        data.session = '10.9.19.139'
+        data.server_name = 'image'
+        data.command = 'show'
+        data.content.params = json.dumps({'seriesuid': serid,
+                                          'width': 400,
+                                          'height': 400,
+                                          'focus_view': '',
+                                          'display_view': 'all'})
+        data = data.SerializeToString()
+        size = len(data)
+        size = struct.pack('i', size)
+        data = size + data
 
-        msg_one = {}
-        msg_one['flag'] = 'start'
-        msg_one['size'] = 0
-        msg_one['content'] = 'start'
-        msg_two = {}
-        msg_two['flag'] = 'data'
-        msg_two['size'] = 0
-        msg_two['content'] = str(data)
-        msg_three = {}
-        msg_three['flag'] = 'finish'
-        msg_three['size'] = 0
-        msg_three['content'] = 'finish'
-
-        sock = create_app_socket(ip_port[user_ip])
-        print(msg_one)
-        sock.sendall(str(msg_one))
-        print(sock.recv(1024))
-        sock.close()
-
-        sock1 = create_app_socket(ip_port[user_ip])
-        print(msg_two)
-        sock1.sendall(str(msg_two))
-        rst = sock1.recv(1024)
-        sock1.close()
-
-        sock2 = create_app_socket(ip_port[user_ip])
-        print(msg_three)
-        sock2.sendall(str(msg_three))
-        print(sock2.recv(1024))
-        sock2.close()
-
-        return Response(json.loads(rst))
+        be_factory.protocol.request(data)
+        rst = be_factory.protocol.waiting_for_result()
+        return Response(rst.kwargs)
 
 
 class Home(APIView):
@@ -209,57 +150,16 @@ class Home(APIView):
     def get(self, request):
         user_ip = request.META.get('REMOTE_ADDR', None)
 
-        msg_one = {}
-        msg_one['flag'] = 'start'
-        msg_one['size'] = 0
-        msg_one['content'] = 'start'
-        msg_two = {}
-        msg_two['flag'] = 'data'
-        msg_two['size'] = 0
-        msg_two['content'] = '{},register'.format(user_ip)
-        msg_three = {}
-        msg_three['flag'] = 'finish'
-        msg_three['size'] = 0
-        msg_three['content'] = 'finish'
-
-        sock = create_socket()
-        print(msg_one)
-        sock.sendall(str(msg_one))
-        print(sock.recv(1024))
-        sock.close()
-
-        sock1 = create_socket()
-        print(msg_two)
-        sock1.sendall(str(msg_two))
-        print(sock1.recv(1024))
-        sock1.close()
-
-        sock2 = create_socket()
-        print(msg_three)
-        sock2.sendall(str(msg_three))
-        port = sock2.recv(1024)
-        ip_port[user_ip] = int(port)
-        sock2.close()
-
-        # sock = SocketClient()
-        # resp = sock.upload_volume(str(dic))
-        #
-        # try:
-        #     resp = sock.upload_volume(str(dic))
-        # except Exception as e:
-        #     pass
-        #     # return Response('image_server Error')
-
         return render(request, 'main.html')
 
 
 class GetSeriesUidList(APIView):
     def get(self, request):
-        seriesuidlist = []
-        serieslist = Series.objects.all()
-        for ser in serieslist:
-            seriesuidlist.append(ser.seriesuid)
-        return Response(json.dumps(seriesuidlist))
+        # seriesuidlist = []
+        # serieslist = Series.objects.all()
+        # for ser in serieslist:
+        #     seriesuidlist.append(ser.seriesuid)
+        return Response(None)
 
 
 class ChangeColor(APIView):

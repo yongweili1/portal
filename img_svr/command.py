@@ -19,7 +19,11 @@ class Command(object):
         return wrapper
 
 
+# single instance of Command
 command = Command()
+
+
+# single instance of ImageServer
 server = ImageServer()
 
 
