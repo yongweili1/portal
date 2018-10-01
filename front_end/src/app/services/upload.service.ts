@@ -5,7 +5,7 @@ import { AuthHttp } from '../core/auth-http';
 import { AppConfigService } from '../app.config';
 
 @Injectable()
-export class HomeService {
+export class UploadService {
   progress;
   progressObserver;
   constructor(

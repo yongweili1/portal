@@ -9,8 +9,8 @@ import {
 import { FileUploadModule } from 'ng2-file-upload';
 import { SharedModule } from '../../shared/shared.module';
 
-import { HomeComponent } from './home.component';
-import { HomeService } from '../../services/home.service';
+import { UploadComponent } from './upload.component';
+import { UploadService } from '../../services/upload.service';
 import { MessageService } from '../../shared/common/messageservice';
 
 
@@ -18,7 +18,7 @@ const primengModule = [primengSharedModule, PanelModule,
   SelectButtonModule, DropdownModule];
 
 const routes: Routes = [
-  { path: '', component: HomeComponent },
+  { path: '', component: UploadComponent },
 ];
 
 @NgModule({
@@ -29,14 +29,14 @@ const routes: Routes = [
     RouterModule.forChild(routes)
   ],
   declarations: [
-    HomeComponent,
+    UploadComponent,
   ],
   exports: [
-    HomeComponent,
+    UploadComponent,
   ],
-  providers: [HomeService,MessageService],
+  providers: [UploadService,MessageService],
   entryComponents: [
   ]
 })
-export class HomeModule {
+export class UploadModule {
 }

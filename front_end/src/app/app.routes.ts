@@ -11,6 +11,7 @@ import { FullLayoutComponent } from './layouts/full-layout.component';
 import { SimpleLayoutComponent } from './layouts/simple-layout.component';
 import { RenewPasswordComponent } from './base/renew-password/renew-password.component';
 import {ContouringComponent } from './components/tps/contouring/contouring.component'
+import {HomeComponent} from './components/home/home.component'
 
 /* tslint:disable:max-line-length */
 export const ROUTES: Routes = [
@@ -20,11 +21,14 @@ export const ROUTES: Routes = [
     children: [
       {
         path: '',
-        loadChildren: './components/home/home.module#HomeModule',
+        //loadChildren: './components/home/home.module#HomeModule',
+        redirectTo: 'home',
+        pathMatch: 'full',
       },
       {
         path: 'home',
-        loadChildren: './components/home/home.module#HomeModule',
+        //loadChildren: './components/home/home.module#HomeModule',
+        component: HomeComponent,
       },
       {
         path: 'change-password',
@@ -41,6 +45,15 @@ export const ROUTES: Routes = [
             // },
             component: ContouringComponent,
           },
+          {
+            path: 'upload',
+            loadChildren: './components/upload/upload.module#UploadModule',
+            // data: {
+            //   res: ' '
+            // },
+            //component: ContouringComponent,
+          },
+          
           {
             path: 'patient-template',
             loadChildren: './components/patient-template/patient-template.module#PaListModule',

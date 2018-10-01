@@ -22,7 +22,8 @@ import { SimpleLayoutComponent } from './layouts/simple-layout.component';
 import { MockModule } from './mocks/mock.module';
 import { ForgotPasswordModule } from './base/forgot-password/forgot-password.module';
 import { RenewPasswordModule } from './base/renew-password/renew-password.module';
-import { ContouringModule} from './components/tps/contouring/contouring.module'
+import { ContouringModule} from './components/tps/contouring/contouring.module';
+import { HomeComponent } from './components/home/home.component'
 
 export function HttpLoaderFactory(http: HttpClient) {
   const appConfig = window['appConfig'] || {};
@@ -37,6 +38,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     NoContentComponent,
     FullLayoutComponent,
     SimpleLayoutComponent,
+    HomeComponent,
   ],
   imports: [
     BrowserModule,

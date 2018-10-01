@@ -8,7 +8,7 @@ declare var Mock: any;
 
 const Random = Mock.Random;
 @Injectable()
-export class HomeServiceMock {
+export class UploadServiceMock {
 
   public barData = [];
 

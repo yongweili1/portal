@@ -5,7 +5,7 @@ import { PatientTemplateServiceMock } from './patient-template-service.mock';
 import {LoadSeriesServiceMock} from './load-series-service.mock'
 import { ConfigServiceMock } from './config-service.mock';
 import { LocalesServiceMock } from './locales-service.mock';
-import { HomeServiceMock } from './home-service.mock';
+import { UploadServiceMock } from './home-service.mock';
 import { SmsTemplateServiceMock } from './sms-template-service.mock';
 import { EmailTemplateServiceMock } from './email-template-service.mock';
 
@@ -28,7 +28,7 @@ import { VerifyCodeServiceMock } from './verify-code-service.mock';
     PatientTemplateServiceMock,
     ConfigServiceMock,
     LocalesServiceMock,
-    HomeServiceMock,
+    UploadServiceMock,
     SmsTemplateServiceMock,
     EmailTemplateServiceMock,
     ForgotPasswordServiceMock,
@@ -46,7 +46,7 @@ export class MockModule {
     private patientTemplateServiceMock: PatientTemplateServiceMock,
     private configServiceMock: ConfigServiceMock,
     private localesServiceMock: LocalesServiceMock,
-    private homeServiceMock: HomeServiceMock,
+    private UploadServiceMock: UploadServiceMock,
     private smsTemplateServiceMock: SmsTemplateServiceMock,
     private emailTemplateServiceMock: EmailTemplateServiceMock,
     private forgotPasswordServiceMock: ForgotPasswordServiceMock,
