@@ -32,6 +32,7 @@ import { SeriesHttpService } from '../shared/service/seriesHttp.service';
 import { StorageService } from '../shared/service/storage.service';
 import { actionService } from './pic-axial/action.service';
 import { ContourDirective } from '../shared/directives/contour.directive';
+import { SeriesListComponent } from './series-list/series-list.component';
 
 
 // const routes: Routes = [
@@ -67,6 +68,7 @@ import { ContourDirective } from '../shared/directives/contour.directive';
     PicAxialComponent,
     ContouringTopBarComponent,
     ContourDirective,
+    SeriesListComponent,
   ],
   exports: [
     ContouringComponent,

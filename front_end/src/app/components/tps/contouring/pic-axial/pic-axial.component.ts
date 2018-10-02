@@ -468,12 +468,18 @@ P2Cross() {
   // this.postPoint = vec4.fromValues(this.firstImagePosition[0] + (this.sliceAll[2]) * this.gap[0], this.firstImagePosition[1] + (this.sliceAll[1]) * this.gap[1], this.firstImagePosition[2] + (this.sliceAll[0]) * this.gap[2], 1);
   this.twoCross.emit(this.postPoint);
 }
-
+/**
+ * 清除所有图元
+ */
 clearPri() {
     let primitivecanContext = this.primitivecan.getContext("2d");
+    //primitivecanContext.fillStyle="#000000";
+    primitivecanContext.beginPath();  
+    //primitivecanContext.fillRect(0,0,this.viewportWidth,this.viewportHeight);  
+    //primitivecanContext.closePath(); 
     primitivecanContext.clearRect(0,0,this.viewportWidth,this.viewportHeight);
+    primitivecanContext.closePath(); 
     primitivecanContext.stroke();
-    //this.primitivecan.width=this.viewportWidth;//利用重新复制大小清空
   }
 
 /**

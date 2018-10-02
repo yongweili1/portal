@@ -27,7 +27,6 @@ export class ContourDirective implements OnInit {
     backContext: CanvasRenderingContext2D;
     labelTxt: string;
     @Input() backCanvas;
-    @Output() quitDraw: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(private el: ElementRef, private contouringService: ConMessageService) { }
 
@@ -152,8 +151,8 @@ export class ContourDirective implements OnInit {
     }
 
     @HostListener('dblclick', ['$event']) onDbClick(event: MouseEvent) {
-        this.backContext.closePath();
-        this.backContext.stroke();
+        // this.backContext.closePath();
+        // this.backContext.stroke();
         this.isMousedown = false;
         this.curAction = "";
         this.contouringService.SetCurAction("quitDrawPri");
