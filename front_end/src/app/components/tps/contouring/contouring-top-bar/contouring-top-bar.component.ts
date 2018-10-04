@@ -18,6 +18,7 @@ export class ContouringTopBarComponent implements OnInit {
   @Output() remouse: EventEmitter<any> = new EventEmitter<any>();
   @Output() measure: EventEmitter<any> = new EventEmitter<any>();
   @Output() clear: EventEmitter<any> = new EventEmitter<any>();
+  @Output() hideList: EventEmitter<any> = new EventEmitter<any>();
 
   constructor(
     private conMessage: ConMessageService
@@ -58,6 +59,8 @@ export class ContouringTopBarComponent implements OnInit {
   removemose() {
       this.remouse.emit();
   }
+
+
 
   onItemClick(a) {
     //   if (a == 'Add ROI') {
@@ -188,6 +191,10 @@ export class ContouringTopBarComponent implements OnInit {
 
   OnRectangleClick() {
       this.conMessage.SetCurAction("rectangle");
+  }
+
+  OnHideList(){
+      this.hideList.emit();
   }
 
 

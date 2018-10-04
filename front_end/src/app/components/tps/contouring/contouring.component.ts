@@ -206,6 +206,10 @@ export class ContouringComponent implements OnInit {
       // });
   }
 
+  mainHideList(){
+    document.getElementById("series_list").classList.toggle("series_inactive");
+    // document.getElementById("threebmp").classList.toggle("three_inactive");
+  }
   mainzoom() {
       this.picLeft1.zoom();
       this.picLeft2.zoom();
