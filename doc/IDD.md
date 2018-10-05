@@ -3,9 +3,6 @@
 
 ---
 
-
-<!-- code_chunk_output -->
-
 * [Research Potal 前后端接口文档](#research-potal-前后端接口文档)
 	* [接口列表](#接口列表)
 	* [详细接口描述](#详细接口描述)
@@ -39,7 +36,7 @@
 #### 病人列表
 |       字段       |  类型  |   备注   |
 | ---------------- | ------ | -------- |
-| content[]        | number | 病人数据 |
+| content[]        |        | 病人数据 |
 | totalPages       | number | 总页数   |
 | totalElements    | number | 总记录数 |
 | size             | number | 单页行数 |
