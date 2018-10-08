@@ -17,7 +17,6 @@ urlpatterns = [
     url(r'^serids/$', views.GetSeriesUidList.as_view(), name='serids'),
     url(r'^backs/$', views.ReSetVolume.as_view(), name='reset'),
     url(r'^windows/$', views.ChangeWindow.as_view(), name='windows'),
-    url(r'^sayhi/$', views.SayHi.as_view(), name='sayhi'),
 
     url(r'^haha/$', views.Haha.as_view(), name='HAHA'),
 ]

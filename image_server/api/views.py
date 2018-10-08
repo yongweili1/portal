@@ -286,9 +286,9 @@ class WCWW(APIView):
         :param width: width of viewport
         :param height: height of viewport
         :param focus_view: current focused view, 'transverse' for transverse,
-        'saggital' for saggital, 'coronal' for coronal
+              'saggital' for saggital, 'coronal' for coronal
         :param display_view: need to displayed on screen, 'transverse' for transverse,
-        'saggital' for saggital, 'coronal' for coronal, 'all' for all view
+              'saggital' for saggital, 'coronal' for coronal, 'all' for all view
         :return: rgb image data
         """
         try:

@@ -40,11 +40,11 @@
 |       字段       |  类型  |   备注   |
 | ---------------- | ------ | -------- |
 | content[]        |        | 病人数据 |
-| totalPages       | number | 总页数   |
-| totalElements    | number | 总记录数 |
-| size             | number | 单页行数 |
-| number           | number | 当前页数 |
-| numberOfElements | number | 该页行数 |
+| totalPages       | int | 总页数   |
+| totalElements    | int | 总记录数 |
+| size             | int | 单页行数 |
+| number           | int | 当前页数 |
+| numberOfElements | int | 该页行数 |
 
 #### 病人数据(back to front)
 |       字段       |  类型  |   备注   |

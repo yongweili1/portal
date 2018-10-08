@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import os
 import sys
 import thread
@@ -40,7 +41,10 @@ if __name__ == "__main__":
     reactor.connectTCP('127.0.0.1', 8883, be_factory)
     thread.start_new_thread(reactor.run, (0,))
 
-    execute_from_command_line(sys.argv)
+    try:
+        execute_from_command_line(sys.argv)
+    except Exception as e:
+        print('初始化连接image_server失败')
 
     if os.name == 'nt':
         win32file._setmaxstdio(2048)
