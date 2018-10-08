@@ -1,6 +1,9 @@
 import { Directive, ElementRef, Input, HostListener, OnInit ,Output, EventEmitter } from '@angular/core';
 import { ConMessageService } from '../service/conMessage.service';
 
+
+declare var createjs: any;
+
 @Directive({
     selector: '[myContour]'
 })
@@ -25,7 +28,10 @@ export class ContourDirective implements OnInit {
     isMousedown: boolean = true;
     myContext: CanvasRenderingContext2D;
     backContext: CanvasRenderingContext2D;
+    myStage: any;
+    backStage: any;
     labelTxt: string;
+    line :any;
     @Input() backCanvas;
 
     constructor(private el: ElementRef, private contouringService: ConMessageService) { }
@@ -34,6 +40,13 @@ export class ContourDirective implements OnInit {
 
         this.myContext = this.el.nativeElement.getContext("2d");
         this.backContext = this.backCanvas.getContext("2d");
+        this.myStage = new createjs.Stage(this.el.nativeElement);
+        this.backStage = new createjs.Stage(this.backCanvas);
+
+        createjs.Touch.enable(this.myStage);
+        this.myStage.enableMouseOver(50);
+        this.myStage.mouseMoveOutside = true;
+        this.myStage.autoClear = false;
 
         this.backContext.strokeStyle = this.contourColor;
         this.backContext.lineWidth = this.contourLineWidth;
@@ -87,6 +100,8 @@ export class ContourDirective implements OnInit {
             this.isPaint = true;
             this.curX = event.offsetX;
             this.curY = event.offsetY;
+            this.myStage.clear();
+            this.myStage.update();
             if (this.curAction == "rectangle") {
                 this.myContext.clearRect(0, 0, this.backContext.canvas.width, this.backContext.canvas.height);
                 this.myContext.beginPath();
@@ -118,6 +133,15 @@ export class ContourDirective implements OnInit {
                 this.myContext.closePath();
 
             }
+
+            if (this.curAction == "circle1") {
+                this.myContext.clearRect(0, 0, this.backContext.canvas.width, this.backContext.canvas.height);
+                this.line = new createjs.Shape();
+                this.line.graphics.beginStroke("#2196F3").setStrokeStyle(1, "round").moveTo(this.startX, this.startY).lineTo(this.curX, this.curY);
+                this.myStage.addChild(this.line);
+                this.myStage.update();
+
+            }
         }
     }
 
@@ -138,6 +162,15 @@ export class ContourDirective implements OnInit {
                 this.backContext.arc(this.startX, this.startY, this.radius, 0, 2 * Math.PI);
                 this.backContext.stroke();
                 this.backContext.closePath();
+    
+            }
+
+            if (this.curAction == "circle1") {
+                // this.backContext.beginPath();
+                // this.radius = Math.sqrt((this.curX - this.startX) * (this.curX - this.startX) + (this.curY - this.startY) * (this.curY - this.startY));
+                // this.backContext.arc(this.startX, this.startY, this.radius, 0, 2 * Math.PI);
+                // this.backContext.stroke();
+                // this.backContext.closePath();
     
             }
         }

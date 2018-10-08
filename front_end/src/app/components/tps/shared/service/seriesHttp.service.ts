@@ -19,13 +19,14 @@ export class SeriesHttpService {
  * 从后端获取序列图片
  * @param seriesId 
  */
-    GetSeriesPic(seriesId:any):Observable<string>{
+    GetSeriesPic(seriesId:any):Observable<any>{
         seriesId = '1.3.12.2.1107.5.1.4.64606.30000018051006052134700006373';
         const getParams = new HttpParams()
         .set('seriesuid', seriesId.toString());
-        return this.http.get<any>('http://localhost:8090/api/load-series',{params : getParams});
+        //return this.http.get<any>('http://localhost:8090/api/load-series',{params : getParams});
         //return this.http.get<string>('http://localhost:8000/image/volumes',{params : getParams});
         //return this.http.get<string>('http://10.9.19.139:8000/image/volumes/',{params : getParams});
+        return this.http.get<any>('http://10.9.19.139:8000/image/images/?seriesuid=1.3.12.2.1107.5.1.4.64606.30000018051006052134700006373&width=400&height=400&focus_view=&display_view=');
         
     }
 

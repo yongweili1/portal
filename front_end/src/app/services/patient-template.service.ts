@@ -25,20 +25,20 @@ export class PatientTemplateService {
 ) { }
 
   public getPatientTemplate(pageRequest: PatientPageRequest): Observable<Page<PatientPageRequest>> {
-    const searchParams = new HttpParams();
-    searchParams.set('size', pageRequest.size.toString());
-    searchParams.set('page', pageRequest.page.toString());
-    searchParams.set('patientId', pageRequest.patientId);
-    searchParams.set('patientName', pageRequest.patientName);
-    searchParams.set('gender', pageRequest.gender);
-    searchParams.set('modality', pageRequest.modality);
-    searchParams.set('studyDate', pageRequest.studyDate.toString());
-    // return this.http
-    //   .get<Page<PatientPageRequest>>('http://10.9.19.139:8000/patientinformations/patinfolist/');
+    const searchParams = new HttpParams()
+    .set('size', pageRequest.size.toString())
+    .set('page', pageRequest.page.toString())
+    .set('patientId', pageRequest.patientId)
+    .set('patientName', pageRequest.patientName)
+    .set('gender', pageRequest.gender)
+    .set('modality', pageRequest.modality)
+    .set('studyDate', pageRequest.studyDate.toString());
+    return this.http
+      .get<Page<PatientPageRequest>>('http://10.9.19.139:8000/patientinformations/patinfolist/',{params:searchParams});
     // return this.http
     //   .get<Page<PatientPageRequest>>(`${this.appConfig.apiUrl}/patientinformations/patinfolist/`,{params:searchParams});
-    return this.http
-    .get<Page<PatientPageRequest>>('http://localhost:8090/api/patient-template');
+    // return this.http
+    // .get<Page<PatientPageRequest>>('http://localhost:8090/api/patient-template');
   }
 
 

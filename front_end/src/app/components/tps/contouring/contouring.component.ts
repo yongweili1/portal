@@ -250,20 +250,72 @@ export class ContouringComponent implements OnInit {
     let img = new Image();
     let seriesId:any = 'test1';
     this.seriesHttpService.GetSeriesPic(seriesId).subscribe((data) =>{
-        img.src = data;
-        img.onload = function(){
-            let c= $(".a_class .icanvas").get(0);
-            let ctx=c.getContext("2d");    
-            ctx.drawImage(img,20,20,1000,650);
+        // img.src = data;
+        // img.onload = function(){
+        //     let c= $(".a_class .icanvas").get(0);
+        //     let ctx=c.getContext("2d");    
+        //     ctx.drawImage(img,20,20,1000,650);
     
-            c= $(".b_class .icanvas").get(0);
-            ctx=c.getContext("2d");
-            ctx.drawImage(img,20,20,500,300);
+        //     c= $(".b_class .icanvas").get(0);
+        //     ctx=c.getContext("2d");
+        //     ctx.drawImage(img,20,20,500,300);
     
-            c= $(".c_class .icanvas").get(0);
-            ctx=c.getContext("2d");
-            ctx.drawImage(img,20,20,500,300);
+        //     c= $(".c_class .icanvas").get(0);
+        //     ctx=c.getContext("2d");
+        //     ctx.drawImage(img,20,20,500,300);
        
+        // }
+        data = JSON.parse(data);
+        if (data.saggital != null)
+            {
+                let saggital_canvas = $(".c_class .icanvas").get(0);
+                let saggital_ctx = saggital_canvas.getContext("2d");
+                saggital_ctx.clearRect(0,0,saggital_canvas.width,saggital_canvas.height);
+                let saggital_img = saggital_ctx.createImageData(data.saggital.length,data.saggital[0].length);
+                for (let i = 0; i < data.saggital.length; i++){
+                    for (let j = 0; j < data.saggital.length; j++) {
+                        saggital_img.data[4 * data.saggital.length * i + j * 4] = data.saggital[i][j][0];
+                        saggital_img.data[4 * data.saggital.length * i + j * 4 + 1] = data.saggital[i][j][1];
+                        saggital_img.data[4 * data.saggital.length * i + j * 4 + 2] = data.saggital[i][j][2];
+                        saggital_img.data[4 * data.saggital.length * i + j * 4 + 3] = 255;
+                    }
+                }
+                saggital_ctx.putImageData(saggital_img, (saggital_canvas.width-data.saggital.length)/2,(saggital_canvas.height-data.saggital[0].length)/2, 0, 0,saggital_canvas.width,saggital_canvas.height);
+            }
+
+        if (data.coronal != null)
+            {
+                let coronal_canvas = $(".b_class .icanvas").get(0);
+                let coronal_ctx = coronal_canvas.getContext("2d");
+                coronal_ctx.clearRect(0,0,coronal_canvas.width,coronal_canvas.height);
+                let coronal_img = coronal_ctx.createImageData(data.coronal.length,data.coronal[0].length);
+                for (let i = 0; i < data.coronal.length; i++){
+                    for (let j = 0; j < data.coronal.length; j++) {
+                        coronal_img.data[4 * data.coronal.length * i + j * 4] = data.coronal[i][j][0];
+                        coronal_img.data[4 * data.coronal.length * i + j * 4 + 1] = data.coronal[i][j][1];
+                        coronal_img.data[4 * data.coronal.length * i + j * 4 + 2] = data.coronal[i][j][2];
+                        coronal_img.data[4 * data.coronal.length * i + j * 4 + 3] = 255;
+                    }
+                }
+                coronal_ctx.putImageData(coronal_img,(coronal_canvas.width-data.coronal.length)/2,(coronal_canvas.height-data.coronal[0].length)/2, 0, 0,coronal_canvas.width,coronal_canvas.height);
+            }
+        if (data.transverse != null)
+        {
+            let transverse_canvas = $(".a_class .icanvas").get(0);
+            let transverse_ctx = transverse_canvas.getContext("2d");
+            transverse_ctx.clearRect(0,0,transverse_canvas.width,transverse_canvas.height);
+            let transverse_img = transverse_ctx.createImageData(data.transverse.length,data.transverse[0].length);
+            for (let i = 0; i < data.transverse.length; i++){
+                for (let j = 0; j < data.transverse[0].length; j++) {
+                    transverse_img.data[4 * data.transverse.length * i + j * 4] = data.transverse[i][j][0];
+                    transverse_img.data[4 * data.transverse.length * i + j * 4 + 1] = data.transverse[i][j][1];
+                    transverse_img.data[4 * data.transverse.length * i + j * 4 + 2] = data.transverse[i][j][2];
+                    transverse_img.data[4 * data.transverse.length * i + j * 4 + 3] = 255;
+                }
+            }
+            //transverse_img.width = transverse_canvas.width;
+            //transverse_ctx.drawImage(transverse_img,0,0,transverse_canvas.width,transverse_canvas.height);
+            transverse_ctx.putImageData(transverse_img,(transverse_canvas.width-data.transverse.length)/2,(transverse_canvas.height-data.transverse[0].length)/2, 0, 0,transverse_canvas.width,transverse_canvas.height);
         }
     },(error)=>{
         console.log(error);

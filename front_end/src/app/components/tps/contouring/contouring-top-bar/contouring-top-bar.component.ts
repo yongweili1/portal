@@ -193,6 +193,9 @@ export class ContouringTopBarComponent implements OnInit {
       this.conMessage.SetCurAction("rectangle");
   }
 
+  OnCircleClick(){
+    this.conMessage.SetCurAction("circle1");
+  }
   OnHideList(){
       this.hideList.emit();
   }

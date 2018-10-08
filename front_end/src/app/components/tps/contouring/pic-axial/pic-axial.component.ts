@@ -47,6 +47,7 @@ export class PicAxialComponent implements OnChanges {
   @Output() twoCross: EventEmitter<any> = new EventEmitter<any>();
   @Output() message: EventEmitter<any> = new EventEmitter<any>();
   glsource = new glsource();
+  curAction: any;
 
 
   constructor(
@@ -114,6 +115,9 @@ ngOnInit() {
       //that.setupScene();
       //that.drawScene(that.gl, that.programInfo, that.buffers, that.texture);
   });
+  this.conMessage.curAction$.subscribe(
+    curAction => this.curAction = curAction
+)
 //   this.patient2Mpr = mat4.create();
 //   this.opM3 = mat3.create();
 //   this.scrCrossPt = vec3.create();
@@ -472,14 +476,15 @@ P2Cross() {
  * 清除所有图元
  */
 clearPri() {
-    let primitivecanContext = this.primitivecan.getContext("2d");
-    //primitivecanContext.fillStyle="#000000";
-    primitivecanContext.beginPath();  
-    //primitivecanContext.fillRect(0,0,this.viewportWidth,this.viewportHeight);  
-    //primitivecanContext.closePath(); 
-    primitivecanContext.clearRect(0,0,this.viewportWidth,this.viewportHeight);
-    primitivecanContext.closePath(); 
-    primitivecanContext.stroke();
+
+    // let primitivecanContext = this.primitivecan.getContext("2d");
+    // primitivecanContext.beginPath();  
+    // primitivecanContext.clearRect(0,0,this.viewportWidth,this.viewportHeight);
+    // primitivecanContext.closePath(); 
+    // primitivecanContext.stroke();
+
+    let primitiveStage = new createjs.Stage(this.primitivecan);
+    primitiveStage.clear();
   }
 
 /**
