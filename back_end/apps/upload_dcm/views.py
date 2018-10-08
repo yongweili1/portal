@@ -3,8 +3,8 @@ from __future__ import unicode_literals
 import os
 import pydicom
 # Create your views here.
-from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from back_end.util.setFilePath import SaveDicomFilePath
 
@@ -20,7 +20,7 @@ win32file._setmaxstdio(2048)  # 如果要部署到linux，则需要更改linux  
 
 
 # r'^patinfos/$'
-class Patinfo(GenericAPIView):
+class Patinfo(APIView):
 
     def post(self, request):
         """

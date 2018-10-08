@@ -12,7 +12,8 @@ class InfoList(object):
             'patientName': '',
             'gender': '',
             'studyDescription': '',
-            'modality': ''
+            'modality': '',
+            'studyDate': '',
         }
 
     def get_infolist(self):
@@ -39,6 +40,7 @@ class InfoList(object):
                         # 深拷贝字典，因为字典创建在循环外部，要避免重复赋值时覆盖问题
                         pat_dict = copy.deepcopy(pat_dict)
                         pat_dict['studyDescription'] = st.studydescription
+                        pat_dict['studyDate'] = st.studydate
 
                         ser = Series.objects.filter(studyuid=st.pid)
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>API Test Page</title>
-    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script src="http://libs.baidu.com/jquery/2.1.1/jquery.min.js"></script>
 </head>
 <body>
 
@@ -55,7 +55,6 @@
 <script>
     $(function () {
         $.get("/image/serids/", function(data) {
-            data = JSON.parse(data);
             $("#main_id").empty();
             $("#main_id").append("<option value=''>请选择序列号</option>");
             for(var i = 0; i < data.length; i++){
@@ -193,7 +192,7 @@
         });
 
         $('#btn_change_window').click(function () {
-            $.get("/image/windows/?width=400&height=400&focus_view=&display_view=all&shift=10,10", function(data) {
+            $.get("/image/windows/?width=400&height=400&focus_view=&display_view=all&shift=100,100", function(data) {
                 refreash(data)
             });
         });

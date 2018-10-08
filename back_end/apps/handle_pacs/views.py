@@ -8,10 +8,12 @@ from rest_framework.response import Response
 # from handle_pacs.setPacs import PacsConf
 from django.http import HttpResponse
 # from md.dicom.python.dicom_service import DicomService
+from rest_framework.views import APIView
+
 from back_end.util.upload_dcm_to_db import UploadDcm
 
 
-class GetPacs(GenericAPIView):
+class GetPacs(APIView):
 
     def get(self, request):
         pacs_ae_title = str(request.GET.get('pacs_ae_title')[1:-1])
@@ -47,7 +49,7 @@ class GetPacs(GenericAPIView):
         return response
 
 
-class GetPacsSeries(GenericAPIView):
+class GetPacsSeries(APIView):
     """
     input: patient_id, accession_number
     output: patient_series
@@ -69,7 +71,7 @@ class GetPacsSeries(GenericAPIView):
         # return Response(patient_series)
 
 
-class SavePacsImage(GenericAPIView):
+class SavePacsImage(APIView):
     """
     input: series_uid
     save images to database
