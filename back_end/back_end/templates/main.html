@@ -26,8 +26,9 @@
         <div style="display: flex">
             <label id="msg"></label>
         </div>
+        <button id="btn_start_macro">start_macro</button>
+        <button id="btn_finish_macro">finish_macro</button>
         <button id="btn_sayhi">Hi</button>
-        <button id="btn_load">Load</button>
         <button id="btn_show">Show</button>
         <button id="btn_page_transverse">Page Turning(transverse)</button>
         <button id="btn_page_saggital">Page Turning(saggital)</button>
@@ -62,6 +63,18 @@
             };
         });
 
+        $('#btn_start_macro').click(function () {
+            $.get("/image/macro/?macro_status=True", function(data) {
+                refreash(data)
+            });
+        });
+
+        $('#btn_finish_macro').click(function () {
+            $.get("/image/macro/?macro_status=False", function(data) {
+                refreash(data)
+            });
+        });
+
         $('#btn_sayhi').click(function () {
             $.get("/image/sayhi/", function(data) {
                 console.log(data)
@@ -69,13 +82,13 @@
             });
         });
 
-        $('#btn_load').click(function () {
-            selected_uid = $("#main_id  option:selected").text();
-            $.get("/image/volumes/?seriesuid=1.3.12.2.1107.5.1.4.64606.30000018051006052134700006373", function(data) {
-                console.log(data)
-                document.getElementById("msg").innerText = "Volumn data has been loaded!";
-            });
-        });
+        <!--$('#btn_load').click(function () {-->
+            <!--selected_uid = $("#main_id  option:selected").text();-->
+            <!--$.get("/image/volumes/?seriesuid=1.3.12.2.1107.5.1.4.64606.30000018051006052134700006373", function(data) {-->
+                <!--console.log(data)-->
+                <!--document.getElementById("msg").innerText = "Volumn data has been loaded!";-->
+            <!--});-->
+        <!--});-->
 
         $('#btn_show').click(function () {
             $.get("/image/images/?seriesuid=1.3.12.2.1107.5.1.4.64606.30000018051006052134700006373&width=400&height=400&focus_view=&display_view=all", function(data) {
