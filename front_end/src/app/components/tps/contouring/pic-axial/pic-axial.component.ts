@@ -281,7 +281,7 @@ getBuffer(postPoint, tag, downsamplefactor) {
           // headers: {
           //     Authorization: 'Bearer ' + abp.auth.getToken(),
           // },
-          async: false,
+          async: true,
           contentType: 'application/json',
           data: JSON.stringify(data),
           success: function(res) {
@@ -343,7 +343,7 @@ getBufferTemp(tag) {
             // headers: {
             //     Authorization: 'Bearer ' + abp.auth.getToken(),
             // },
-            async: false,
+            async: true,
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function(res) {

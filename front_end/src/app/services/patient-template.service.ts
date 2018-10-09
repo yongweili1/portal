@@ -33,12 +33,14 @@ export class PatientTemplateService {
     .set('gender', pageRequest.gender)
     .set('modality', pageRequest.modality)
     .set('studyDate', pageRequest.studyDate.toString());
-    return this.http
-      .get<Page<PatientPageRequest>>('http://10.9.19.139:8000/patientinformations/patinfolist/',{params:searchParams});
+    // return this.http
+    //   .get<Page<PatientPageRequest>>('http://10.9.19.139:8000/patientinformations/patinfolist/',{params:searchParams});
+      // return this.http
+      // .get<Page<PatientPageRequest>>('http://127.0.0.1:8000/patientinformations/patinfolist/',{params:searchParams});
     // return this.http
     //   .get<Page<PatientPageRequest>>(`${this.appConfig.apiUrl}/patientinformations/patinfolist/`,{params:searchParams});
-    // return this.http
-    // .get<Page<PatientPageRequest>>('http://localhost:8090/api/patient-template');
+    return this.http
+    .get<Page<PatientPageRequest>>('http://localhost:8090/api/patient-template');
   }
 
 

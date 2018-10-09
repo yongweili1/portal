@@ -11,9 +11,9 @@ from rest_framework.views import APIView
 # from connect_image.user_ip_to_port import ip_port
 import ConfigParser
 import image_msg_pb2 as msg
-from patientinformations.models import Series
+from connect_image.models import Series
 
-from twisted_client import be_factory
+from back_end.twisted_client import be_factory
 
 conf = ConfigParser.ConfigParser()
 conf.read('back_end/util/serverApi.ini')
@@ -154,10 +154,11 @@ class GetImage(APIView):
         if width is None or height is None:
             return Response('请输入完整的请求数据')
 
-        series_query = Series.objects.filter(seriesuid=serid)
-        if len(series_query) == 0:
-            return Response('数据库无此seriesuid')
-        volumepath = series_query[0].seriespixeldatafilepath
+        # series_query = Series.objects.filter(seriesuid=serid)
+        # if len(series_query) == 0:
+        #     return Response('数据库无此seriesuid')
+        # volumepath = series_query[0].seriespixeldatafilepath
+        volumepath = r"D:\bak\SHEN YU-Thorax^10_ZRY_LDCT_Head_first (Adult)-CT.nii.gz"
         f = open(volumepath, 'rb')
         vol = f.read()
         f.close()
@@ -174,6 +175,7 @@ class GetImage(APIView):
         data = size + data
 
         be_factory.protocol.request(data)
+        be_factory.protocol.waiting_for_result()
 
         data = msg.RequestMsg()
         data.session = user_ip

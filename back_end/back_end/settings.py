@@ -128,29 +128,29 @@ WSGI_APPLICATION = 'back_end.wsgi.application'
 
 # -------------------------------------------------------------------------------
 # 连接数据库
-DATABASES = {
-    'default': {
-        # 关联的数据库类型
-        'ENGINE': 'django.db.backends.mysql',
-        # 数据库名
-        'NAME': 'ai_portal',
-        # 数据库登陆用户名
-        'USER': 'root',
-        # 数据库登陆密码
-        'PASSWORD': '111111',
-        # 主机名
-        'HOST': 'localhost',
-        # 端口号
-        'PORT': '3306',
-        # 编码格式
-        'default-character-set': 'utf8',
-        'OPTIONS': {
-         "init_command": "SET foreign_key_checks = 0;",
-        },
-        'default_transaction_isolation': 'read committed'
-    }
-}
-# ---------------------------------------------------------------------------------------
+# DATABASES = {
+#     'default': {
+#         # 关联的数据库类型
+#         'ENGINE': 'django.db.backends.mysql',
+#         # 数据库名
+#         'NAME': 'ai_portal',
+#         # 数据库登陆用户名
+#         'USER': 'root',
+#         # 数据库登陆密码
+#         'PASSWORD': '111111',
+#         # 主机名
+#         'HOST': 'localhost',
+#         # 端口号
+#         'PORT': '3306',
+#         # 编码格式
+#         'default-character-set': 'utf8',
+#         'OPTIONS': {
+#          "init_command": "SET foreign_key_checks = 0;",
+#         },
+#         'default_transaction_isolation': 'read committed'
+#     }
+# }
+# # ---------------------------------------------------------------------------------------
 
 
 # Password validation

@@ -43,13 +43,11 @@ export function HttpLoaderFactory(http: HttpClient) {
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    ContouringModule,
+    HttpClientModule,
     RouterModule.forRoot(ROUTES, {
       // useHash: true,
       preloadingStrategy: PreloadAllModules,
-      enableTracing: true,
     }),
-    HttpClientModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -66,6 +64,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     SideBarModule,
     ForgotPasswordModule,
     RenewPasswordModule,
+    ContouringModule,
   ],
   providers: [
     AppConfigService

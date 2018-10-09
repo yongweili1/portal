@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild, Injector, ElementRef } from '@angular/core';
-import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { HttpClient } from "@angular/common/http";
 import { DialogModule } from 'primeng/dialog';
@@ -19,6 +18,7 @@ import { Page, PageRequest } from '../../../shared/models';
 
 
 import { ContouringService } from '../shared/service/contouring.service';
+import { Observable } from 'rxjs/Observable';
 
 declare var $: any;
 
@@ -79,9 +79,7 @@ export class ContouringComponent implements OnInit {
           this.picLeft3.patient2screen(event[0]);
           this.picLeft3.getBuffer(event[0], 'sagittal', event[1])
           this.picLeft2.getBuffer(event[0], 'coronal', event[1])
-          // var a = new Array(Math.floor(this.imageX * event[0]), Math.floor(this.imageY * event[1]));
-          // var b = new Array('sagittal', 'coronal');
-          // this.getduffer(a, b, event[4])
+
       }
   }
 
@@ -249,7 +247,8 @@ export class ContouringComponent implements OnInit {
   loadSeries() {
     let img = new Image();
     let seriesId:any = 'test1';
-    this.seriesHttpService.GetSeriesPic(seriesId).subscribe((data) =>{
+    this.seriesHttpService.GetSeriesPic(seriesId)
+        .subscribe((value) =>{
         // img.src = data;
         // img.onload = function(){
         //     let c= $(".a_class .icanvas").get(0);
@@ -265,7 +264,7 @@ export class ContouringComponent implements OnInit {
         //     ctx.drawImage(img,20,20,500,300);
        
         // }
-        data = JSON.parse(data);
+        let data = JSON.parse(value);
         if (data.saggital != null)
             {
                 let saggital_canvas = $(".c_class .icanvas").get(0);
@@ -320,56 +319,83 @@ export class ContouringComponent implements OnInit {
     },(error)=>{
         console.log(error);
     })
-
+    let dd=0;
     // $.ajax({
     //     type: "GET",
-    //     url: "http://10.9.19.139:8000/image/volumes?seriesuid=1.3.12.2.1107.5.1.4.64606.30000018051006052134700006373",
-    //  }).done(function (response, a, b, c) {
-    //     img.src = response;
-    //     img.onload = function(){
-    //         let c= $(".a_class .icanvas").get(0);
-    //         let ctx=c.getContext("2d");
+    //     url: "http://127.0.0.1:8000/image/images/?seriesuid=1.3.12.2.1107.5.1.4.64606.30000018051006052134700006373&width=400&height=400&focus_view=&display_view=",
+    //  }).done(function (data, a, b, c) {
+    //     // img.src = response;
+    //     // img.onload = function(){
+    //     //     let c= $(".a_class .icanvas").get(0);
+    //     //     let ctx=c.getContext("2d");
         
-    //         ctx.drawImage(img,20,20,1000,650);
+    //     //     ctx.drawImage(img,20,20,1000,650);
         
-    //         c= $(".b_class .icanvas").get(0);
-    //         ctx=c.getContext("2d");
-    //         ctx.drawImage(img,20,20,500,300);
+    //     //     c= $(".b_class .icanvas").get(0);
+    //     //     ctx=c.getContext("2d");
+    //     //     ctx.drawImage(img,20,20,500,300);
         
-    //         c= $(".c_class .icanvas").get(0);
-    //         ctx=c.getContext("2d");
-    //         ctx.drawImage(img,20,20,500,300);
+    //     //     c= $(".c_class .icanvas").get(0);
+    //     //     ctx=c.getContext("2d");
+    //     //     ctx.drawImage(img,20,20,500,300);
        
+    //     // }
+
+    //     data = JSON.parse(data);
+    //     if (data.saggital != null)
+    //         {
+    //             let saggital_canvas = $(".c_class .icanvas").get(0);
+    //             let saggital_ctx = saggital_canvas.getContext("2d");
+    //             saggital_ctx.clearRect(0,0,saggital_canvas.width,saggital_canvas.height);
+    //             let saggital_img = saggital_ctx.createImageData(data.saggital.length,data.saggital[0].length);
+    //             for (let i = 0; i < data.saggital.length; i++){
+    //                 for (let j = 0; j < data.saggital.length; j++) {
+    //                     saggital_img.data[4 * data.saggital.length * i + j * 4] = data.saggital[i][j][0];
+    //                     saggital_img.data[4 * data.saggital.length * i + j * 4 + 1] = data.saggital[i][j][1];
+    //                     saggital_img.data[4 * data.saggital.length * i + j * 4 + 2] = data.saggital[i][j][2];
+    //                     saggital_img.data[4 * data.saggital.length * i + j * 4 + 3] = 255;
+    //                 }
+    //             }
+    //             saggital_ctx.putImageData(saggital_img, (saggital_canvas.width-data.saggital.length)/2,(saggital_canvas.height-data.saggital[0].length)/2, 0, 0,saggital_canvas.width,saggital_canvas.height);
+    //         }
+
+    //     if (data.coronal != null)
+    //         {
+    //             let coronal_canvas = $(".b_class .icanvas").get(0);
+    //             let coronal_ctx = coronal_canvas.getContext("2d");
+    //             coronal_ctx.clearRect(0,0,coronal_canvas.width,coronal_canvas.height);
+    //             let coronal_img = coronal_ctx.createImageData(data.coronal.length,data.coronal[0].length);
+    //             for (let i = 0; i < data.coronal.length; i++){
+    //                 for (let j = 0; j < data.coronal.length; j++) {
+    //                     coronal_img.data[4 * data.coronal.length * i + j * 4] = data.coronal[i][j][0];
+    //                     coronal_img.data[4 * data.coronal.length * i + j * 4 + 1] = data.coronal[i][j][1];
+    //                     coronal_img.data[4 * data.coronal.length * i + j * 4 + 2] = data.coronal[i][j][2];
+    //                     coronal_img.data[4 * data.coronal.length * i + j * 4 + 3] = 255;
+    //                 }
+    //             }
+    //             coronal_ctx.putImageData(coronal_img,(coronal_canvas.width-data.coronal.length)/2,(coronal_canvas.height-data.coronal[0].length)/2, 0, 0,coronal_canvas.width,coronal_canvas.height);
+    //         }
+    //     if (data.transverse != null)
+    //     {
+    //         let transverse_canvas = $(".a_class .icanvas").get(0);
+    //         let transverse_ctx = transverse_canvas.getContext("2d");
+    //         transverse_ctx.clearRect(0,0,transverse_canvas.width,transverse_canvas.height);
+    //         let transverse_img = transverse_ctx.createImageData(data.transverse.length,data.transverse[0].length);
+    //         for (let i = 0; i < data.transverse.length; i++){
+    //             for (let j = 0; j < data.transverse[0].length; j++) {
+    //                 transverse_img.data[4 * data.transverse.length * i + j * 4] = data.transverse[i][j][0];
+    //                 transverse_img.data[4 * data.transverse.length * i + j * 4 + 1] = data.transverse[i][j][1];
+    //                 transverse_img.data[4 * data.transverse.length * i + j * 4 + 2] = data.transverse[i][j][2];
+    //                 transverse_img.data[4 * data.transverse.length * i + j * 4 + 3] = 255;
+    //             }
+    //         }
+    //         //transverse_img.width = transverse_canvas.width;
+    //         //transverse_ctx.drawImage(transverse_img,0,0,transverse_canvas.width,transverse_canvas.height);
+    //         transverse_ctx.putImageData(transverse_img,(transverse_canvas.width-data.transverse.length)/2,(transverse_canvas.height-data.transverse[0].length)/2, 0, 0,transverse_canvas.width,transverse_canvas.height);
     //     }
     //  }).fail(function (jqXHR, textStatus, errorThrown) {
     //     alert(jqXHR.responseJSON.error.message.value);
     //  });
-
-    
-        //   this.fb(12);
-    //   this.seriesHttp.PostSeriesLoad(seriesId).subscribe(value => {
-    //       this.imageX = this.seriList.rows;
-    //       this.imageY = this.seriList.columns;
-    //       this.imageZ = this.seriList.sliceCounts;
-    //       this.wl = this.seriList.windowingLevel;
-    //       this.ww = this.seriList.windowingWidth;
-    //       this.spacingX = this.seriList.pixelSpacing[0];
-    //       this.spacingY = this.seriList.pixelSpacing[1];
-    //       this.pixelRepresentation = this.seriList.pixelRepresentation;
-    //       this.rescaleSlope = this.seriList.rescaleSlope;
-    //       this.rescaleIntercept = this.seriList.rescaleIntercept;
-    //       this.firstImagePosition = this.seriList.firstImagePosition;
-    //       this.lastImagePosition = this.seriList.lastImagePosition;
-    //       this.sliceX = Math.floor(this.seriList.sliceCounts / 2);
-    //       this.sliceY = Math.floor(this.seriList.columns / 2);
-    //       this.sliceZ = Math.floor(this.seriList.rows / 2);
-    //       if (this.firstImagePosition[2] < this.lastImagePosition[2]) {
-    //           this.gap = new Array(this.spacingX, this.spacingY, this.seriList.pixelSpacing[2]);
-    //       } else {
-    //           this.gap = new Array(this.spacingX, this.spacingY, -this.seriList.pixelSpacing[2]);
-    //       }
-    //       this.sliceAll = new Array(this.sliceX, this.sliceY, this.sliceZ);
-    //   });
 
   }
   auto(node: any) {

@@ -8,7 +8,7 @@ import win32file
 from twisted.internet import reactor
 
 from back_end.util.setFilePath import SaveDicomFilePath, SaveVolumeFilePath
-from twisted_client import be_factory
+from back_end.twisted_client import be_factory
 
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "back_end.settings")

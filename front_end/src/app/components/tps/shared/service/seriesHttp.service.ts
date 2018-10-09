@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {  HttpClient,HttpHeaders } from '@angular/common/http';
+import { AuthHttp } from '../core/auth-http';
 import { SecurityService } from '../../../../services/security.service';
 import { Observable } from 'rxjs/Observable';
 import { StorageService } from './storage.service';
@@ -10,7 +11,7 @@ import {LoadSeriesServiceMock} from '../../../../mocks/load-series-service.mock'
 export class SeriesHttpService {
     headers: HttpHeaders; 
     constructor(
-        private http: HttpClient,
+        private http: AuthHttp,
         private loadSeriesServiceMock:LoadSeriesServiceMock
     ) {
         const headers: HttpHeaders = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' })
@@ -20,13 +21,12 @@ export class SeriesHttpService {
  * @param seriesId 
  */
     GetSeriesPic(seriesId:any):Observable<any>{
-        seriesId = '1.3.12.2.1107.5.1.4.64606.30000018051006052134700006373';
-        const getParams = new HttpParams()
-        .set('seriesuid', seriesId.toString());
+        // const getParams = new HttpParams()
+        // .set('seriesuid', seriesId.toString());
         //return this.http.get<any>('http://localhost:8090/api/load-series',{params : getParams});
         //return this.http.get<string>('http://localhost:8000/image/volumes',{params : getParams});
         //return this.http.get<string>('http://10.9.19.139:8000/image/volumes/',{params : getParams});
-        return this.http.get<any>('http://10.9.19.139:8000/image/images/?seriesuid=1.3.12.2.1107.5.1.4.64606.30000018051006052134700006373&width=400&height=400&focus_view=&display_view=');
+        return this.http.get('http://127.0.0.1:8000/image/images/?seriesuid=1.3.12.2.1107.5.1.4.64606.30000018051006052134700006373&width=400&height=400&focus_view=&display_view=');
         
     }
 

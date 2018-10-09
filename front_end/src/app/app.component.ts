@@ -15,7 +15,7 @@ export class AppComponent {
     translate.setDefaultLang('zh_CN');
     translate.use(appConfig.locale || 'zh_CN');
     moment.locale(appConfig.locale || 'zh_CN');
-
+  //constructor(){}
   }
 
 }
