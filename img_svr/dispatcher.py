@@ -1,66 +1,88 @@
-# -*-coding:utf-8-*-
-
+import struct
 import sys
 
-import socket
+from twisted.internet import reactor
+from twisted.internet.protocol import Protocol, Factory, ClientCreator
+
+from message import RequestData
 from utilities import get_args
 
-from msg import image_msg_pb2 as msg
+
+class Transfer(Protocol):
+    def __init__(self):
+        self.package_size = 0
+        self.received_size = 0
+        self.received_data = ''
+        self.session_mgr = {}
+        self.protocols = []
+        self.ports = [8002, 8003]
+
+    def connectionMade(self):
+        while len(self.ports) > 0:
+            port = self.ports.pop(0)
+            c = ClientCreator(reactor, ClientTransfer)
+            c.connectTCP("127.0.0.1", port).addCallback(self.set_protocol, port=port)
+
+    def set_protocol(self, p, port):
+        p.set_protocol(self)
+        self.protocols.append(p)
+        print('create a new protocol on port {}'.format(port))
+
+    def dataReceived(self, data):
+        # get header info, include total package size
+        if self.package_size == 0:
+            self.package_size, data = self.unpacking(data)
+
+        self.received_data += data
+        self.received_size = len(self.received_data)
+
+        if self.received_size == self.package_size:
+            print('[Dispatcher]Total received: {} bytes'.format(self.received_size))
+
+            data = RequestData(self.received_data)
+
+            if data.session not in self.session_mgr:
+                self.session_mgr[data.session] = self.protocols.pop(0)
+            p = self.session_mgr[data.session]
+            p.transport.write(self.package(self.received_data))
+
+            self.package_size = 0
+            self.received_size = 0
+            self.received_data = ''
+
+    def connectionLost(self, reason):
+        self.transport.loseConnection()
+
+    def unpacking(self, data):
+        size, = struct.unpack('i', data[:4])
+        print('[Dispatcher]package size {} bytes'.format(size))
+        data = data[4:]
+        return size, data
+
+    def package(self, data):
+        size = len(data)
+        return struct.pack('i', size) + data
 
 
-def create_socket(host, port):
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    open_address = (host, port)
-    sock.bind(open_address)
-    sock.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 8388608)
-    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    sock.listen(20)
-    print 'Socket now listening on {}:{}'.format(host, port)
-    return sock
+class ClientTransfer(Protocol):
+    def __init__(self):
+        pass
 
+    def set_protocol(self, p):
+        self.server = p
+        self.server.transport.resumeProducing()
+        pass
 
-class Dispatcher(object):
-    def __init__(self, **kwargs):
-        # key: server_name, value: server port
-        self.allowed_ports = [8883, 8884, 8885]
-        # key: session, value: server port
-        self.connected_ports = {}
-
-        host = kwargs['host'] if kwargs['host'] is not None else '0.0.0.0'
-        port = kwargs['port'] if kwargs['port'] is not None else 0
-        self.sock = create_socket(host, port)
-
-    def start(self):
-        while 1:
-            conn, addr = self.sock.accept()
-            conn.settimeout(600)
-            recv_data = conn.recv(8388608)
-            if not recv_data:
-                continue
-
-            data = msg.RequestMsg()
-            data.ParseFromString(recv_data)
-            session = data.session
-            operation = data.content.params
-            if operation == 'register':
-                if session not in self.connected_ports:
-                    port = self.allowed_ports.pop(0)
-                    self.connected_ports[session] = port
-                else:
-                    port = self.connected_ports[session]
-                print(port)
-                conn.sendall(str(port))
-            elif operation == 'unregister':
-                if session in self.connected_ports:
-                    port = self.connected_ports.pop(session)
-                    self.allowed_ports.append(port)
-                    conn.sendall('0')
-            else:
-                conn.sendall('0')
+    def dataReceived(self, data):
+        self.server.transport.write(data)
+        pass
 
 
 if __name__ == '__main__':
     kwargs = get_args(sys.argv[1:])
-    dispatcher = Dispatcher(**kwargs)
-    dispatcher.start()
-
+    host = kwargs['host'] if kwargs['host'] is not None else '0.0.0.0'
+    port = kwargs['port'] if kwargs['port'] is not None else 0
+    factory = Factory()
+    factory.protocol = Transfer
+    reactor.listenTCP(port, factory)
+    reactor.run()

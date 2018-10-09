@@ -38,7 +38,7 @@ if __name__ == "__main__":
         os.mkdir(SaveVolumeFilePath.volumepath)
 
     # Start a new thread for reactor loop
-    reactor.connectTCP('127.0.0.1', 8883, be_factory)
+    reactor.connectTCP('127.0.0.1', 8001, be_factory)
     thread.start_new_thread(reactor.run, (0,))
 
     try:
