@@ -4,7 +4,8 @@ from md.image3d.python.image3d_tools import estimate_intensity_window, slice_nn
 from md.image3d.python.image3d_vis import slice_to_bytes, bytes_to_colors, multi_image_alpha_blend
 from md.image3d.python.image3d_io import read_image
 from md.mdmath.python.rotation3d import axis_angle_to_rotation_matrix
-from utilities import get_axis, get_orthogonal_axis, get_spacing, get_orthogonal_spacing, ViewEnum
+from utilities import get_axis, get_orthogonal_axis, get_spacing, get_orthogonal_spacing, ViewEnum, \
+    convert_rgba_to_base64
 
 
 class ImageServer(object):
@@ -57,7 +58,7 @@ class ImageServer(object):
         self.configs[series_uid] = {}
         self.configs[series_uid]['center'] = im.center()
         self.configs[series_uid]['cursor'] = im.center()
-        self.configs[series_uid]['spacing'] = im.spacing()
+        self.configs[series_uid]['spacing'] = [1, 1, 1]# im.spacing()
         self.configs[series_uid]['zoom_factor'] = 1
         self.configs[series_uid]['win_center'] = 0
         self.configs[series_uid]['win_width'] = 2000
@@ -235,14 +236,14 @@ class ImageServer(object):
 
         if display_view == ViewEnum.transverse or display_view == ViewEnum.all:
             transverse = self.__get_rgb_image(ViewEnum.transverse, width, height)
-            data['transverse'] = transverse.tolist()
+            data['transverse'] = convert_rgba_to_base64(transverse, 'PNG')
 
         if display_view == ViewEnum.saggital or display_view == ViewEnum.all:
             saggital = self.__get_rgb_image(ViewEnum.saggital, width, height)
-            data['saggital'] = saggital.tolist()
+            data['saggital'] = convert_rgba_to_base64(saggital, 'PNG')
 
         if display_view == ViewEnum.coronal or display_view == ViewEnum.all:
             coronal = self.__get_rgb_image(ViewEnum.coronal, width, height)
-            data['coronal'] = coronal.tolist()
+            data['coronal'] = convert_rgba_to_base64(coronal, 'PNG')
 
         return data

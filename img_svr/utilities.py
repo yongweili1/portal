@@ -1,7 +1,10 @@
+import base64
 import getopt
-import socket
 import sys
+from StringIO import StringIO
+
 import numpy as np
+from PIL import Image
 from enum import Enum
 
 
@@ -80,3 +83,12 @@ def get_spacing(view, cfg):
         return cfg['spacing'][1]
     elif view == ViewEnum.coronal:
         return cfg['spacing'][2]
+
+
+def convert_rgba_to_base64(rgba, format):
+    im = Image.fromarray(rgba)
+    output_buffer = StringIO()
+    im.save(output_buffer, format=format)
+    binary_data = output_buffer.getvalue()
+    base64_data = base64.b64encode(binary_data)
+    return base64_data
