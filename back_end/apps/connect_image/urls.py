@@ -6,7 +6,8 @@ from . import views
 
 urlpatterns = [
     url(r'^home/$', views.Home.as_view(), name='home'),
-    url(r'^volumes/$', views.LoadVolume.as_view(), name='volumes'),
+    url(r'^macro/$', views.MacroRecording.as_view(), name='macro'),
+    # url(r'^volumes/$', views.LoadVolume.as_view(), name='volumes'),
     url(r'^images/$', views.GetImage.as_view(), name='images'),
     url(r'^colors/$', views.ChangeColor.as_view(), name='colors'),
     url(r'^pages/$', views.TurnPage.as_view(), name='pages'),
@@ -17,6 +18,4 @@ urlpatterns = [
     url(r'^serids/$', views.GetSeriesUidList.as_view(), name='serids'),
     url(r'^backs/$', views.ReSetVolume.as_view(), name='reset'),
     url(r'^windows/$', views.ChangeWindow.as_view(), name='windows'),
-
-    url(r'^haha/$', views.Haha.as_view(), name='HAHA'),
 ]
