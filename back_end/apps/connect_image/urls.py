@@ -7,7 +7,7 @@ from . import views
 urlpatterns = [
     url(r'^home/$', views.Home.as_view(), name='home'),
     url(r'^macro/$', views.MacroRecording.as_view(), name='macro'),
-    # url(r'^volumes/$', views.LoadVolume.as_view(), name='volumes'),
+    url(r'^volumes/$', views.LoadVolume.as_view(), name='volumes'),
     url(r'^images/$', views.GetImage.as_view(), name='images'),
     url(r'^colors/$', views.ChangeColor.as_view(), name='colors'),
     url(r'^pages/$', views.TurnPage.as_view(), name='pages'),

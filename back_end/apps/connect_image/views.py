@@ -17,22 +17,43 @@ from twisted_client import be_factory
 from connect_image.macro_recording import Macro
 
 
-conf = ConfigParser.ConfigParser()
-conf.read('back_end/util/serverApi.ini')
-load_url = conf.get("imageApi", "load_url")
-provide_image_url = conf.get("imageApi", "provide_image_url")
-change_color_url = conf.get("imageApi", "change_color_url")
-turn_page_url = conf.get("imageApi", "turn_page_url")
-pan_url = conf.get("imageApi", "pan_url")
-roll_url = conf.get("imageApi", "roll_url")
-rotate_url = conf.get("imageApi", "rotate_url")
-zoom_url = conf.get("imageApi", "zoom_url")
-unload_url = conf.get("imageApi", "unload_url")
-reset_url = conf.get("imageApi", "reset_url")
-change_window_url = conf.get("imageApi", "change_window_url")
+# conf = ConfigParser.ConfigParser()
+# conf.read('back_end/util/serverApi.ini')
+# load_url = conf.get("imageApi", "load_url")
+# provide_image_url = conf.get("imageApi", "provide_image_url")
+# change_color_url = conf.get("imageApi", "change_color_url")
+# turn_page_url = conf.get("imageApi", "turn_page_url")
+# pan_url = conf.get("imageApi", "pan_url")
+# roll_url = conf.get("imageApi", "roll_url")
+# rotate_url = conf.get("imageApi", "rotate_url")
+# zoom_url = conf.get("imageApi", "zoom_url")
+# unload_url = conf.get("imageApi", "unload_url")
+# reset_url = conf.get("imageApi", "reset_url")
+# change_window_url = conf.get("imageApi", "change_window_url")
 
 
 @Macro()
+def load_volume(data=None, volumepath=None, request_url=None):
+    f = open(volumepath, 'rb')
+    vol = f.read()
+    f.close()
+
+    data = data.ParseFromString()
+    data.content.volume = vol
+    data = data.SerializeToString()
+    size = len(data)
+    size = struct.pack('i', size)
+    data = size + data
+
+    be_factory.protocol.request(data)
+    rst = be_factory.protocol.waiting_for_result()
+
+    return rst
+
+# =None, volumepath=None, request_url=None
+# @Macro()
+
+
 def visit_image_server(data):
 
     be_factory.protocol.request(data)
@@ -49,105 +70,80 @@ class MacroRecording(APIView):
         # if macro_status is True:
 
         return Response()
-# class LoadVolume(APIView):
-#
-#     # @recordMacro(macroRecord)
-#     # def aaa(self):
-#     #     pass
-#     def get(self, request):
-#
-#         # macroRecord = True
-#         # aaa()
-#
-#         """
-#         the client request loads a series
-#         :param seriesuid: series uid
-#         :return:boolean true for success, false for failure
-#         """
-#         serid = request.GET.get('seriesuid', None)
-#         user_ip = request.META.get('REMOTE_ADDR', None)
-#
-#         series_query = Series.objects.filter(seriesuid=serid)
-#         if len(series_query) == 0:
-#             return Response('数据库无此seriesuid')
-#         volumepath = series_query[0].seriespixeldatafilepath
-#         f = open(volumepath, 'rb')
-#         vol = f.read()
-#         f.close()
-#
-#         data = msg.RequestMsg()
-#         data.session = user_ip
-#         data.server_name = 'image'
-#         data.command = 'load'
-#         data.content.params = json.dumps({'seriesuid': serid})
-#         data.content.volume = vol
-#         data = data.SerializeToString()
-#         size = len(data)
-#         size = struct.pack('i', size)
-#         data = size + data
-#
-#         be_factory.protocol.request(data)
-#
-#         serid = request.GET.get('seriesuid', None)
-#         width = request.GET.get('width', None)
-#         height = request.GET.get('height', None)
-#         focus_view = request.GET.get('focus_view', None)
-#         display_view = request.GET.get('display_view', 'transverse')
-#         user_ip = request.META.get('REMOTE_ADDR', None)
-#
-#         if width is None or height is None:
-#             return Response('请输入完整的请求数据')
-#
-#         data = msg.RequestMsg()
-#         data.session = user_ip
-#         data.server_name = 'image'
-#         data.command = 'show'
-#         data.content.params = json.dumps({'seriesuid': serid,
-#                                           'width': width,
-#                                           'height': height,
-#                                           'focus_view': focus_view,
-#                                           'display_view': display_view
-#                                           })
-#         data = data.SerializeToString()
-#         size = len(data)
-#         size = struct.pack('i', size)
-#         data = size + data
-#
-#         try:
-#             rst = visit_image_server(data)
-#         except:
-#             return Response('服务间数据传输失败')
-#
-#         return Response(rst.kwargs)
-#
-#     def delete(self, request):
-#         """
-#         the client request unload volume data from memory
-#         :param seriesuid: series uid
-#         :return:boolean true for success, false for failure
-#         """
-#         serid = request.GET.get('seriesuid', None)
-#         user_ip = request.META.get('REMOTE_ADDR', None)
-#
-#         if serid is None:
-#             return Response('请输入序列UID')
-#
-#         data = msg.RequestMsg()
-#         data.session = user_ip
-#         data.server_name = 'image'
-#         data.command = 'unload'
-#         data.content.params = json.dumps({'seriesuid': serid})
-#         data = data.SerializeToString()
-#         size = len(data)
-#         size = struct.pack('i', size)
-#         data = size + data
-#
-#         try:
-#             rst = visit_image_server(data)
-#         except:
-#             return Response('服务间数据传输失败')
-#
-#         return Response(rst.kwargs)
+
+
+class LoadVolume(APIView):
+
+    # @recordMacro(macroRecord)
+    # def aaa(self):
+    #     pass
+    def get(self, request):
+
+        # macroRecord = True
+        # aaa()
+
+        """
+        the client request loads a series
+        :param seriesuid: series uid
+        :return:boolean true for success, false for failure
+        """
+        serid = request.GET.get('seriesuid', None)
+        user_ip = request.META.get('REMOTE_ADDR', None)
+
+        series_query = Series.objects.filter(seriesuid=serid)
+        if len(series_query) == 0:
+            return Response('数据库无此seriesuid')
+        volumepath = series_query[0].seriespixeldatafilepath
+        f = open(volumepath, 'rb')
+        vol = f.read()
+        f.close()
+
+        data = msg.RequestMsg()
+        data.session = user_ip
+        data.server_name = 'image'
+        data.command = 'load'
+        data.content.params = json.dumps({'seriesuid': serid})
+        data.content.volume = vol
+        data = data.SerializeToString()
+        size = len(data)
+        size = struct.pack('i', size)
+        data = size + data
+
+        try:
+            rst = visit_image_server(data)
+        except:
+            return Response('服务间数据传输失败')
+
+        return Response(rst.kwargs)
+
+    def delete(self, request):
+        """
+        the client request unload volume data from memory
+        :param seriesuid: series uid
+        :return:boolean true for success, false for failure
+        """
+        serid = request.GET.get('seriesuid', None)
+        user_ip = request.META.get('REMOTE_ADDR', None)
+
+        if serid is None:
+            return Response('请输入序列UID')
+
+        data = msg.RequestMsg()
+        data.session = user_ip
+        data.server_name = 'image'
+        data.command = 'unload'
+        data.content.params = json.dumps({'seriesuid': serid})
+        data = data.SerializeToString()
+        size = len(data)
+        size = struct.pack('i', size)
+        data = size + data
+
+        try:
+            rst = visit_image_server(data)
+        except:
+            return Response('服务间数据传输失败')
+
+        return Response(rst.kwargs)
 
 
 class GetImage(APIView):
@@ -170,34 +166,12 @@ class GetImage(APIView):
         focus_view = request.GET.get('focus_view', None)
         display_view = request.GET.get('display_view', 'all')
         user_ip = request.META.get('REMOTE_ADDR', None)
+        request_url = request.path
+        print('-'*100)
+        print(request_url.split("/")[-2])
 
         if width is None or height is None:
             return Response('请输入完整的请求数据')
-
-        series_query = Series.objects.filter(seriesuid=serid)
-        if len(series_query) == 0:
-            return Response('数据库无此seriesuid')
-
-        volumepath = series_query[0].seriespixeldatafilepath
-        f = open(volumepath, 'rb')
-        vol = f.read()
-        f.close()
-
-        data = msg.RequestMsg()
-        data.session = user_ip
-        data.server_name = 'image'
-        data.command = 'load'
-        data.content.params = json.dumps({'seriesuid': serid})
-        data.content.volume = vol
-        data = data.SerializeToString()
-        size = len(data)
-        size = struct.pack('i', size)
-        data = size + data
-
-        try:
-            rst = visit_image_server(data)
-        except:
-            return Response('服务间数据传输失败')
 
         data = msg.RequestMsg()
         data.session = user_ip
@@ -215,7 +189,7 @@ class GetImage(APIView):
         data = size + data
 
         try:
-            rst = visit_image_server(data)
+            rst = visit_image_server(data)   # =data, request_url=request_url
         except:
             return Response('服务间数据传输失败')
 
