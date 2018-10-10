@@ -11,11 +11,9 @@ from rest_framework.views import APIView
 # from connect_image.user_ip_to_port import ip_port
 import ConfigParser
 import image_msg_pb2 as msg
-from patientinformations.models import Series
+from connect_image.models import Series
 
-from twisted_client import be_factory
-from connect_image.macro_recording import Macro
-
+from back_end.twisted_client import be_factory
 
 # conf = ConfigParser.ConfigParser()
 # conf.read('back_end/util/serverApi.ini')
@@ -30,6 +28,7 @@ from connect_image.macro_recording import Macro
 # unload_url = conf.get("imageApi", "unload_url")
 # reset_url = conf.get("imageApi", "reset_url")
 # change_window_url = conf.get("imageApi", "change_window_url")
+from macro_recording import Macro
 
 
 @Macro()
@@ -55,15 +54,12 @@ def load_volume(data=None, volumepath=None, request_url=None):
 
 
 def visit_image_server(data):
-
     be_factory.protocol.request(data)
     rst = be_factory.protocol.waiting_for_result()
 
     return rst
 
-
-class MacroRecording(APIView):
-
+class A(APIView):
     def get(self, request):
         macro_status = request.GET.get('macro_status', None)
         Macro.macro_status = macro_status
@@ -74,14 +70,7 @@ class MacroRecording(APIView):
 
 class LoadVolume(APIView):
 
-    # @recordMacro(macroRecord)
-    # def aaa(self):
-    #     pass
     def get(self, request):
-
-        # macroRecord = True
-        # aaa()
-
         """
         the client request loads a series
         :param seriesuid: series uid
@@ -111,10 +100,10 @@ class LoadVolume(APIView):
 
         try:
             rst = visit_image_server(data)
-        except:
+        except Exception as e:
             return Response('服务间数据传输失败')
 
-        return Response(rst.kwargs)
+        return Response('success')
 
     def delete(self, request):
         """
@@ -124,7 +113,6 @@ class LoadVolume(APIView):
         """
         serid = request.GET.get('seriesuid', None)
         user_ip = request.META.get('REMOTE_ADDR', None)
-
         if serid is None:
             return Response('请输入序列UID')
 
@@ -140,9 +128,8 @@ class LoadVolume(APIView):
 
         try:
             rst = visit_image_server(data)
-        except:
+        except Exception as e:
             return Response('服务间数据传输失败')
-
         return Response(rst.kwargs)
 
 
@@ -190,9 +177,8 @@ class GetImage(APIView):
 
         try:
             rst = visit_image_server(data)   # =data, request_url=request_url
-        except:
+        except Exception as e:
             return Response('服务间数据传输失败')
-
         return Response(rst.kwargs)
 
 
@@ -238,7 +224,6 @@ class ChangeColor(APIView):
         focus_view = request.GET.get('focus_view', None)
         display_view = request.GET.get('display_view', 'all')
         user_ip = request.META.get('REMOTE_ADDR', None)
-
         if width is None or height is None:
             return Response('请输入完整的请求数据')
 
@@ -258,10 +243,10 @@ class ChangeColor(APIView):
         data = size + data
 
         try:
-            rst = visit_image_server(data)
-        except:
+            be_factory.protocol.request(data)
+            rst = be_factory.protocol.waiting_for_result()
+        except Exception as e:
             return Response('服务间数据传输失败')
-
         return Response(rst.kwargs)
 
 
@@ -285,7 +270,6 @@ class TurnPage(APIView):
         focus_view = request.GET.get('focus_view', None)
         display_view = request.GET.get('display_view', 'all')
         user_ip = request.META.get('REMOTE_ADDR', None)
-
         if width is None or height is None:
             return Response('请输入完整的请求数据')
 
@@ -305,10 +289,10 @@ class TurnPage(APIView):
         data = size + data
 
         try:
-            rst = visit_image_server(data)
-        except:
+            be_factory.protocol.request(data)
+            rst = be_factory.protocol.waiting_for_result()
+        except Exception as e:
             return Response('服务间数据传输失败')
-
         return Response(rst.kwargs)
 
 
@@ -332,7 +316,6 @@ class Pan(APIView):
         focus_view = request.GET.get('focus_view', None)
         display_view = request.GET.get('display_view', 'all')
         user_ip = request.META.get('REMOTE_ADDR', None)
-
         if width is None or height is None:
             return Response('请输入完整的请求数据')
 
@@ -352,10 +335,10 @@ class Pan(APIView):
         data = size + data
 
         try:
-            rst = visit_image_server(data)
-        except:
+            be_factory.protocol.request(data)
+            rst = be_factory.protocol.waiting_for_result()
+        except Exception as e:
             return Response('服务间数据传输失败')
-
         return Response(rst.kwargs)
 
 
@@ -379,7 +362,6 @@ class Roll(APIView):
         focus_view = request.GET.get('focus_view', None)
         display_view = request.GET.get('display_view', 'all')
         user_ip = request.META.get('REMOTE_ADDR', None)
-
         if width is None or height is None:
             return Response('请输入完整的请求数据')
 
@@ -399,10 +381,10 @@ class Roll(APIView):
         data = size + data
 
         try:
-            rst = visit_image_server(data)
-        except:
+            be_factory.protocol.request(data)
+            rst = be_factory.protocol.waiting_for_result()
+        except Exception as e:
             return Response('服务间数据传输失败')
-
         return Response(rst.kwargs)
 
 
@@ -426,7 +408,6 @@ class Rotate(APIView):
         focus_view = request.GET.get('focus_view', None)
         display_view = request.GET.get('display_view', 'all')
         user_ip = request.META.get('REMOTE_ADDR', None)
-
         if width is None or height is None:
             return Response('请输入完整的请求数据')
 
@@ -446,10 +427,10 @@ class Rotate(APIView):
         data = size + data
 
         try:
-            rst = visit_image_server(data)
-        except:
+            be_factory.protocol.request(data)
+            rst = be_factory.protocol.waiting_for_result()
+        except Exception as e:
             return Response('服务间数据传输失败')
-
         return Response(rst.kwargs)
 
 
@@ -473,7 +454,6 @@ class Zoom(APIView):
         focus_view = request.GET.get('focus_view', None)
         display_view = request.GET.get('display_view', 'all')
         user_ip = request.META.get('REMOTE_ADDR', None)
-
         if width is None or height is None:
             return Response('请输入完整的请求数据')
 
@@ -493,10 +473,10 @@ class Zoom(APIView):
         data = size + data
 
         try:
-            rst = visit_image_server(data)
-        except:
+            be_factory.protocol.request(data)
+            rst = be_factory.protocol.waiting_for_result()
+        except Exception as e:
             return Response('服务间数据传输失败')
-
         return Response(rst.kwargs)
 
 
@@ -518,7 +498,6 @@ class ReSetVolume(APIView):
         focus_view = request.GET.get('focus_view', None)
         display_view = request.GET.get('display_view', 'all')
         user_ip = request.META.get('REMOTE_ADDR', None)
-
         if width is None or height is None:
             return Response('请输入完整的请求数据')
 
@@ -537,10 +516,10 @@ class ReSetVolume(APIView):
         data = size + data
 
         try:
-            rst = visit_image_server(data)
-        except:
+            be_factory.protocol.request(data)
+            rst = be_factory.protocol.waiting_for_result()
+        except Exception as e:
             return Response('服务间数据传输失败')
-
         return Response(rst.kwargs)
 
 
@@ -564,7 +543,6 @@ class ChangeWindow(APIView):
         focus_view = request.GET.get('focus_view', None)
         display_view = request.GET.get('display_view', 'all')
         user_ip = request.META.get('REMOTE_ADDR', None)
-
         if width is None or height is None:
             return Response('请输入完整的请求数据')
 
@@ -584,8 +562,8 @@ class ChangeWindow(APIView):
         data = size + data
 
         try:
-            rst = visit_image_server(data)
-        except:
+            be_factory.protocol.request(data)
+            rst = be_factory.protocol.waiting_for_result()
+        except Exception as e:
             return Response('服务间数据传输失败')
-
         return Response(rst.kwargs)

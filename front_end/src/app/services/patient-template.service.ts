@@ -3,6 +3,7 @@ import { URLSearchParams } from '@angular/http';
 import { Observable, of } from 'rxjs';
 import {  HttpClient,HttpHeaders } from '@angular/common/http';
 import {HttpParams} from "@angular/common/http";
+import { AjaxService } from "../services/ajax.service";
 
 import { AppConfigService } from '../app.config';
 import { AuthHttp } from '../core/auth-http';
@@ -21,7 +22,8 @@ export class PatientTemplateService {
     private http: HttpClient,
     private appConfig: AppConfigService,
     private messageService: ToastService,
-    private patientService: PatientTemplateServiceMock
+    private patientService: PatientTemplateServiceMock,
+    private aj :AjaxService
 ) { }
 
   public getPatientTemplate(pageRequest: PatientPageRequest): Observable<Page<PatientPageRequest>> {
@@ -33,12 +35,14 @@ export class PatientTemplateService {
     .set('gender', pageRequest.gender)
     .set('modality', pageRequest.modality)
     .set('studyDate', pageRequest.studyDate.toString());
-    return this.http
-      .get<Page<PatientPageRequest>>('http://10.9.19.139:8000/patientinformations/patinfolist/',{params:searchParams});
+    // return this.http
+    //   .get<Page<PatientPageRequest>>('http://10.9.19.139:8000/patientinformations/patinfolist/',{params:searchParams});
+      // return this.http
+      // .get<Page<PatientPageRequest>>('http://127.0.0.1:8000/patientinformations/patinfolist/',{params:searchParams});
     // return this.http
     //   .get<Page<PatientPageRequest>>(`${this.appConfig.apiUrl}/patientinformations/patinfolist/`,{params:searchParams});
-    // return this.http
-    // .get<Page<PatientPageRequest>>('http://localhost:8090/api/patient-template');
+    return this.aj
+    .get<Page<PatientPageRequest>>('http://localhost:8090/api/patient-template');
   }
 
 

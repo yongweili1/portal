@@ -84,7 +84,7 @@ export class PaListComponent implements OnInit {
           this.pageModel.content[i].no = i + 1;
           this.patientId = this.pageModel.content[i].patientId;
       }
-      })
+      });
       return;
     }
 
