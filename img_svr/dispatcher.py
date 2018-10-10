@@ -85,4 +85,5 @@ if __name__ == '__main__':
     factory = Factory()
     factory.protocol = Transfer
     reactor.listenTCP(port, factory)
+    print("Dispatcher started, waiting for connection on port {}".format(port))
     reactor.run()
