@@ -55,11 +55,13 @@ const AuthConfigDefaults: IAuthConfig = {
   tokenName: AuthConfigConsts.DEFAULT_TOKEN_NAME,
   tokenGetter: () => localStorage.getItem(AuthConfigDefaults.tokenName) as string,
   noJwtError: false,
-  noClientCheck: false,
+  noClientCheck: true,
   globalHeaders: [{ 'Access-Control-Allow-Origin': '*' },
   { 'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'},
   { 'Access-Control-Allow-Methods': 'OPTIONS,HEAD,GET,PUT,POST,DELETE,PATCH' }],
-  noTokenScheme: false
+  // globalHeaders: [
+  // { 'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'}],
+  // noTokenScheme: false
 };
 
 /**

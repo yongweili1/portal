@@ -231,13 +231,6 @@ export class ContouringComponent implements OnInit {
       this.picLeft2.clearmouse();
       this.picLeft3.clearmouse();
   }
-  test(){
-      this.seriesHttpService.testService().subscribe((data)=>{
-          alert(data);
-      }
-
-      )
-  }
   
   sliceX: any; sliceY: any; sliceZ: any; gap: any; sliceAll: any;
   /**
@@ -245,81 +238,53 @@ export class ContouringComponent implements OnInit {
    * @param seriesId 
    */
   loadSeries() {
-    let img = new Image();
+    let img1 = new Image();
+    let img2 = new Image();
+    let img3 = new Image();
     let seriesId:any = 'test1';
-    this.seriesHttpService.GetSeriesPic(seriesId)
-        .subscribe((value) =>{
-        // img.src = data;
-        // img.onload = function(){
-        //     let c= $(".a_class .icanvas").get(0);
-        //     let ctx=c.getContext("2d");    
-        //     ctx.drawImage(img,20,20,1000,650);
-    
-        //     c= $(".b_class .icanvas").get(0);
-        //     ctx=c.getContext("2d");
-        //     ctx.drawImage(img,20,20,500,300);
-    
-        //     c= $(".c_class .icanvas").get(0);
-        //     ctx=c.getContext("2d");
-        //     ctx.drawImage(img,20,20,500,300);
-       
-        // }
+    this.seriesHttpService.GetSeries(seriesId).subscribe((value) =>{
         let data = JSON.parse(value);
-        if (data.saggital != null)
-            {
-                let saggital_canvas = $(".c_class .icanvas").get(0);
-                let saggital_ctx = saggital_canvas.getContext("2d");
-                saggital_ctx.clearRect(0,0,saggital_canvas.width,saggital_canvas.height);
-                let saggital_img = saggital_ctx.createImageData(data.saggital.length,data.saggital[0].length);
-                for (let i = 0; i < data.saggital.length; i++){
-                    for (let j = 0; j < data.saggital.length; j++) {
-                        saggital_img.data[4 * data.saggital.length * i + j * 4] = data.saggital[i][j][0];
-                        saggital_img.data[4 * data.saggital.length * i + j * 4 + 1] = data.saggital[i][j][1];
-                        saggital_img.data[4 * data.saggital.length * i + j * 4 + 2] = data.saggital[i][j][2];
-                        saggital_img.data[4 * data.saggital.length * i + j * 4 + 3] = 255;
-                    }
-                }
-                saggital_ctx.putImageData(saggital_img, (saggital_canvas.width-data.saggital.length)/2,(saggital_canvas.height-data.saggital[0].length)/2, 0, 0,saggital_canvas.width,saggital_canvas.height);
-            }
-
-        if (data.coronal != null)
-            {
-                let coronal_canvas = $(".b_class .icanvas").get(0);
-                let coronal_ctx = coronal_canvas.getContext("2d");
-                coronal_ctx.clearRect(0,0,coronal_canvas.width,coronal_canvas.height);
-                let coronal_img = coronal_ctx.createImageData(data.coronal.length,data.coronal[0].length);
-                for (let i = 0; i < data.coronal.length; i++){
-                    for (let j = 0; j < data.coronal.length; j++) {
-                        coronal_img.data[4 * data.coronal.length * i + j * 4] = data.coronal[i][j][0];
-                        coronal_img.data[4 * data.coronal.length * i + j * 4 + 1] = data.coronal[i][j][1];
-                        coronal_img.data[4 * data.coronal.length * i + j * 4 + 2] = data.coronal[i][j][2];
-                        coronal_img.data[4 * data.coronal.length * i + j * 4 + 3] = 255;
-                    }
-                }
-                coronal_ctx.putImageData(coronal_img,(coronal_canvas.width-data.coronal.length)/2,(coronal_canvas.height-data.coronal[0].length)/2, 0, 0,coronal_canvas.width,coronal_canvas.height);
-            }
+        let base64Header = "data:image/png;base64,";
+        let c1,c2,c3:any;
+        let ctx1,ctx2,ctx3:any;
+        let imgData1,imgData2,imgData3:any;
         if (data.transverse != null)
         {
-            let transverse_canvas = $(".a_class .icanvas").get(0);
-            let transverse_ctx = transverse_canvas.getContext("2d");
-            transverse_ctx.clearRect(0,0,transverse_canvas.width,transverse_canvas.height);
-            let transverse_img = transverse_ctx.createImageData(data.transverse.length,data.transverse[0].length);
-            for (let i = 0; i < data.transverse.length; i++){
-                for (let j = 0; j < data.transverse[0].length; j++) {
-                    transverse_img.data[4 * data.transverse.length * i + j * 4] = data.transverse[i][j][0];
-                    transverse_img.data[4 * data.transverse.length * i + j * 4 + 1] = data.transverse[i][j][1];
-                    transverse_img.data[4 * data.transverse.length * i + j * 4 + 2] = data.transverse[i][j][2];
-                    transverse_img.data[4 * data.transverse.length * i + j * 4 + 3] = 255;
-                }
+            imgData1 = base64Header + data.transverse;
+            img1.src = imgData1;
+            img1.onload = function(){
+                c1= $(".a_class .icanvas").get(0);
+                ctx1=c1.getContext("2d");    
+                ctx1.drawImage(img1,20,20,1000,650);
             }
-            //transverse_img.width = transverse_canvas.width;
-            //transverse_ctx.drawImage(transverse_img,0,0,transverse_canvas.width,transverse_canvas.height);
-            transverse_ctx.putImageData(transverse_img,(transverse_canvas.width-data.transverse.length)/2,(transverse_canvas.height-data.transverse[0].length)/2, 0, 0,transverse_canvas.width,transverse_canvas.height);
+        }
+        if (data.saggital != null)
+        {
+            imgData2 = base64Header + data.saggital;
+            img2.src = imgData2;
+            img2.onload = function(){
+                c2= $(".b_class .icanvas").get(0);
+                ctx2=c2.getContext("2d");    
+                ctx2.drawImage(img2,20,20,500,300);
+            }
+        }
+        if (data.coronal != null)
+        {
+            imgData3 = base64Header + data.coronal;
+            img3.src = imgData3;
+            img3.onload = function(){
+                c3= $(".c_class .icanvas").get(0);
+                ctx3=c3.getContext("2d");   
+                ctx3.drawImage(img3,20,20,500,300);
+            }
         }
     },(error)=>{
         console.log(error);
     })
-    let dd=0;
+    this.gap[0] = 10;
+    this.gap[1] = 10;
+    this.gap[2] = 10;
+    }
     // $.ajax({
     //     type: "GET",
     //     url: "http://127.0.0.1:8000/image/images/?seriesuid=1.3.12.2.1107.5.1.4.64606.30000018051006052134700006373&width=400&height=400&focus_view=&display_view=",
@@ -397,7 +362,7 @@ export class ContouringComponent implements OnInit {
     //     alert(jqXHR.responseJSON.error.message.value);
     //  });
 
-  }
+
   auto(node: any) {
       // var formData = { patientID: this.patientCollection.patient.Get(0).id, algorithmName: node[0], seriesID: this.patientCollection.patient.Get(0).series.Get(0).id };
       // this.roiHttp.PostCreateRoiByAtlas(formData).subscribe(value => {

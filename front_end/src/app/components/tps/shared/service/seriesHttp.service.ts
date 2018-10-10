@@ -1,17 +1,20 @@
 import { Injectable } from '@angular/core';
 import {  HttpClient,HttpHeaders } from '@angular/common/http';
-import { AuthHttp } from '../core/auth-http';
+import { AuthHttp } from '../../../../core/auth-http';
 import { SecurityService } from '../../../../services/security.service';
 import { Observable } from 'rxjs/Observable';
 import { StorageService } from './storage.service';
 import {HttpParams} from "@angular/common/http";
 import {LoadSeriesServiceMock} from '../../../../mocks/load-series-service.mock'
+import { ajax } from "rxjs/ajax";
+import { AjaxService } from "../../../../services/ajax.service";
 
 @Injectable()
 export class SeriesHttpService {
     headers: HttpHeaders; 
     constructor(
-        private http: AuthHttp,
+        private aj:AjaxService,
+        private http: HttpClient,
         private loadSeriesServiceMock:LoadSeriesServiceMock
     ) {
         const headers: HttpHeaders = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' })
@@ -20,25 +23,37 @@ export class SeriesHttpService {
  * 从后端获取序列图片
  * @param seriesId 
  */
-    GetSeriesPic(seriesId:any):Observable<any>{
-        // const getParams = new HttpParams()
-        // .set('seriesuid', seriesId.toString());
+    GetSeries(seriesId:any):Observable<any>{
+        const getParams = new HttpParams()
+         .set('seriesuid', "1.3.12.2.1107.5.1.4.64606.30000018051006052134700006373")
+         .set('width', "400")
+         .set('height', "400")
+         .set('focus_view', "")
+         .set('display_view', "");
         //return this.http.get<any>('http://localhost:8090/api/load-series',{params : getParams});
         //return this.http.get<string>('http://localhost:8000/image/volumes',{params : getParams});
         //return this.http.get<string>('http://10.9.19.139:8000/image/volumes/',{params : getParams});
-        return this.http.get('http://127.0.0.1:8000/image/images/?seriesuid=1.3.12.2.1107.5.1.4.64606.30000018051006052134700006373&width=400&height=400&focus_view=&display_view=');
+        //return this.http.get('http://127.0.0.1:8000/image/images/?seriesuid=1.3.12.2.1107.5.1.4.64606.30000018051006052134700006373&width=400&height=400&focus_view=&display_view=');
+        return this.aj.get('http://127.0.0.1:8000/image/images',{params : getParams});
         
     }
 
-/**
- * 测试接口
- */
-    testService():Observable<string>{
-        //return this.http.get<any>('http://localhost:8090/api/load-series',{params : getParams});
-        return this.http.get<string>('http://localhost:8000/image/sayhi');
-        //return this.http.get<string>('http://10.9.19.139:8000/image/sayhi');
-        
-    }
+
+GetSeriesPic(focus:any,display:any,delta:any,width:any,height:any):Observable<any>{
+    const getParams = new HttpParams()
+     .set('delta', delta)
+     .set('width', width)
+     .set('height', height)
+     .set('focus_view', focus)
+     .set('display_view', display);
+    //return this.http.get<any>('http://localhost:8090/api/load-series',{params : getParams});
+    //return this.http.get<string>('http://localhost:8000/image/volumes',{params : getParams});
+    //return this.http.get<string>('http://10.9.19.139:8000/image/volumes/',{params : getParams});
+    //return this.http.get('http://127.0.0.1:8000/image/images/?seriesuid=1.3.12.2.1107.5.1.4.64606.30000018051006052134700006373&width=400&height=400&focus_view=&display_view=');
+    return this.aj.get('http://127.0.0.1:8000/image/pages',{params : getParams});
+    
+}
+
 
     // PostSeriesLoad(id: number) {
     //     const baseUrl = (this.storageService.retrieve("PATIENT_API_URLS") as string);

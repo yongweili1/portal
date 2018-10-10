@@ -3,6 +3,7 @@ import { HttpClient } from "@angular/common/http";
 import { actionService } from './action.service';
 import { StorageService } from '../../shared/service/storage.service';
 import { ConMessageService } from '../../shared/service/conMessage.service';
+import { SeriesHttpService } from '../../shared/service/seriesHttp.service';
 import { glsource } from './glsource.modal';
 import {LoadSeriesServiceMock} from '../../../../mocks/load-series-service.mock'
 declare var $: any;
@@ -46,8 +47,10 @@ export class PicAxialComponent implements OnChanges {
   @Output() changeCross: EventEmitter<any> = new EventEmitter<any>();
   @Output() twoCross: EventEmitter<any> = new EventEmitter<any>();
   @Output() message: EventEmitter<any> = new EventEmitter<any>();
+  @Output() scroll: EventEmitter<any> = new EventEmitter<any>();
   glsource = new glsource();
   curAction: any;
+  focus:any;display:any;
 
 
   constructor(
@@ -56,7 +59,8 @@ export class PicAxialComponent implements OnChanges {
     private storageService: StorageService, 
     private actionService: actionService, 
     private element: ElementRef,
-    private loadSeriesServiceMock:LoadSeriesServiceMock
+    private loadSeriesServiceMock:LoadSeriesServiceMock,
+    private seriesHttpService:SeriesHttpService
     ) {
   }
 
@@ -103,7 +107,7 @@ export class PicAxialComponent implements OnChanges {
     // }
    // this.getBuffer(this.postPoint, this.tag, 1);
     //this.crosscan.addChild(this.stage);
-    this.actionService.threeStart(myCanvas, lightPoint);
+    //this.actionService.threeStart(myCanvas, lightPoint);
     this.windowAddMouseWheel(this.tag);
 }
 
@@ -267,203 +271,67 @@ base64tobin(base64) {
   return buffer;
 }
 
-getBuffer(postPoint, tag, downsamplefactor) {
-  let that = this;
-  if (this.imageWidth == "" || this.imageWidth == undefined || this.imageWidth == null) {
-      return false;
-  } else {
-      this.postPoint = postPoint;
-      var data = { sliceTypes: [tag], crossPointX: this.postPoint[0], crossPointY: this.postPoint[1], crossPointZ: this.postPoint[2], downSampleFactor: downsamplefactor }
-      $.ajax({
-          url: this.storageService.retrieve("PATIENT_API_URLS") + "services/app/Series/GetMpr",
-          type: "POST",
-          dataType: 'JSON',
-          // headers: {
-          //     Authorization: 'Bearer ' + abp.auth.getToken(),
-          // },
-          async: true,
-          contentType: 'application/json',
-          data: JSON.stringify(data),
-          success: function(res) {
-              if (tag == "axial") {
-                  that.imageWidth = res.result.mprSliceDetails.Axial.width;
-                  that.imageHeight = res.result.mprSliceDetails.Axial.height;
-                  var base64 = res.result.mprSliceDetails.Axial.buffer;
-                  var mat = res.result.mprSliceDetails.Axial.mprModel2PatientMatrix;
-                  that.mpr2Patient = mat4.fromValues(mat[0], mat[1], mat[2], mat[3], mat[4], mat[5], mat[6], mat[7], mat[8], mat[9], mat[10], mat[11], mat[12], mat[13], mat[14], mat[15]);
-              }
-              if (tag == "coronal") {
-                  that.imageWidth = res.result.mprSliceDetails.Coronal.width;
-                  that.imageHeight = res.result.mprSliceDetails.Coronal.height;
-                  var base64 = res.result.mprSliceDetails.Coronal.buffer;
-                  var mat = res.result.mprSliceDetails.Coronal.mprModel2PatientMatrix;
-                  that.mpr2Patient = mat4.fromValues(mat[0], mat[1], mat[2], mat[3], mat[4], mat[5], mat[6], mat[7], mat[8], mat[9], mat[10], mat[11], mat[12], mat[13], mat[14], mat[15]);
-              }
-              if (tag == "sagittal") {
-                  that.imageWidth = res.result.mprSliceDetails.Sagittal.width;
-                  that.imageHeight = res.result.mprSliceDetails.Sagittal.height;
-                  var base64 = res.result.mprSliceDetails.Sagittal.buffer;
-                  that.mpr2Patient = res.result.mprSliceDetails.Sagittal.mprModel2PatientMatrix;
-              }
-
-              if (that.pixelRepresentation == 1) {
-                  that.unts = new Int16Array(that.base64tobin(base64));
-                  for (var i = 0; i < that.unts.length; ++i) {
-                      that.unts[i] = that.unts[i] + 1000;
-                  }
-                  that.unts = new Uint16Array(that.unts);
-              } else {
-                  that.unts = new Uint16Array(that.base64tobin(base64));
-              }
-              that.setupScene();
-              that.affineMat3 = that.ceateAffineTrans(that.scale, that.transX * that.scale, that.transY * that.scale);
-              that.drawScene(that.gl, that.programInfo, that.buffers, that.texture);
-              that.CT();
-              $(".ww").val(that.ww);
-              $(".wl").val(that.wl);
-              that.canbas.find(".pageindex").text(that.pageindex + "/" + that.pageindexit);
-          },
-          error: function(er) {
-              return;
-          }
-      });
-  }
-}
-
-getBufferTemp(tag) {
+loadPics(delt:any) {
+    let img1 = new Image();
     let that = this;
-    if (this.imageWidth == "" || this.imageWidth == undefined || this.imageWidth == null) {
-        this.imageWidth = 300;
-    } else {
-        var data = { sliceTypes: tag}
-        $.ajax({
-            url: "http://localhost:8090/api/load-series",
-            type: "POST",
-            dataType: 'JSON',
-            // headers: {
-            //     Authorization: 'Bearer ' + abp.auth.getToken(),
-            // },
-            async: true,
-            contentType: 'application/json',
-            data: JSON.stringify(data),
-            success: function(res) {
-                if (tag == "axial") {
-                    var base64 = res;
-                }
-                if (tag == "coronal") {
-                    // that.imageWidth = res.result.mprSliceDetails.Coronal.width;
-                    // that.imageHeight = res.result.mprSliceDetails.Coronal.height;
-                    var base64 = res;
-                    // var mat = res.result.mprSliceDetails.Coronal.mprModel2PatientMatrix;
-                    // that.mpr2Patient = mat4.fromValues(mat[0], mat[1], mat[2], mat[3], mat[4], mat[5], mat[6], mat[7], mat[8], mat[9], mat[10], mat[11], mat[12], mat[13], mat[14], mat[15]);
-                }
-                if (tag == "sagittal") {
-                    // that.imageWidth = res.result.mprSliceDetails.Sagittal.width;
-                    // that.imageHeight = res.result.mprSliceDetails.Sagittal.height;
-                    var base64 = res;
-                    // that.mpr2Patient = res.result.mprSliceDetails.Sagittal.mprModel2PatientMatrix;
-                }
-  
-                if (that.pixelRepresentation == 1) {
-                    that.unts = new Int16Array(that.base64tobin(base64));
-                    for (var i = 0; i < that.unts.length; ++i) {
-                        that.unts[i] = that.unts[i] + 1000;
-                    }
-                    that.unts = new Uint16Array(that.unts);
-                } else {
-                    that.unts = new Uint16Array(that.base64tobin(base64));
-                }
-                that.setupScene();
-                //that.affineMat3 = that.ceateAffineTrans(that.scale, that.transX * that.scale, that.transY * that.scale);
-                that.drawScene(that.gl, that.programInfo, that.buffers, that.texture);
-                //that.CT();
-                $(".ww").val(that.ww);
-                $(".wl").val(that.wl);
-                //that.canbas.find(".pageindex").text(that.pageindex + "/" + that.pageindexit);
-            },
-            error: function(er) {
-                return;
-            }
-        });
-    }
-  }
+    this.seriesHttpService.GetSeriesPic(this.tag,this.tag,delt,this.canvas.width,this.canvas.height).subscribe((value) =>{
+        let data = JSON.parse(value);
+        let base64Header = "data:image/png;base64,";
+        let ctx1:any;
+        let imgData1:any;
 
-// getduffer(pageindex, tag, buffer) {
-//   let that = this;
-//   that.imageWidth = buffer[0];
-//   that.imageHeight = buffer[1];
-//   var base64 = buffer[2];
-//   if (that.pixelRepresentation == 1) {
-//       that.unts = new Int16Array(that.base64tobin(base64));
-//       for (var i = 0; i < that.unts.length; ++i) {
-//           that.unts[i] = that.unts[i] + 1000;
-//       }
-//       that.unts = new Uint16Array(that.unts);
-//   } else {
-//       that.unts = new Uint16Array(that.base64tobin(base64));
-//   }
-//   that.setupScene();
-//   that.drawScene(that.gl, that.programInfo, that.buffers, that.texture);
-//   that.CT();
-//   $(".ww").val(that.ww);
-//   $(".wl").val(that.wl);
-//   that.canbas.find(".pageindex").text(pageindex + "/" + that.pageindexit);
-//   that.pageindex = pageindex;
-// }
+        imgData1 = base64Header + data.transverse;
+        img1.src = imgData1;
+        img1.onload = function(){
+            ctx1=that.canvas.getContext("2d");
+            ctx1.clearRect(0,0,that.canvas.width,that.canvas.height);
+            ctx1.drawImage(img1,0,0,that.canvas.width,that.canvas.height);
+        }
+
+    },(error)=>{
+        console.log(error);
+    })
+}
 
 // 翻页
 windowAddMouseWheel(tag) {
   let that = this;
+  let delt:any;
   var scrollFunc = function(e) {
       e = e || window.event;
-      if (that.pageindex >= that.pageindexit) {
-          that.message.emit('Already last data');
-          that.pageindex = that.pageindexit - 1;
-          return false;
-      }
-      if (that.pageindex < 1) {
-          that.message.emit('Already first data');
-          that.pageindex = 1;
-          return false;
-      }
       if (e.wheelDelta > 0) { //当滑轮向上滚动时  
           if (tag == "axial") {
-              that.postPoint[2] += that.gap[2];
+            delt = that.gap[0];
           }
           if (tag == "coronal") {
-              that.postPoint[1] += that.gap[1];
+            delt = that.gap[1];
           }
           if (tag == "sagittal") {
-              that.postPoint[0] += that.gap[0];
+            delt = that.gap[2];
           }
-          that.pageindex += 1;
-          that.getBuffer(that.postPoint, tag, 2);
-          that.P2Cross();
-          if (that.conMessage.contourset != undefined) {
-              that.GetContourSet();
-          }
+          //that.P2Cross();
+        //   if (that.conMessage.contourset != undefined) {
+        //       that.GetContourSet();
+        //   }
       }
       if (e.wheelDelta < 0) { //当滑轮向下滚动时  
-          if (tag == "axial") {
-              that.postPoint[2] -= that.gap[2];
-          }
-          if (tag == "coronal") {
-              that.postPoint[1] -= that.gap[1];
-          }
-          if (tag == "sagittal") {
-              that.postPoint[0] -= that.gap[0];
-          }
-          that.pageindex -= 1;
-          that.getBuffer(that.postPoint, tag, 2);
-          that.P2Cross();
-          if (that.conMessage.contourset != undefined) {
-              that.GetContourSet();
-          }
+        if (tag == "axial") {
+            delt = 10;
+        }
+        if (tag == "coronal") {
+            delt = 10;
+        }
+        if (tag == "sagittal") {
+            delt = 10;
+        }
+          //that.P2Cross();
+        //   if (that.conMessage.contourset != undefined) {
+        //       that.GetContourSet();
+          //}
+        
       }
-      clearTimeout($.data(this, 'timer'));
-      $.data(this, 'timer', setTimeout(function() {
-          that.getBuffer(that.postPoint, tag, 1);
-      }, 300));
+      that.loadPics(delt);
+        //that.scroll.emit(tag);
   };
   this.canbas.get(0).onmousewheel = scrollFunc;
 }
@@ -476,12 +344,6 @@ P2Cross() {
  * 清除所有图元
  */
 clearPri() {
-
-    // let primitivecanContext = this.primitivecan.getContext("2d");
-    // primitivecanContext.beginPath();  
-    // primitivecanContext.clearRect(0,0,this.viewportWidth,this.viewportHeight);
-    // primitivecanContext.closePath(); 
-    // primitivecanContext.stroke();
 
     let primitiveStage = new createjs.Stage(this.primitivecan);
     primitiveStage.clear();
