@@ -6,7 +6,6 @@ import { ConMessageService } from '../../shared/service/conMessage.service';
 import { SeriesHttpService } from '../../shared/service/seriesHttp.service';
 import { glsource } from './glsource.modal';
 import {LoadSeriesServiceMock} from '../../../../mocks/load-series-service.mock'
-import {SlimLoadingBarService} from 'ng2-slim-loading-bar';
 declare var $: any;
 declare var createjs: any;
 declare var THREE: any;
@@ -62,7 +61,6 @@ export class PicTransverseComponent implements OnChanges {
     private element: ElementRef,
     private loadSeriesServiceMock:LoadSeriesServiceMock,
     private seriesHttpService:SeriesHttpService,
-    private slimLoadingBarService: SlimLoadingBarService
     ) {
   }
 
@@ -292,8 +290,11 @@ P2Cross() {
  */
 clearPri() {
 
-    let primitiveStage = new createjs.Stage(this.primitivecan);
-    primitiveStage.clear();
+    //let primitiveStage = new createjs.Stage(this.primitivecan);
+    // primitiveStage.removeAllChildren();
+    //primitiveStage.update();
+    this.primitivecan.getContext("2d").clearRect(0, 0, this.primitivecan.width, this.primitivecan.height);
+    this.conMessage.SetCurAction("clearAll");
   }
 
 /**

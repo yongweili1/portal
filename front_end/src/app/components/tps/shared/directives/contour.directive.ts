@@ -56,8 +56,12 @@ export class ContourDirective implements OnInit {
         
 
         this.contouringService.curAction$.subscribe(
-            curAction => this.curAction = curAction
-        )
+            curAction => {this.curAction = curAction
+            if(this.curAction=="clearAll")
+            {
+                this.backStage.removeAllChildren();
+            }
+        })
     }
 
     @HostListener('mousedown', ['$event']) onMouseDown(event: MouseEvent) {
@@ -73,7 +77,9 @@ export class ContourDirective implements OnInit {
 
         }
 
-        if (this.curAction == "circle") {
+        if (this.curAction == "circle1") {
+            this.line = new createjs.Shape();
+            this.myStage.addChild(this.line);
 
         }
         if (this.curAction == "measure") {
@@ -100,8 +106,6 @@ export class ContourDirective implements OnInit {
             this.isPaint = true;
             this.curX = event.offsetX;
             this.curY = event.offsetY;
-            this.myStage.clear();
-            this.myStage.update();
             if (this.curAction == "rectangle") {
                 this.myContext.clearRect(0, 0, this.backContext.canvas.width, this.backContext.canvas.height);
                 this.myContext.beginPath();
@@ -135,10 +139,9 @@ export class ContourDirective implements OnInit {
             }
 
             if (this.curAction == "circle1") {
-                this.myContext.clearRect(0, 0, this.backContext.canvas.width, this.backContext.canvas.height);
-                this.line = new createjs.Shape();
+                this.myStage.clear();
+                this.line.graphics.clear();
                 this.line.graphics.beginStroke("#2196F3").setStrokeStyle(1, "round").moveTo(this.startX, this.startY).lineTo(this.curX, this.curY);
-                this.myStage.addChild(this.line);
                 this.myStage.update();
 
             }
@@ -149,7 +152,9 @@ export class ContourDirective implements OnInit {
         if (this.isPaint){
             this.myContext.clearRect(0, 0, this.backContext.canvas.width, this.backContext.canvas.height);
             if (this.curAction == "rectangle") {
-                this.backContext.strokeRect(this.startX, this.startY, this.curX - this.startX, this.curY - this.startY);  
+                this.backContext.beginPath();
+                this.backContext.strokeRect(this.startX, this.startY, this.curX - this.startX, this.curY - this.startY);
+                this.backContext.closePath();  
             }
             if (this.curAction == "measure") {
                 this.backContext.moveTo(this.startX,this.startY);
@@ -166,11 +171,16 @@ export class ContourDirective implements OnInit {
             }
 
             if (this.curAction == "circle1") {
-                // this.backContext.beginPath();
-                // this.radius = Math.sqrt((this.curX - this.startX) * (this.curX - this.startX) + (this.curY - this.startY) * (this.curY - this.startY));
-                // this.backContext.arc(this.startX, this.startY, this.radius, 0, 2 * Math.PI);
-                // this.backContext.stroke();
-                // this.backContext.closePath();
+                // this.line.graphics.clear();
+                // this.line.graphics.beginPath();
+                // this.line.graphics.beginStroke("#2196F3").setStrokeStyle(1, "round").moveTo(this.startX, this.startY).lineTo(this.curX, this.curY);
+                // this.line.graphics.closePath();
+                //this.backStage.removeAllChildren();
+                this.backStage.addChild(this.line);
+                this.line.addEventListener("pressmove", this.handlePressMove.bind(this));
+                this.backStage.update();
+                this.myStage.removeAllChildren();
+                this.myStage.update();
     
             }
         }
@@ -189,5 +199,11 @@ export class ContourDirective implements OnInit {
         this.isMousedown = false;
         this.curAction = "";
         this.contouringService.SetCurAction("quitDrawPri");
+    }
+    handlePressMove(evt){
+        evt.currentTarget.x = evt.stageX;
+        this.backStage.update();
+
+
     }
 }

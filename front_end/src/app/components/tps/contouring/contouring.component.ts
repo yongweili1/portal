@@ -248,6 +248,7 @@ hideDialog() {
    * @param seriesId 
    */
 loadSeries() {
+    $('#loading').showLoading();
     let img1 = new Image();
     let img2 = new Image();
     let img3 = new Image();
@@ -262,50 +263,66 @@ loadSeries() {
                 let data = JSON.parse(value);
                 let base64Header = "data:image/png;base64,";
                 let imgData:any;
+                console.log("received transverse"); 
                 if (data.transverse != null)
                 {
+                    console.log("pre transverse"); 
                     imgData = base64Header + data.transverse;
                     img1.src = imgData;
                     img1.onload = function(){
                         transverseCanvas.getContext("2d").clearRect(0,0,transverseCanvas.width,transverseCanvas.height);
-                        transverseCanvas.getContext("2d").drawImage(img1,0,0,transverseCanvas.width,transverseCanvas.height);    
+                        transverseCanvas.getContext("2d").drawImage(img1,0,0,transverseCanvas.width,transverseCanvas.height);
+                        console.log("onload transverse");    
                     }
                 }
+                $('#loading').hideLoading();
             },(error)=>{
+                $('#loading').hideLoading();
                 console.log(error);
             })
             this.seriesHttpService.GetSeries(seriesId,"","coronal",coronalCanvas.width,coronalCanvas.height).subscribe((value) =>{
                 let data = JSON.parse(value);
                 let base64Header = "data:image/png;base64,";
                 let imgData:any;
+                console.log("received coronal");
                 if (data.coronal != null)
                 {
+                    console.log("pre coronal"); 
                     imgData = base64Header + data.coronal;
                     img2.src = imgData;
                     img2.onload = function(){
                         coronalCanvas.getContext("2d").clearRect(0,0,coronalCanvas.width,coronalCanvas.height);
-                        coronalCanvas.getContext("2d").drawImage(img2,0,0,coronalCanvas.width,coronalCanvas.height);    
+                        coronalCanvas.getContext("2d").drawImage(img2,0,0,coronalCanvas.width,coronalCanvas.height);
+                        console.log("onload coronal");     
                     }
                 }
+                $('#loading').hideLoading();
             },(error)=>{
+                $('#loading').hideLoading();
                 console.log(error);
             })
             this.seriesHttpService.GetSeries(seriesId,"","saggital",saggitalCanvas.width,saggitalCanvas.height).subscribe((value) =>{
                 let data = JSON.parse(value);
                 let base64Header = "data:image/png;base64,";
                 let imgData:any;
+                console.log("received saggital");
                 if (data.saggital != null)
                 {
+                    console.log("pre saggital");
                     imgData = base64Header + data.saggital;
                     img3.src = imgData;
                     img3.onload = function(){
                         saggitalCanvas.getContext("2d").clearRect(0,0,saggitalCanvas.width,saggitalCanvas.height);
-                        saggitalCanvas.getContext("2d").drawImage(img3,0,0,saggitalCanvas.width,saggitalCanvas.height);    
+                        saggitalCanvas.getContext("2d").drawImage(img3,0,0,saggitalCanvas.width,saggitalCanvas.height);
+                        console.log("onload saggital");     
                     }
                 }
+                $('#loading').hideLoading();
             },(error)=>{
+                $('#loading').hideLoading();
                 console.log(error);
             })
+            console.log("wait for response")
             // let img1 = new Image();
             // let img2 = new Image();
             // let img3 = new Image();
@@ -350,6 +367,7 @@ loadSeries() {
             // })
         }
     })
+    console.log("wait for load response")
 }
 loadSeries1() {
     $('#loading').showLoading();
@@ -402,7 +420,67 @@ loadSeries1() {
                 $('#loading').hideLoading();
             })
 }
-
+loadSeries2() {
+    $('#loading').showLoading();
+    let img1 = new Image();
+    let img2 = new Image();
+    let img3 = new Image();
+    let series$:any;
+    let transverseCanvas = $(".a_class .icanvas").get(0);
+    let saggitalCanvas = $(".c_class .icanvas").get(0);
+    let coronalCanvas = $(".b_class .icanvas").get(0);
+    let seriesId:any = "1.3.12.2.1107.5.1.4.64606.30000018051006052134700006373";
+    this.seriesHttpService.LoadSeries(seriesId).subscribe(value=>{
+        if(value == "success")
+        {
+            this.seriesHttpService.GetSeries(seriesId,"","transverse",transverseCanvas.width,transverseCanvas.height);
+            this.seriesHttpService.GetSeries(seriesId,"","coronal",coronalCanvas.width,coronalCanvas.height);
+            series$ = this.seriesHttpService.GetSeries(seriesId,"","saggital",saggitalCanvas.width,saggitalCanvas.height);
+            series$.subscribe((value) =>{
+                let data = JSON.parse(value);
+                let base64Header = "data:image/png;base64,";
+                let imgData:any;
+                if (data.transverse != null)
+                {
+                    console.log("received transverse"); 
+                    imgData = base64Header + data.transverse;
+                    img1.src = imgData;
+                    img1.onload = function(){
+                        transverseCanvas.getContext("2d").clearRect(0,0,transverseCanvas.width,transverseCanvas.height);
+                        transverseCanvas.getContext("2d").drawImage(img1,0,0,transverseCanvas.width,transverseCanvas.height);
+                        console.log("onload transverse");    
+                    }
+                }
+                if (data.coronal != null)
+                {
+                    console.log("received coronal"); 
+                    imgData = base64Header + data.coronal;
+                    img2.src = imgData;
+                    img2.onload = function(){
+                        coronalCanvas.getContext("2d").clearRect(0,0,coronalCanvas.width,coronalCanvas.height);
+                        coronalCanvas.getContext("2d").drawImage(img2,0,0,coronalCanvas.width,coronalCanvas.height);
+                        console.log("onload coronal");     
+                    }
+                }
+                if (data.saggital != null)
+                {
+                    console.log("received saggital"); 
+                    imgData = base64Header + data.saggital;
+                    img3.src = imgData;
+                    img3.onload = function(){
+                        saggitalCanvas.getContext("2d").clearRect(0,0,saggitalCanvas.width,saggitalCanvas.height);
+                        saggitalCanvas.getContext("2d").drawImage(img3,0,0,saggitalCanvas.width,saggitalCanvas.height);
+                        console.log("onload saggital");     
+                    }
+                }
+                $('#loading').hideLoading();
+            },(error)=>{
+                $('#loading').hideLoading();
+                console.log(error);
+            })
+        }
+    })
+}
 auto(node: any) {
       // var formData = { patientID: this.patientCollection.patient.Get(0).id, algorithmName: node[0], seriesID: this.patientCollection.patient.Get(0).series.Get(0).id };
       // this.roiHttp.PostCreateRoiByAtlas(formData).subscribe(value => {

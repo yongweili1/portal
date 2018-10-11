@@ -24,11 +24,9 @@ export class SeriesHttpService {
  * @param seriesId 
  */
 LoadSeries(seriesId:any):Observable<any>{
-        const getParams = new HttpParams()
-         .set('seriesuid', seriesId)
-        //return this.http.get<string>('http://10.9.19.139:8000/image/volumes/',{params : getParams});
-        //return this.http.get('http://127.0.0.1:8000/image/images/?seriesuid=1.3.12.2.1107.5.1.4.64606.30000018051006052134700006373&width=400&height=400&focus_view=&display_view=');
-        return this.aj.get('http://10.9.19.139:8000/image/volumes',{params : getParams});
+    const getParams = new HttpParams()
+    .set('seriesuid', seriesId);
+    return this.http.get('http://10.9.19.148:8000/image/volumes',{params : getParams});
         
 }
 
@@ -39,9 +37,7 @@ GetSeries(seriesId:any,focus:any,display:any,width:any,height:any):Observable<an
      .set('width', width)
      .set('height', height)
      .set('display_view', display);
-    //return this.http.get<string>('http://10.9.19.139:8000/image/volumes/',{params : getParams});
-    //return this.http.get('http://127.0.0.1:8000/image/images/?seriesuid=1.3.12.2.1107.5.1.4.64606.30000018051006052134700006373&width=400&height=400&focus_view=&display_view=');
-    return this.aj.get('http://10.9.19.139:8000/image/images',{params : getParams});
+    return this.http.get('http://10.9.19.148:8000/image/images',{params : getParams});
     
 }
 
@@ -53,9 +49,7 @@ GetSeriesPic(focus:any,display:any,delta:any,width:any,height:any):Observable<an
      .set('height', height)
      .set('focus_view', focus)
      .set('display_view', display);
-    //return this.http.get<string>('http://10.9.19.139:8000/image/volumes/',{params : getParams});
-    //return this.http.get('http://127.0.0.1:8000/image/images/?seriesuid=1.3.12.2.1107.5.1.4.64606.30000018051006052134700006373&width=400&height=400&focus_view=&display_view=');
-    return this.aj.get('http://127.0.0.1:8000/image/pages',{params : getParams});
+    return this.http.get('http://127.0.0.1:8000/image/pages',{params : getParams});
     
 }
 

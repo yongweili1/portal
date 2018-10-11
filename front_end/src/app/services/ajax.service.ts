@@ -34,7 +34,8 @@ export class AjaxService {
     {
       myHeader = options.headers.toString();
     }
-    return Observable.fromPromise(
+    let obs = new Observable<T>();
+    obs = Observable.fromPromise(
       $.ajax({  
         type: "GET",  
         url: url,
@@ -43,5 +44,6 @@ export class AjaxService {
         dataType: 'json',
         })
     )
+    return obs;
   }
 }

@@ -45,7 +45,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     BrowserAnimationsModule,
     HttpClientModule,
     RouterModule.forRoot(ROUTES, {
-      // useHash: true,
+      useHash: true,
       preloadingStrategy: PreloadAllModules,
     }),
     TranslateModule.forRoot({
