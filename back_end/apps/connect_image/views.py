@@ -15,28 +15,57 @@ from connect_image.models import Series
 
 from back_end.twisted_client import be_factory
 
-conf = ConfigParser.ConfigParser()
-conf.read('back_end/util/serverApi.ini')
-load_url = conf.get("imageApi", "load_url")
-provide_image_url = conf.get("imageApi", "provide_image_url")
-change_color_url = conf.get("imageApi", "change_color_url")
-turn_page_url = conf.get("imageApi", "turn_page_url")
-pan_url = conf.get("imageApi", "pan_url")
-roll_url = conf.get("imageApi", "roll_url")
-rotate_url = conf.get("imageApi", "rotate_url")
-zoom_url = conf.get("imageApi", "zoom_url")
-unload_url = conf.get("imageApi", "unload_url")
-reset_url = conf.get("imageApi", "reset_url")
-change_window_url = conf.get("imageApi", "change_window_url")
+# conf = ConfigParser.ConfigParser()
+# conf.read('back_end/util/serverApi.ini')
+# load_url = conf.get("imageApi", "load_url")
+# provide_image_url = conf.get("imageApi", "provide_image_url")
+# change_color_url = conf.get("imageApi", "change_color_url")
+# turn_page_url = conf.get("imageApi", "turn_page_url")
+# pan_url = conf.get("imageApi", "pan_url")
+# roll_url = conf.get("imageApi", "roll_url")
+# rotate_url = conf.get("imageApi", "rotate_url")
+# zoom_url = conf.get("imageApi", "zoom_url")
+# unload_url = conf.get("imageApi", "unload_url")
+# reset_url = conf.get("imageApi", "reset_url")
+# change_window_url = conf.get("imageApi", "change_window_url")
+from macro_recording import Macro
 
 
-class Haha(APIView):
+@Macro()
+def load_volume(data=None, volumepath=None, request_url=None):
+    f = open(volumepath, 'rb')
+    vol = f.read()
+    f.close()
+
+    data = data.ParseFromString()
+    data.content.volume = vol
+    data = data.SerializeToString()
+    size = len(data)
+    size = struct.pack('i', size)
+    data = size + data
+
+    be_factory.protocol.request(data)
+    rst = be_factory.protocol.waiting_for_result()
+
+    return rst
+
+# =None, volumepath=None, request_url=None
+# @Macro()
+
+
+def visit_image_server(data):
+    be_factory.protocol.request(data)
+    rst = be_factory.protocol.waiting_for_result()
+
+    return rst
+
+class A(APIView):
     def get(self, request):
-        A = request.getgetParameterValues('a')
-        B = request.GET.get('b')
-        print(A)
-        print(B)
-        return Response('OK!!!')
+        macro_status = request.GET.get('macro_status', None)
+        Macro.macro_status = macro_status
+        # if macro_status is True:
+
+        return Response()
 
 
 class LoadVolume(APIView):
@@ -69,38 +98,12 @@ class LoadVolume(APIView):
         size = struct.pack('i', size)
         data = size + data
 
-        be_factory.protocol.request(data)
-
-        serid = request.GET.get('seriesuid', None)
-        width = request.GET.get('width', None)
-        height = request.GET.get('height', None)
-        focus_view = request.GET.get('focus_view', None)
-        display_view = request.GET.get('display_view', 'transverse')
-        user_ip = request.META.get('REMOTE_ADDR', None)
-        if width is None or height is None:
-            return Response('请输入完整的请求数据')
-
-        data = msg.RequestMsg()
-        data.session = user_ip
-        data.server_name = 'image'
-        data.command = 'show'
-        data.content.params = json.dumps({'seriesuid': serid,
-                                          'width': width,
-                                          'height': height,
-                                          'focus_view': focus_view,
-                                          'display_view': display_view
-                                          })
-        data = data.SerializeToString()
-        size = len(data)
-        size = struct.pack('i', size)
-        data = size + data
-
         try:
-            be_factory.protocol.request(data)
-            rst = be_factory.protocol.waiting_for_result()
+            rst = visit_image_server(data)
         except Exception as e:
             return Response('服务间数据传输失败')
-        return Response(rst.kwargs)
+
+        return Response('success')
 
     def delete(self, request):
         """
@@ -124,8 +127,7 @@ class LoadVolume(APIView):
         data = size + data
 
         try:
-            be_factory.protocol.request(data)
-            rst = be_factory.protocol.waiting_for_result()
+            rst = visit_image_server(data)
         except Exception as e:
             return Response('服务间数据传输失败')
         return Response(rst.kwargs)
@@ -151,31 +153,12 @@ class GetImage(APIView):
         focus_view = request.GET.get('focus_view', None)
         display_view = request.GET.get('display_view', 'all')
         user_ip = request.META.get('REMOTE_ADDR', None)
+        request_url = request.path
+        print('-'*100)
+        print(request_url.split("/")[-2])
+
         if width is None or height is None:
             return Response('请输入完整的请求数据')
-
-        # series_query = Series.objects.filter(seriesuid=serid)
-        # if len(series_query) == 0:
-        #     return Response('数据库无此seriesuid')
-        # volumepath = series_query[0].seriespixeldatafilepath
-        volumepath = r"D:\bak\SHEN YU-Thorax^10_ZRY_LDCT_Head_first (Adult)-CT.nii.gz"
-        f = open(volumepath, 'rb')
-        vol = f.read()
-        f.close()
-
-        data = msg.RequestMsg()
-        data.session = user_ip
-        data.server_name = 'image'
-        data.command = 'load'
-        data.content.params = json.dumps({'seriesuid': serid})
-        data.content.volume = vol
-        data = data.SerializeToString()
-        size = len(data)
-        size = struct.pack('i', size)
-        data = size + data
-
-        be_factory.protocol.request(data)
-        be_factory.protocol.waiting_for_result()
 
         data = msg.RequestMsg()
         data.session = user_ip
@@ -193,8 +176,7 @@ class GetImage(APIView):
         data = size + data
 
         try:
-            be_factory.protocol.request(data)
-            rst = be_factory.protocol.waiting_for_result()
+            rst = visit_image_server(data)   # =data, request_url=request_url
         except Exception as e:
             return Response('服务间数据传输失败')
         return Response(rst.kwargs)
