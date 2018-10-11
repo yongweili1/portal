@@ -35,6 +35,17 @@ def greeting(**kwargs):
     return response('Hi developer, good luck!')
 
 
+@command.register('status')
+def status(**kwargs):
+    try:
+        seriesuid = kwargs['seriesuid']
+    except Exception as err:
+        return response(success=False, message='Invalid parameters.')
+
+    rst = server.check_volume_status(seriesuid)
+    return response(str(rst))
+
+
 @command.register('load')
 def load(**kwargs):
     """
@@ -121,7 +132,7 @@ def show(**kwargs):
                             message='Volumn: {} doesn`s exist'.format(series_uid))
 
     imgs = server.get_images(display_view, width, height)
-    return response(json.dumps(imgs))
+    return response(json.dumps(imgs), message=kwargs['display_view'])
 
 
 @command.register('page')

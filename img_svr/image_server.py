@@ -37,6 +37,9 @@ class ImageServer(object):
         self.min_zoom_factor = 0.01
         self.max_zoom_factor = 25
 
+    def check_volume_status(self, series_uid):
+        return series_uid in self.volumes
+
     def load_volume(self, volume_path, series_uid):
         """
         Load volume data to memory
@@ -48,9 +51,6 @@ class ImageServer(object):
             return False, 'Volume data is None.'
 
         im = read_image(volume_path)
-
-        if series_uid in self.volumes:
-            return False, 'This volume has been loaded.'
 
         # manage volume data in a dictionary
         self.volumes[series_uid] = im

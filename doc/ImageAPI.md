@@ -1,9 +1,18 @@
+# status
+检查volume的加载状态，是否被加载
+## args
+- seriesuid：序列id
+## response
+- success
+- comment
+- content
+    - True:已加载 False：未加载
+
 # load
 加载体数据
 ## args
 - seriesuid：序列id
 - volume：体数据
-
 ## response
 - success
 - comment
@@ -15,7 +24,6 @@
 - width：画布宽度（像素）
 - height：画布高度（像素）
 - display_view：画布显示的图像方位（transverse，coronal，saggital）
-
 ## response
 - success
 - comment
@@ -28,7 +36,6 @@
 - height：画布高度（像素）
 - focus_view：当前操作的画布的图像方位（transverse，coronal，saggital）
 - delta：鼠标中键滚动偏移量
-
 ## response
 - success
 - comment
