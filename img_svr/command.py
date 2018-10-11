@@ -35,6 +35,17 @@ def greeting(**kwargs):
     return response('Hi developer, good luck!')
 
 
+@command.register('status')
+def status(**kwargs):
+    try:
+        seriesuid = kwargs['seriesuid']
+    except Exception as err:
+        return response(success=False, message='Invalid parameters.')
+
+    rst = server.check_volume_status(seriesuid)
+    return response(str(rst))
+
+
 @command.register('load')
 def load(**kwargs):
     """
