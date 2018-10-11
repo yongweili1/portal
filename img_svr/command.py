@@ -121,7 +121,7 @@ def show(**kwargs):
                             message='Volumn: {} doesn`s exist'.format(series_uid))
 
     imgs = server.get_images(display_view, width, height)
-    return response(json.dumps(imgs))
+    return response(json.dumps(imgs), message=kwargs['display_view'])
 
 
 @command.register('page')
