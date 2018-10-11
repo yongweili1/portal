@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PicAxialComponent } from './pic-axial.component';
+import { PicTransverseComponent } from './pic-transverse.component';
 
-describe('PicAxialComponent', () => {
-  let component: PicAxialComponent;
-  let fixture: ComponentFixture<PicAxialComponent>;
+describe('PicTransverseComponent', () => {
+  let component: PicTransverseComponent;
+  let fixture: ComponentFixture<PicTransverseComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PicAxialComponent ]
+      declarations: [ PicTransverseComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PicAxialComponent);
+    fixture = TestBed.createComponent(PicTransverseComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

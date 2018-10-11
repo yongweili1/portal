@@ -20,17 +20,18 @@ import {
 
 import { SharedModule } from '../../../shared/shared.module';
 import { EasyUIModule } from 'ng-easyui/components/easyui/easyui.module';
+import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
 
 import { ContouringComponent } from './contouring.component';
 import { ContouringService } from '../shared/service/contouring.service';
-import { PicAxialComponent } from './pic-axial/pic-axial.component';
+import { PicTransverseComponent } from './pic-transverse/pic-transverse.component';
 import { ContouringTopBarComponent } from './contouring-top-bar/contouring-top-bar.component';
 import { ConMessageService } from '../shared/service/conMessage.service';
 import { PatientHttpService } from '../shared/service/patientHttp.service';
 import { RoiHttpService } from '../shared/service/roiHttp.service';
 import { SeriesHttpService } from '../shared/service/seriesHttp.service';
 import { StorageService } from '../shared/service/storage.service';
-import { actionService } from './pic-axial/action.service';
+import { actionService } from './pic-transverse/action.service';
 import { ContourDirective } from '../shared/directives/contour.directive';
 import { SeriesListComponent } from './series-list/series-list.component';
 
@@ -61,11 +62,12 @@ import { SeriesListComponent } from './series-list/series-list.component';
     EasyUIModule,
     TreeModule,
     ColorPickerModule,
+    SlimLoadingBarModule.forRoot()
     //RouterModule.forChild(routes)
   ],
   declarations: [
     ContouringComponent,
-    PicAxialComponent,
+    PicTransverseComponent,
     ContouringTopBarComponent,
     ContourDirective,
     SeriesListComponent,

@@ -4,9 +4,9 @@
         <mpt-contouring-top-bar (loadSeries)="loadSeries()" (clear)="mainClearPri()" (hideList)="mainHideList()"></mpt-contouring-top-bar>
     </div>
     <div id="threebmp" class="three three_inactive">
-        <mpt-pic-axial #picLeft1 class="a_class" [tag]="'axial'" [imageWidth]="imageX" [imageHeight]="imageY" [pageindex]="sliceX" [wl]="wl" [ww]="ww" [spacingX]="spacingX" [spacingY]="spacingY" [gap]="gap" [sliceAll]="sliceAll" [pixelRepresentation]="pixelRepresentation" [rescaleSlope]="rescaleSlope" [rescaleIntercept]="rescaleIntercept" [firstImagePosition]="firstImagePosition" [lastImagePosition]="lastImagePosition" (changeCross)="axialChange($event)" (twoCross)="aCross($event)" (message)="message($event)"></mpt-pic-axial>
-        <mpt-pic-axial #picLeft2 class="b_class" [tag]="'coronal'" [imageWidth]="imageX" [imageHeight]="imageZ" [pageindex]="sliceY" [wl]="wl" [ww]="ww" [spacingX]="spacingX" [spacingY]="spacingZ" [gap]="gap" [sliceAll]="sliceAll" [pixelRepresentation]="pixelRepresentation" [rescaleSlope]="rescaleSlope" [rescaleIntercept]="rescaleIntercept" [firstImagePosition]="firstImagePosition" [lastImagePosition]="lastImagePosition" (changeCross)="coronalChange($event)" (twoCross)="bCross($event)" ></mpt-pic-axial>
-        <mpt-pic-axial #picLeft3 class="c_class" [tag]="'sagittal'" [imageWidth]="imageY" [imageHeight]="imageZ" [pageindex]="sliceZ" [wl]="wl" [ww]="ww" [spacingX]="spacingY" [spacingY]="spacingZ" [gap]="gap" [sliceAll]="sliceAll" [pixelRepresentation]="pixelRepresentation" [rescaleSlope]="rescaleSlope" [rescaleIntercept]="rescaleIntercept" [firstImagePosition]="firstImagePosition" [lastImagePosition]="lastImagePosition" (changeCross)="sagittalChange($event)" (twoCross)="cCross($event)"></mpt-pic-axial>
+        <mpt-pic-transverse #picLeft1 class="a_class" [tag]="'transverse'" [imageWidth]="imageX" [imageHeight]="imageY" [pageindex]="sliceX" [wl]="wl" [ww]="ww" [spacingX]="spacingX" [spacingY]="spacingY" [gap]="gap" [sliceAll]="sliceAll" [pixelRepresentation]="pixelRepresentation" [rescaleSlope]="rescaleSlope" [rescaleIntercept]="rescaleIntercept" [firstImagePosition]="firstImagePosition" [lastImagePosition]="lastImagePosition" (changeCross)="transverseChange($event)" (twoCross)="aCross($event)" (message)="message($event)"></mpt-pic-transverse>
+        <mpt-pic-transverse #picLeft2 class="b_class" [tag]="'coronal'" [imageWidth]="imageX" [imageHeight]="imageZ" [pageindex]="sliceY" [wl]="wl" [ww]="ww" [spacingX]="spacingX" [spacingY]="spacingZ" [gap]="gap" [sliceAll]="sliceAll" [pixelRepresentation]="pixelRepresentation" [rescaleSlope]="rescaleSlope" [rescaleIntercept]="rescaleIntercept" [firstImagePosition]="firstImagePosition" [lastImagePosition]="lastImagePosition" (changeCross)="coronalChange($event)" (twoCross)="bCross($event)" ></mpt-pic-transverse>
+        <mpt-pic-transverse #picLeft3 class="c_class" [tag]="'saggital'" [imageWidth]="imageY" [imageHeight]="imageZ" [pageindex]="sliceZ" [wl]="wl" [ww]="ww" [spacingX]="spacingY" [spacingY]="spacingZ" [gap]="gap" [sliceAll]="sliceAll" [pixelRepresentation]="pixelRepresentation" [rescaleSlope]="rescaleSlope" [rescaleIntercept]="rescaleIntercept" [firstImagePosition]="firstImagePosition" [lastImagePosition]="lastImagePosition" (changeCross)="saggitalChange($event)" (twoCross)="cCross($event)"></mpt-pic-transverse>
     </div>
     <div id="series_list" class="" >
         <mpt-series-list></mpt-series-list>
@@ -18,3 +18,6 @@
         <button (click)="test()">text</button>
     </div> -->
 </div>
+<body id = "loading">
+    
+</body>

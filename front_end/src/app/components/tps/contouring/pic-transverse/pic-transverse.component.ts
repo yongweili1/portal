@@ -6,6 +6,7 @@ import { ConMessageService } from '../../shared/service/conMessage.service';
 import { SeriesHttpService } from '../../shared/service/seriesHttp.service';
 import { glsource } from './glsource.modal';
 import {LoadSeriesServiceMock} from '../../../../mocks/load-series-service.mock'
+import {SlimLoadingBarService} from 'ng2-slim-loading-bar';
 declare var $: any;
 declare var createjs: any;
 declare var THREE: any;
@@ -18,11 +19,11 @@ declare var vec2: any;
 declare var vec4: any;
 
 @Component({
-  selector: 'mpt-pic-axial',
-  templateUrl: './pic-axial.component.html',
-  styleUrls: ['./pic-axial.component.less']
+  selector: 'mpt-pic-transverse',
+  templateUrl: './pic-transverse.component.html',
+  styleUrls: ['./pic-transverse.component.less']
 })
-export class PicAxialComponent implements OnChanges {
+export class PicTransverseComponent implements OnChanges {
 
   scale = 1.0; transX = 0.0; transY = 0.0;
   canvas: any; canbas: any; crosscan: any; nugevas: any;primitivecan:any;primitivedrawcan:any
@@ -60,7 +61,8 @@ export class PicAxialComponent implements OnChanges {
     private actionService: actionService, 
     private element: ElementRef,
     private loadSeriesServiceMock:LoadSeriesServiceMock,
-    private seriesHttpService:SeriesHttpService
+    private seriesHttpService:SeriesHttpService,
+    private slimLoadingBarService: SlimLoadingBarService
     ) {
   }
 
@@ -68,14 +70,14 @@ export class PicAxialComponent implements OnChanges {
     this.wlold = this.wl;//窗位
     this.wwold = this.ww;// 窗宽
     this.pageindexit = this.pageindex * 2;
-    if (this.tag == "axial") {
+    if (this.tag == "transverse") {
         this.canvas = $(".a_class .icanvas").get(0);
         this.canbas = $(".a_class");
         this.crosscan = $(".a_class .crosscan").get(0);
         this.primitivecan = $(".a_class .primitivecan").get(0);
         this.primitivedrawcan = $(".a_class .primitivedrawcan").get(0);
         this.nugevas = $(".a_class #nugeCanvas").get(0);
-        this.canbas.find(".mpr").text('Axial');
+        this.canbas.find(".mpr").text('Transverse');
         var myCanvas = $('.a_class #canvas-frame').get(0);
         var lightPoint = new Array(0, -100, 25);
     }
@@ -90,7 +92,7 @@ export class PicAxialComponent implements OnChanges {
         var myCanvas = $('.b_class #canvas-frame').get(0);
         var lightPoint = new Array(0, 0, 100);
     }
-    if (this.tag == "sagittal") {
+    if (this.tag == "saggital") {
         this.canvas = $(".c_class .icanvas").get(0);
         this.canbas = $(".c_class");
         this.crosscan = $(".c_class .crosscan").get(0);
@@ -129,7 +131,7 @@ ngOnInit() {
 
 //设置和区分canvas窗口大小
 calcviewportsize() {
-  if (this.tag == "axial") {
+  if (this.tag == "transverse") {
       this.containerWidth = $(".a_class .containe").width();
       this.containerHeight = $(".a_class .containe").height();
   }
@@ -137,7 +139,7 @@ calcviewportsize() {
       this.containerWidth = $(".b_class .containe").width();
       this.containerHeight = $(".b_class .containe").height();
   }
-  if (this.tag == "sagittal") {
+  if (this.tag == "saggital") {
       this.containerWidth = $(".c_class .containe").width();
       this.containerHeight = $(".c_class .containe").height();
   }
@@ -174,33 +176,17 @@ opm3() {//计算窗口比例
  */
 SetCanvasIndex(canvasid:any,targetindex:number)
 {
-    if (this.tag == "axial") {
+    if (this.tag == "transverse") {
         $(`.a_class ${canvasid}`).get(0).style.zIndex= targetindex;
     }
     if (this.tag == "coronal") {
         $(`.b_class ${canvasid}`).get(0).style.zIndex= targetindex;
     }
-    if (this.tag == "sagittal") {
+    if (this.tag == "saggital") {
         $(`.c_class ${canvasid}`).get(0).style.zIndex= targetindex;
     }
 }
 
-
-//CT值  
-CT() {
-  let that = this;
-  that.canbas.mousemove(function(e) {
-      var screenPt = vec3.fromValues(e.offsetX, e.offsetY, 1);
-      vec3.transformMat3(screenPt, screenPt, that.opM3);
-      var pt = vec3.create();
-      vec3.transformMat3(pt, screenPt, that.affineMat3);
-      var position = vec4.fromValues(pt[0], pt[1], 0, 1);
-      vec4.transformMat4(position, position, that.mpr2Patient);
-      that.canbas.find(".position").text(position[0].toFixed(2) + " " + position[1].toFixed(2) + " " + position[2].toFixed(2));
-      var app = that.imageWidth * Math.floor(that.imageHeight * (pt[1] + 0.5)) + Math.floor(that.imageWidth * (pt[0] + 0.5));
-      that.canbas.find(".ct").text(that.unts[app] + that.rescaleIntercept);
-  });
-}
 
 GetContourSet() {
   // var contourdata = [{'x':10,'y':10},{'x':50,'y':10},{'x':100,'y':60},{'x':150,'y':30},{'x':310,'y':80}];
@@ -208,7 +194,7 @@ GetContourSet() {
   this.Line = new createjs.Shape();
   this.Line.graphics.setStrokeStyle(1).beginStroke("red");
   this.roiContourSets = this.conMessage.contourset;
-  if (this.tag == "axial") {
+  if (this.tag == "transverse") {
       var contourData = this.roiContourSets[this.pageindex].contourData;
       for (var j = 0; j < contourData.length; ++j) {
           var dataShape = contourData[j];
@@ -223,45 +209,6 @@ GetContourSet() {
   this.stage.addChild(this.Line);
   this.stage.update();
 }
-
-// dose剂量场
-// file() {
-//   var file = <HTMLInputElement>document.getElementById('file');
-//   var files = file.files[0];
-//   var reader = new FileReader();
-//   reader.readAsArrayBuffer(files);
-//   reader.onerror = function() {
-//       console.log("error");
-//   }
-//   let that = this;
-//   reader.onload = function() {
-//       var buffer = reader.result;
-//       var dataview = new DataView(buffer);
-//       var unts = new Float32Array(buffer.byteLength / 4);
-//       for (var i = 0; i < unts.length; i++) {
-//           unts[i] = dataview.getFloat32(i * 4, true);
-//       }
-//       that.actionService.dosefield(unts);
-//   }
-// }
-
-// filee() {
-//   let that = this;
-//   var file = <HTMLInputElement>document.getElementById('file');
-//   var files = file.files[0];
-//   var reader = new FileReader();
-//   reader.readAsArrayBuffer(files);
-//   reader.onerror = function() {
-//       console.log("error");
-//   }
-//   reader.onload = function() {
-//       var buffer = reader.result;
-//       var datLength = buffer.byteLength / 2;
-//       that.unts = new Uint16Array(buffer, 0, datLength);
-//       that.unts = new Float32Array(that.unts);
-//       that.drawScene(that.gl, that.programInfo, that.buffers, that.texture);
-//   }
-// }
 
 base64tobin(base64) {
   var text = window.atob(base64);
@@ -280,7 +227,7 @@ loadPics(delt:any) {
         let ctx1:any;
         let imgData1:any;
 
-        imgData1 = base64Header + data.transverse;
+        imgData1 = base64Header + data[this.tag];
         img1.src = imgData1;
         img1.onload = function(){
             ctx1=that.canvas.getContext("2d");
@@ -300,14 +247,14 @@ windowAddMouseWheel(tag) {
   var scrollFunc = function(e) {
       e = e || window.event;
       if (e.wheelDelta > 0) { //当滑轮向上滚动时  
-          if (tag == "axial") {
-            delt = that.gap[0];
+          if (tag == "transverse") {
+            delt = 10;  //TODO:做成可配置的
           }
           if (tag == "coronal") {
-            delt = that.gap[1];
+            delt = 10;
           }
-          if (tag == "sagittal") {
-            delt = that.gap[2];
+          if (tag == "saggital") {
+            delt = 10;
           }
           //that.P2Cross();
         //   if (that.conMessage.contourset != undefined) {
@@ -315,14 +262,14 @@ windowAddMouseWheel(tag) {
         //   }
       }
       if (e.wheelDelta < 0) { //当滑轮向下滚动时  
-        if (tag == "axial") {
-            delt = 10;
+        if (tag == "transverse") {
+            delt = -10;
         }
         if (tag == "coronal") {
-            delt = 10;
+            delt = -10;
         }
-        if (tag == "sagittal") {
-            delt = 10;
+        if (tag == "saggital") {
+            delt = -10;
         }
           //that.P2Cross();
         //   if (that.conMessage.contourset != undefined) {
@@ -364,13 +311,13 @@ drawCross(nix, niy, loca) {
   this.stage.mouseMoveOutside = true;
 
   this.horizontalLine = new createjs.Shape();// 横线
-  if (this.tag == "axial") {
+  if (this.tag == "transverse") {
       this.horizontalLine.graphics.beginStroke("#2196F3").setStrokeStyle(1, "round").moveTo(0, 0).lineTo(width, 0);
   }
   if (this.tag == "coronal") {
       this.horizontalLine.graphics.beginStroke("#F44336").setStrokeStyle(1, "round").moveTo(0, 0).lineTo(width, 0);
   }
-  if (this.tag == "sagittal") {
+  if (this.tag == "saggital") {
       this.horizontalLine.graphics.beginStroke("#F44336").setStrokeStyle(1, "round").moveTo(0, 0).lineTo(width, 0);
   }
   var horizontalHitArea = new createjs.Shape();
@@ -379,13 +326,13 @@ drawCross(nix, niy, loca) {
   // this.horizontalLine.cursor = "url('/assets/img/vertical.cur'),auto";
 
   this.verticalLine = new createjs.Shape();// 竖线
-  if (this.tag == "axial") {
+  if (this.tag == "transverse") {
       this.verticalLine.graphics.beginStroke("#CDDC39").setStrokeStyle(1, "round").moveTo(0, 0).lineTo(0, height);
   }
   if (this.tag == "coronal") {
       this.verticalLine.graphics.beginStroke("#CDDC39").setStrokeStyle(1, "round").moveTo(0, 0).lineTo(0, height);
   }
-  if (this.tag == "sagittal") {
+  if (this.tag == "saggital") {
       this.verticalLine.graphics.beginStroke("#2196F3").setStrokeStyle(1, "round").moveTo(0, 0).lineTo(0, height);
   }
   var verticalHitArea = new createjs.Shape();

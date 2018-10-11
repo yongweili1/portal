@@ -26,11 +26,11 @@ export class AjaxService {
     }): Observable<T>{
     let myPara : string = "";
     let myHeader : string = "";
-    if(options.params)
+    if(options && options.params)
     {
       myPara = options.params.toString();
     }
-    if(options.headers)
+    if(options && options.headers)
     {
       myHeader = options.headers.toString();
     }
