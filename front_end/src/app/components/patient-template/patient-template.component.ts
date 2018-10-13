@@ -14,12 +14,12 @@ import { Router} from '@angular/router';
 
 export class PaListComponent implements OnInit {
     patientId:string;
-    gender: MenuItem[] = [
+    public gender: MenuItem[] = [
       {label: 'Male'},
       {label: 'Female'},
       {label: 'Other'}
   ];
-    modality:MenuItem[] = [
+    public modality:MenuItem[] = [
       {label: 'MR'},
       {label: 'CT'},
       {label: 'CR'},
@@ -59,7 +59,6 @@ export class PaListComponent implements OnInit {
 
     private requestPatientTemplate( page: number = 0, size:number = this.tablePageRows[1]){
       this.setDateParams();
-      console.log(this.patientParam.patientId);
       this.patientTemplateService.getPatientTemplate({
         page, 
         size,

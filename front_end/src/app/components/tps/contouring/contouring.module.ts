@@ -20,7 +20,6 @@ import {
 
 import { SharedModule } from '../../../shared/shared.module';
 import { EasyUIModule } from 'ng-easyui/components/easyui/easyui.module';
-import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
 
 import { ContouringComponent } from './contouring.component';
 import { ContouringService } from '../shared/service/contouring.service';
@@ -56,13 +55,12 @@ import { SeriesListComponent } from './series-list/series-list.component';
     primengSharedModule,
     DataTableModule,
     DialogModule,
-    DropdownModule,
     PanelModule,
     TreeTableModule,
     EasyUIModule,
     TreeModule,
     ColorPickerModule,
-    SlimLoadingBarModule.forRoot()
+    //ElChildModules
     //RouterModule.forChild(routes)
   ],
   declarations: [

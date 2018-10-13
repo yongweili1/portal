@@ -13,7 +13,7 @@
       <span>LOAD FILE</span>
   </div>
 </div>
-<div id="commonTools_0" class="btn-toolbar M1_B">
+<div id="commonTools_1" class="btn-toolbar M1_B">
   <div class="upfloor">
       <!-- <button type="button" class="btn activeToolButton toolSelected" id="btn_select" title="选择" (click)="removemose()"><img src="/assets/img/butt-leftmouse-select.svg"></button>
       <button type="button" class="btn activeToolButton" id="btn_translate" title="图像平移" (click)="imgmove()"><img src="/assets/img/butt-leftmouse-pan.svg"></button>
@@ -38,6 +38,17 @@
       <span>TOOLS</span>
   </div>
 </div>
+<div id="commonTools_1" class="btn-toolbar M2_B">
+        <div class="upfloor">
+            <select id="seriesSelect">
+                <option *ngFor="let series of seriesList" value="{{series}}">"{{series}}"</option>
+            </select>
+        </div>
+        <div class="downfloor">
+            <span>Series List</span>
+        </div>
+</div>
+<!-- <p-dropdown id="seriesList" [options]="seriesList" placeholder="Select Series" optionLabel="label"></p-dropdown> -->
 <!-- <div id="commonTools_0" class="btn-toolbar M2_B">
   <div class="upfloor">
       <button type="button" class="btn  activeToolButton" id="btn_resetwl" title="恢复窗宽窗位"><img src="/assets/img/butt-reset-window.svg"></button>

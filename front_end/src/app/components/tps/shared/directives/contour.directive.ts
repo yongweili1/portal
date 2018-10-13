@@ -32,6 +32,7 @@ export class ContourDirective implements OnInit {
     backStage: any;
     labelTxt: string;
     line :any;
+    curTarget:any;
     @Input() backCanvas;
 
     constructor(private el: ElementRef, private contouringService: ConMessageService) { }
@@ -178,6 +179,8 @@ export class ContourDirective implements OnInit {
                 //this.backStage.removeAllChildren();
                 this.backStage.addChild(this.line);
                 this.line.addEventListener("pressmove", this.handlePressMove.bind(this));
+                this.line.addEventListener("dblclick", this.handleDbClick.bind(this));
+                this.line.addEventListener("pressup", this.handlePressUp.bind(this));
                 this.backStage.update();
                 this.myStage.removeAllChildren();
                 this.myStage.update();
@@ -201,9 +204,24 @@ export class ContourDirective implements OnInit {
         this.contouringService.SetCurAction("quitDrawPri");
     }
     handlePressMove(evt){
-        evt.currentTarget.x = evt.stageX;
-        this.backStage.update();
-
-
+        if(this.curAction=="select"){
+            evt.currentTarget.x = evt.stageX;
+            this.backStage.update();
+            this.curTarget = evt.currentTarget;
+        }
+    }
+    handlePressUp(evt){
+        if(this.curAction=="select"){
+            evt.currentTarget.x = evt.stageX;
+            this.backStage.update();
+            this.curTarget = evt.currentTarget;
+        }
+    }
+    handleDbClick(evt){
+        if(this.curAction=="select"){
+            this.curTarget = evt.currentTarget;
+            this.backStage.removeChild(this.curTarget);
+            this.backStage.update();
+        }
     }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input} from '@angular/core';
 
 @Component({
   selector: 'mpt-series-list',
@@ -7,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SeriesListComponent implements OnInit {
 
+  @Input() public seriesList: Array<string>;
   constructor() { }
 
   ngOnInit() {

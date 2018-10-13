@@ -12,7 +12,7 @@ export class AjaxService {
 
   constructor() { }
 
-  get<T>(url: string, options?: {
+  get<T>(url: string,options?: {
     headers?: HttpHeaders | {
         [header: string]: string | string[];
     };

@@ -2,13 +2,13 @@ import { Component, OnInit, ViewChild, Injector, ElementRef } from '@angular/cor
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { HttpClient } from "@angular/common/http";
 import { DialogModule } from 'primeng/dialog';
+import { switchMap } from 'rxjs/operators';
 
 import { ConMessageService } from '../shared/service/conMessage.service';
 //import { PatientCollection } from '../shared/PatientCollection';
 import { SeriesHttpService } from '../shared/service/seriesHttp.service';
 import { RoiHttpService } from '../shared/service/roiHttp.service';
 import { StorageService } from '../shared/service/storage.service';
-import {SlimLoadingBarService} from 'ng2-slim-loading-bar';
 
 
 import {
@@ -30,7 +30,7 @@ declare var $: any;
   styleUrls: ['./contouring.component.less']
 })
 export class ContouringComponent implements OnInit {
-  patientID: any;
+  patientId: any = "";
   imageX: any;
   imageY: any;
   imageZ: any;
@@ -47,6 +47,7 @@ export class ContouringComponent implements OnInit {
   seriList: any;
   action:any;
   display: boolean = false;
+  seriesList:any;
   
   @ViewChild('picLeft1') picLeft1;
   @ViewChild('picLeft2') picLeft2;
@@ -64,9 +65,6 @@ export class ContouringComponent implements OnInit {
     private storageService: StorageService, 
     private seriesHttpService: SeriesHttpService
     ) {
-      // this.activeRoute.queryParams.subscribe(params => {
-      //     this.patientid = params['patientid'];
-      // });
   }
   transverseChange(event: any) {
       if (event[2] == 'ver') {
@@ -165,6 +163,14 @@ hideDialog() {
               this.picLeft1.SetCanvasIndex("#primitiveDrawCanvas",3);
               this.picLeft2.SetCanvasIndex("#primitiveDrawCanvas",3);
               this.picLeft3.SetCanvasIndex("#primitiveDrawCanvas",3);
+              this.picLeft1.SetCanvasIndex("#primitiveCanvas",2);
+              this.picLeft2.SetCanvasIndex("#primitiveCanvas",2);
+              this.picLeft3.SetCanvasIndex("#primitiveCanvas",2);
+          }
+          else if(this.action=="select"){
+              this.picLeft1.SetCanvasIndex("#primitiveCanvas",55);
+              this.picLeft2.SetCanvasIndex("#primitiveCanvas",55);
+              this.picLeft3.SetCanvasIndex("#primitiveCanvas",55);
           }
           else{
             this.picLeft1.SetCanvasIndex("#crossCanvas",3);
@@ -173,45 +179,15 @@ hideDialog() {
             this.picLeft1.SetCanvasIndex("#primitiveDrawCanvas",4);
             this.picLeft2.SetCanvasIndex("#primitiveDrawCanvas",4);
             this.picLeft3.SetCanvasIndex("#primitiveDrawCanvas",4);
+            this.picLeft1.SetCanvasIndex("#primitiveCanvas",2);
+            this.picLeft2.SetCanvasIndex("#primitiveCanvas",2);
+            this.picLeft3.SetCanvasIndex("#primitiveCanvas",2);
           }
-      }
-      )
-      // $.contextMenu({
-      //     selector: '#threebmp',
-      //     callback: function (key, options) {
-      //         var m = "clicked: " + key;
-      //         console.log(m);
-      //     },
-      //     items: {
-      //         "edit": { name: "选择/翻页", icon: "edit" },
-      //         "cut": { name: "图像旋转", icon: "cut" },
-      //         "status": {
-      //             name: "测量",
-      //             icon: "delete",
-      //             items: {
-      //                 "sub1": { name: "直线测距", icon: "edit" },
-      //                 "sub2": { name: "像素", icon: "cut" },
-      //             }
-      //         },
-      //         "normalSub": {
-      //             name: "保存书签",
-      //             items: {
-      //                 "normalsub1": { 
-      //                     name: "normal Sub 1",
-      //                 },
-      //                 "normalsub2": { 
-      //                     name: "normal Sub 2",
-      //                     items: {
-      //                         "normalsub1": { name: "normal Sub 1"},
-      //                         "normalsub2": { name: "normal Sub 2"},
-      //                         "normalsub3": { name: "normal Sub 3"},
-      //                     }
-      //                 },
-      //                 "normalsub3": { name: "normal Sub 3" },
-      //             }
-      //         }
-      //     }
-      // });
+      });
+      this.activeRoute.queryParams.subscribe(params => {
+        this.patientId = params.patientId;
+        this.getSeriesList(this.patientId);
+      });
   }
 
   mainHideList(){
@@ -241,6 +217,12 @@ hideDialog() {
       this.picLeft2.clearmouse();
       this.picLeft3.clearmouse();
   }
+
+getSeriesList(patientId:any){
+    this.seriesHttpService.getSeriesList(patientId).subscribe(data=>{
+        this.seriesList = data;
+    })
+}
   
   sliceX: any; sliceY: any; sliceZ: any; gap: any; sliceAll: any;
   /**
@@ -249,6 +231,7 @@ hideDialog() {
    */
 loadSeries() {
     $('#loading').showLoading();
+    //this.showDialog();
     let img1 = new Image();
     let img2 = new Image();
     let img3 = new Image();
@@ -263,7 +246,6 @@ loadSeries() {
                 let data = JSON.parse(value);
                 let base64Header = "data:image/png;base64,";
                 let imgData:any;
-                console.log("received transverse"); 
                 if (data.transverse != null)
                 {
                     console.log("pre transverse"); 
@@ -275,16 +257,6 @@ loadSeries() {
                         console.log("onload transverse");    
                     }
                 }
-                $('#loading').hideLoading();
-            },(error)=>{
-                $('#loading').hideLoading();
-                console.log(error);
-            })
-            this.seriesHttpService.GetSeries(seriesId,"","coronal",coronalCanvas.width,coronalCanvas.height).subscribe((value) =>{
-                let data = JSON.parse(value);
-                let base64Header = "data:image/png;base64,";
-                let imgData:any;
-                console.log("received coronal");
                 if (data.coronal != null)
                 {
                     console.log("pre coronal"); 
@@ -296,16 +268,6 @@ loadSeries() {
                         console.log("onload coronal");     
                     }
                 }
-                $('#loading').hideLoading();
-            },(error)=>{
-                $('#loading').hideLoading();
-                console.log(error);
-            })
-            this.seriesHttpService.GetSeries(seriesId,"","saggital",saggitalCanvas.width,saggitalCanvas.height).subscribe((value) =>{
-                let data = JSON.parse(value);
-                let base64Header = "data:image/png;base64,";
-                let imgData:any;
-                console.log("received saggital");
                 if (data.saggital != null)
                 {
                     console.log("pre saggital");
@@ -318,131 +280,19 @@ loadSeries() {
                     }
                 }
                 $('#loading').hideLoading();
+                //this.hideDialog();
             },(error)=>{
                 $('#loading').hideLoading();
+                //this.hideDialog();
                 console.log(error);
             })
-            console.log("wait for response")
-            // let img1 = new Image();
-            // let img2 = new Image();
-            // let img3 = new Image();
-            // this.seriesHttpService.GetSeries(seriesId,"","coronal",400,400).subscribe((value) =>{
-            //     let data = JSON.parse(value);
-            //     let base64Header = "data:image/png;base64,";
-            //     let c1,c2,c3:any;
-            //     let ctx1,ctx2,ctx3:any;
-            //     let imgData1,imgData2,imgData3:any;
-            //     if (data.transverse != null)
-            //     {
-            //         imgData1 = base64Header + data.transverse;
-            //         img1.src = imgData1;
-            //         img1.onload = function(){
-            //             c1= $(".a_class .icanvas").get(0);
-            //             ctx1=c1.getContext("2d");    
-            //             ctx1.drawImage(img1,20,20,1000,650);
-            //         }
-            //     }
-            //     if (data.saggital != null)
-            //     {
-            //         imgData2 = base64Header + data.saggital;
-            //         img2.src = imgData2;
-            //         img2.onload = function(){
-            //             c2= $(".b_class .icanvas").get(0);
-            //             ctx2=c2.getContext("2d");    
-            //             ctx2.drawImage(img2,20,20,500,300);
-            //         }
-            //     }
-            //     if (data.coronal != null)
-            //     {
-            //         imgData3 = base64Header + data.coronal;
-            //         img3.src = imgData3;
-            //         img3.onload = function(){
-            //             c3= $(".c_class .icanvas").get(0);
-            //             ctx3=c3.getContext("2d");   
-            //             ctx3.drawImage(img3,20,20,500,300);
-            //         }
-            //     }
-            // },(error)=>{
-            //     console.log(error);
-            // })
-        }
-    })
-    console.log("wait for load response")
-}
-loadSeries1() {
-    $('#loading').showLoading();
-    let img1 = new Image();
-    let img2 = new Image();
-    let img3 = new Image();
-    let transverseCanvas = $(".a_class .icanvas").get(0);
-    let saggitalCanvas = $(".c_class .icanvas").get(0);
-    let coronalCanvas = $(".b_class .icanvas").get(0);
-    let seriesId:any = "1.3.12.2.1107.5.1.4.64606.30000018051006052134700006373";
-    this.seriesHttpService.GetSeries(seriesId,"","",400,400).subscribe((value) =>{
-            let data = JSON.parse(value);
-            let base64Header = "data:image/png;base64,";
-            let c1,c2,c3:any;
-            let ctx1,ctx2,ctx3:any;
-            let imgData1,imgData2,imgData3:any;
-            if (data.transverse != null)
-                {
-                    imgData1 = base64Header + data.transverse;
-                    img1.src = imgData1;
-                    img1.onload = function(){
-                        c1= $(".a_class .icanvas").get(0);
-                        ctx1=c1.getContext("2d");    
-                        ctx1.drawImage(img1,20,20,1000,650);
-                    }
-            }
-            if (data.saggital != null)
-                {
-                    imgData2 = base64Header + data.saggital;
-                    img2.src = imgData2;
-                    img2.onload = function(){
-                        c2= $(".b_class .icanvas").get(0);
-                        ctx2=c2.getContext("2d");    
-                        ctx2.drawImage(img2,20,20,500,300);
-                    }
-            }
-            if (data.coronal != null)
-                {
-                    imgData3 = base64Header + data.coronal;
-                    img3.src = imgData3;
-                    img3.onload = function(){
-                        c3= $(".c_class .icanvas").get(0);
-                        ctx3=c3.getContext("2d");   
-                        ctx3.drawImage(img3,20,20,500,300);
-                    }
-            }
-            $('#loading').hideLoading();
-            },(error)=>{
-                console.log(error);
-                $('#loading').hideLoading();
-            })
-}
-loadSeries2() {
-    $('#loading').showLoading();
-    let img1 = new Image();
-    let img2 = new Image();
-    let img3 = new Image();
-    let series$:any;
-    let transverseCanvas = $(".a_class .icanvas").get(0);
-    let saggitalCanvas = $(".c_class .icanvas").get(0);
-    let coronalCanvas = $(".b_class .icanvas").get(0);
-    let seriesId:any = "1.3.12.2.1107.5.1.4.64606.30000018051006052134700006373";
-    this.seriesHttpService.LoadSeries(seriesId).subscribe(value=>{
-        if(value == "success")
-        {
-            this.seriesHttpService.GetSeries(seriesId,"","transverse",transverseCanvas.width,transverseCanvas.height);
-            this.seriesHttpService.GetSeries(seriesId,"","coronal",coronalCanvas.width,coronalCanvas.height);
-            series$ = this.seriesHttpService.GetSeries(seriesId,"","saggital",saggitalCanvas.width,saggitalCanvas.height);
-            series$.subscribe((value) =>{
+            this.seriesHttpService.GetSeries(seriesId,"","coronal",coronalCanvas.width,coronalCanvas.height).subscribe((value) =>{
                 let data = JSON.parse(value);
                 let base64Header = "data:image/png;base64,";
                 let imgData:any;
                 if (data.transverse != null)
                 {
-                    console.log("received transverse"); 
+                    console.log("pre transverse"); 
                     imgData = base64Header + data.transverse;
                     img1.src = imgData;
                     img1.onload = function(){
@@ -453,7 +303,7 @@ loadSeries2() {
                 }
                 if (data.coronal != null)
                 {
-                    console.log("received coronal"); 
+                    console.log("pre coronal"); 
                     imgData = base64Header + data.coronal;
                     img2.src = imgData;
                     img2.onload = function(){
@@ -464,7 +314,7 @@ loadSeries2() {
                 }
                 if (data.saggital != null)
                 {
-                    console.log("received saggital"); 
+                    console.log("pre saggital");
                     imgData = base64Header + data.saggital;
                     img3.src = imgData;
                     img3.onload = function(){
@@ -474,13 +324,62 @@ loadSeries2() {
                     }
                 }
                 $('#loading').hideLoading();
+                //this.hideDialog();
             },(error)=>{
                 $('#loading').hideLoading();
+                //this.hideDialog();
                 console.log(error);
             })
+            this.seriesHttpService.GetSeries(seriesId,"","saggital",saggitalCanvas.width,saggitalCanvas.height).subscribe((value) =>{
+                let data = JSON.parse(value);
+                let base64Header = "data:image/png;base64,";
+                let imgData:any;
+                if (data.transverse != null)
+                {
+                    console.log("pre transverse"); 
+                    imgData = base64Header + data.transverse;
+                    img1.src = imgData;
+                    img1.onload = function(){
+                        transverseCanvas.getContext("2d").clearRect(0,0,transverseCanvas.width,transverseCanvas.height);
+                        transverseCanvas.getContext("2d").drawImage(img1,0,0,transverseCanvas.width,transverseCanvas.height);
+                        console.log("onload transverse");    
+                    }
+                }
+                if (data.coronal != null)
+                {
+                    console.log("pre coronal"); 
+                    imgData = base64Header + data.coronal;
+                    img2.src = imgData;
+                    img2.onload = function(){
+                        coronalCanvas.getContext("2d").clearRect(0,0,coronalCanvas.width,coronalCanvas.height);
+                        coronalCanvas.getContext("2d").drawImage(img2,0,0,coronalCanvas.width,coronalCanvas.height);
+                        console.log("onload coronal");     
+                    }
+                }
+                if (data.saggital != null)
+                {
+                    console.log("pre saggital");
+                    imgData = base64Header + data.saggital;
+                    img3.src = imgData;
+                    img3.onload = function(){
+                        saggitalCanvas.getContext("2d").clearRect(0,0,saggitalCanvas.width,saggitalCanvas.height);
+                        saggitalCanvas.getContext("2d").drawImage(img3,0,0,saggitalCanvas.width,saggitalCanvas.height);
+                        console.log("onload saggital");     
+                    }
+                }
+                $('#loading').hideLoading();
+                //this.hideDialog();
+            },(error)=>{
+                $('#loading').hideLoading();
+                //this.hideDialog();
+                console.log(error);
+            })
+            console.log("wait for response")
         }
     })
+    console.log("wait for load response")
 }
+
 auto(node: any) {
       // var formData = { patientID: this.patientCollection.patient.Get(0).id, algorithmName: node[0], seriesID: this.patientCollection.patient.Get(0).series.Get(0).id };
       // this.roiHttp.PostCreateRoiByAtlas(formData).subscribe(value => {
@@ -498,3 +397,4 @@ auto(node: any) {
       this.load.message(w);
   }
 }
+

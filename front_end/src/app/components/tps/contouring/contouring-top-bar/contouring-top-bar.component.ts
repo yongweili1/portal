@@ -1,6 +1,7 @@
-import { Component, ViewChild, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, ViewChild, OnInit, Input, Output, EventEmitter ,SimpleChanges, OnChanges,} from '@angular/core';
 import { ConMessageService } from '../../shared/service/conMessage.service';
 //import { PatientHttpService } from 'TpsShared/TpsService/patientHttp.service';
+import { MenuItem } from '../../../patient-template/shared/patient-template.model'
 
 @Component({
   selector: 'mpt-contouring-top-bar',
@@ -19,9 +20,10 @@ export class ContouringTopBarComponent implements OnInit {
   @Output() measure: EventEmitter<any> = new EventEmitter<any>();
   @Output() clear: EventEmitter<any> = new EventEmitter<any>();
   @Output() hideList: EventEmitter<any> = new EventEmitter<any>();
+  @Input() seriesList:string[];
 
   constructor(
-    private conMessage: ConMessageService
+    private conMessage: ConMessageService,
     ) { 
     }
     seriesId: any;
@@ -35,6 +37,9 @@ export class ContouringTopBarComponent implements OnInit {
       this.conMessage.serieses$.subscribe(value => {
           this.seriesId = value;
       });
+  }
+  ngOnChanges(changes: SimpleChanges) {
+       
   }
 
   display: boolean = false;
@@ -198,6 +203,9 @@ export class ContouringTopBarComponent implements OnInit {
   }
   OnHideList(){
       this.hideList.emit();
+  }
+  OnSelect(){
+    this.conMessage.SetCurAction("select");
   }
 
 
