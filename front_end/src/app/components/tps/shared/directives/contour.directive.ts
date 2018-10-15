@@ -66,8 +66,6 @@ export class ContourDirective implements OnInit {
             }
         })
 
-        // this.draw = new DrawTool();
-        // this.draw.test();
     }
 
     @HostListener('mousedown', ['$event']) onMouseDown(event: MouseEvent) {

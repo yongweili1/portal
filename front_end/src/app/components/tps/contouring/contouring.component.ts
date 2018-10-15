@@ -16,10 +16,6 @@ import {
 import { ToastService } from '../../../core/toast.service';
 import { Page, PageRequest } from '../../../shared/models';
 
-
-import { ContouringService } from '../shared/service/contouring.service';
-import { Observable } from 'rxjs/Observable';
-
 declare var $: any;
 
 @Component({
