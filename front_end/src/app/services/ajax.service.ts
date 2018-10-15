@@ -12,7 +12,7 @@ export class AjaxService {
 
   constructor() { }
 
-  get<T>(url: string, options?: {
+  get<T>(url: string,options?: {
     headers?: HttpHeaders | {
         [header: string]: string | string[];
     };
@@ -26,15 +26,16 @@ export class AjaxService {
     }): Observable<T>{
     let myPara : string = "";
     let myHeader : string = "";
-    if(options.params)
+    if(options && options.params)
     {
       myPara = options.params.toString();
     }
-    if(options.headers)
+    if(options && options.headers)
     {
       myHeader = options.headers.toString();
     }
-    return Observable.fromPromise(
+    let obs = new Observable<T>();
+    obs = Observable.fromPromise(
       $.ajax({  
         type: "GET",  
         url: url,
@@ -43,5 +44,6 @@ export class AjaxService {
         dataType: 'json',
         })
     )
+    return obs;
   }
 }

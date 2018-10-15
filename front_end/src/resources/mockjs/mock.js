@@ -8312,8 +8312,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 
 	            // xhr.open()
-	            if (username) xhr.open(method, url, async, username, password)
-	            else xhr.open(method, url, async)
+	            if (username) xhr.open(method, url, true, username, password)//wangdm 暂时都调成true
+	            else xhr.open(method, url, true)
 
 	            // 同步属性 MockXMLHttpRequest => NativeXMLHttpRequest
 	            for (var j = 0; j < XHR_REQUEST_PROPERTIES.length; j++) {

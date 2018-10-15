@@ -1,0 +1,18 @@
+.loading-indicator-bars {
+		background-image: url('https://raw.githubusercontent.com/riverbed/flyscript-portal/master/thirdparty/showLoading/images/loading-bars.gif');
+		width: 150px;
+	}
+
+.loading-indicator {
+	height: 150px;
+	width: 150px;
+	background: url( '../../assets/img/loading.gif' );
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+.loading-indicator-overlay {
+	background-color: #FFFFFF;
+	opacity: 0.6;
+	filter: alpha(opacity = 60);
+}

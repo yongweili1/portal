@@ -31,9 +31,12 @@ class ResponseData(object):
 
 class BackEndClient(protocol.Protocol):
     def __init__(self):
-        self.package_size = 0
+        self.current_package_size = 0
+        self.current_package_data = ''
+
         self.received_size = 0
         self.received_data = ''
+
         self.DATA = None
         print('BackEndClient init')
 
@@ -43,18 +46,31 @@ class BackEndClient(protocol.Protocol):
     def connectionLost(self, reason):
         print("connection lost, reason:", reason)
 
-    def dataReceived(self, data):
-        # get header info, include total package size
-        if self.package_size == 0:
-            self.package_size, data = self.unpacking(data)
-
-        self.received_data += data
+    def __pop(self, length=0, type='data'):
+        data = self.received_data[:length]
+        if type == 'head':
+            data, = struct.unpack('i', data)
+        self.received_data = self.received_data[length:]
         self.received_size = len(self.received_data)
-        # print('Total received: {} bytes'.format(self.received_size))
+        return data
 
-        if self.received_size == self.package_size:
-            # print('Received all data')
-            self.handle_data_from_server()
+    def dataReceived(self, data):
+        self.received_data = data
+        self.received_size = len(data)
+
+        while self.received_data != '':
+            if self.current_package_size == 0:
+                self.current_package_size = self.__pop(4, type='head')
+                print('[Dispatcher]Need to received package size: {} bytes'.format(self.current_package_size))
+
+            if self.current_package_size <= self.received_size:
+                self.current_package_data += self.__pop(self.current_package_size)
+                self.__handle_data_from_server()
+                self.current_package_data = ''
+                self.current_package_size = 0
+            else:
+                self.current_package_size -= self.received_size
+                self.current_package_data += self.__pop(self.received_size)
 
     def waiting_for_result(self, timeout=60):
         while 1:
@@ -63,13 +79,12 @@ class BackEndClient(protocol.Protocol):
                 self.DATA = None
                 return rst
 
-    def handle_data_from_server(self):
-        self.DATA = ResponseData(self.received_data)
-        self.package_size = 0
-        self.received_size = 0
-        self.received_data = ''
+    def __handle_data_from_server(self):
+        print('[BE]Total data size: {} bytes'.format(len(self.current_package_data)))
+        self.DATA = ResponseData(self.current_package_data)
 
     def send_data_to_server(self, send_content):
+        print(len(send_content))
         self.transport.write(send_content)
 
     def unpacking(self, data):

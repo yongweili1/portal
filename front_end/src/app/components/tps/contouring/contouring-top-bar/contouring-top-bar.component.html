@@ -13,7 +13,7 @@
       <span>LOAD FILE</span>
   </div>
 </div>
-<div id="commonTools_0" class="btn-toolbar M1_B">
+<div id="commonTools_1" class="btn-toolbar M1_B">
   <div class="upfloor">
       <!-- <button type="button" class="btn activeToolButton toolSelected" id="btn_select" title="选择" (click)="removemose()"><img src="/assets/img/butt-leftmouse-select.svg"></button>
       <button type="button" class="btn activeToolButton" id="btn_translate" title="图像平移" (click)="imgmove()"><img src="/assets/img/butt-leftmouse-pan.svg"></button>
@@ -28,6 +28,7 @@
               <button type="button" class="btn  activeToolButton" id="btn_freepen" title="自由笔"><img src="/assets/img/butt-freepen.svg"></button>
           </div>
       </div> -->
+      <button type="button" class="btn activeToolButton" id="btn_circle" title="选择" (click)="OnSelect()"><img src="/assets/img/butt-arrow.svg"></button>
       <button type="button" class="btn activeToolButton" id="btn_measure" title="测量" (click)="OnMeasure()"><img src="/assets/img/butt-measure.svg"></button>
       <button type="button" class="btn activeToolButton" id="btn_rect" title="矩形" (click)="OnRectangleClick()"><img src="/assets/img/butt-rectangle.svg"></button>
       <button type="button" class="btn activeToolButton" id="btn_circle" title="圆形" (click)="OnCircleClick()"><img src="/assets/img/butt-circle.svg"></button>
@@ -37,6 +38,17 @@
       <span>TOOLS</span>
   </div>
 </div>
+<div id="commonTools_1" class="btn-toolbar M2_B">
+        <div class="upfloor">
+            <select id="seriesSelect">
+                <option *ngFor="let series of seriesList" value="{{series}}">"{{series}}"</option>
+            </select>
+        </div>
+        <div class="downfloor">
+            <span>Series List</span>
+        </div>
+</div>
+<!-- <p-dropdown id="seriesList" [options]="seriesList" placeholder="Select Series" optionLabel="label"></p-dropdown> -->
 <!-- <div id="commonTools_0" class="btn-toolbar M2_B">
   <div class="upfloor">
       <button type="button" class="btn  activeToolButton" id="btn_resetwl" title="恢复窗宽窗位"><img src="/assets/img/butt-reset-window.svg"></button>

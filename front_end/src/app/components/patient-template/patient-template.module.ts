@@ -13,7 +13,6 @@ import {
   CalendarModule,
   PanelModule
 } from 'primeng/primeng';
-
 import { SharedModule } from '../../shared/shared.module';
 
 import { PaListComponent } from './patient-template.component';

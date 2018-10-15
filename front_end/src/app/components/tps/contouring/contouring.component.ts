@@ -2,12 +2,14 @@ import { Component, OnInit, ViewChild, Injector, ElementRef } from '@angular/cor
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { HttpClient } from "@angular/common/http";
 import { DialogModule } from 'primeng/dialog';
+import { switchMap } from 'rxjs/operators';
 
 import { ConMessageService } from '../shared/service/conMessage.service';
 //import { PatientCollection } from '../shared/PatientCollection';
 import { SeriesHttpService } from '../shared/service/seriesHttp.service';
 import { RoiHttpService } from '../shared/service/roiHttp.service';
 import { StorageService } from '../shared/service/storage.service';
+
 
 import {
   LazyLoadEvent, ConfirmationService, Paginator
@@ -28,7 +30,7 @@ declare var $: any;
   styleUrls: ['./contouring.component.less']
 })
 export class ContouringComponent implements OnInit {
-  patientID: any;
+  patientId: any = "";
   imageX: any;
   imageY: any;
   imageZ: any;
@@ -44,6 +46,8 @@ export class ContouringComponent implements OnInit {
   lastImagePosition: any;
   seriList: any;
   action:any;
+  display: boolean = false;
+  seriesList:any;
   
   @ViewChild('picLeft1') picLeft1;
   @ViewChild('picLeft2') picLeft2;
@@ -59,15 +63,12 @@ export class ContouringComponent implements OnInit {
     //private patientCollection: PatientCollection, 
     public roiHttp: RoiHttpService, 
     private storageService: StorageService, 
-    private seriesHttpService: SeriesHttpService,
+    private seriesHttpService: SeriesHttpService
     ) {
-      // this.activeRoute.queryParams.subscribe(params => {
-      //     this.patientid = params['patientid'];
-      // });
   }
-  axialChange(event: any) {
+  transverseChange(event: any) {
       if (event[2] == 'ver') {
-          this.picLeft3.getBuffer(event[0], 'sagittal', event[1])
+          this.picLeft3.getBuffer(event[0], 'saggital', event[1])
           this.picLeft2.patient2screen(event[0]);
       }
       if (event[2] == 'cur') {
@@ -77,7 +78,7 @@ export class ContouringComponent implements OnInit {
       if (event[2] == 'cro') {
           this.picLeft2.patient2screen(event[0]);
           this.picLeft3.patient2screen(event[0]);
-          this.picLeft3.getBuffer(event[0], 'sagittal', event[1])
+          this.picLeft3.getBuffer(event[0], 'saggital', event[1])
           this.picLeft2.getBuffer(event[0], 'coronal', event[1])
 
       }
@@ -89,35 +90,42 @@ export class ContouringComponent implements OnInit {
       this.picLeft2.clearPri();
       this.picLeft3.clearPri();
   }
+
+showDialog() {
+    this.display = true;
+}
+hideDialog() {
+    this.display = false;
+}
   coronalChange(event: any) {
       if (event[2] == 'ver') {
-          this.picLeft3.getBuffer(event[0], 'sagittal', event[1])
+          this.picLeft3.getBuffer(event[0], 'saggital', event[1])
           this.picLeft1.patient2screen(event[0]);
       }
       if (event[2] == 'cur') {
-          this.picLeft1.getBuffer(event[0], 'axial', event[1])
+          this.picLeft1.getBuffer(event[0], 'transverse', event[1])
           this.picLeft3.patient2screen(event[0]);
       }
       if (event[2] == 'cro') {
           this.picLeft3.patient2screen(event[0]);
           this.picLeft1.patient2screen(event[0]);
-          this.picLeft1.getBuffer(event[0], 'axial', event[1])
-          this.picLeft3.getBuffer(event[0], 'sagittal', event[1])
+          this.picLeft1.getBuffer(event[0], 'transverse', event[1])
+          this.picLeft3.getBuffer(event[0], 'saggital', event[1])
       }
   }
-  sagittalChange(event: any) {
+  saggitalChange(event: any) {
       if (event[2] == 'ver') {
           this.picLeft2.getBuffer(event[0], 'coronal', event[1])
           this.picLeft1.patient2screen(event[0]);
       }
       if (event[2] == 'cur') {
-          this.picLeft1.getBuffer(event[0], 'axial', event[1])
+          this.picLeft1.getBuffer(event[0], 'transverse', event[1])
           this.picLeft2.patient2screen(event[0]);
       }
       if (event[2] == 'cro') {
           this.picLeft2.patient2screen(event[0]);
           this.picLeft1.patient2screen(event[0]);
-          this.picLeft1.getBuffer(event[0], 'axial', event[1])
+          this.picLeft1.getBuffer(event[0], 'transverse', event[1])
           this.picLeft2.getBuffer(event[0], 'coronal', event[1])
       }
   }
@@ -155,6 +163,14 @@ export class ContouringComponent implements OnInit {
               this.picLeft1.SetCanvasIndex("#primitiveDrawCanvas",3);
               this.picLeft2.SetCanvasIndex("#primitiveDrawCanvas",3);
               this.picLeft3.SetCanvasIndex("#primitiveDrawCanvas",3);
+              this.picLeft1.SetCanvasIndex("#primitiveCanvas",2);
+              this.picLeft2.SetCanvasIndex("#primitiveCanvas",2);
+              this.picLeft3.SetCanvasIndex("#primitiveCanvas",2);
+          }
+          else if(this.action=="select"){
+              this.picLeft1.SetCanvasIndex("#primitiveCanvas",55);
+              this.picLeft2.SetCanvasIndex("#primitiveCanvas",55);
+              this.picLeft3.SetCanvasIndex("#primitiveCanvas",55);
           }
           else{
             this.picLeft1.SetCanvasIndex("#crossCanvas",3);
@@ -163,45 +179,15 @@ export class ContouringComponent implements OnInit {
             this.picLeft1.SetCanvasIndex("#primitiveDrawCanvas",4);
             this.picLeft2.SetCanvasIndex("#primitiveDrawCanvas",4);
             this.picLeft3.SetCanvasIndex("#primitiveDrawCanvas",4);
+            this.picLeft1.SetCanvasIndex("#primitiveCanvas",2);
+            this.picLeft2.SetCanvasIndex("#primitiveCanvas",2);
+            this.picLeft3.SetCanvasIndex("#primitiveCanvas",2);
           }
-      }
-      )
-      // $.contextMenu({
-      //     selector: '#threebmp',
-      //     callback: function (key, options) {
-      //         var m = "clicked: " + key;
-      //         console.log(m);
-      //     },
-      //     items: {
-      //         "edit": { name: "选择/翻页", icon: "edit" },
-      //         "cut": { name: "图像旋转", icon: "cut" },
-      //         "status": {
-      //             name: "测量",
-      //             icon: "delete",
-      //             items: {
-      //                 "sub1": { name: "直线测距", icon: "edit" },
-      //                 "sub2": { name: "像素", icon: "cut" },
-      //             }
-      //         },
-      //         "normalSub": {
-      //             name: "保存书签",
-      //             items: {
-      //                 "normalsub1": { 
-      //                     name: "normal Sub 1",
-      //                 },
-      //                 "normalsub2": { 
-      //                     name: "normal Sub 2",
-      //                     items: {
-      //                         "normalsub1": { name: "normal Sub 1"},
-      //                         "normalsub2": { name: "normal Sub 2"},
-      //                         "normalsub3": { name: "normal Sub 3"},
-      //                     }
-      //                 },
-      //                 "normalsub3": { name: "normal Sub 3" },
-      //             }
-      //         }
-      //     }
-      // });
+      });
+      this.activeRoute.queryParams.subscribe(params => {
+        this.patientId = params.patientId;
+        this.getSeriesList(this.patientId);
+      });
   }
 
   mainHideList(){
@@ -231,146 +217,177 @@ export class ContouringComponent implements OnInit {
       this.picLeft2.clearmouse();
       this.picLeft3.clearmouse();
   }
+
+getSeriesList(patientId:any){
+    this.seriesHttpService.getSeriesList(patientId).subscribe(data=>{
+        this.seriesList = data;
+    })
+}
   
   sliceX: any; sliceY: any; sliceZ: any; gap: any; sliceAll: any;
   /**
    * 加载序列响应函数，暂时向service随便发一个seriesId
    * @param seriesId 
    */
-  loadSeries() {
+loadSeries() {
+    $('#loading').showLoading();
+    //this.showDialog();
     let img1 = new Image();
     let img2 = new Image();
     let img3 = new Image();
-    let seriesId:any = 'test1';
-    this.seriesHttpService.GetSeries(seriesId).subscribe((value) =>{
-        let data = JSON.parse(value);
-        let base64Header = "data:image/png;base64,";
-        let c1,c2,c3:any;
-        let ctx1,ctx2,ctx3:any;
-        let imgData1,imgData2,imgData3:any;
-        if (data.transverse != null)
+    let transverseCanvas = $(".a_class .icanvas").get(0);
+    let saggitalCanvas = $(".c_class .icanvas").get(0);
+    let coronalCanvas = $(".b_class .icanvas").get(0);
+    let seriesId:any = "1.3.12.2.1107.5.1.4.64606.30000018051006052134700006373";
+    this.seriesHttpService.LoadSeries(seriesId).subscribe(value=>{
+        if(value == "success")
         {
-            imgData1 = base64Header + data.transverse;
-            img1.src = imgData1;
-            img1.onload = function(){
-                c1= $(".a_class .icanvas").get(0);
-                ctx1=c1.getContext("2d");    
-                ctx1.drawImage(img1,20,20,1000,650);
-            }
+            this.seriesHttpService.GetSeries(seriesId,"","transverse",transverseCanvas.width,transverseCanvas.height).subscribe((value) =>{
+                let data = JSON.parse(value);
+                let base64Header = "data:image/png;base64,";
+                let imgData:any;
+                if (data.transverse != null)
+                {
+                    console.log("pre transverse"); 
+                    imgData = base64Header + data.transverse;
+                    img1.src = imgData;
+                    img1.onload = function(){
+                        transverseCanvas.getContext("2d").clearRect(0,0,transverseCanvas.width,transverseCanvas.height);
+                        transverseCanvas.getContext("2d").drawImage(img1,0,0,transverseCanvas.width,transverseCanvas.height);
+                        console.log("onload transverse");    
+                    }
+                }
+                if (data.coronal != null)
+                {
+                    console.log("pre coronal"); 
+                    imgData = base64Header + data.coronal;
+                    img2.src = imgData;
+                    img2.onload = function(){
+                        coronalCanvas.getContext("2d").clearRect(0,0,coronalCanvas.width,coronalCanvas.height);
+                        coronalCanvas.getContext("2d").drawImage(img2,0,0,coronalCanvas.width,coronalCanvas.height);
+                        console.log("onload coronal");     
+                    }
+                }
+                if (data.saggital != null)
+                {
+                    console.log("pre saggital");
+                    imgData = base64Header + data.saggital;
+                    img3.src = imgData;
+                    img3.onload = function(){
+                        saggitalCanvas.getContext("2d").clearRect(0,0,saggitalCanvas.width,saggitalCanvas.height);
+                        saggitalCanvas.getContext("2d").drawImage(img3,0,0,saggitalCanvas.width,saggitalCanvas.height);
+                        console.log("onload saggital");     
+                    }
+                }
+                $('#loading').hideLoading();
+                //this.hideDialog();
+            },(error)=>{
+                $('#loading').hideLoading();
+                //this.hideDialog();
+                console.log(error);
+            })
+            this.seriesHttpService.GetSeries(seriesId,"","coronal",coronalCanvas.width,coronalCanvas.height).subscribe((value) =>{
+                let data = JSON.parse(value);
+                let base64Header = "data:image/png;base64,";
+                let imgData:any;
+                if (data.transverse != null)
+                {
+                    console.log("pre transverse"); 
+                    imgData = base64Header + data.transverse;
+                    img1.src = imgData;
+                    img1.onload = function(){
+                        transverseCanvas.getContext("2d").clearRect(0,0,transverseCanvas.width,transverseCanvas.height);
+                        transverseCanvas.getContext("2d").drawImage(img1,0,0,transverseCanvas.width,transverseCanvas.height);
+                        console.log("onload transverse");    
+                    }
+                }
+                if (data.coronal != null)
+                {
+                    console.log("pre coronal"); 
+                    imgData = base64Header + data.coronal;
+                    img2.src = imgData;
+                    img2.onload = function(){
+                        coronalCanvas.getContext("2d").clearRect(0,0,coronalCanvas.width,coronalCanvas.height);
+                        coronalCanvas.getContext("2d").drawImage(img2,0,0,coronalCanvas.width,coronalCanvas.height);
+                        console.log("onload coronal");     
+                    }
+                }
+                if (data.saggital != null)
+                {
+                    console.log("pre saggital");
+                    imgData = base64Header + data.saggital;
+                    img3.src = imgData;
+                    img3.onload = function(){
+                        saggitalCanvas.getContext("2d").clearRect(0,0,saggitalCanvas.width,saggitalCanvas.height);
+                        saggitalCanvas.getContext("2d").drawImage(img3,0,0,saggitalCanvas.width,saggitalCanvas.height);
+                        console.log("onload saggital");     
+                    }
+                }
+                $('#loading').hideLoading();
+                //this.hideDialog();
+            },(error)=>{
+                $('#loading').hideLoading();
+                //this.hideDialog();
+                console.log(error);
+            })
+            this.seriesHttpService.GetSeries(seriesId,"","saggital",saggitalCanvas.width,saggitalCanvas.height).subscribe((value) =>{
+                let data = JSON.parse(value);
+                let base64Header = "data:image/png;base64,";
+                let imgData:any;
+                if (data.transverse != null)
+                {
+                    console.log("pre transverse"); 
+                    imgData = base64Header + data.transverse;
+                    img1.src = imgData;
+                    img1.onload = function(){
+                        transverseCanvas.getContext("2d").clearRect(0,0,transverseCanvas.width,transverseCanvas.height);
+                        transverseCanvas.getContext("2d").drawImage(img1,0,0,transverseCanvas.width,transverseCanvas.height);
+                        console.log("onload transverse");    
+                    }
+                }
+                if (data.coronal != null)
+                {
+                    console.log("pre coronal"); 
+                    imgData = base64Header + data.coronal;
+                    img2.src = imgData;
+                    img2.onload = function(){
+                        coronalCanvas.getContext("2d").clearRect(0,0,coronalCanvas.width,coronalCanvas.height);
+                        coronalCanvas.getContext("2d").drawImage(img2,0,0,coronalCanvas.width,coronalCanvas.height);
+                        console.log("onload coronal");     
+                    }
+                }
+                if (data.saggital != null)
+                {
+                    console.log("pre saggital");
+                    imgData = base64Header + data.saggital;
+                    img3.src = imgData;
+                    img3.onload = function(){
+                        saggitalCanvas.getContext("2d").clearRect(0,0,saggitalCanvas.width,saggitalCanvas.height);
+                        saggitalCanvas.getContext("2d").drawImage(img3,0,0,saggitalCanvas.width,saggitalCanvas.height);
+                        console.log("onload saggital");     
+                    }
+                }
+                $('#loading').hideLoading();
+                //this.hideDialog();
+            },(error)=>{
+                $('#loading').hideLoading();
+                //this.hideDialog();
+                console.log(error);
+            })
+            console.log("wait for response")
         }
-        if (data.saggital != null)
-        {
-            imgData2 = base64Header + data.saggital;
-            img2.src = imgData2;
-            img2.onload = function(){
-                c2= $(".b_class .icanvas").get(0);
-                ctx2=c2.getContext("2d");    
-                ctx2.drawImage(img2,20,20,500,300);
-            }
-        }
-        if (data.coronal != null)
-        {
-            imgData3 = base64Header + data.coronal;
-            img3.src = imgData3;
-            img3.onload = function(){
-                c3= $(".c_class .icanvas").get(0);
-                ctx3=c3.getContext("2d");   
-                ctx3.drawImage(img3,20,20,500,300);
-            }
-        }
-    },(error)=>{
-        console.log(error);
     })
-    this.gap[0] = 10;
-    this.gap[1] = 10;
-    this.gap[2] = 10;
-    }
-    // $.ajax({
-    //     type: "GET",
-    //     url: "http://127.0.0.1:8000/image/images/?seriesuid=1.3.12.2.1107.5.1.4.64606.30000018051006052134700006373&width=400&height=400&focus_view=&display_view=",
-    //  }).done(function (data, a, b, c) {
-    //     // img.src = response;
-    //     // img.onload = function(){
-    //     //     let c= $(".a_class .icanvas").get(0);
-    //     //     let ctx=c.getContext("2d");
-        
-    //     //     ctx.drawImage(img,20,20,1000,650);
-        
-    //     //     c= $(".b_class .icanvas").get(0);
-    //     //     ctx=c.getContext("2d");
-    //     //     ctx.drawImage(img,20,20,500,300);
-        
-    //     //     c= $(".c_class .icanvas").get(0);
-    //     //     ctx=c.getContext("2d");
-    //     //     ctx.drawImage(img,20,20,500,300);
-       
-    //     // }
+    console.log("wait for load response")
+}
 
-    //     data = JSON.parse(data);
-    //     if (data.saggital != null)
-    //         {
-    //             let saggital_canvas = $(".c_class .icanvas").get(0);
-    //             let saggital_ctx = saggital_canvas.getContext("2d");
-    //             saggital_ctx.clearRect(0,0,saggital_canvas.width,saggital_canvas.height);
-    //             let saggital_img = saggital_ctx.createImageData(data.saggital.length,data.saggital[0].length);
-    //             for (let i = 0; i < data.saggital.length; i++){
-    //                 for (let j = 0; j < data.saggital.length; j++) {
-    //                     saggital_img.data[4 * data.saggital.length * i + j * 4] = data.saggital[i][j][0];
-    //                     saggital_img.data[4 * data.saggital.length * i + j * 4 + 1] = data.saggital[i][j][1];
-    //                     saggital_img.data[4 * data.saggital.length * i + j * 4 + 2] = data.saggital[i][j][2];
-    //                     saggital_img.data[4 * data.saggital.length * i + j * 4 + 3] = 255;
-    //                 }
-    //             }
-    //             saggital_ctx.putImageData(saggital_img, (saggital_canvas.width-data.saggital.length)/2,(saggital_canvas.height-data.saggital[0].length)/2, 0, 0,saggital_canvas.width,saggital_canvas.height);
-    //         }
-
-    //     if (data.coronal != null)
-    //         {
-    //             let coronal_canvas = $(".b_class .icanvas").get(0);
-    //             let coronal_ctx = coronal_canvas.getContext("2d");
-    //             coronal_ctx.clearRect(0,0,coronal_canvas.width,coronal_canvas.height);
-    //             let coronal_img = coronal_ctx.createImageData(data.coronal.length,data.coronal[0].length);
-    //             for (let i = 0; i < data.coronal.length; i++){
-    //                 for (let j = 0; j < data.coronal.length; j++) {
-    //                     coronal_img.data[4 * data.coronal.length * i + j * 4] = data.coronal[i][j][0];
-    //                     coronal_img.data[4 * data.coronal.length * i + j * 4 + 1] = data.coronal[i][j][1];
-    //                     coronal_img.data[4 * data.coronal.length * i + j * 4 + 2] = data.coronal[i][j][2];
-    //                     coronal_img.data[4 * data.coronal.length * i + j * 4 + 3] = 255;
-    //                 }
-    //             }
-    //             coronal_ctx.putImageData(coronal_img,(coronal_canvas.width-data.coronal.length)/2,(coronal_canvas.height-data.coronal[0].length)/2, 0, 0,coronal_canvas.width,coronal_canvas.height);
-    //         }
-    //     if (data.transverse != null)
-    //     {
-    //         let transverse_canvas = $(".a_class .icanvas").get(0);
-    //         let transverse_ctx = transverse_canvas.getContext("2d");
-    //         transverse_ctx.clearRect(0,0,transverse_canvas.width,transverse_canvas.height);
-    //         let transverse_img = transverse_ctx.createImageData(data.transverse.length,data.transverse[0].length);
-    //         for (let i = 0; i < data.transverse.length; i++){
-    //             for (let j = 0; j < data.transverse[0].length; j++) {
-    //                 transverse_img.data[4 * data.transverse.length * i + j * 4] = data.transverse[i][j][0];
-    //                 transverse_img.data[4 * data.transverse.length * i + j * 4 + 1] = data.transverse[i][j][1];
-    //                 transverse_img.data[4 * data.transverse.length * i + j * 4 + 2] = data.transverse[i][j][2];
-    //                 transverse_img.data[4 * data.transverse.length * i + j * 4 + 3] = 255;
-    //             }
-    //         }
-    //         //transverse_img.width = transverse_canvas.width;
-    //         //transverse_ctx.drawImage(transverse_img,0,0,transverse_canvas.width,transverse_canvas.height);
-    //         transverse_ctx.putImageData(transverse_img,(transverse_canvas.width-data.transverse.length)/2,(transverse_canvas.height-data.transverse[0].length)/2, 0, 0,transverse_canvas.width,transverse_canvas.height);
-    //     }
-    //  }).fail(function (jqXHR, textStatus, errorThrown) {
-    //     alert(jqXHR.responseJSON.error.message.value);
-    //  });
-
-
-  auto(node: any) {
+auto(node: any) {
       // var formData = { patientID: this.patientCollection.patient.Get(0).id, algorithmName: node[0], seriesID: this.patientCollection.patient.Get(0).series.Get(0).id };
       // this.roiHttp.PostCreateRoiByAtlas(formData).subscribe(value => {
       //     this.conMessage.SetRois(value.roiProperties);
       //     this.conMessage.Setcontour(value.roiGeometry.roiContourSets.items);
       //     this.picLeft1.GetContourSet();
       // });
-  }
+}
 
   fb(a) {
       this.load.loadbar(a)
@@ -380,3 +397,4 @@ export class ContouringComponent implements OnInit {
       this.load.message(w);
   }
 }
+
