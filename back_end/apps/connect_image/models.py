@@ -109,3 +109,16 @@ class Study(models.Model):
     class Meta:
         managed = False
         db_table = 'study'
+
+
+# class Script(models.Model):
+#     pid = models.AutoField(primary_key=True)
+#     scriptid = models.CharField(unique=True, max_length=64)
+#     userid = models.ForeignKey('User', on_delete=models.CASCADE, db_column='userid', to_field='userid')
+#     scriptpath = models.CharField(max_length=255, blank=True, null=True)
+#     importdatatime = models.DateTimeField(auto_now_add=True)
+#     updatetime = models.DateTimeField(auto_now=True)
+#
+#     class Meta:
+#         managed = False
+#         db_table = 'script'

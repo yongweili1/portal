@@ -3,7 +3,7 @@ from __future__ import print_function
 from twisted.internet import reactor, protocol
 
 import struct
-from apps.connect_image import image_msg_pb2 as msg
+from connect_image import image_msg_pb2 as msg
 
 
 class ResponseData(object):
@@ -50,10 +50,10 @@ class BackEndClient(protocol.Protocol):
 
         self.received_data += data
         self.received_size = len(self.received_data)
-        print('Total received: {} bytes'.format(self.received_size))
+        # print('Total received: {} bytes'.format(self.received_size))
 
         if self.received_size == self.package_size:
-            print('Received all data')
+            # print('Received all data')
             self.handle_data_from_server()
 
     def waiting_for_result(self, timeout=60):
@@ -108,4 +108,3 @@ class BackEndFactory(protocol.ClientFactory):
 
 # single instance of BackEndFactory
 be_factory = BackEndFactory()
-

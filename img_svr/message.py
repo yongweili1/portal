@@ -34,7 +34,7 @@ class RequestData(object):
 
 
 class ResponseData(object):
-    def __call__(self, content, success=True, message=''):
+    def __call__(self, content='', success=True, message=''):
         data = msg.ResponseMsg()
         data.success = success
         data.comment = message

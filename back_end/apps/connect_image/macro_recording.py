@@ -1,6 +1,8 @@
 # -*-coding:utf-8-*-
 import functools
+import json
 import os
+import struct
 import time
 import sys
 
@@ -9,30 +11,23 @@ sys.setdefaultencoding('gbk')
 
 import image_msg_pb2 as msg
 
-# class Script(object):
-#
-#     def __init__(self):
-#         self.imp = 'from twisted_client import be_factory\n'
-#         self.template = 'be_factory.protocol.request({})\nrst = be_factory.protocol.waiting_for_result()\n'
-#         self.is_first = True
-#
-#     def write(self, data):
-#         if self.is_first:
-#             script = self.imp + self.template
-#
-#     def close(self, data):
-#         pass
-#
-#
-# script = Script()
-
 
 class Macro(object):
-
     macro_status = False
+    code = ''
+    code_header = """# -*- coding: utf-8 -*-\r\n
+                     import os, django\r\n
+                     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "back_end.settings")\r\n 
+                     django.setup()\r\n
+                     import sys\r\n
+                     sys.path.insert(0, r'E:\\research_ly\portal\\back_end\\apps\connect_image')\r\n
+                  """
 
     def __init__(self):
         pass
+
+    def __write_line(self, line, level=0):
+        Macro.code += '    ' * level + line + '\r\n'
 
     def __call__(self, func):
         self.func = func
@@ -43,19 +38,20 @@ class Macro(object):
             if self.macro_status:
                 file_path = sys._getframe().f_code.co_filename
                 file_name = os.path.splitext(os.path.basename(file_path))[0]
-                data = 'from views import %s\n' % (func.__name__)
+                self.__write_line('from view_model import %s' % func.__name__)
 
-                with open('apps/connect_image/macro_test.py', 'a+') as f:
-                    func_name = func.__name__
-                    if kwargs['data']:
-                        request_data = kwargs['data'].ParseFromString()
-                        data += 'data = ' + '"""' + str(request_data) + '"""' + '\n'
-                    volumepath = kwargs.get('volumepath', None)
-                    if volumepath is not None:
-                        data += 'volumepath = r' + '"' + str(kwargs['volumepath']) + '"' + '\n'
-                    data = data + 'result = ' + func_name + '(data)' + '\n'
-                    # print(data1)
-                    f.write(data)
+                data_str = ''
+                data_str += '('
+                for key, value in kwargs.items():
+                    if key == 'volumepath':
+                        data_str += "{0}=r'{1}',".format(key, value)
+                        continue
+                    data_str += "{0}='{1}',".format(key, value)
+                data_str += ')'
+
+                func_name = func.__name__
+
+                self.__write_line('result = {}'.format(func_name) + data_str)
             else:
                 pass
 
