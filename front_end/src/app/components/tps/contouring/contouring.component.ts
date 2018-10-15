@@ -1,11 +1,9 @@
 import { Component, OnInit, ViewChild, Injector, ElementRef } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { HttpClient } from "@angular/common/http";
-import { DialogModule } from 'primeng/dialog';
 import { switchMap } from 'rxjs/operators';
 
 import { ConMessageService } from '../shared/service/conMessage.service';
-//import { PatientCollection } from '../shared/PatientCollection';
 import { SeriesHttpService } from '../shared/service/seriesHttp.service';
 import { RoiHttpService } from '../shared/service/roiHttp.service';
 import { StorageService } from '../shared/service/storage.service';
@@ -60,7 +58,6 @@ export class ContouringComponent implements OnInit {
     public activeRoute: ActivatedRoute, 
     //private seriesHttp: SeriesHttpService, 
     private conMessage: ConMessageService,
-    //private patientCollection: PatientCollection, 
     public roiHttp: RoiHttpService, 
     private storageService: StorageService, 
     private seriesHttpService: SeriesHttpService
@@ -91,12 +88,12 @@ export class ContouringComponent implements OnInit {
       this.picLeft3.clearPri();
   }
 
-showDialog() {
+  showDialog() {
     this.display = true;
-}
-hideDialog() {
+  }
+  hideDialog() {
     this.display = false;
-}
+  }
   coronalChange(event: any) {
       if (event[2] == 'ver') {
           this.picLeft3.getBuffer(event[0], 'saggital', event[1])
@@ -218,18 +215,18 @@ hideDialog() {
       this.picLeft3.clearmouse();
   }
 
-getSeriesList(patientId:any){
+  getSeriesList(patientId:any){
     this.seriesHttpService.getSeriesList(patientId).subscribe(data=>{
         this.seriesList = data;
     })
-}
+  }
   
   sliceX: any; sliceY: any; sliceZ: any; gap: any; sliceAll: any;
   /**
    * 加载序列响应函数，暂时向service随便发一个seriesId
    * @param seriesId 
    */
-loadSeries() {
+  loadSeries() {
     $('#loading').showLoading();
     //this.showDialog();
     let img1 = new Image();
@@ -378,16 +375,16 @@ loadSeries() {
         }
     })
     console.log("wait for load response")
-}
+  }
 
-auto(node: any) {
+  auto(node: any) {
       // var formData = { patientID: this.patientCollection.patient.Get(0).id, algorithmName: node[0], seriesID: this.patientCollection.patient.Get(0).series.Get(0).id };
       // this.roiHttp.PostCreateRoiByAtlas(formData).subscribe(value => {
       //     this.conMessage.SetRois(value.roiProperties);
       //     this.conMessage.Setcontour(value.roiGeometry.roiContourSets.items);
       //     this.picLeft1.GetContourSet();
       // });
-}
+  }
 
   fb(a) {
       this.load.loadbar(a)
