@@ -65,13 +65,13 @@
         });
 
         $('#btn_start_macro').click(function () {
-            $.get("/image/macro/?macro_status=True", function(data) {
+            $.get("/image/macro/?macro_status=start", function(data) {
                 refreash(data)
             });
         });
 
         $('#btn_finish_macro').click(function () {
-            $.get("/image/macro/?macro_status=False", function(data) {
+            $.get("/image/macro/?macro_status=finish", function(data) {
                 refreash(data)
             });
         });

@@ -3,7 +3,7 @@ from __future__ import print_function
 from twisted.internet import reactor, protocol
 
 import struct
-from apps.connect_image import image_msg_pb2 as msg
+from connect_image import image_msg_pb2 as msg
 
 
 class ResponseData(object):
@@ -123,4 +123,3 @@ class BackEndFactory(protocol.ClientFactory):
 
 # single instance of BackEndFactory
 be_factory = BackEndFactory()
-

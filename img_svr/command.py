@@ -121,7 +121,7 @@ def show(**kwargs):
         series_uid = kwargs['seriesuid']
         width = int(kwargs['width'])
         height = int(kwargs['height'])
-        focus_view = get_focus_view(kwargs['focus_view'])
+        # focus_view = get_focus_view(kwargs['focus_view'])
         display_view = get_display_view(kwargs['display_view'])
     except:
         return response(success=False, message='Invalid parameters.')
