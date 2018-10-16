@@ -1,6 +1,7 @@
 import { Directive, ElementRef, Input, HostListener, OnInit, Output, EventEmitter } from '@angular/core';
 import { ConMessageService } from '../service/conMessage.service';
-import { Point, SharpFactory } from '../draw/tools'
+import { SharpFactory } from '../tools/sharpfactory'
+import { Point } from '../tools/point'
 
 declare var createjs: any;
 

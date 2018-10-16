@@ -3,18 +3,6 @@ import { Rectangle } from '../overlay/rectangle'
 import { Circle } from '../overlay/circle'
 import { Ellipse } from '../overlay/ellipse'
 
-
-export class Point {
-    x: number;
-    y: number;
-
-    constructor(private _x: number, private _y: number) {
-        this.x = _x;
-        this.y = _y;
-    }
-}
-
-
 export class SharpFactory {
     private static _factory: SharpFactory;
 

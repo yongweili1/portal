@@ -6,11 +6,17 @@ export class Circle extends Overlay {
         super(stage, 'circle');
     }
 
+    setCps() {
+        this.clearCps()
+        this._cps.push(this._startPoint)
+        this._cps.push(this._endPoint)
+    }
+    
     update(){
         super.update();
         this.overlayStage.clear();
         this.graphics.clear();
-
+        this.setCps();
         this.drawControlPoints();
 
         let x = (this._endPoint.x + this._startPoint.x) / 2;

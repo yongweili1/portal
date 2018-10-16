@@ -1,6 +1,6 @@
 import { extend } from "webdriver-js-extender";
 import { OnInit } from '@angular/core';
-import { Point } from '../draw/tools'
+import { Point } from '../tools/point'
 declare var createjs: any;
 
 export class Overlay extends createjs.Shape {
@@ -14,7 +14,7 @@ export class Overlay extends createjs.Shape {
         super();
         this.overlayStage = stage;
         this.type = type;
-        this.cps = new Array<Point>();
+        this._cps = new Array<Point>();
         this.addEventListener("pressmove", this.handlePressMove.bind(this));
         this.addEventListener("dblclick", this.handleDbClick.bind(this));
         this.addEventListener("pressup", this.handlePressUp.bind(this));
@@ -42,7 +42,7 @@ export class Overlay extends createjs.Shape {
             return;
         }
         this._cps.forEach(cp => {
-            this.graphics.beginStroke("yellow").setStrokeStyle(1, "round").rect(cp.x-2, cp.y-2, 4, 4);
+            this.graphics.beginStroke("yellow").setStrokeStyle(2, "round").rect(cp.x - 2, cp.y - 2, 4, 4);
         });
     };
 

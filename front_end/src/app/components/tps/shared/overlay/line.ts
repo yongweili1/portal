@@ -6,10 +6,17 @@ export class Line extends Overlay {
         super(stage, 'line');
     }
 
+    setCps() {
+        this.clearCps()
+        this._cps.push(this._startPoint)
+        this._cps.push(this._endPoint)
+    }
+
     update(){
         super.update();
         this.overlayStage.clear();
         this.graphics.clear();
+        this.setCps();
         this.drawControlPoints();
         this.graphics.beginStroke("white")
                      .setStrokeStyle(1, "round")
