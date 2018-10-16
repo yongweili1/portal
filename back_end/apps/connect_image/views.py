@@ -118,7 +118,7 @@ class LoadVolume(APIView):
             'user_ip': user_ip,
             'volumepath': volumepath,
             'command': 'load',
-            'server_name': request_server,
+            'server_name': 'image',
         }
         try:
             rst = load_volume(user_ip, **params)
@@ -189,7 +189,7 @@ class GetImage(APIView):
             'height': height,
             'display_view': display_view,
             'user_ip': user_ip,
-            'server_name': request_server,
+            'server_name': 'image',
             'command': 'show',
         }
 
@@ -281,7 +281,7 @@ class TurnPage(APIView):
             'height': height,
             'focus_view': focus_view,
             'user_ip': user_ip,
-            'server_name': request_server,
+            'server_name': 'image',
             'command': 'page',
         }
 

@@ -17,7 +17,7 @@ def load_volume(*args, **kwargs):
     data = msg.RequestMsg()
     data.session = kwargs['user_ip']
     data.server_name = kwargs['server_name']
-    data.command = kwargs['server_name']
+    data.command = kwargs['command']
     data.content.params = json.dumps({'seriesuid': kwargs['serid']})
     data.content.volume = vol
     data = data.SerializeToString()
@@ -35,7 +35,7 @@ def get_image(*args, **kwargs):
     data = msg.RequestMsg()
     data.session = kwargs['user_ip']
     data.server_name = kwargs['server_name']
-    data.command = kwargs['server_name']
+    data.command = kwargs['command']
     data.content.params = json.dumps(kwargs)
     data = data.SerializeToString()
     size = len(data)
