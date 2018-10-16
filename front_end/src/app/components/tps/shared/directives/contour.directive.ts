@@ -77,14 +77,7 @@ export class ContourDirective implements OnInit {
 
     @HostListener('mouseup', ['$event']) onMouseUp(event: MouseEvent) {
         if (this.isPaint) {
-            if (this.curAction == "rectangle") {
-            }
-            if (this.curAction == "measure") {
-            }
-            if (this.curAction == "circle") {
-            }
-            if (this.curAction == "ellipse") {
-            }
+            this.sharp.update();
         }
         this.isMousedown = false;
         this.isPaint = false;
