@@ -32,7 +32,7 @@ from connect_image.models import Series
 
 from connect_image.view_model import load_volume, get_image
 from macro_recording import Macro
-from settings import STATIC_ROOT
+from back_end.settings import STATIC_ROOT
 
 
 class Home(APIView):
@@ -177,9 +177,8 @@ class GetImage(APIView):
         height = request.GET.get('height', None)
         display_view = request.GET.get('display_view', 'all')
         user_ip = request.META.get('REMOTE_ADDR', None)
-        request_url = request.path
-        print('-'*100)
-        print(request_url.split("/")[-2])
+        request_server = request.path
+        request_server = request_server.split("/")[-2]
 
         if width is None or height is None:
             return Response('请输入完整的请求数据')
@@ -188,11 +187,14 @@ class GetImage(APIView):
             'seriesuid': serid,
             'width': width,
             'height': height,
-            'display_view': display_view
+            'display_view': display_view,
+            'user_ip': user_ip,
+            'server_name': request_server,
+            'command': 'show',
         }
 
         try:
-            rst = get_image(user_ip, **params)
+            rst = get_image(**params)
         except Exception as e:
             return Response('服务间数据传输失败')
 
@@ -268,6 +270,8 @@ class TurnPage(APIView):
         height = request.GET.get('height', None)
         focus_view = request.GET.get('focus_view', None)
         user_ip = request.META.get('REMOTE_ADDR', None)
+        request_server = request.path
+        request_server = request_server.split("/")[-2]
         if width is None or height is None:
             return Response('请输入完整的请求数据')
 
@@ -276,14 +280,15 @@ class TurnPage(APIView):
             'width': width,
             'height': height,
             'focus_view': focus_view,
+            'user_ip': user_ip,
+            'server_name': request_server,
+            'command': 'show',
         }
 
         try:
-            rst = get_image(user_ip, **params)
+            rst = get_image(**params)
         except Exception as e:
             return Response('服务间数据传输失败')
-
-        rst = json.dumps(rst)
 
         if rst.success is False:
             return Response(rst.comment)

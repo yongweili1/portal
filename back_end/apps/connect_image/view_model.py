@@ -17,7 +17,7 @@ def load_volume(*args, **kwargs):
     data = msg.RequestMsg()
     data.session = kwargs['user_ip']
     data.server_name = kwargs['server_name']
-    data.command = kwargs['command']
+    data.command = kwargs['server_name']
     data.content.params = json.dumps({'seriesuid': kwargs['serid']})
     data.content.volume = vol
     data = data.SerializeToString()
@@ -33,9 +33,9 @@ def load_volume(*args, **kwargs):
 @Macro()
 def get_image(*args, **kwargs):
     data = msg.RequestMsg()
-    data.session = '127.0.0.1'
-    data.server_name = 'image'
-    data.command = 'show'
+    data.session = kwargs['user_ip']
+    data.server_name = kwargs['server_name']
+    data.command = kwargs['server_name']
     data.content.params = json.dumps(kwargs)
     data = data.SerializeToString()
     size = len(data)

@@ -10,8 +10,9 @@ from rest_framework.views import APIView
 
 class GraphElement(APIView):
     def post(self, request):
+        seriesuid = request.POST.get('seriesuid', None)
         type = request.POST.get('type', None)
         dotposition = request.POST.get('dotposition', None)
-        if type is None or dotposition is None:
+        if seriesuid is None or type is None or dotposition is None:
             return Response('参数不完整')
         
