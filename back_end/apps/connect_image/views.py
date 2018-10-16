@@ -282,7 +282,7 @@ class TurnPage(APIView):
             'focus_view': focus_view,
             'user_ip': user_ip,
             'server_name': request_server,
-            'command': 'show',
+            'command': 'page',
         }
 
         try:
