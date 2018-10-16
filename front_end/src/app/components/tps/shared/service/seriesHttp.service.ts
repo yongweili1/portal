@@ -35,7 +35,7 @@ getSeriesList(patientId:any):Observable<Array<any>>{
 LoadSeries(seriesId:any):Observable<any>{
     const getParams = new HttpParams()
     .set('seriesuid', seriesId);
-    return this.http.get('http://10.9.19.148:8000/image/volumes/',{params : getParams});
+    return this.http.get('http://v:8000/image/volumes/',{params : getParams});
         
 }
 
@@ -46,7 +46,7 @@ GetSeries(seriesId:any,focus:any,display:any,width:any,height:any):Observable<an
      .set('width', width)
      .set('height', height)
      .set('display_view', display);
-    return this.http.get('http://10.9.19.148:8000/image/images/',{params : getParams});
+    return this.http.get('http://10.9.19.139:8000/image/images/',{params : getParams});
     
 }
 
@@ -57,7 +57,7 @@ GetSeriesPic(focus:any,display:any,delta:any,width:any,height:any):Observable<an
      .set('height', height)
      .set('focus_view', focus)
      .set('display_view', display);
-    return this.http.get('http://10.9.19.148:8000/image/pages/',{params : getParams});
+    return this.http.get('http://10.9.19.139:8000/image/pages/',{params : getParams});
     
 }
 

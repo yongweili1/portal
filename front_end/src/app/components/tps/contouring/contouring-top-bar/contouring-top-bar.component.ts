@@ -2,6 +2,7 @@ import { Component, ViewChild, OnInit, Input, Output, EventEmitter ,SimpleChange
 import { ConMessageService } from '../../shared/service/conMessage.service';
 //import { PatientHttpService } from 'TpsShared/TpsService/patientHttp.service';
 import { MenuItem } from '../../../patient-template/shared/patient-template.model'
+import {ContouringService} from '../../shared/service/contouring.service'
 
 @Component({
   selector: 'mpt-contouring-top-bar',
@@ -24,6 +25,7 @@ export class ContouringTopBarComponent implements OnInit {
 
   constructor(
     private conMessage: ConMessageService,
+    private conService: ContouringService
     ) { 
     }
     seriesId: any;
@@ -206,6 +208,23 @@ export class ContouringTopBarComponent implements OnInit {
   }
   OnSelect(){
     this.conMessage.SetCurAction("select");
+  }
+  OnStartMacro(){
+    this.conService.Macro("start").subscribe(result=>{
+        if(result=="ok"){
+            console.log("start macro transcribe");
+        }
+    },(error)=>{
+            console.log("start macro transcribe failed")
+        }
+
+    );
+  }
+  OnEndMacro(){
+    this.conService.Macro("finish").subscribe();
+  }
+  OnRunMacro(){
+    this.conService.Macro("run").subscribe();
   }
 
 

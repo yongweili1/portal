@@ -244,37 +244,8 @@ windowAddMouseWheel(tag) {
   let delt:any;
   var scrollFunc = function(e) {
       e = e || window.event;
-      if (e.wheelDelta > 0) { //当滑轮向上滚动时  
-          if (tag == "transverse") {
-            delt = 10;  //TODO:做成可配置的
-          }
-          if (tag == "coronal") {
-            delt = 10;
-          }
-          if (tag == "saggital") {
-            delt = 10;
-          }
-          //that.P2Cross();
-        //   if (that.conMessage.contourset != undefined) {
-        //       that.GetContourSet();
-        //   }
-      }
-      if (e.wheelDelta < 0) { //当滑轮向下滚动时  
-        if (tag == "transverse") {
-            delt = -10;
-        }
-        if (tag == "coronal") {
-            delt = -10;
-        }
-        if (tag == "saggital") {
-            delt = -10;
-        }
-        that.P2Cross();
-        //   if (that.conMessage.contourset != undefined) {
-        //       that.GetContourSet();
-          //}
-        
-      }
+      delt = e.wheelDelta/120; 
+      that.P2Cross();
       that.loadPics(delt);
         //that.scroll.emit(tag);
   };
@@ -377,32 +348,32 @@ cross(width, height, loca) {
 handlePressMove(evt) {
   if (evt.currentTarget == this.verticalLine) {//竖线
       evt.currentTarget.x = this.crossPoint.x = evt.stageX;
-      this.getposition(this.crossPoint.x, this.crossPoint.y, 2, 'ver');
+      //this.getposition(this.crossPoint.x, this.crossPoint.y, 2, 'ver');
   }
   if (evt.currentTarget == this.horizontalLine) {//横线
       evt.currentTarget.y = this.crossPoint.y = evt.stageY;
-      this.getposition(this.crossPoint.x, this.crossPoint.y, 2, 'cur');
+      //this.getposition(this.crossPoint.x, this.crossPoint.y, 2, 'cur');
   }
   if (evt.currentTarget == this.crossPoint) {
       evt.currentTarget.x = this.verticalLine.x = evt.stageX;
       evt.currentTarget.y = this.horizontalLine.y = evt.stageY;
-      this.getposition(this.crossPoint.x, this.crossPoint.y, 4, 'cro');
+      //this.getposition(this.crossPoint.x, this.crossPoint.y, 4, 'cro');
   }
   this.stage.update();
 }
 handlePressUp(evt) {
   if (evt.currentTarget == this.verticalLine) {//竖线
       evt.currentTarget.x = this.crossPoint.x = evt.stageX;
-      this.getposition(this.crossPoint.x, this.crossPoint.y, 1, 'ver');
+      //this.getposition(this.crossPoint.x, this.crossPoint.y, 1, 'ver');
   }
   if (evt.currentTarget == this.horizontalLine) {//横线
       evt.currentTarget.y = this.crossPoint.y = evt.stageY;
-      this.getposition(this.crossPoint.x, this.crossPoint.y, 1, 'cur');
+      //this.getposition(this.crossPoint.x, this.crossPoint.y, 1, 'cur');
   }
   if (evt.currentTarget == this.crossPoint) {
       evt.currentTarget.x = this.crossPoint.x = evt.stageX;
       evt.currentTarget.y = this.crossPoint.y = evt.stageY;
-      this.getposition(this.crossPoint.x, this.crossPoint.y, 1, 'cro');
+      //this.getposition(this.crossPoint.x, this.crossPoint.y, 1, 'cro');
   }
   this.stage.update();
 }
