@@ -7,6 +7,7 @@ from rest_framework import serializers
 from patientinformations.models import Patient, Study, Series, Image
 from patientinformations.serializers import PerInfoSerializer, StudySerializer, SeriesSerializer, ImageSerializer
 from back_end.util.readDcm import DcmPatient, DcmStudy, DcmSeries, DcmImage
+
 reload(sys)
 sys.setdefaultencoding('utf8')
 
@@ -19,7 +20,7 @@ class UploadDcm(object):
         :param datasetlist: dicom datasetlist
         :return: None
         """
-        sign = True
+        # sign = True
 
         for dataset in datasetlist:
 
@@ -33,9 +34,10 @@ class UploadDcm(object):
                     a = DcmPatient()
                     patient_dic = a.get_dicom_patient(dataset)
                     print(patient_dic)
-                    # 判断数据库中是否存在该对象，如有，不执行数据入库
+                    # 判断数据库中是否存在该对象，如有，更新时间，不执行数据入库
                     if len(Patient.objects.filter(patientid=patient_dic['patientid'])) != 0:
-                        Patient.objects.filter(patientid=patient_dic['patientid']).update(updatetime=datetime.datetime.now())
+                        Patient.objects.filter(patientid=patient_dic['patientid']).update(
+                            updatetime=datetime.datetime.now())
                     else:
                         # 创建序列化器对象，验证信息并保存到数据库
                         ser = PerInfoSerializer(data=patient_dic)
@@ -63,7 +65,8 @@ class UploadDcm(object):
                     series_dic = c.get_dicom_series(dataset)
                     print(series_dic)
                     if len(Series.objects.filter(seriesuid=series_dic['seriesuid'])) != 0:
-                        Series.objects.filter(seriesuid=series_dic['seriesuid']).update(buildvolumesign=int(1), updatetime=datetime.datetime.now())
+                        Series.objects.filter(seriesuid=series_dic['seriesuid']).update(buildvolumesign=int(1),
+                                                                                        updatetime=datetime.datetime.now())
                     else:
                         serseries = SeriesSerializer(data=series_dic)
                         if not serseries.is_valid(raise_exception=True):
@@ -71,20 +74,21 @@ class UploadDcm(object):
                             raise serializers.ValidationError('series表数据有误验证失败')
                         serseries.save()
 
-                        if sign and filepath is not None:
-                            # volume文件的本地路径保存到数据库
-                            Series.objects.filter(seriesuid=series_dic['seriesuid']).update\
-                                (seriespixeldatafilepath=filepath)
-                            sign = False
+                        # if sign and filepath is not None:
+                        #     # volume文件的本地路径保存到数据库
+                        #     Series.objects.filter(seriesuid=series_dic['seriesuid']).update\
+                        #         (seriespixeldatafilepath=filepath)
+                        #     sign = False
 
                     # 创建自定义类的对象，提取dicom文件中的image信息
                     d = DcmImage()
                     image_dic = d.get_dicom_image(dataset)
-                    image_dic['updatesign'] = int(1)
-                    image_dic['updatetime'] = datetime.datetime.now()
+                    # image_dic['updatesign'] = int(1)
+                    # image_dic['updatetime'] = datetime.datetime.now()
                     print(image_dic)
                     if len(Image.objects.filter(imageuid=image_dic['imageuid'])) != 0:
-                        Image.objects.filter(imageuid=image_dic['imageuid']).update(**image_dic)
+                        Image.objects.filter(imageuid=image_dic['imageuid']).update(updatesign=int(1),
+                                                                                    updatetime=datetime.datetime.now())
                     else:
                         serimage = ImageSerializer(data=image_dic)
                         if not serimage.is_valid(raise_exception=True):

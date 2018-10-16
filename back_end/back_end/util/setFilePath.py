@@ -12,3 +12,7 @@ class SaveDicomFilePath(FileSystemStorage):
 
 class SaveVolumeFilePath(FileSystemStorage):
     volumepath = 'D:\\volume\\'
+
+
+class DotPositionFilePath(FileSystemStorage):
+    dotpospath = 'D:\\dotpostion\\'

@@ -30,5 +30,6 @@ urlpatterns = [
     url(r'^dicom/', include('upload_dcm.urls')),
     url(r'^algproxy/', include('alg_proxy.urls')),
     url(r'^pacsserver/', include('handle_pacs.urls')),
-    url(r'^image/', include('connect_image.urls'))
+    url(r'^image/', include('connect_image.urls')),
+    url(r'^graph/', include('graph_element.urls')),
 ]

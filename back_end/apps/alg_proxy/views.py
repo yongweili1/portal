@@ -14,10 +14,10 @@ from md.image3d.python.image3d_io import read_image
 import ConfigParser
 
 
-conf = ConfigParser.ConfigParser()
-conf.read('back_end/util/serverApi.ini')
-load_alg_url = conf.get("algorithmApi", "load_alg_url")
-get_alg_result_url = conf.get("algorithmApi", "get_alg_result_url")
+# conf = ConfigParser.ConfigParser()
+# conf.read('back_end/util/serverApi.ini')
+# load_alg_url = conf.get("algorithmApi", "load_alg_url")
+# get_alg_result_url = conf.get("algorithmApi", "get_alg_result_url")
 
 
 class LoadAlg(APIView):

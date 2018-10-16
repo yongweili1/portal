@@ -45,11 +45,12 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework_swagger',
 
+    'connect_image.apps.ConnectImageConfig',
     'patientinformations.apps.PatientinformationsConfig',
     'alg_proxy.apps.AlgProxyConfig',
     'handle_pacs.apps.HandlePacsConfig',
     'upload_dcm.apps.UploadDcmConfig',
-    'connect_image.apps.ConnectImageConfig'
+    'graph_element.apps.GraphElementConfig',
 ]
 
 MIDDLEWARE = [

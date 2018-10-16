@@ -27,10 +27,21 @@ if __name__ == "__main__":
                 "forget to activate a virtual environment?"
             )
         raise
-    if os.path.exists(SaveDicomFilePath.location_1 and SaveDicomFilePath.location_2 and SaveDicomFilePath.location_3):
+
+    if os.path.exists(SaveDicomFilePath.location_1):
         pass
     else:
-        os.mkdir(SaveDicomFilePath.location_1 and SaveDicomFilePath.location_2 and SaveDicomFilePath.location_3)
+        os.mkdir(SaveDicomFilePath.location_1)
+
+    if os.path.exists(SaveDicomFilePath.location_2):
+        pass
+    else:
+        os.mkdir(SaveDicomFilePath.location_2)
+
+    if os.path.exists(SaveDicomFilePath.location_3):
+        pass
+    else:
+        os.mkdir(SaveDicomFilePath.location_3)
 
     if os.path.exists(SaveVolumeFilePath.volumepath):
         pass
@@ -38,13 +49,13 @@ if __name__ == "__main__":
         os.mkdir(SaveVolumeFilePath.volumepath)
 
     # Start a new thread for reactor loop
-    reactor.connectTCP('127.0.0.1', 8001, be_factory)
-    thread.start_new_thread(reactor.run, (0,))
-
     try:
-        execute_from_command_line(sys.argv)
+        reactor.connectTCP('127.0.0.1', 8001, be_factory)
+        thread.start_new_thread(reactor.run, (0,))
     except Exception as e:
         print('初始化连接image_server失败')
 
     if os.name == 'nt':
         win32file._setmaxstdio(2048)
+
+    execute_from_command_line(sys.argv)

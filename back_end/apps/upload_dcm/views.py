@@ -49,10 +49,8 @@ class Patinfo(APIView):
         for file_name in file_name_list:
             file_path = os.path.join(SaveDicomFilePath.location_2, file_name)
             dataset = pydicom.dcmread(file_path, force=True)
-            filename_dataset_dic = {}
-            filename_dataset_dic[file_name] = dataset
             splitdicoms = SplitDicoms()
-            seriespath = splitdicoms.split_patient(filename_dataset_dic, dataset)
+            seriespath = splitdicoms.split_patient(file_name, dataset)
             dataset_list.append(dataset)
             series_path_list.append(seriespath)
 

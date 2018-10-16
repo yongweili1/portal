@@ -7,14 +7,10 @@ from back_end.util.readDcm import DcmSeries, DcmPatient
 
 class SplitDicoms(object):
 
-    # def __init__(self):
-    #     self.patientidList = []
-    #     self.seriesuidList = []
-
-    def split_patient(self, filename_dataset_dic, dataset):
+    def split_patient(self, file_name, dataset):
         """
         Make patient folder according to patientid
-        :param filename_dataset_dic: mapping between filename and dataset
+        :param file_name: dcm filename
         :param dataset:dicom filedataset
         :return:a series path of this upload
         """
@@ -25,14 +21,13 @@ class SplitDicoms(object):
         patientpath = SaveDicomFilePath.location_3 + str(patientid)
         if os.path.exists(patientpath):
             pass
-            # seriespath = self.split_series(patientpath, filename_dataset_dic, dataset)
         else:
             os.mkdir(patientpath)
-        seriespath = self.split_series(patientpath, filename_dataset_dic, dataset)
+        seriespath = self.split_series(patientpath, file_name, dataset)
 
         return seriespath
 
-    def split_series(self, patientpath, filename_dataset_dic, dataset):
+    def split_series(self, patientpath, file_name, dataset):
         """
         Distinguish DICOM files according to seriesuid
         :param patientpath:patient folder path
@@ -47,15 +42,13 @@ class SplitDicoms(object):
         seriespath = patientpath + '\\' + str(seriesuid)
         if os.path.exists(seriespath):
             pass
-            # self.save_dicom(filename_dataset_dic, seriespath, dataset)
-
         else:
             os.mkdir(seriespath)
-        self.save_dicom(filename_dataset_dic, seriespath, dataset)
+        self.save_dicom(file_name, seriespath, dataset)
 
         return seriespath
 
-    def save_dicom(self, filename_dataset_dic, seriespath, dataset):
+    def save_dicom(self, file_name, seriespath, dataset):
         """
         Save dicom data
         :param filename_dataset_dic:mapping between filename and dataset
@@ -63,7 +56,7 @@ class SplitDicoms(object):
         :param dataset:dicom filedataset
         :return:
         """
-        file_name = [k for k, v in filename_dataset_dic.items() if v == dataset][0]
+        # file_name = [k for k, v in filename_dataset_dic.items() if v == dataset][0]
         file_path = os.path.join(SaveDicomFilePath.location_2, file_name)
         with open(file_path, 'rb') as f:
             filedata = f.read()

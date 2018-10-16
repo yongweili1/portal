@@ -11,9 +11,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 # from connect_image.user_ip_to_port import ip_port
 import image_msg_pb2 as msg
+from connect_image.macro_script_to_db import script
 from connect_image.models import Series
 
-from twisted_client import be_factory
+# from twisted_client import be_factory
 
 # conf = ConfigParser.ConfigParser()
 # conf.read('back_end/util/serverApi.ini')
@@ -31,7 +32,7 @@ from twisted_client import be_factory
 
 from connect_image.view_model import load_volume, get_image
 from macro_recording import Macro
-
+from settings import STATIC_ROOT
 
 # @Macro()
 # def load_volume(data=None, volumepath=None, request_url=None):
@@ -82,15 +83,30 @@ class MacroRecording(APIView):
             Macro.macro_status = True
         elif macro_status == 'finish':
             macro_name = time.time()
+            scriptname = '{}.py'.format(macro_name)
+            scriptpath = STATIC_ROOT + '\\' + scriptname
 
             try:
-                with open('apps/connect_image/{}.py'.format(macro_name), 'a+') as f:
+                with open(scriptpath, 'a+') as f:
                     f.write(Macro.code_header + Macro.code)
             except:
                 Macro.code = Macro.code
 
             Macro.macro_status = False
             Macro.code = ''
+
+            data = {
+                'scriptname': scriptname,
+                'userid': 'anonymous',
+                'scriptpath': scriptpath
+            }
+
+            result = script.uploadscript(**data)
+
+            if result is 'fail':
+                return Response('upload script fail ！')
+
+            return Response(macro_name)
 
         else:
             pass
@@ -123,7 +139,15 @@ class LoadVolume(APIView):
             'command': 'load',
             'server_name': request_server,
         }
-        load_volume(**params)
+        # try:
+        rst = load_volume(user_ip, **params)
+        # except Exception as e:
+        #     return Response('服务间数据传输失败')
+
+        # rst = json.dumps(rst)
+
+        if rst.success is False:
+            return Response(rst.comment)
 
         return Response('success')
 
@@ -172,7 +196,6 @@ class GetImage(APIView):
         serid = request.GET.get('seriesuid', None)
         width = request.GET.get('width', None)
         height = request.GET.get('height', None)
-        focus_view = request.GET.get('focus_view', None)
         display_view = request.GET.get('display_view', 'all')
         user_ip = request.META.get('REMOTE_ADDR', None)
         request_url = request.path
@@ -189,7 +212,16 @@ class GetImage(APIView):
             'display_view': display_view
         }
 
+        # try:
         rst = get_image(user_ip, **params)
+        # except Exception as e:
+        #     return Response('服务间数据传输失败')
+
+        # rst = json.dumps(rst)
+
+        if rst.success is False:
+            return Response(rst.comment)
+
         return Response(rst.kwargs)
 
 
@@ -236,6 +268,7 @@ class ChangeColor(APIView):
             rst = be_factory.protocol.waiting_for_result()
         except Exception as e:
             return Response('服务间数据传输失败')
+
         return Response(rst.kwargs)
 
 
@@ -257,31 +290,27 @@ class TurnPage(APIView):
         width = request.GET.get('width', None)
         height = request.GET.get('height', None)
         focus_view = request.GET.get('focus_view', None)
-        display_view = request.GET.get('display_view', 'all')
         user_ip = request.META.get('REMOTE_ADDR', None)
         if width is None or height is None:
             return Response('请输入完整的请求数据')
 
-        data = msg.RequestMsg()
-        data.session = user_ip
-        data.server_name = 'image'
-        data.command = 'page'
-        data.content.params = json.dumps({'delta': delta,
-                                          'width': width,
-                                          'height': height,
-                                          'focus_view': focus_view,
-                                          'display_view': display_view
-                                          })
-        data = data.SerializeToString()
-        size = len(data)
-        size = struct.pack('i', size)
-        data = size + data
+        params = {
+            'delta': delta,
+            'width': width,
+            'height': height,
+            'focus_view': focus_view,
+        }
 
         try:
-            be_factory.protocol.request(data)
-            rst = be_factory.protocol.waiting_for_result()
+            rst = get_image(user_ip, **params)
         except Exception as e:
             return Response('服务间数据传输失败')
+
+        rst = json.dumps(rst)
+
+        if rst.success is False:
+            return Response(rst.comment)
+
         return Response(rst.kwargs)
 
 
