@@ -34,25 +34,6 @@ from connect_image.view_model import load_volume, get_image
 from macro_recording import Macro
 from settings import STATIC_ROOT
 
-# @Macro()
-# def load_volume(data=None, volumepath=None, request_url=None):
-#     f = open(volumepath, 'rb+')
-#     vol = f.read()
-#     f.close()
-#
-#     data_obj = msg.RequestMsg()
-#     data_obj.ParseFromString(data)
-#     data_obj.content.volume = vol
-#     data = data_obj.SerializeToString()
-#     size = len(data)
-#     size = struct.pack('i', size)
-#     data = size + data
-#
-#     be_factory.protocol.request(data)
-#     rst = be_factory.protocol.waiting_for_result()
-#
-#     return rst
-
 
 class Home(APIView):
 
@@ -139,12 +120,10 @@ class LoadVolume(APIView):
             'command': 'load',
             'server_name': request_server,
         }
-        # try:
-        rst = load_volume(user_ip, **params)
-        # except Exception as e:
-        #     return Response('服务间数据传输失败')
-
-        # rst = json.dumps(rst)
+        try:
+            rst = load_volume(user_ip, **params)
+        except Exception as e:
+            return Response('服务间数据传输失败')
 
         if rst.success is False:
             return Response(rst.comment)
@@ -212,12 +191,10 @@ class GetImage(APIView):
             'display_view': display_view
         }
 
-        # try:
-        rst = get_image(user_ip, **params)
-        # except Exception as e:
-        #     return Response('服务间数据传输失败')
-
-        # rst = json.dumps(rst)
+        try:
+            rst = get_image(user_ip, **params)
+        except Exception as e:
+            return Response('服务间数据传输失败')
 
         if rst.success is False:
             return Response(rst.comment)
