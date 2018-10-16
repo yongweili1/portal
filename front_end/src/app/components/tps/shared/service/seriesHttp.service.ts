@@ -57,7 +57,7 @@ GetSeriesPic(focus:any,display:any,delta:any,width:any,height:any):Observable<an
      .set('height', height)
      .set('focus_view', focus)
      .set('display_view', display);
-    return this.http.get('http://127.0.0.1:8000/image/pages/',{params : getParams});
+    return this.http.get('http://10.9.19.148:8000/image/pages/',{params : getParams});
     
 }
 
