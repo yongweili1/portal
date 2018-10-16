@@ -1,6 +1,5 @@
 import { Directive, ElementRef, Input, HostListener, OnInit ,Output, EventEmitter } from '@angular/core';
 import { ConMessageService } from '../service/conMessage.service';
-import { DrawTool} from './uai.viewer.drawtool.js'
 
 
 declare var createjs: any;
@@ -11,7 +10,6 @@ declare var createjs: any;
 
 export class ContourDirective implements OnInit {
 
-    draw:DrawTool
     curAction: string;
     // curAction: string = "combo";
     canvasLeft: number;

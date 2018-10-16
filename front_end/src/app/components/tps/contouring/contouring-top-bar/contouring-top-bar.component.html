@@ -48,6 +48,16 @@
             <span>Series List</span>
         </div>
 </div>
+<div id="commonTools_1" class="btn-toolbar M5_B">
+    <div class="upfloor">
+        <button type="button" class="btn activeToolButton fa fa-video-camera" id="btn_macro_start" title="开始录制" (click)="OnStartMacro()"></button>
+        <button type="button" class="btn activeToolButton fa fa-stop" id="btn_macro_end" title="停止录制" (click)="OnEndMacro()"></button>
+        <button type="button" class="btn activeToolButton fa fa-play" id="btn_macro_run" title="运行" (click)="OnRunMacro()"></button>
+    </div>
+    <div class="downfloor">
+        <span>MACRO</span>
+    </div>
+</div>
 <!-- <p-dropdown id="seriesList" [options]="seriesList" placeholder="Select Series" optionLabel="label"></p-dropdown> -->
 <!-- <div id="commonTools_0" class="btn-toolbar M2_B">
   <div class="upfloor">
