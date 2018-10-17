@@ -232,6 +232,13 @@ loadPics(delt:any) {
             ctx1.clearRect(0,0,that.canvas.width,that.canvas.height);
             ctx1.drawImage(img1,0,0,that.canvas.width,that.canvas.height);
         }
+        data.crossPosition = {
+            transPositon:[300,300],
+            cronPositon:[300,300],
+            sagPositon:[300,300]
+        }
+        that.postPoint = data.crossPosition
+        that.P2Cross();
 
     },(error)=>{
         console.log(error);
@@ -245,25 +252,19 @@ windowAddMouseWheel(tag) {
   var scrollFunc = function(e) {
       e = e || window.event;
       delt = e.wheelDelta/120; 
-      that.P2Cross();
       that.loadPics(delt);
-        //that.scroll.emit(tag);
   };
   this.canbas.get(0).onmousewheel = scrollFunc;
 }
 
 P2Cross() {
   // this.postPoint = vec4.fromValues(this.firstImagePosition[0] + (this.sliceAll[2]) * this.gap[0], this.firstImagePosition[1] + (this.sliceAll[1]) * this.gap[1], this.firstImagePosition[2] + (this.sliceAll[0]) * this.gap[2], 1);
-  this.twoCross.emit(this.postPoint);
+    this.twoCross.emit(this.postPoint);
 }
 /**
  * 清除所有图元
  */
 clearPri() {
-
-    //let primitiveStage = new createjs.Stage(this.primitivecan);
-    // primitiveStage.removeAllChildren();
-    //primitiveStage.update();
     this.primitivecan.getContext("2d").clearRect(0, 0, this.primitivecan.width, this.primitivecan.height);
     this.conMessage.SetCurAction("clearAll");
   }

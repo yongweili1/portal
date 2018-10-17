@@ -124,16 +124,17 @@ export class ContouringComponent implements OnInit {
   }
 
   aCross(event: any) {
-      this.picLeft2.patient2screen(event);
-      this.picLeft3.patient2screen(event);
+      
+      this.picLeft2.cross(event.cronPositon[0],event.cronPositon[1],1);
+      this.picLeft3.cross(event.sagPositon[0],event.sagPositon[1],1);
   }
   bCross(event: any) {
-      this.picLeft1.patient2screen(event);
-      this.picLeft3.patient2screen(event);
+      this.picLeft1.cross(event.transPositon[0],event.transPositon[1],1);
+      this.picLeft3.cross(event.sagPositon[0],event.sagPositon[1],1);
   }
   cCross(event: any) {
-      this.picLeft2.patient2screen(event);
-      this.picLeft1.patient2screen(event);
+      this.picLeft2.cross(event.cronPositon[0],event.cronPositon[1],1);
+      this.picLeft1.cross(event.transPositon[0],event.transPositon[1],1);
   }
   mainQuitDraw()
   {
@@ -231,7 +232,7 @@ export class ContouringComponent implements OnInit {
     let transverseCanvas = $(".a_class .icanvas").get(0);
     let saggitalCanvas = $(".c_class .icanvas").get(0);
     let coronalCanvas = $(".b_class .icanvas").get(0);
-    let seriesId:any = "1.3.12.2.1107.5.1.4.64606.30000018051006052134700006373";
+    let seriesId:any = $("#seriesSelect").val();
     this.seriesHttpService.LoadSeries(seriesId).subscribe(value=>{
         if(value == "success")
         {

@@ -4,6 +4,7 @@ import { ConMessageService } from '../../shared/service/conMessage.service';
 import { MenuItem } from '../../../patient-template/shared/patient-template.model'
 import {ContouringService} from '../../shared/service/contouring.service'
 
+
 @Component({
   selector: 'mpt-contouring-top-bar',
   templateUrl: './contouring-top-bar.component.html',
@@ -33,12 +34,12 @@ export class ContouringTopBarComponent implements OnInit {
     atlasData: any = new Array();
 
     ngOnInit() {
-      if (this.conMessage.serieses != undefined) {
-          this.seriesId = this.conMessage.serieses;
-      }
-      this.conMessage.serieses$.subscribe(value => {
-          this.seriesId = value;
-      });
+    //   if (this.conMessage.serieses != undefined) {
+    //       this.seriesId = this.conMessage.serieses;
+    //   }
+    //   this.conMessage.serieses$.subscribe(value => {
+    //       this.seriesId = value;
+    //   });
   }
   ngOnChanges(changes: SimpleChanges) {
        
@@ -70,36 +71,7 @@ export class ContouringTopBarComponent implements OnInit {
 
 
   onItemClick(a) {
-    //   if (a == 'Add ROI') {
-    //       this.addPlanDisplay = true;
-    //   }
-    //   if (a == 'Atlas') {
-    //       this.atlasData = [];
-    //       this.patientHttp.autoSegmentation(0).subscribe((value: any) => {
-    //           for (var i = 0; i < value.length; ++i) {
-    //               let PTreeNode = {
-    //                   label: value[i].autoSegmentationSite.siteName,
-    //                   data: value[i].autoSegmentationSite.siteName,
-    //                   expandedIcon: "fa fa-folder-open",
-    //                   collapsedIcon: "fa fa-folder",
-    //                   id: value[i].autoSegmentationSite.id,
-    //                   children: []
-    //               }
-    //               this.atlasData.push(PTreeNode)
-    //               // this.atlasData.push({'label': value[i].autoSegmentationSite.siteName});
-    //               for (var j = 0; j < value[i].algorithmSites.items.length; j++) {
-    //                   let childNode = {
-    //                       label: value[i].algorithmSites.items[j].algorithmCodeName,
-    //                       data: value[i].algorithmSites.items[j].algorithmCodeName,
-    //                       icon: "fa fa-file-image-o",
-    //                   }
-    //                   this.atlasData[i].children.push(childNode);
-    //               }
-    //           }
-    //           this.data = this.atlasData;
-    //       });
-    //       this.display = true;
-    //   }
+
   }
 
   checkedNodes: any[] = null;

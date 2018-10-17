@@ -4,7 +4,7 @@ from md.image3d.python.image3d_tools import estimate_intensity_window, slice_nn
 from md.image3d.python.image3d_vis import slice_to_bytes, bytes_to_colors, multi_image_alpha_blend
 from md.image3d.python.image3d_io import read_image
 from md.mdmath.python.rotation3d import axis_angle_to_rotation_matrix
-from utilities import get_axis, get_orthogonal_axis, get_spacing, get_orthogonal_spacing, ViewEnum, \
+from utilities import get_axis, get_orthogonal_axis, get_two_spacing, get_spacing, get_orthogonal_spacing, ViewEnum, \
     convert_rgba_to_base64
 
 
@@ -19,7 +19,7 @@ class ImageServer(object):
 
         # Current volume and config
         self.vol = None
-        self.cfg = None
+        self.cfg = {}
 
         colormap = {1: [255, 0, 0], 2: [0, 255, 0], 3: [0, 0, 255],
                     4: [255, 255, 0], 5: [0, 255, 255], 6: [255, 0, 255]}
@@ -58,7 +58,7 @@ class ImageServer(object):
         self.configs[series_uid] = {}
         self.configs[series_uid]['center'] = im.center()
         self.configs[series_uid]['cursor'] = im.center()
-        self.configs[series_uid]['spacing'] = [1, 1, 1]# im.spacing()
+        self.configs[series_uid]['spacing'] = im.spacing()#[1, 1, 1]
         self.configs[series_uid]['zoom_factor'] = 1
         self.configs[series_uid]['win_center'] = 0
         self.configs[series_uid]['win_width'] = 2000
@@ -106,8 +106,8 @@ class ImageServer(object):
         :param height:
         :return:
         """
-        pixel_spacing = get_spacing(view, self.cfg) * self.cfg['zoom_factor']
-        pixel_spacing = [pixel_spacing, pixel_spacing]
+        pixel_spacing_x, pixel_spacing_y = get_two_spacing(view, self.cfg) * self.cfg['zoom_factor']
+        pixel_spacing = [pixel_spacing_x, pixel_spacing_y]
         size = [width, height]
         print(self.cfg['cursor'], axis[0], axis[1], self.cfg['center'], pixel_spacing, size)
         raw_data = slice_nn(self.vol,
@@ -119,6 +119,7 @@ class ImageServer(object):
                             size,
                             self.cfg['default_v'])
         raw_data = raw_data.astype(np.float32)
+
         return raw_data
 
     def __get_grayscale_image(self, view, axis, width, height):
