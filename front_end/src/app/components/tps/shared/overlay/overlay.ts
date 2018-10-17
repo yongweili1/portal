@@ -6,7 +6,7 @@ declare var createjs: any;
 export class Overlay extends createjs.Shape {
     type: string;
     overlayStage: any;
-    protected _cps: Array<Point>;
+    protected _cps: Array<any>;
     protected _startPoint: Point;
     protected _endPoint: Point;
     protected _tempPoint: Point;
@@ -15,7 +15,6 @@ export class Overlay extends createjs.Shape {
         super();
         this.overlayStage = stage;
         this.type = type;
-        this._cps = new Array<Point>();
         this.addEventListener("mousedown", this.handleMouseDown.bind(this));
         this.addEventListener("pressmove", this.handlePressMove.bind(this));
         this.addEventListener("dblclick", this.handleDbClick.bind(this));
@@ -32,30 +31,22 @@ export class Overlay extends createjs.Shape {
         this._endPoint = p;
     }
 
-    setCps() {
-
-    }
-
     updateCps(delta_x: number, delta_y: number) {
-        if (typeof(this._cps) == 'undefined') {
-            return;
-        }
-        this._cps.forEach(cp => {
-            cp.x += delta_x;
-            cp.y += delta_y;
-        });
-    }
-
-    clearCps() {
-        this._cps = new Array<Point>();
+        // if (typeof(this._cp_coords) == 'undefined') {
+        //     return;
+        // }
+        // this._cp_coords.forEach(cp => {
+        //     cp.x += delta_x;
+        //     cp.y += delta_y;
+        // });
     }
 
     drawControlPoints() {
-        if (typeof(this._cps) == 'undefined') {
+        if (typeof(this._cps) == null) {
             return;
         }
         this._cps.forEach(cp => {
-            this.graphics.beginStroke("yellow").setStrokeStyle(2, "round").rect(cp.x - 2, cp.y - 2, 4, 4);
+            cp.update()
         });
     };
 
@@ -77,6 +68,7 @@ export class Overlay extends createjs.Shape {
         // update start point and end point
         evt.currentTarget.x += delta_x;
         evt.currentTarget.y += delta_y;
+        evt.currentTarget.updateCps(delta_x, delta_y);
 
         this.update();
     }
