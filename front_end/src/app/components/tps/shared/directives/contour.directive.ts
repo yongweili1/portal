@@ -41,7 +41,7 @@ export class ContourDirective implements OnInit {
         this.myStage = new createjs.Stage(this.el.nativeElement);
         
         createjs.Touch.enable(this.myStage);
-        this.myStage.enableMouseOver(50);
+        this.myStage.enableMouseOver();
         this.myStage.mouseMoveOutside = true;
         this.myStage.autoClear = false;
 
@@ -55,6 +55,7 @@ export class ContourDirective implements OnInit {
     }
 
     @HostListener('mousedown', ['$event']) onMouseDown(event: MouseEvent) {
+        console.log('mousedown')
         this.isMousedown = true;
         this.startX = event.offsetX;
         this.startY = event.offsetY;

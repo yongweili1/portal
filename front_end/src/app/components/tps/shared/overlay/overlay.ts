@@ -9,15 +9,18 @@ export class Overlay extends createjs.Shape {
     protected _cps: Array<Point>;
     protected _startPoint: Point;
     protected _endPoint: Point;
+    protected _tempPoint: Point;
 
     constructor(stage, type) {
         super();
         this.overlayStage = stage;
         this.type = type;
         this._cps = new Array<Point>();
+        this.addEventListener("mousedown", this.handleMouseDown.bind(this));
         this.addEventListener("pressmove", this.handlePressMove.bind(this));
         this.addEventListener("dblclick", this.handleDbClick.bind(this));
         this.addEventListener("pressup", this.handlePressUp.bind(this));
+        this.addEventListener("mouseover", this.handleMouseOver.bind(this));
         this.overlayStage.addChild(this);
     }
 
@@ -31,6 +34,16 @@ export class Overlay extends createjs.Shape {
 
     setCps() {
 
+    }
+
+    updateCps(delta_x: number, delta_y: number) {
+        if (typeof(this._cps) == 'undefined') {
+            return;
+        }
+        this._cps.forEach(cp => {
+            cp.x += delta_x;
+            cp.y += delta_y;
+        });
     }
 
     clearCps() {
@@ -49,23 +62,37 @@ export class Overlay extends createjs.Shape {
     update(){
     }
 
+    handleMouseDown(evt) {
+        console.log('handleMouseDown')
+        this._tempPoint = new Point(0, 0);
+        this._tempPoint.x = evt.stageX;
+        this._tempPoint.y = evt.stageY;
+    }
     handlePressMove(evt) {
-        evt.currentTarget.x += evt.stageX - this.startX;
-        evt.currentTarget.y += evt.stageY - this.startY;
-        console.log(evt.currentTarget.x, evt.currentTarget.y)
+        let delta_x = evt.stageX - this._tempPoint.x;
+        let delta_y = evt.stageY - this._tempPoint.y;
+        this._tempPoint.x = evt.stageX;
+        this._tempPoint.y = evt.stageY;
+        
+        // update start point and end point
+        evt.currentTarget.x += delta_x;
+        evt.currentTarget.y += delta_y;
 
-        this.overlayStage.clear();
-        this.overlayStage.update();
+        this.update();
     }
     handlePressUp(evt) {
-        evt.currentTarget.x = evt.stageX;
-        this.curTarget = evt.currentTarget;
+        console.log('handlePressUp')
+        this._tempPoint = new Point(0, 0);
     }
     handleDbClick(evt) {
+        console.log('handleDbClick')
         this.curTarget = evt.currentTarget;
         this.overlayStage.removeChild(this.curTarget);
         this.overlayStage.clear();
         this.overlayStage.update();
+    }
+    handleMouseOver(evt) {
+        console.log('handleMouseOver on', evt.currentTarget.type)
     }
 }
 
