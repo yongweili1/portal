@@ -10,7 +10,8 @@ use ai_portal;
 drop table if exists patient;
 drop table if exists study;
 drop table if exists series;
-drop table if exists image; 
+drop table if exists image;
+drop table if exists graph_element; 
 /* user related */
 drop table if exists role;
 drop table if exists user;
@@ -25,8 +26,10 @@ drop table if exists ai_process_log;
 drop table if exists series_process_status;
 /* application related, naming standard AppName+ResultCategory*/
 drop table if exists lung_segment;
-/* CSV relates */
+/* CSV related */
 drop table if exists alg_csv;
+/* script related */
+drop table if exists script;
 
 create table patient
 (
@@ -70,6 +73,7 @@ create table series
 (
    pid					int auto_increment,
    seriesuid            varchar(64) not null default '' comment '(0020,000E)',
+   buildvolumesign      int default 1,
    studyuid             varchar(64) default '' comment 'Fk to study',
    
    modality             varchar(16) not null default '' comment '(0008,0060) ',
@@ -97,6 +101,7 @@ create table image
 (
    pid					int auto_increment,
    imageuid             varchar(64) not null default '' comment '(0008,0018) ',
+   updatesign           int default 0,
    seriesuid            varchar(64) not null comment 'Fk to series', 
    instancenumber       int default 0 comment '(0020,0013) ',
    patientorientation   varchar(33) default '' comment '(0020,0020)',
@@ -127,6 +132,36 @@ create table image
    primary key (pid),
    unique key (imageuid),
    foreign key (seriesuid) references series(seriesuid) on delete cascade
+)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+create table graph_element
+(
+   graphelementuid      int auto_increment,
+   imageuid 		    varchar(64) not null,
+   dotproductpath       varchar(255),
+   importdatatime		datetime,
+   updatetime           timestamp not null default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+   primary key (graphelementuid),
+   unique key (graphelementuid),
+   foreign key (imageuid) references image(imageuid) on delete cascade
+)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+create table script
+(
+   pid                  int auto_increment,
+   scriptname           varchar(64) not null,
+   userid               varchar(64) not null,
+   scriptpath           varchar(255),
+   importdatatime		datetime,
+   updatetime           timestamp not null default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+		
+   primary key (pid),
+   unique key (scriptname)
 )
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;

@@ -31,5 +31,5 @@ urlpatterns = [
     url(r'^algproxy/', include('alg_proxy.urls')),
     url(r'^pacsserver/', include('handle_pacs.urls')),
     url(r'^image/', include('connect_image.urls')),
-    url(r'^graph/', include('graph_element.urls')),
+    url(r'^overlay/', include('graph_element.urls')),
 ]

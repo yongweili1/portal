@@ -87,5 +87,3 @@ class Patinfolist(APIView):
 #         response = HttpResponse(patient_list)
 #         print len(patients)
 #         return response
-
-

@@ -110,8 +110,9 @@ class Image(models.Model):
 
 class GraphElement(models.Model):
     graphelementuid = models.AutoField(primary_key=True)
-    imageuid = models.ForeignKey('Image', on_delete=models.CASCADE, db_column='imageuid', to_field='imageuid')
-    dotproductpath = models.CharField(max_length=255, blank=True, null=True)
+    seriesuid = models.ForeignKey('Series', on_delete=models.CASCADE, db_column='seriesuid', to_field='seriesuid')
+    overlaytype = models.CharField(max_length=64)
+    dotpositionpath = models.CharField(max_length=255, blank=True, null=True)
     importdatatime = models.DateTimeField(auto_now_add=True)
     updatetime = models.DateTimeField(auto_now=True)
 
