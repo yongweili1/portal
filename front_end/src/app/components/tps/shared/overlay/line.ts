@@ -39,7 +39,7 @@ export class Line extends Overlay {
         this.overlayStage.clear();
         this.graphics.clear();
         this.drawControlPoints();
-        this.graphics.beginStroke("white")
+        this.graphics.beginStroke(this._color)
                      .moveTo(this._startPoint.x, this._startPoint.y)
                      .lineTo(this._endPoint.x, this._endPoint.y);
         let hit = new Hitbar();

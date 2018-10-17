@@ -3,46 +3,42 @@ import { Hitbar } from '../overlay/hitbar'
 
 declare var createjs: any;
 
-export class ControlPoint extends createjs.Shape {
+export class Text extends createjs.Text {
     type: string;
     overlayStage: any;
-    protected _center: Point;
+    protected _cp: Point;
     host: any;
     index: string;
     protected _tempPoint: Point;
-    protected _is_hover: boolean;
-    protected _color: string;
 
-    constructor(stage, host, point, index) {
-        super();
+    constructor(stage, host, point, text) {
+        super(text, "20px Arial", "#F00");
         this.overlayStage = stage;
         this.host = host;
-        this.type = 'controlpoint';
-        this._center = point;
-        this.index = index;
+        this.type = 'text';
+        this._cp = point;
         this._tempPoint = new Point(0, 0);
-        this._is_hover = false;
-        this._color = 'yellow';
         this.addEventListener("mousedown", this.handleMouseDown.bind(this));
         this.addEventListener("pressmove", this.handlePressMove.bind(this));
         this.addEventListener("dblclick", this.handleDbClick.bind(this));
         this.addEventListener("pressup", this.handlePressUp.bind(this));
         this.addEventListener("mouseover", this.handleMouseOver.bind(this));
-        this.addEventListener("mouseout", this.handleMouseOut.bind(this));
         this.overlayStage.addChild(this);
     }
 
-    setCenter(p) {
-        this._center = p;
+    setCp(p) {
+        this._cp = p;
     }
 
     update(){
         this.overlayStage.clear();
         this.graphics.clear();
-        this.graphics.beginStroke(this._color)
+        this.graphics.beginStroke("yellow")
+                     .setStrokeStyle(1, "round")
                      .rect(this._center.x - 2, this._center.y - 2, 4, 4);
+        
         let hit = new Hitbar();
-        hit.graphics.rect(this._center.x - 3, this._center.y - 3, 6, 6);
+        hit.graphics.rect(this._center.x - 2, this._center.y - 2, 4, 4);
         this.hitArea = hit;
         this.overlayStage.update();
     }
@@ -75,14 +71,5 @@ export class ControlPoint extends createjs.Shape {
     }
     handleMouseOver(evt) {
         console.log('handleMouseOver on', evt.currentTarget.type)
-        this._is_hover = true;
-        this._color = 'red';
-        this.update()
-    }
-    handleMouseOut(evt) {
-        console.log('handleMouseOut on', evt.currentTarget.type)
-        this._is_hover = false;
-        this._color = 'yellow';
-        this.update()
     }
 }

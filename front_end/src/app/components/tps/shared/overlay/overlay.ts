@@ -10,16 +10,21 @@ export class Overlay extends createjs.Shape {
     protected _startPoint: Point;
     protected _endPoint: Point;
     protected _tempPoint: Point;
+    protected _is_hover: boolean;
+    protected _color: string;
 
     constructor(stage, type) {
         super();
         this.overlayStage = stage;
         this.type = type;
+        this._is_hover = false;
+        this._color = 'white';
         this.addEventListener("mousedown", this.handleMouseDown.bind(this));
         this.addEventListener("pressmove", this.handlePressMove.bind(this));
         this.addEventListener("dblclick", this.handleDbClick.bind(this));
         this.addEventListener("pressup", this.handlePressUp.bind(this));
         this.addEventListener("mouseover", this.handleMouseOver.bind(this));
+        this.addEventListener("mouseout", this.handleMouseOut.bind(this));
         this.overlayStage.addChild(this);
     }
 
@@ -32,13 +37,6 @@ export class Overlay extends createjs.Shape {
     }
 
     updateCps(delta_x: number, delta_y: number) {
-        // if (typeof(this._cp_coords) == 'undefined') {
-        //     return;
-        // }
-        // this._cp_coords.forEach(cp => {
-        //     cp.x += delta_x;
-        //     cp.y += delta_y;
-        // });
     }
 
     drawControlPoints() {
@@ -85,6 +83,14 @@ export class Overlay extends createjs.Shape {
     }
     handleMouseOver(evt) {
         console.log('handleMouseOver on', evt.currentTarget.type)
+        this._is_hover = true;
+        this._color = 'red';
+        this.update()
+    }
+    handleMouseOut(evt) {
+        this._is_hover = false;
+        this._color = 'white';
+        this.update()
     }
 }
 
