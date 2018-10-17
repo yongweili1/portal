@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, Input, Output, EventEmitter ,SimpleChanges, OnChanges,} from '@angular/core';
+import { Component, ViewChild, OnInit, Input, Output, EventEmitter, SimpleChanges, OnChanges, } from '@angular/core';
 import { ConMessageService } from '../../shared/service/conMessage.service';
 //import { PatientHttpService } from 'TpsShared/TpsService/patientHttp.service';
 import { MenuItem } from '../../../patient-template/shared/patient-template.model'
@@ -6,28 +6,28 @@ import {ContouringService} from '../../shared/service/contouring.service'
 
 
 @Component({
-  selector: 'mpt-contouring-top-bar',
-  templateUrl: './contouring-top-bar.component.html',
-  styleUrls: ['./contouring-top-bar.component.less']
+    selector: 'mpt-contouring-top-bar',
+    templateUrl: './contouring-top-bar.component.html',
+    styleUrls: ['./contouring-top-bar.component.less']
 })
 export class ContouringTopBarComponent implements OnInit {
 
-  @Output() zoom: EventEmitter<any> = new EventEmitter<any>();
-  @Output() wlww: EventEmitter<any> = new EventEmitter<any>();
-  @Output() move: EventEmitter<any> = new EventEmitter<any>();
-  @Output() sfile: EventEmitter<any> = new EventEmitter<any>();
-  @Output() loadSeries: EventEmitter<any> = new EventEmitter<any>();
-  @Output() auto: EventEmitter<any> = new EventEmitter<any>();
-  @Output() remouse: EventEmitter<any> = new EventEmitter<any>();
-  @Output() measure: EventEmitter<any> = new EventEmitter<any>();
-  @Output() clear: EventEmitter<any> = new EventEmitter<any>();
-  @Output() hideList: EventEmitter<any> = new EventEmitter<any>();
-  @Input() seriesList:string[];
+    @Output() zoom: EventEmitter<any> = new EventEmitter<any>();
+    @Output() wlww: EventEmitter<any> = new EventEmitter<any>();
+    @Output() move: EventEmitter<any> = new EventEmitter<any>();
+    @Output() sfile: EventEmitter<any> = new EventEmitter<any>();
+    @Output() loadSeries: EventEmitter<any> = new EventEmitter<any>();
+    @Output() auto: EventEmitter<any> = new EventEmitter<any>();
+    @Output() remouse: EventEmitter<any> = new EventEmitter<any>();
+    @Output() measure: EventEmitter<any> = new EventEmitter<any>();
+    @Output() clear: EventEmitter<any> = new EventEmitter<any>();
+    @Output() hideList: EventEmitter<any> = new EventEmitter<any>();
+    @Input() seriesList: string[];
 
-  constructor(
-    private conMessage: ConMessageService,
-    private conService: ContouringService
-    ) { 
+    constructor(
+        private conMessage: ConMessageService,
+        private conService: ContouringService
+    ) {
     }
     seriesId: any;
     data: any[];
@@ -45,143 +45,133 @@ export class ContouringTopBarComponent implements OnInit {
        
   }
 
-  display: boolean = false;
-  addPlanDisplay: boolean = false;
+    display: boolean = false;
+    addPlanDisplay: boolean = false;
 
-  imgzoom() {
-      this.zoom.emit();
-  }
+    imgzoom() {
+        this.zoom.emit();
+    }
 
-  imgmove() {
-      this.move.emit();
-  }
+    imgmove() {
+        this.move.emit();
+    }
 
-  imgwlww() {
-      this.wlww.emit();
-  }
+    imgwlww() {
+        this.wlww.emit();
+    }
 
-  file() {
-      this.sfile.emit();
-  }
+    file() {
+        this.sfile.emit();
+    }
 
-  removemose() {
-      this.remouse.emit();
-  }
+    removemose() {
+        this.remouse.emit();
+    }
 
 
+    onItemClick(a) {
 
-  onItemClick(a) {
+    }
 
-  }
+    checkedNodes: any[] = null;
+    dataA: any[] = [{
+        "id": 1,
+        "text": "My Documents",
+        "children": [{
+            "id": 11,
+            "text": "Photos",
+            "state": "closed",
+            "children": [{
+                "id": 111,
+                "text": "Friend"
+            }, {
+                "id": 112,
+                "text": "Wife"
+            }, {
+                "id": 113,
+                "text": "Company"
+            }]
+        }, {
+            "id": 12,
+            "text": "Program Files",
+            "children": [{
+                "id": 121,
+                "text": "Intel"
+            }, {
+                "id": 122,
+                "text": "SKIN"
+            }, {
+                "id": 123,
+                "text": "Microsoft Office"
+            }, {
+                "id": 124,
+                "text": "Games"
+            }]
+        }, {
+            "id": 13,
+            "text": "index.html"
+        }, {
+            "id": 14,
+            "text": "about.html"
+        }, {
+            "id": 15,
+            "text": "welcome.html"
+        }]
+    }];
 
-  checkedNodes: any[] = null;
-  dataA: any[] = [{
-      "id": 1,
-      "text": "My Documents",
-      "children": [{
-          "id": 11,
-          "text": "Photos",
-          "state": "closed",
-          "children": [{
-              "id": 111,
-              "text": "Friend"
-          }, {
-              "id": 112,
-              "text": "Wife"
-          }, {
-              "id": 113,
-              "text": "Company"
-          }]
-      }, {
-          "id": 12,
-          "text": "Program Files",
-          "children": [{
-              "id": 121,
-              "text": "Intel"
-          }, {
-              "id": 122,
-              "text": "SKIN"
-          }, {
-              "id": 123,
-              "text": "Microsoft Office"
-          }, {
-              "id": 124,
-              "text": "Games"
-          }]
-      }, {
-          "id": 13,
-          "text": "index.html"
-      }, {
-          "id": 14,
-          "text": "about.html"
-      }, {
-          "id": 15,
-          "text": "welcome.html"
-      }]
-  }];
+    //add roi
+    private _roiName: any;
+    private _roiDescription: any;
+    private _roiCHNDescription: any;
+    private _roiColor: any;
+    _roiPlanningValue: any = 11;
+    _roiBiologyValue: any = 11;
 
-  //add roi
-  private _roiName: any;
-  private _roiDescription: any;
-  private _roiCHNDescription: any;
-  private _roiColor: any;
-  _roiPlanningValue: any = 11;
-  _roiBiologyValue: any = 11;
+    planningRoleData: any[] = [
+        { value: 11, text: "planRole1" },
+        { value: 12, text: "planRole2" },
+        { value: 13, text: "planRole3" }
+    ]
 
-  planningRoleData: any[] = [
-      { value: 11, text: "planRole1" },
-      { value: 12, text: "planRole2" },
-      { value: 13, text: "planRole3" }
-  ]
+    biologyRoleData: any[] = [
+        { value: 11, text: "biologyRole1" },
+        { value: 12, text: "biologyRole2" },
+        { value: 13, text: "biologyRole3" }
+    ]
 
-  biologyRoleData: any[] = [
-      { value: 11, text: "biologyRole1" },
-      { value: 12, text: "biologyRole2" },
-      { value: 13, text: "biologyRole3" }
-  ]
+    //自动分割
+    hidelog(checkedNodes) {
+        var nodes = new Array();
+        for (let i = 0; i < checkedNodes.length; i++) {
+            nodes[i] = checkedNodes[i].label;
+        }
+        this.display = false;
+        this.auto.emit(nodes);
+    }
 
-  //自动分割
-  hidelog(checkedNodes) {
-      var nodes = new Array();
-      for (let i = 0; i < checkedNodes.length; i++) {
-          nodes[i] = checkedNodes[i].label;
-      }
-      this.display = false;
-      this.auto.emit(nodes);
-  }
+    //getseries和MPR
+    loadMPR() {
+        this.loadSeries.emit(this.seriesId);
+    }
+    OnClearAllClick() {
+        this.clear.emit();
+    }
 
-  //getseries和MPR
-  loadMPR() {
-      this.loadSeries.emit(this.seriesId);
-  }
-  OnClearAllClick() {
-    this.clear.emit();
- }
-  OnMeasure(){
-      this.conMessage.SetCurAction("measure");
-  }
+    OnDefaultMouseClick() {
+        this.conMessage.SetCurAction("default");
+    }
+    OnBrushClick() {
+        this.conMessage.SetCurAction("combo");
+    }
 
-  OnDefaultMouseClick() {
-      this.conMessage.SetCurAction("default");
-  }
-  OnBrushClick() {
-      this.conMessage.SetCurAction("combo");
-  }
+    OnHideList() {
+        this.hideList.emit();
+    }
+    OnSelect() {
+        this.conMessage.SetCurAction("select");
+    }
 
-  OnRectangleClick() {
-      this.conMessage.SetCurAction("rectangle");
-  }
-
-  OnCircleClick(){
-    this.conMessage.SetCurAction("circle1");
-  }
-  OnHideList(){
-      this.hideList.emit();
-  }
-  OnSelect(){
-    this.conMessage.SetCurAction("select");
-  }
-  OnStartMacro(){
+    OnStartMacro(){
     this.conService.Macro("start").subscribe(result=>{
         if(result=="ok"){
             console.log("start macro transcribe");
@@ -199,13 +189,35 @@ export class ContouringTopBarComponent implements OnInit {
     this.conService.Macro("run").subscribe();
   }
 
+    /**
+    * 测量，直线
+    */
+    FuncMeasure() {
+        console.log("butt-measure");
+        this.conMessage.SetCurAction("measure");
+    }
 
+    /**
+    * 圆
+    */
+    FuncCircle() {
+        console.log("butt-circle");
+        this.conMessage.SetCurAction("circle");
+    }
+
+    /**
+    * 矩形
+    */
+    FuncRectangle() {
+        console.log("butt-rectangle");
+        this.conMessage.SetCurAction("rectangle");
+    }
 }
 
 export class PTreeNode {
-  public label: any;
-  public data: any;
-  public expandedIcon: any;
-  public collapsedIcon: any;
-  public children = new Array();
+    public label: any;
+    public data: any;
+    public expandedIcon: any;
+    public collapsedIcon: any;
+    public children = new Array();
 }

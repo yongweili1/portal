@@ -17,6 +17,7 @@ declare var mat3: any;
 declare var vec2: any;
 declare var vec4: any;
 
+
 @Component({
   selector: 'mpt-pic-transverse',
   templateUrl: './pic-transverse.component.html',
@@ -72,7 +73,7 @@ export class PicTransverseComponent implements OnChanges {
         this.canvas = $(".a_class .icanvas").get(0);
         this.canbas = $(".a_class");
         this.crosscan = $(".a_class .crosscan").get(0);
-        this.primitivecan = $(".a_class .primitivecan").get(0);
+        // this.primitivecan = $(".a_class .primitivecan").get(0);
         this.primitivedrawcan = $(".a_class .primitivedrawcan").get(0);
         this.nugevas = $(".a_class #nugeCanvas").get(0);
         this.canbas.find(".mpr").text('Transverse');
@@ -83,7 +84,7 @@ export class PicTransverseComponent implements OnChanges {
         this.canvas = $(".b_class .icanvas").get(0);
         this.canbas = $(".b_class");
         this.crosscan = $(".b_class .crosscan").get(0);
-        this.primitivecan = $(".b_class .primitivecan").get(0);
+        // this.primitivecan = $(".b_class .primitivecan").get(0);
         this.primitivedrawcan = $(".b_class .primitivedrawcan").get(0);
         this.nugevas = $(".b_class #nugeCanvas").get(0);
         this.canbas.find(".mpr").text('Coronal');
@@ -94,7 +95,7 @@ export class PicTransverseComponent implements OnChanges {
         this.canvas = $(".c_class .icanvas").get(0);
         this.canbas = $(".c_class");
         this.crosscan = $(".c_class .crosscan").get(0);
-        this.primitivecan = $(".c_class .primitivecan").get(0);
+        // this.primitivecan = $(".c_class .primitivecan").get(0);
         this.primitivedrawcan = $(".c_class .primitivedrawcan").get(0);
         this.nugevas = $(".c_class #nugeCanvas").get(0);
         this.canbas.find(".mpr").text('Sagittal');
@@ -147,8 +148,8 @@ calcviewportsize() {
   this.canvas.setAttribute('height', this.viewportHeight);
   this.crosscan.setAttribute('width', this.viewportWidth);//十字线的canvas
   this.crosscan.setAttribute('height', this.viewportHeight);
-  this.primitivecan.setAttribute('width', this.viewportWidth);//图元显示层的canvas
-  this.primitivecan.setAttribute('height', this.viewportHeight);
+//   this.primitivecan.setAttribute('width', this.viewportWidth);//图元显示层的canvas
+//   this.primitivecan.setAttribute('height', this.viewportHeight);
   this.primitivedrawcan.setAttribute('width', this.viewportWidth);//图元操作绘画层的canvas
   this.primitivedrawcan.setAttribute('height', this.viewportHeight);
   this.nugevas.setAttribute('width', this.viewportWidth);//nuge的canvas
