@@ -13,13 +13,12 @@ class Plane3D:
         return norm
 
 
-def translate_from_world_to_screen(scene, pt3d):
-    camera = scene.camera
-    plane = Plane3D(camera.up, camera.right, camera.look_at)
+def translate_from_world_to_screen(look_right, look_up, look_at, size, spacing, pt3d):
+    plane = Plane3D(look_up, look_right, look_at)
     pt3d_plane = project_point3d_on_plane(plane, pt3d)
-    origin3d_plane = _get_scene_world_origin(scene)
-    axes = np.array([np.array(camera.right), np.array(camera.up)])
-    point2d = np.matmul(axes, pt3d_plane - origin3d_plane)/scene.get_spacing()
+    origin3d_plane = _get_scene_world_origin(look_right, look_up, look_at, size)
+    axes = np.array([np.array(look_up), np.array(look_right)])
+    point2d = np.matmul(axes, pt3d_plane - origin3d_plane)/spacing
     return point2d
 
 
@@ -40,9 +39,7 @@ def project_point3d_on_plane(plane, pt3d):
     return offset + plane.point3d
 
 
-def _get_scene_world_origin(scene):
-    camera = scene.camera
-    view_size = scene.get_view_size()
+def _get_scene_world_origin(look_right, look_up, look_at, view_size):
     offset = np.array(view_size) / 2
-    axes = np.array([np.array(camera.right), np.array(camera.up)])
-    return camera.look_at - np.matmul(offset, axes)
+    axes = np.array([np.array(look_right), np.array(look_up)])
+    return look_at - np.matmul(offset, axes)

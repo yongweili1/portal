@@ -116,6 +116,7 @@ ngOnInit() {
   let that = this;
   $(window).resize(function() {
       that.calcviewportsize();
+      console.log("=== resize ===")
       //that.opm3();
       //that.setupScene();
       //that.drawScene(that.gl, that.programInfo, that.buffers, that.texture);
@@ -217,7 +218,7 @@ base64tobin(base64) {
   return buffer;
 }
 
-loadPics(delt:any) {
+picScroll(delt:any) {
     let img1 = new Image();
     let that = this;
     this.seriesHttpService.GetSeriesPic(this.tag,this.tag,delt,this.canvas.width,this.canvas.height).subscribe((value) =>{
@@ -233,12 +234,12 @@ loadPics(delt:any) {
             ctx1.clearRect(0,0,that.canvas.width,that.canvas.height);
             ctx1.drawImage(img1,0,0,that.canvas.width,that.canvas.height);
         }
-        data.crossPosition = {
-            transPositon:[300,300],
-            cronPositon:[300,300],
-            sagPositon:[300,300]
+        data.cross_position = {
+            transPosition:[300,300],
+            cronPosition:[300,300],
+            sagPosition:[300,300]
         }
-        that.postPoint = data.crossPosition
+        that.postPoint = data.cross_position
         that.P2Cross();
 
     },(error)=>{
@@ -253,7 +254,7 @@ windowAddMouseWheel(tag) {
   var scrollFunc = function(e) {
       e = e || window.event;
       delt = e.wheelDelta/120; 
-      that.loadPics(delt);
+      that.picScroll(delt);
   };
   this.canbas.get(0).onmousewheel = scrollFunc;
 }

@@ -22,7 +22,7 @@ export class SeriesHttpService {
 
 getSeriesList(patientId:any):Observable<Array<any>>{
     const getParams = new HttpParams()
-    .set('patineId', patientId);
+    .set('patientid', patientId);
     return this.http.get<Array<any>>('http://10.9.19.24:8000/image/serids/',{params : getParams});
 }
 

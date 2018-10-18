@@ -2,11 +2,13 @@ import { Component, OnInit, ViewChild, Injector, ElementRef } from '@angular/cor
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { HttpClient } from "@angular/common/http";
 import { switchMap } from 'rxjs/operators';
+import { Router} from '@angular/router';
 
 import { ConMessageService } from '../shared/service/conMessage.service';
 import { SeriesHttpService } from '../shared/service/seriesHttp.service';
 import { RoiHttpService } from '../shared/service/roiHttp.service';
 import { StorageService } from '../shared/service/storage.service';
+import { ContouringService } from '../shared/service/contouring.service';
 
 
 import {
@@ -56,7 +58,9 @@ export class ContouringComponent implements OnInit {
     private conMessage: ConMessageService,
     public roiHttp: RoiHttpService, 
     private storageService: StorageService, 
-    private seriesHttpService: SeriesHttpService
+    private seriesHttpService: SeriesHttpService,
+    private router:Router,
+    private conService:ContouringService
     ) {
   }
   transverseChange(event: any) {
@@ -125,16 +129,16 @@ export class ContouringComponent implements OnInit {
 
   aCross(event: any) {
       
-      this.picLeft2.cross(event.cronPositon[0],event.cronPositon[1],1);
-      this.picLeft3.cross(event.sagPositon[0],event.sagPositon[1],1);
+      this.picLeft2.cross(event.cronPosition[0],event.cronPosition[1],1);
+      this.picLeft3.cross(event.sagPosition[0],event.sagPosition[1],1);
   }
   bCross(event: any) {
-      this.picLeft1.cross(event.transPositon[0],event.transPositon[1],1);
-      this.picLeft3.cross(event.sagPositon[0],event.sagPositon[1],1);
+      this.picLeft1.cross(event.transPosition[0],event.transPosition[1],1);
+      this.picLeft3.cross(event.sagPosition[0],event.sagPosition[1],1);
   }
   cCross(event: any) {
-      this.picLeft2.cross(event.cronPositon[0],event.cronPositon[1],1);
-      this.picLeft1.cross(event.transPositon[0],event.transPositon[1],1);
+      this.picLeft2.cross(event.cronPosition[0],event.cronPosition[1],1);
+      this.picLeft1.cross(event.transPosition[0],event.transPosition[1],1);
   }
   mainQuitDraw()
   {
@@ -180,8 +184,39 @@ export class ContouringComponent implements OnInit {
       });
       this.activeRoute.queryParams.subscribe(params => {
         this.patientId = params.patientId;
-        this.getSeriesList(this.patientId);
+        if(this.patientId !="" &&this.patientId != undefined &&this.patientId !=null){
+            this.getSeriesList(this.patientId);
+        }
+        else{
+            alert("请先选择病人");
+            this.router.navigate(['/base/patient-template']);
+        }
       });
+      let that = this;
+      let canvasSize:any = {};
+      setTimeout(()=>{
+            canvasSize.view_size = that.getCanvasSize();
+            that.conService.noticeSize(canvasSize).subscribe();
+        },300);
+      $(window).resize(function() {
+        setTimeout(()=>{
+            canvasSize.view_size = that.getCanvasSize();
+            that.conService.noticeSize(canvasSize).subscribe();
+        },300);
+    });
+  }
+
+  getCanvasSize(){
+    let view_size :any = {};
+    let transverseCanvas = $(".a_class .icanvas").get(0);
+    let saggitalCanvas = $(".c_class .icanvas").get(0);
+    let coronalCanvas = $(".b_class .icanvas").get(0);
+    view_size.transver = [transverseCanvas.width,transverseCanvas.height];
+    view_size.coronal = [coronalCanvas.width,coronalCanvas.height];
+    view_size.saggital = [saggitalCanvas.width,saggitalCanvas.height];
+
+    return view_size;
+
   }
 
   mainHideList(){

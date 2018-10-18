@@ -23,4 +23,8 @@ export class ContouringService {
     return this.http.get("http://10.9.19.139:8000/image/macro/",{params:getParams});
   }
 
+  noticeSize(canvasSize){
+    return this.http.post("http://10.9.19.139:8000/image/resize/",canvasSize);
+  }
+
 }
