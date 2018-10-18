@@ -3,7 +3,7 @@ from __future__ import print_function
 from twisted.internet import reactor, protocol
 
 import struct
-from connect_image import image_msg_pb2 as msg
+from apps.connect_image import image_msg_pb2 as msg
 
 
 class ResponseData(object):

@@ -18,4 +18,5 @@ urlpatterns = [
     url(r'^serids/$', views.GetSeriesUidList.as_view(), name='serids'),
     url(r'^backs/$', views.ReSetVolume.as_view(), name='reset'),
     url(r'^windows/$', views.ChangeWindow.as_view(), name='windows'),
+    url(r'^size/$', views.WindowSize.as_view(), name='size')
 ]

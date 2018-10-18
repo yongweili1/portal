@@ -51,15 +51,16 @@ class GetSeriesUidList(APIView):
         :param request:
         :return:a list of seriesuid
         """
-        patientid = request.GET.get('patientid', None)
-        if patientid is None:
-            return Response('请输入patientid')
-        studylist = Study.objects.filter(patientid=patientid)
-        serieslist = []
-        for study in studylist:
-            series_list = Series.objects.filter(studyuid=study.studyuid)
-
-            serieslist += series_list
+        # patientid = request.GET.get('patientid', None)
+        # if patientid is None:
+        #     return Response('请输入patientid')
+        # studylist = Study.objects.filter(patientid=patientid)
+        # serieslist = []
+        # for study in studylist:
+        #     series_list = Series.objects.filter(studyuid=study.studyuid)
+        #
+        #     serieslist += series_list
+        serieslist = Series.objects.all()
         seriesuidlist = []
         for ser in serieslist:
             seriesuidlist.append(ser.seriesuid)
@@ -102,6 +103,33 @@ class MacroRecording(APIView):
             pass
 
         return Response('OK')
+
+
+class WindowSize(APIView):
+    def post(self, request):
+        sizedata = request.Post.get('view_size', None)
+        user_ip = request.META.get('REMOTE_ADDR', None)
+
+        if sizedata is None:
+            return Response('resize参数不完整')
+        print(sizedata)
+
+        params = {
+            'user_ip': user_ip,
+            'server_name': 'image',
+            'command': 'resize',
+            'view_size': sizedata
+        }
+
+        try:
+            rst = get_image(**params)
+        except Exception as e:
+            return Response('服务间数据传输失败')
+
+        if rst.success is False:
+            return Response(rst.comment)
+
+        return Response('success')
 
 
 class LoadVolume(APIView):
