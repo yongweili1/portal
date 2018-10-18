@@ -1,11 +1,11 @@
 import numpy as np
-import md
-from md.image3d.python.image3d_tools import estimate_intensity_window, slice_nn
-from md.image3d.python.image3d_vis import slice_to_bytes, bytes_to_colors, multi_image_alpha_blend
+from md.image3d.python.image3d_tools import slice_nn
+from md.image3d.python.image3d_vis import slice_to_bytes, bytes_to_colors
 from md.image3d.python.image3d_io import read_image
 from md.mdmath.python.rotation3d import axis_angle_to_rotation_matrix
-from utilities import get_axis, get_orthogonal_axis, get_two_spacing, get_spacing, get_orthogonal_spacing, ViewEnum, \
+from utilities import get_axis, get_orthogonal_axis, get_two_spacing, get_orthogonal_spacing, ViewEnum, \
     convert_rgba_to_base64
+from scene.coord import translate_from_world_to_screen, translate_from_screen_to_world
 
 
 class ImageServer(object):
@@ -36,6 +36,14 @@ class ImageServer(object):
         self.px_per_zoom = 120
         self.min_zoom_factor = 0.01
         self.max_zoom_factor = 25
+
+        #view size
+        self.view_size = {
+            "transverse": [1150, 728],
+            "coronal": [574, 362],
+            "saggital": [574, 362]
+        }
+        self.look_at = None
 
     def check_volume_status(self, series_uid):
         return series_uid in self.volumes
@@ -209,6 +217,7 @@ class ImageServer(object):
         shift = get_orthogonal_spacing(view, self.cfg) * delta
         axis = get_axis(view, self.cfg)
         self.cfg['cursor'] = self.cfg['cursor'] + axis[2] * shift
+        return self.cfg['cursor']
 
     def set_colormode(self, colormode):
         self.cfg['colormode'] = colormode
@@ -236,15 +245,36 @@ class ImageServer(object):
         data = {}
 
         if display_view == ViewEnum.transverse or display_view == ViewEnum.all:
-            transverse = self.__get_rgb_image(ViewEnum.transverse, width, height)
+            transverse = self.__get_rgb_image(ViewEnum.transverse, self.view_size['transverse'][0], self.view_size['transverse'][1])
             data['transverse'] = convert_rgba_to_base64(transverse, 'PNG')
 
         if display_view == ViewEnum.saggital or display_view == ViewEnum.all:
-            saggital = self.__get_rgb_image(ViewEnum.saggital, width, height)
+            saggital = self.__get_rgb_image(ViewEnum.saggital, self.view_size['saggital'][0], self.view_size['saggital'][1])
             data['saggital'] = convert_rgba_to_base64(saggital, 'PNG')
 
         if display_view == ViewEnum.coronal or display_view == ViewEnum.all:
-            coronal = self.__get_rgb_image(ViewEnum.coronal, width, height)
+            coronal = self.__get_rgb_image(ViewEnum.coronal, self.view_size['coronal'][0], self.view_size['coronal'][1])
             data['coronal'] = convert_rgba_to_base64(coronal, 'PNG')
 
         return data
+
+    def cursor_translate(self, **kwargs):
+        focus_view = kwargs['focus_view']
+        spacing = get_orthogonal_spacing(focus_view, self.cfg)
+        if kwargs['trans_direct_flag'] == "screen2world":
+            cursor_2d = {}
+            cursor_2d['transPosition'] = translate_from_world_to_screen(self.cfg['transverse_axis'][0], self.cfg['transverse_axis'][1], look_at, self.view_size[focus_view], 1, kwargs['cursor_3d'])
+            cursor_2d['cronPosition'] = translate_from_world_to_screen(self.cfg['transverse_axis'][0], self.cfg['transverse_axis'][1], look_at, self.view_size[focus_view], spacing, kwargs['cursor_3d'])
+            cursor_2d['sagPosition'] = translate_from_world_to_screen(self.cfg['transverse_axis'][0], self.cfg['transverse_axis'][1], look_at, self.view_size[focus_view], spacing, kwargs['cursor_3d'])
+
+            return cursor_2d
+        else:
+            cursor_3d = translate_from_screen_to_world(self.scene, kwargs['cursor_2d'])
+
+            return cursor_3d
+
+    def set_view_size(self, **kwargs):
+        self.view_size = kwargs
+
+
+

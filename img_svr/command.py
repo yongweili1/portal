@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from image_server import ImageServer
 from message import response
 from utilities import get_display_view, get_focus_view, get_orthogonal_spacing, ViewEnum
+
 import json
 
 
@@ -157,9 +158,18 @@ def page(**kwargs):
     except:
         return response(success=False, message='Invalid parameters.')
 
-    server.update_cursor(focus_view, delta)
+    data = {}
+    cursor_3d = server.update_cursor(focus_view, delta)
     imgs = server.get_images(display_view, width, height)
-    return response(json.dumps(imgs))
+    trans_para={
+        'cursor_3d': cursor_3d,
+        'trans_direct_flag': 'screen2world',
+        'focus_view': focus_view
+    }
+    cursor_2d = server.cursor_translate(**trans_para)
+    data['cross_position'] = cursor_2d
+    data.update(imgs)
+    return response(json.dumps(data))
 
 
 @command.register('zoom')
@@ -325,3 +335,19 @@ def wcww(**kwargs):
     server.set_wcww(shift)
     imgs = server.get_images(display_view, width, height)
     return response(json.dumps(imgs))
+
+
+@command.register('resize')
+def resize(**kwargs):
+    """
+    Resize the view
+    :param view_size: the size of front view
+    :return:
+    """
+    try:
+        size = kwargs['view_size']
+    except:
+        return response(success=False, message='Invalid parameters.')
+
+    server.set_view_size(**size)
+    return response(message='Setting view size succeed')
