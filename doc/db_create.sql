@@ -166,6 +166,18 @@ create table script
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
+create table new_django_session
+(
+   client_ip            varchar(64) not null,
+   session_key          varchar(40) not null,
+   session_data         varchar(255) not null,
+   expire_date          datetime,
+
+   primary key (session_key),
+   unique key (session_key)
+)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 /*
 create table role
 (
