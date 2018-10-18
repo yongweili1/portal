@@ -153,7 +153,7 @@ def page(**kwargs):
         width = int(kwargs['width'])
         height = int(kwargs['height'])
         focus_view = get_focus_view(kwargs['focus_view'])
-        display_view = get_display_view(kwargs['display_view'])
+        display_view = get_display_view(kwargs['focus_view'])
     except:
         return response(success=False, message='Invalid parameters.')
 

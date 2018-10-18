@@ -42,7 +42,7 @@ export class PatientTemplateService {
     // return this.http
     //   .get<Page<PatientPageRequest>>(`${this.appConfig.apiUrl}/patientinformations/patinfolist/`,{params:searchParams});
     return this.http
-    .get<Page<PatientPageRequest>>('http://localhost:8090/api/patient-template');
+    .get<Page<PatientPageRequest>>('http://10.9.19.24:8000/patientinformations/patinfolist/');
   }
 
 

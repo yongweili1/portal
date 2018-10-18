@@ -76,6 +76,15 @@ def get_orthogonal_spacing(view, cfg):
         return cfg['spacing'][1]
 
 
+def get_two_spacing(view, cfg):
+    if view == ViewEnum.transverse:
+        return cfg['spacing'][0], cfg['spacing'][1]
+    elif view == ViewEnum.saggital:
+        return cfg['spacing'][1], 1
+    elif view == ViewEnum.coronal:
+        return cfg['spacing'][0], 1
+
+
 def get_spacing(view, cfg):
     if view == ViewEnum.transverse:
         return cfg['spacing'][0]
@@ -92,3 +101,4 @@ def convert_rgba_to_base64(rgba, format):
     binary_data = output_buffer.getvalue()
     base64_data = base64.b64encode(binary_data)
     return base64_data
+
