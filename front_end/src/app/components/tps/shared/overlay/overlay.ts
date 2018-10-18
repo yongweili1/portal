@@ -6,21 +6,25 @@ declare var createjs: any;
 export class Overlay extends createjs.Shape {
     type: string;
     overlayStage: any;
-    protected _cps: Array<Point>;
+    protected _cps: Array<any>;
     protected _startPoint: Point;
     protected _endPoint: Point;
     protected _tempPoint: Point;
+    protected _is_hover: boolean;
+    protected _color: string;
 
     constructor(stage, type) {
         super();
         this.overlayStage = stage;
         this.type = type;
-        this._cps = new Array<Point>();
+        this._is_hover = false;
+        this._color = 'white';
         this.addEventListener("mousedown", this.handleMouseDown.bind(this));
         this.addEventListener("pressmove", this.handlePressMove.bind(this));
         this.addEventListener("dblclick", this.handleDbClick.bind(this));
         this.addEventListener("pressup", this.handlePressUp.bind(this));
         this.addEventListener("mouseover", this.handleMouseOver.bind(this));
+        this.addEventListener("mouseout", this.handleMouseOut.bind(this));
         this.overlayStage.addChild(this);
     }
 
@@ -32,30 +36,15 @@ export class Overlay extends createjs.Shape {
         this._endPoint = p;
     }
 
-    setCps() {
-
-    }
-
     updateCps(delta_x: number, delta_y: number) {
-        if (typeof(this._cps) == 'undefined') {
-            return;
-        }
-        this._cps.forEach(cp => {
-            cp.x += delta_x;
-            cp.y += delta_y;
-        });
-    }
-
-    clearCps() {
-        this._cps = new Array<Point>();
     }
 
     drawControlPoints() {
-        if (typeof(this._cps) == 'undefined') {
+        if (typeof(this._cps) == null) {
             return;
         }
         this._cps.forEach(cp => {
-            this.graphics.beginStroke("yellow").setStrokeStyle(2, "round").rect(cp.x - 2, cp.y - 2, 4, 4);
+            cp.update()
         });
     };
 
@@ -77,6 +66,7 @@ export class Overlay extends createjs.Shape {
         // update start point and end point
         evt.currentTarget.x += delta_x;
         evt.currentTarget.y += delta_y;
+        evt.currentTarget.updateCps(delta_x, delta_y);
 
         this.update();
     }
@@ -93,6 +83,14 @@ export class Overlay extends createjs.Shape {
     }
     handleMouseOver(evt) {
         console.log('handleMouseOver on', evt.currentTarget.type)
+        this._is_hover = true;
+        this._color = 'red';
+        this.update()
+    }
+    handleMouseOut(evt) {
+        this._is_hover = false;
+        this._color = 'white';
+        this.update()
     }
 }
 
