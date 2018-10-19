@@ -18,7 +18,7 @@ def load_volume(*args, **kwargs):
     data.session = kwargs['user_ip']
     data.server_name = kwargs['server_name']
     data.command = kwargs['command']
-    data.content.params = json.dumps({'seriesuid': kwargs['serid']})
+    data.content.params = json.dumps({'seriesuid': kwargs['seriesuid']})
     data.content.volume = vol
     data = data.SerializeToString()
     size = len(data)

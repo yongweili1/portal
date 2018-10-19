@@ -26,6 +26,8 @@ class Macro(object):
     sys.path.insert(0, r'E:\\research_ly\portal\\back_end\\apps')\r\n
     reactor.connectTCP('127.0.0.1', 8001, be_factory)\r\n
     thread.start_new_thread(reactor.run, (0,))\r\n
+    seriesuid = sys.argv[1]
+    volumepath = sys.argv[2]\r\n
     """.replace('    ', '')
 
     def __init__(self):
@@ -48,8 +50,11 @@ class Macro(object):
                 data_str = ''
                 data_str += '('
                 for key, value in kwargs.items():
+                    if key == 'seriesuid':
+                        data_str += "{0}={0}, ".format(key)
+                        continue
                     if key == 'volumepath':
-                        data_str += "{0}=r'{1}',".format(key, value)
+                        data_str += "{0}=r'{1}'.format(volumepath),".format(key, '{}')
                         continue
                     data_str += "{0}='{1}',".format(key, value)
                 data_str += ')'

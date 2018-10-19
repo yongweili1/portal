@@ -143,27 +143,27 @@ class LoadVolume(APIView):
         :param seriesuid: series uid
         :return:boolean true for success, false for failure
         """
-        serid = request.GET.get('seriesuid', None)
+        seriesuid = request.GET.get('seriesuid', None)
         user_ip = request.META.get('REMOTE_ADDR', None)
         request_server = request.path
         request_server = request_server.split("/")[-2]
 
-        series_query = Series.objects.filter(seriesuid=serid)
+        series_query = Series.objects.filter(seriesuid=seriesuid)
         if len(series_query) == 0:
             return Response('数据库无此seriesuid')
         volumepath = series_query[0].seriespixeldatafilepath
 
         params = {
-            'serid': serid,
+            'seriesuid': seriesuid,
             'user_ip': user_ip,
             'volumepath': volumepath,
             'command': 'load',
             'server_name': 'image',
         }
-        try:
-            rst = load_volume(**params)
-        except Exception as e:
-            return Response('服务间数据传输失败')
+        # try:
+        rst = load_volume(**params)
+        # except Exception as e:
+        #     return Response('服务间数据传输失败')
 
         if rst.success is False:
             return Response(rst.comment)
@@ -212,7 +212,7 @@ class GetImage(APIView):
               'saggital' for saggital, 'coronal' for coronal, 'all' for all view
         :return: rgb image data
         """
-        serid = request.GET.get('seriesuid', None)
+        seriesuid = request.GET.get('seriesuid', None)
         width = request.GET.get('width', None)
         height = request.GET.get('height', None)
         display_view = request.GET.get('display_view', 'all')
@@ -224,7 +224,7 @@ class GetImage(APIView):
             return Response('请输入完整的请求数据')
 
         params = {
-            'seriesuid': serid,
+            'seriesuid': seriesuid,
             'width': width,
             'height': height,
             'display_view': display_view,
@@ -638,6 +638,9 @@ class RunSript(APIView):
             return Response('数据库无此seriesuid')
         volumepath = series_query[0].seriespixeldatafilepath
 
-        os.system('python static/macro/{}.py {} {}'.format(scriptname, seriesuid, volumepath))
-
+        try:
+            os.system('python static/macro/{}.py {} {}'.format(scriptname, seriesuid, volumepath))
+        except:
+            return Response('script执行异常')
+        
         return Response('OK')
