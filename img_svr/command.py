@@ -160,13 +160,13 @@ def page(**kwargs):
 
     data = {}
     cursor_3d = server.update_cursor(focus_view, delta)
+    server.update_look_at(focus_view, delta)
     imgs = server.get_images(display_view, width, height)
-    trans_para={
-        'cursor_3d': cursor_3d,
-        'trans_direct_flag': 'screen2world',
-        'focus_view': focus_view
+    trans_para = {
+        'point_3d': cursor_3d,
+        'trans_direct_flag': 'world2screen',
     }
-    cursor_2d = server.cursor_translate(**trans_para)
+    cursor_2d = server.dimension_translate(trans_para)
     data['cross_position'] = cursor_2d
     data.update(imgs)
     return response(json.dumps(data))
@@ -349,5 +349,41 @@ def resize(**kwargs):
     except:
         return response(success=False, message='Invalid parameters.')
 
+    size = dict(size)
     server.set_view_size(**size)
     return response(message='Setting view size succeed')
+
+
+@command.register('locate')
+def locate(**kwargs):
+    """
+    Resize the view
+    :param view_size: the size of front view
+    :return:
+    """
+    try:
+        focus_view = kwargs['focus_view']
+        cursor_2D = kwargs['cursor_2D']
+        display_view = kwargs['display_view']
+    except:
+        return response(success=False, message='Invalid parameters.')
+
+    trans_para = {
+        'point_2d': cursor_2D,
+        'trans_direct_flag': 'screen2world',
+        'focus_view': focus_view
+    }
+    display_view_array = display_view.split(",")
+    cursor_3d = server.dimension_translate(trans_para)
+    server.set_cursor(cursor_3d)
+    server.set_look_at(cursor_3d, cursor_3d, cursor_3d)
+    imgs = server.get_multi_images(display_view_array)
+    trans_para = {
+        'point_3d': cursor_3d,
+        'trans_direct_flag': 'world2screen'
+    }
+    data = {}
+    cursor_2d = server.dimension_translate(trans_para)
+    data['cross_position'] = cursor_2d
+    data.update(imgs)
+    return response(json.dumps(data))

@@ -3,6 +3,7 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 import { HttpClient } from "@angular/common/http";
 import { switchMap } from 'rxjs/operators';
 import { Router} from '@angular/router';
+import { ElMessageService } from 'element-angular'
 
 import { ConMessageService } from '../shared/service/conMessage.service';
 import { SeriesHttpService } from '../shared/service/seriesHttp.service';
@@ -60,26 +61,38 @@ export class ContouringComponent implements OnInit {
     private storageService: StorageService, 
     private seriesHttpService: SeriesHttpService,
     private router:Router,
-    private conService:ContouringService
+    private conService:ContouringService,
+    private elMessage: ElMessageService,
     ) {
   }
   transverseChange(event: any) {
-      if (event[2] == 'ver') {
-          this.picLeft3.getBuffer(event[0], 'saggital', event[1])
-          this.picLeft2.patient2screen(event[0]);
-      }
-      if (event[2] == 'cur') {
-          this.picLeft2.getBuffer(event[0], 'coronal', event[1])
-          this.picLeft3.patient2screen(event[0]);
-      }
-      if (event[2] == 'cro') {
-          this.picLeft2.patient2screen(event[0]);
-          this.picLeft3.patient2screen(event[0]);
-          this.picLeft3.getBuffer(event[0], 'saggital', event[1])
-          this.picLeft2.getBuffer(event[0], 'coronal', event[1])
-
-      }
+    let displayView = 'coronal,saggital'  
+    this.seriesHttpService.GetLocatePic('transverse',displayView,event).subscribe((value)=>{
+        let data = JSON.parse(value);
+        this.picLeft2.locateUpdate(data.coronal, data.cross_position);
+        this.picLeft3.locateUpdate(data.saggital, data.cross_position);
+    }
+    )
   }
+
+  coronalChange(event: any) {
+    let displayView = 'transverse,saggital'  
+    this.seriesHttpService.GetLocatePic('coronal',displayView,event).subscribe((value)=>{
+        let data = JSON.parse(value);
+        this.picLeft1.locateUpdate(data.transverse, data.cross_position);
+        this.picLeft3.locateUpdate(data.saggital, data.cross_position);
+    }
+    )
+}
+  saggitalChange(event: any) {
+    let displayView = 'coronal,transverse'
+    this.seriesHttpService.GetLocatePic('saggital',displayView,event).subscribe((value)=>{
+        let data = JSON.parse(value);
+        this.picLeft1.locateUpdate(data.transverse, data.cross_position);
+        this.picLeft2.locateUpdate(data.coronal, data.cross_position);
+    }
+    )
+}
 
   mainClearPri()
   {
@@ -94,38 +107,7 @@ export class ContouringComponent implements OnInit {
   hideDialog() {
     this.display = false;
   }
-  coronalChange(event: any) {
-      if (event[2] == 'ver') {
-          this.picLeft3.getBuffer(event[0], 'saggital', event[1])
-          this.picLeft1.patient2screen(event[0]);
-      }
-      if (event[2] == 'cur') {
-          this.picLeft1.getBuffer(event[0], 'transverse', event[1])
-          this.picLeft3.patient2screen(event[0]);
-      }
-      if (event[2] == 'cro') {
-          this.picLeft3.patient2screen(event[0]);
-          this.picLeft1.patient2screen(event[0]);
-          this.picLeft1.getBuffer(event[0], 'transverse', event[1])
-          this.picLeft3.getBuffer(event[0], 'saggital', event[1])
-      }
-  }
-  saggitalChange(event: any) {
-      if (event[2] == 'ver') {
-          this.picLeft2.getBuffer(event[0], 'coronal', event[1])
-          this.picLeft1.patient2screen(event[0]);
-      }
-      if (event[2] == 'cur') {
-          this.picLeft1.getBuffer(event[0], 'transverse', event[1])
-          this.picLeft2.patient2screen(event[0]);
-      }
-      if (event[2] == 'cro') {
-          this.picLeft2.patient2screen(event[0]);
-          this.picLeft1.patient2screen(event[0]);
-          this.picLeft1.getBuffer(event[0], 'transverse', event[1])
-          this.picLeft2.getBuffer(event[0], 'coronal', event[1])
-      }
-  }
+
 
   aCross(event: any) {
       
@@ -188,19 +170,21 @@ export class ContouringComponent implements OnInit {
             this.getSeriesList(this.patientId);
         }
         else{
-            alert("请先选择病人");
-            this.router.navigate(['/base/patient-template']);
+            this.elMessage.setOptions({ showClose: true })
+            this.elMessage['error']('请先选择病人')
+            //this.router.navigate(['/base/patient-template']);
         }
       });
       let that = this;
       let canvasSize:any = {};
       setTimeout(()=>{
-            canvasSize.view_size = that.getCanvasSize();
+            canvasSize['view_size'] = that.getCanvasSize();
             that.conService.noticeSize(canvasSize).subscribe();
         },300);
       $(window).resize(function() {
         setTimeout(()=>{
-            canvasSize.view_size = that.getCanvasSize();
+            canvasSize['view_size'] = that.getCanvasSize();
+            //canvasSize = {'view_size':"cc"}
             that.conService.noticeSize(canvasSize).subscribe();
         },300);
     });
@@ -211,9 +195,9 @@ export class ContouringComponent implements OnInit {
     let transverseCanvas = $(".a_class .icanvas").get(0);
     let saggitalCanvas = $(".c_class .icanvas").get(0);
     let coronalCanvas = $(".b_class .icanvas").get(0);
-    view_size.transver = [transverseCanvas.width,transverseCanvas.height];
-    view_size.coronal = [coronalCanvas.width,coronalCanvas.height];
-    view_size.saggital = [saggitalCanvas.width,saggitalCanvas.height];
+    view_size['transverse'] = [transverseCanvas.width,transverseCanvas.height];
+    view_size['coronal'] = [coronalCanvas.width,coronalCanvas.height];
+    view_size['saggital'] = [saggitalCanvas.width,saggitalCanvas.height];
 
     return view_size;
 
