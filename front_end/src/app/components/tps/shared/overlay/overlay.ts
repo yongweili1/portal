@@ -78,6 +78,7 @@ export class Overlay extends createjs.Shape {
         console.log('handleDbClick')
         this.curTarget = evt.currentTarget;
         this.overlayStage.removeChild(this.curTarget);
+        this.curTarget._cps.forEach(cp=>this.overlayStage.removeChild(cp))
         this.overlayStage.clear();
         this.overlayStage.update();
     }

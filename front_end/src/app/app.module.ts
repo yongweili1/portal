@@ -15,6 +15,7 @@ import { NoContentComponent } from './base/no-content/no-content.component';
 import { HeaderModule } from './components/header/header.module';
 import { SideBarModule } from './components/sidebar/sidebar.module';
 import { EasyUIModule } from 'ng-easyui/components/easyui/easyui.module';
+import { ElModule } from 'element-angular'
 
 import { FullLayoutComponent } from './layouts/full-layout.component';
 import { SimpleLayoutComponent } from './layouts/simple-layout.component';
@@ -56,6 +57,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       }
     }),
     EasyUIModule,
+    ElModule.forRoot(),
     MockModule,
     CoreModule,
     SharedModule,

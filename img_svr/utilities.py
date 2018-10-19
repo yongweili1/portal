@@ -29,7 +29,7 @@ class ViewEnum(Enum):
     all = 0,
     transverse = 1,
     saggital = 2,
-    coronal = 3
+    coronal = 3,
 
 
 def get_display_view(display_view):
@@ -74,6 +74,24 @@ def get_orthogonal_spacing(view, cfg):
         return cfg['spacing'][0]
     elif view == ViewEnum.coronal:
         return cfg['spacing'][1]
+
+
+def get_view_size(view, size):
+    if view == ViewEnum.transverse:
+        return size['transverse']
+    elif view == ViewEnum.saggital:
+        return size['saggital']
+    elif view == ViewEnum.coronal:
+        return size['coronal']
+
+
+def get_view_string(view):
+    if view == ViewEnum.transverse:
+        return 'transverse'
+    elif view == ViewEnum.saggital:
+        return 'saggital'
+    elif view == ViewEnum.coronal:
+        return 'coronal'
 
 
 def get_two_spacing(view, cfg):

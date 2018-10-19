@@ -4,12 +4,13 @@ from md.image3d.python.image3d_vis import slice_to_bytes, bytes_to_colors
 from md.image3d.python.image3d_io import read_image
 from md.mdmath.python.rotation3d import axis_angle_to_rotation_matrix
 from utilities import get_axis, get_orthogonal_axis, get_two_spacing, get_orthogonal_spacing, ViewEnum, \
-    convert_rgba_to_base64
+    convert_rgba_to_base64, get_view_size, get_view_string, get_focus_view
 from scene.coord import translate_from_world_to_screen, translate_from_screen_to_world
 
 
 class ImageServer(object):
     """Image server"""
+
     def __init__(self):
         super(ImageServer, self).__init__()
 
@@ -37,13 +38,13 @@ class ImageServer(object):
         self.min_zoom_factor = 0.01
         self.max_zoom_factor = 25
 
-        #view size
+        # view size
         self.view_size = {
             "transverse": [1150, 728],
             "coronal": [574, 362],
             "saggital": [574, 362]
         }
-        self.look_at = None
+        self.look_at = {}
 
     def check_volume_status(self, series_uid):
         return series_uid in self.volumes
@@ -66,7 +67,7 @@ class ImageServer(object):
         self.configs[series_uid] = {}
         self.configs[series_uid]['center'] = im.center()
         self.configs[series_uid]['cursor'] = im.center()
-        self.configs[series_uid]['spacing'] = im.spacing()#[1, 1, 1]
+        self.configs[series_uid]['spacing'] = im.spacing()  # [1, 1, 1]
         self.configs[series_uid]['zoom_factor'] = 1
         self.configs[series_uid]['win_center'] = 0
         self.configs[series_uid]['win_width'] = 2000
@@ -79,6 +80,10 @@ class ImageServer(object):
 
         # switch current volume to this volume
         self.change_volume(series_uid)
+
+        self.look_at['transverse'] = im.center()
+        self.look_at['coronal'] = im.center()
+        self.look_at['saggital'] = im.center()
 
         return True, 'Load succeed.'
 
@@ -219,6 +224,18 @@ class ImageServer(object):
         self.cfg['cursor'] = self.cfg['cursor'] + axis[2] * shift
         return self.cfg['cursor']
 
+    def set_look_at(self, *args):
+        self.look_at['transverse'] = args[0]
+        self.look_at['coronal'] = args[1]
+        self.look_at['saggital'] = args[2]
+
+    def update_look_at(self, view, delta):
+        shift = get_orthogonal_spacing(view, self.cfg) * delta
+        axis = get_axis(view, self.cfg)
+        view_string = get_view_string(view)
+        self.look_at[view_string] = self.look_at[view_string] + axis[2] * shift
+        return self.look_at[view_string]
+
     def set_colormode(self, colormode):
         self.cfg['colormode'] = colormode
 
@@ -245,11 +262,13 @@ class ImageServer(object):
         data = {}
 
         if display_view == ViewEnum.transverse or display_view == ViewEnum.all:
-            transverse = self.__get_rgb_image(ViewEnum.transverse, self.view_size['transverse'][0], self.view_size['transverse'][1])
+            transverse = self.__get_rgb_image(ViewEnum.transverse, self.view_size['transverse'][0],
+                                              self.view_size['transverse'][1])
             data['transverse'] = convert_rgba_to_base64(transverse, 'PNG')
 
         if display_view == ViewEnum.saggital or display_view == ViewEnum.all:
-            saggital = self.__get_rgb_image(ViewEnum.saggital, self.view_size['saggital'][0], self.view_size['saggital'][1])
+            saggital = self.__get_rgb_image(ViewEnum.saggital, self.view_size['saggital'][0],
+                                            self.view_size['saggital'][1])
             data['saggital'] = convert_rgba_to_base64(saggital, 'PNG')
 
         if display_view == ViewEnum.coronal or display_view == ViewEnum.all:
@@ -258,23 +277,60 @@ class ImageServer(object):
 
         return data
 
-    def cursor_translate(self, **kwargs):
-        focus_view = kwargs['focus_view']
-        spacing = get_orthogonal_spacing(focus_view, self.cfg)
-        if kwargs['trans_direct_flag'] == "screen2world":
-            cursor_2d = {}
-            cursor_2d['transPosition'] = translate_from_world_to_screen(self.cfg['transverse_axis'][0], self.cfg['transverse_axis'][1], look_at, self.view_size[focus_view], 1, kwargs['cursor_3d'])
-            cursor_2d['cronPosition'] = translate_from_world_to_screen(self.cfg['transverse_axis'][0], self.cfg['transverse_axis'][1], look_at, self.view_size[focus_view], spacing, kwargs['cursor_3d'])
-            cursor_2d['sagPosition'] = translate_from_world_to_screen(self.cfg['transverse_axis'][0], self.cfg['transverse_axis'][1], look_at, self.view_size[focus_view], spacing, kwargs['cursor_3d'])
+    def dimension_translate(self, trans_para):
+        if trans_para['trans_direct_flag'] == "world2screen":
+            point_2d = {}
+            point_2d['transPosition'] = translate_from_world_to_screen(self.cfg['transverse_axis'][0],
+                                                                        self.cfg['transverse_axis'][1], self.look_at['transverse'],
+                                                                        self.view_size['transverse'],
+                                                                        1,
+                                                                       trans_para['point_3d']).tolist()
+            point_2d['cronPosition'] = translate_from_world_to_screen(self.cfg['coronal_axis'][0],
+                                                                       self.cfg['coronal_axis'][1], self.look_at['coronal'],
+                                                                       self.view_size['coronal'],
+                                                                       self.cfg['spacing'][0],
+                                                                      trans_para['point_3d']).tolist()
+            point_2d['sagPosition'] = translate_from_world_to_screen(self.cfg['saggital_axis'][0],
+                                                                      self.cfg['saggital_axis'][1], self.look_at['saggital'],
+                                                                      self.view_size['saggital'],
+                                                                      self.cfg['spacing'][1],
+                                                                     trans_para['point_3d']).tolist()
 
-            return cursor_2d
+            return point_2d
         else:
-            cursor_3d = translate_from_screen_to_world(self.scene, kwargs['cursor_2d'])
-
-            return cursor_3d
+            if trans_para['focus_view'] == 'transverse':
+                point_3d = translate_from_screen_to_world(self.cfg['transverse_axis'][0],
+                                                          self.cfg['transverse_axis'][1], self.look_at['transverse'],
+                                                          self.view_size['transverse'],
+                                                          1,
+                                                          trans_para['point_2d']).tolist()
+            elif trans_para['focus_view'] == 'coronal':
+                point_3d = translate_from_screen_to_world(self.cfg['coronal_axis'][0],
+                                                          self.cfg['coronal_axis'][1], self.look_at['coronal'],
+                                                          self.view_size['coronal'],
+                                                          1,
+                                                          trans_para['point_2d']).tolist()
+            else:
+                point_3d = translate_from_screen_to_world(self.cfg['saggital_axis'][0],
+                                                          self.cfg['saggital_axis'][1], self.look_at['saggital'],
+                                                          self.view_size['saggital'],
+                                                          1,
+                                                          trans_para['point_2d']).tolist()
+            return point_3d
 
     def set_view_size(self, **kwargs):
-        self.view_size = kwargs
+        self.view_size['transverse'] = kwargs['transverse']
+        self.view_size['coronal'] = kwargs['coronal']
+        self.view_size['saggital'] = kwargs['saggital']
 
+    def get_multi_images(self, display_view_array):
+        data = {}
+        for display_view in display_view_array:
+            width, height = self.view_size[display_view]
+            display_view = get_focus_view(display_view)
+            img = self.get_images(display_view, width, height)
+            data.update(img)
+
+        return data
 
 

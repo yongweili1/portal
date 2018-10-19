@@ -117,16 +117,10 @@ ngOnInit() {
   $(window).resize(function() {
       that.calcviewportsize();
       console.log("=== resize ===")
-      //that.opm3();
-      //that.setupScene();
-      //that.drawScene(that.gl, that.programInfo, that.buffers, that.texture);
   });
   this.conMessage.curAction$.subscribe(
     curAction => this.curAction = curAction
 )
-//   this.patient2Mpr = mat4.create();
-//   this.opM3 = mat3.create();
-//   this.scrCrossPt = vec3.create();
 }
 
 //设置和区分canvas窗口大小
@@ -219,27 +213,12 @@ base64tobin(base64) {
 }
 
 picScroll(delt:any) {
-    let img1 = new Image();
     let that = this;
     this.seriesHttpService.GetSeriesPic(this.tag,this.tag,delt,this.canvas.width,this.canvas.height).subscribe((value) =>{
         let data = JSON.parse(value);
-        let base64Header = "data:image/png;base64,";
-        let ctx1:any;
-        let imgData1:any;
-
-        imgData1 = base64Header + data[this.tag];
-        img1.src = imgData1;
-        img1.onload = function(){
-            ctx1=that.canvas.getContext("2d");
-            ctx1.clearRect(0,0,that.canvas.width,that.canvas.height);
-            ctx1.drawImage(img1,0,0,that.canvas.width,that.canvas.height);
-        }
-        data.cross_position = {
-            transPosition:[300,300],
-            cronPosition:[300,300],
-            sagPosition:[300,300]
-        }
-        that.postPoint = data.cross_position
+        this.drawCanvasPic(data[this.tag]);
+        that.postPoint = data.cross_position;
+        console.log(that.postPoint);
         that.P2Cross();
 
     },(error)=>{
@@ -351,44 +330,38 @@ cross(width, height, loca) {
 handlePressMove(evt) {
   if (evt.currentTarget == this.verticalLine) {//竖线
       evt.currentTarget.x = this.crossPoint.x = evt.stageX;
-      //this.getposition(this.crossPoint.x, this.crossPoint.y, 2, 'ver');
+      this.getposition(this.crossPoint.x, this.crossPoint.y);
   }
   if (evt.currentTarget == this.horizontalLine) {//横线
       evt.currentTarget.y = this.crossPoint.y = evt.stageY;
-      //this.getposition(this.crossPoint.x, this.crossPoint.y, 2, 'cur');
+      this.getposition(this.crossPoint.x, this.crossPoint.y);
   }
   if (evt.currentTarget == this.crossPoint) {
       evt.currentTarget.x = this.verticalLine.x = evt.stageX;
       evt.currentTarget.y = this.horizontalLine.y = evt.stageY;
-      //this.getposition(this.crossPoint.x, this.crossPoint.y, 4, 'cro');
+      this.getposition(this.crossPoint.x, this.crossPoint.y);
   }
   this.stage.update();
 }
 handlePressUp(evt) {
   if (evt.currentTarget == this.verticalLine) {//竖线
       evt.currentTarget.x = this.crossPoint.x = evt.stageX;
-      //this.getposition(this.crossPoint.x, this.crossPoint.y, 1, 'ver');
+      this.getposition(this.crossPoint.x, this.crossPoint.y);
   }
   if (evt.currentTarget == this.horizontalLine) {//横线
       evt.currentTarget.y = this.crossPoint.y = evt.stageY;
-      //this.getposition(this.crossPoint.x, this.crossPoint.y, 1, 'cur');
+      this.getposition(this.crossPoint.x, this.crossPoint.y);
   }
   if (evt.currentTarget == this.crossPoint) {
       evt.currentTarget.x = this.crossPoint.x = evt.stageX;
       evt.currentTarget.y = this.crossPoint.y = evt.stageY;
-      //this.getposition(this.crossPoint.x, this.crossPoint.y, 1, 'cro');
+      this.getposition(this.crossPoint.x, this.crossPoint.y);
   }
   this.stage.update();
 }
 
-getposition(x, y, down, way) {
-//   var screenPt = vec3.fromValues(x, y, 1);
-//   vec3.transformMat3(screenPt, screenPt, this.opM3);
-//   var pt = vec3.create();
-//   vec3.transformMat3(pt, screenPt, this.affineMat3);
-//   this.postPoint = vec4.fromValues(pt[0], pt[1], 0, 1);
-//   vec4.transformMat4(this.postPoint, this.postPoint, this.mpr2Patient);
-  var point = new Array(this.postPoint, down, way);
+getposition(x, y) {
+  var point = new Array(x,y);
   this.changeCross.emit(point);
 }
 
@@ -751,6 +724,37 @@ loadShader(gl, type, source) {
       return null;
   }
   return shader;
+}
+
+locateUpdate(imageData,crossPoint){
+    this.drawCanvasPic(imageData);
+    let crossPtX,crossPtY;
+    if(this.tag == "transverse"){
+        crossPtX  = crossPoint['transPosition'][0];
+        crossPtY  = crossPoint['transPosition'][1];
+    }
+    else if(this.tag == "saggital"){
+        crossPtX  = crossPoint['sagPosition'][0];
+        crossPtY  = crossPoint['sagPosition'][1];
+    }
+    else{
+        crossPtX  = crossPoint['cronPosition'][0];
+        crossPtY  = crossPoint['cronPosition'][1];
+    }
+    this.cross(crossPtX,crossPtY,1);
+}
+
+drawCanvasPic(imageData){
+    let img1 = new Image();
+    let base64Header = "data:image/png;base64,";
+    let imgData1 = base64Header + imageData;
+    img1.src = imgData1;
+    let that = this;
+    img1.onload = function(){
+        let ctx1=that.canvas.getContext("2d");
+        ctx1.clearRect(0,0,that.canvas.width,that.canvas.height);
+        ctx1.drawImage(img1,0,0,that.canvas.width,that.canvas.height);
+    }
 }
 
 
