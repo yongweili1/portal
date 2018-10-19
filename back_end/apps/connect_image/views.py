@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import os
 import struct
+import sys
 import time
 
 from django.shortcuts import render
@@ -106,8 +108,9 @@ class MacroRecording(APIView):
 
 
 class WindowSize(APIView):
+
     def post(self, request):
-        sizedata = request.Post.get('view_size', None)
+        sizedata = request.data.get('view_size', None)
         user_ip = request.META.get('REMOTE_ADDR', None)
 
         if sizedata is None:
@@ -158,7 +161,7 @@ class LoadVolume(APIView):
             'server_name': 'image',
         }
         try:
-            rst = load_volume(user_ip, **params)
+            rst = load_volume(**params)
         except Exception as e:
             return Response('服务间数据传输失败')
 
@@ -589,3 +592,52 @@ class ChangeWindow(APIView):
             return Response(rst.comment)
 
         return Response(rst.kwargs)
+
+
+class CrossLineLocation(APIView):
+
+    def get(self, request):
+        cross_point = request.GET.get('cross_point', None)
+        focus_view = request.GET.get('focus_view', None)
+        display_view = request.GET.get('display_view', None)
+        user_ip = request.META.get('REMOTE_ADDR', None)
+
+        if not cross_point or not focus_view or not user_ip or not display_view:
+            return Response('请求参数不完整')
+
+        params = {
+            'cross_point': cross_point,
+            'focus_view': focus_view,
+            'display_view': display_view,
+            'user_ip': user_ip,
+            'server_name': 'image',
+            'command': 'locate',
+        }
+
+        try:
+            rst = get_image(**params)
+        except Exception as e:
+            return Response('服务间数据传输失败')
+
+        if rst.success is False:
+            return Response(rst.comment)
+
+        return Response(rst.kwargs)
+
+
+class RunSript(APIView):
+
+    def get(self, request):
+        seriesuid = request.GET.get('seriesuid', '1.3.12.2.1107.5.1.4.64606.30000018051006052134700006373')
+        scriptname = request.GET.get('scriptname', '1539914091.6')
+        if not seriesuid or not scriptname:
+            return Response('请输入有效的参数')
+
+        series_query = Series.objects.filter(seriesuid=seriesuid)
+        if len(series_query) == 0:
+            return Response('数据库无此seriesuid')
+        volumepath = series_query[0].seriespixeldatafilepath
+
+        os.system('python static/macro/{}.py {} {}'.format(scriptname, seriesuid, volumepath))
+
+        return Response('OK')

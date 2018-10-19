@@ -30,6 +30,7 @@ class DicomToVolume(object):
         volpath = patient_dic['patientname'] + '-' + study_dic['studydescription'] + '-' + \
                   series_dic['modality'] + '.nii.gz'
 
+        volpath = volpath.replace(' ', '')
         # 调用dicom to volume方法，获取响应数据
         budvol = BuildVolume()
         vol = budvol.volume(1, datasetlist, 1)
