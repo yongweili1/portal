@@ -20,4 +20,5 @@ urlpatterns = [
     url(r'^windows/$', views.ChangeWindow.as_view(), name='windows'),
     url(r'^size/$', views.WindowSize.as_view(), name='size'),
     url(r'^cross/$', views.CrossLineLocation.as_view(), name='cross'),
+    url(r'^script/$', views.RunSript.as_view(), name='script'),
 ]

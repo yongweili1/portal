@@ -11,10 +11,9 @@ from models import NewDjangoSession, DjangoSession
 class MySessionMiddleware(MiddlewareMixin):
 
     def process_request(self, request):
-        print("中间件请求")
+        pass
 
     def process_response(self, request, response):
-        print('中间件响应')
 
         try:
             sessionid = request.COOKIES['sessionid']
