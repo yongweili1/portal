@@ -2,6 +2,7 @@ import { BaseContainer } from '../container/base_container'
 import { Rectangle } from '../overlay/rectangle'
 import { ControlPoint } from '../overlay/controlpoint'
 import { Point } from '../tools/point'
+import { Text } from '../overlay/text'
 
 export class RectangleContainer extends BaseContainer {
     rectangle: Rectangle;
@@ -13,6 +14,7 @@ export class RectangleContainer extends BaseContainer {
     bottom_left: ControlPoint;
     bottom_center: ControlPoint;
     bottom_right: ControlPoint;
+    text: Text;
 
     constructor(stage) {
         super(stage, 'line');
@@ -25,9 +27,10 @@ export class RectangleContainer extends BaseContainer {
         this.bottom_center = new ControlPoint(stage)
         this.bottom_right = new ControlPoint(stage)
         this.rectangle = new Rectangle(stage)
+        this.text = new Text(stage, 'Length: * mm')
         this.addChild(this.rectangle, this.top_left, this.top_center, 
                       this.top_right, this.left_center, this.right_center, 
-                      this.bottom_left, this.bottom_center, this.bottom_right)
+                      this.bottom_left, this.bottom_center, this.bottom_right, this.text)
     }
 
     update() {
@@ -41,6 +44,7 @@ export class RectangleContainer extends BaseContainer {
         this.bottom_left.update()
         this.bottom_center.update()
         this.bottom_right.update()
+        this.updateText()
     }
 
     setStartPoint(point) {
@@ -51,6 +55,19 @@ export class RectangleContainer extends BaseContainer {
         this.bottom_right.setCenter(point)
         this._setRectangle()
         this._updateCps()
+    }
+
+    updateText() {
+        if (this.top_left.getCenter().x > this.top_right.getCenter().x) {
+            this.text.setCp(this.top_left.getCenter())
+        } else {
+            this.text.setCp(this.top_right.getCenter())
+        }
+        let x_side = this.top_right.getCenter().x - this.top_left.getCenter().x
+        let y_side = this.bottom_left.getCenter().y - this.top_left.getCenter().y
+        let area = x_side * x_side + y_side * y_side
+        this.text.setText('Area: ' + area.toFixed(2) + ' pixel2')
+        this.text.update()
     }
 
     _setRectangle() {
