@@ -308,13 +308,13 @@ class ImageServer(object):
                 point_3d = translate_from_screen_to_world(self.cfg['coronal_axis'][0],
                                                           self.cfg['coronal_axis'][1], self.look_at['coronal'],
                                                           self.view_size['coronal'],
-                                                          1,
+                                                          self.cfg['spacing'][0],
                                                           trans_para['point_2d']).tolist()
             else:
                 point_3d = translate_from_screen_to_world(self.cfg['saggital_axis'][0],
                                                           self.cfg['saggital_axis'][1], self.look_at['saggital'],
                                                           self.view_size['saggital'],
-                                                          1,
+                                                          self.cfg['spacing'][1],
                                                           trans_para['point_2d']).tolist()
             return point_3d
 

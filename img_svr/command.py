@@ -356,14 +356,9 @@ def resize(**kwargs):
 
 @command.register('locate')
 def locate(**kwargs):
-    """
-    Resize the view
-    :param view_size: the size of front view
-    :return:
-    """
     try:
         focus_view = kwargs['focus_view']
-        cursor_2D = kwargs['cursor_2D']
+        cursor_2D = kwargs['cross_point'].split(",")
         display_view = kwargs['display_view']
     except:
         return response(success=False, message='Invalid parameters.')
