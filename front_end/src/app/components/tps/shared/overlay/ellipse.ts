@@ -3,7 +3,7 @@ import { Overlay } from '../overlay/overlay'
 export class Ellipse extends Overlay {
 
     constructor(stage) {
-        super(stage, 'ellipse');
+        super(stage);
     }
 
     update(){

@@ -6,37 +6,40 @@ declare var createjs: any;
 export class ControlPoint extends createjs.Shape {
     type: string;
     overlayStage: any;
-    protected _center: Point;
     host: any;
     index: string;
+    protected _center: Point;
     protected _tempPoint: Point;
     protected _is_hover: boolean;
     protected _color: string;
 
-    constructor(stage, host, point, index) {
+    constructor(stage) {
         super();
         this.overlayStage = stage;
-        this.host = host;
-        this.type = 'controlpoint';
-        this._center = point;
-        this.index = index;
         this._tempPoint = new Point(0, 0);
         this._is_hover = false;
         this._color = 'yellow';
-        this.addEventListener("mousedown", this.handleMouseDown.bind(this));
-        this.addEventListener("pressmove", this.handlePressMove.bind(this));
-        this.addEventListener("dblclick", this.handleDbClick.bind(this));
-        this.addEventListener("pressup", this.handlePressUp.bind(this));
         this.addEventListener("mouseover", this.handleMouseOver.bind(this));
         this.addEventListener("mouseout", this.handleMouseOut.bind(this));
         this.overlayStage.addChild(this);
     }
 
-    setCenter(p) {
-        this._center = p;
+    setCenter(point) {
+        this._center = point
+    }
+    getCenter() {
+        return this._center
+    }
+    updateCenter(delta_x=null, delta_y=null) {
+        if (delta_x != null) {
+            this._center.x += delta_x
+        }
+        if (delta_y != null) {
+            this._center.y += delta_y
+        }
     }
 
-    update(){
+    update() {
         this.overlayStage.clear();
         this.graphics.clear();
         this.graphics.beginStroke(this._color)
@@ -47,32 +50,6 @@ export class ControlPoint extends createjs.Shape {
         this.overlayStage.update();
     }
 
-    handleMouseDown(evt) {
-        console.log('handleMouseDown')
-        this._tempPoint = new Point(0, 0);
-        this._tempPoint.x = evt.stageX;
-        this._tempPoint.y = evt.stageY;
-    }
-    handlePressMove(evt) {
-        let delta_x = evt.stageX - this._tempPoint.x;
-        let delta_y = evt.stageY - this._tempPoint.y;
-        this._tempPoint.x = evt.stageX;
-        this._tempPoint.y = evt.stageY;
-
-        console.log('cp:', this.index)
-        this.host.updateCp(this.index, delta_x, delta_y)
-    }
-    handlePressUp(evt) {
-        console.log('handlePressUp')
-        this._tempPoint = new Point(0, 0);
-    }
-    handleDbClick(evt) {
-        console.log('handleDbClick')
-        this.curTarget = evt.currentTarget;
-        this.overlayStage.removeChild(this.curTarget);
-        this.overlayStage.clear();
-        this.overlayStage.update();
-    }
     handleMouseOver(evt) {
         console.log('handleMouseOver on', evt.currentTarget.type)
         this._is_hover = true;
