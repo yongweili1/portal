@@ -17,7 +17,7 @@ export class RectangleContainer extends BaseContainer {
     text: Text;
 
     constructor(stage) {
-        super(stage, 'line');
+        super(stage, 'rectangle');
         this.top_left = new ControlPoint(stage)
         this.top_center = new ControlPoint(stage)
         this.top_right = new ControlPoint(stage)

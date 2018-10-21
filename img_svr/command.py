@@ -6,6 +6,7 @@ from message import response
 from utilities import get_display_view, get_focus_view, get_orthogonal_spacing, ViewEnum
 
 import json
+import datetime
 
 
 class Command(object):
@@ -16,6 +17,7 @@ class Command(object):
         print('Register command {} succeed.'.format(command))
         def wrapper(func):
             self.commands[command] = func
+            print('inner command {} succeed.'.format(command))
             return func
         return wrapper
 
@@ -360,6 +362,8 @@ def locate(**kwargs):
         focus_view = kwargs['focus_view']
         cursor_2D = kwargs['cross_point'].split(",")
         display_view = kwargs['display_view']
+        print('receive locate command time:')
+        print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f'))
     except:
         return response(success=False, message='Invalid parameters.')
 
@@ -381,4 +385,6 @@ def locate(**kwargs):
     cursor_2d = server.dimension_translate(trans_para)
     data['cross_position'] = cursor_2d
     data.update(imgs)
+    print('send locate data time:')
+    print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f'))
     return response(json.dumps(data))
