@@ -2,6 +2,8 @@ import { Overlay } from '../overlay/overlay'
 import { Hitbar } from '../overlay/hitbar'
 
 export class Rectangle extends Overlay {
+    type: string = 'rectangle';
+
     constructor(stage) {
         super(stage);
     }

@@ -2,6 +2,7 @@ import { BaseContainer } from '../container/base_container'
 import { Circle } from '../overlay/circle'
 import { ControlPoint } from '../overlay/controlpoint'
 import { Text } from '../overlay/text'
+import { Point } from '../tools/point';
 
 export class CircleContainer extends BaseContainer {
     start: ControlPoint;
@@ -54,7 +55,29 @@ export class CircleContainer extends BaseContainer {
         this.circle.setEndPoint(this.end.getCenter())
     }
 
+    handleMouseDown(evt) {
+        console.log('[circle]handle MouseDown')
+        super.handleMouseDown(evt)
+        this.isMousedown = true;
+        if (evt.target.type != 'circle' && evt.target.type != 'controlpoint' && evt.target.type != 'text')
+            this.setStartPoint(new Point(evt.offsetX, evt.offsetY))
+    }
+    handleMouseMove(evt) {
+        if (this.isMousedown) {
+            console.log('[circle]handle MouseMove')
+            this.isPaint = true;
+            this.setEndPoint(new Point(evt.offsetX, evt.offsetY))
+            this.update();
+        }
+    }
+    handleMouseUp(evt) {
+        console.log('[circle]handle MouseUp')
+        this.isMousedown = false;
+        this.isPaint = false;
+    }
+
     handlePressMove(evt) {
+        console.log('[circle]handle PressMove')
         let delta_x = evt.stageX - this._tempPoint.x;
         let delta_y = evt.stageY - this._tempPoint.y;
         this._tempPoint.x = evt.stageX;

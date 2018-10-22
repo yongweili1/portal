@@ -65,6 +65,7 @@ class ImageServer(object):
         self.volumes[series_uid] = im
         # init config info of this volume
         self.configs[series_uid] = {}
+        self.configs[series_uid]['size'] = [512, 512, 57]
         self.configs[series_uid]['center'] = im.center()
         self.configs[series_uid]['cursor'] = im.center()
         self.configs[series_uid]['spacing'] = im.spacing()  # [1, 1, 1]

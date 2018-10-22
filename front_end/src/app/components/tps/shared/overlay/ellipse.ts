@@ -1,6 +1,7 @@
 import { Overlay } from '../overlay/overlay'
 
 export class Ellipse extends Overlay {
+    type: string = 'ellipse';
 
     constructor(stage) {
         super(stage);

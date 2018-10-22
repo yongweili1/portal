@@ -4,7 +4,7 @@ import { Hitbar } from '../overlay/hitbar'
 declare var createjs: any;
 
 export class ControlPoint extends createjs.Shape {
-    type: string;
+    type: string = 'controlpoint';
     overlayStage: any;
     host: any;
     index: string;
@@ -51,13 +51,13 @@ export class ControlPoint extends createjs.Shape {
     }
 
     handleMouseOver(evt) {
-        console.log('handleMouseOver on', evt.currentTarget.type)
+        console.log('handle MouseOver', evt.currentTarget.type)
         this._is_hover = true;
         this._color = 'red';
         this.update()
     }
     handleMouseOut(evt) {
-        console.log('handleMouseOut on', evt.currentTarget.type)
+        console.log('handle MouseOut', evt.currentTarget.type)
         this._is_hover = false;
         this._color = 'yellow';
         this.update()

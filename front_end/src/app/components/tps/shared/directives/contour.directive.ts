@@ -3,6 +3,8 @@ import { ConMessageService } from '../service/conMessage.service';
 import { CircleFactory } from '../tools/factory/circle-factory'
 import { LineFactory } from '../tools/factory/line-factory'
 import { RectangleFactory } from '../tools/factory/rectangle-factory'
+import { FreepenFactory } from '../tools/factory/freepen-factory'
+import { CrosslineFactory } from '../tools/factory/crossline-factory'
 import { Point } from '../tools/point'
 
 declare var createjs: any;
@@ -10,7 +12,6 @@ declare var createjs: any;
 @Directive({
     selector: '[myContour]'
 })
-
 export class ContourDirective implements OnInit {
     curAction: string;
     canvasLeft: number;
@@ -25,9 +26,7 @@ export class ContourDirective implements OnInit {
     radius: number;
     contourColor: string = "#00ffff";
     contourLineWidth = 2;
-    isPaint: boolean = false;
     isFirstClick: boolean = true;
-    isMousedown: boolean = true;
     myContext: CanvasRenderingContext2D;
     myStage: any;
     backStage: any;
@@ -50,40 +49,31 @@ export class ContourDirective implements OnInit {
         this.myContext.strokeStyle = this.contourColor;
         this.myContext.lineWidth = this.contourLineWidth;
 
+        let crossline = CrosslineFactory.getInstance().createSharpContainer(this.myStage);
+        crossline.setHorizontal()
+        crossline.setVertical()
+        crossline.update()
+
         this.contouringService.curAction$.subscribe(curAction => {
             this.curAction = curAction
         })
-
     }
 
     @HostListener('mousedown', ['$event']) onMouseDown(event: MouseEvent) {
         console.log('mousedown')
-        this.isMousedown = true;
-        this.startX = event.offsetX;
-        this.startY = event.offsetY;
-        this.startPoint = new Point(event.offsetX, event.offsetY);
         this.sharp = this.getShapeContainerInstance(this.curAction, this.myStage);
-        if (typeof(this.sharp) != 'undefined') {
-            this.sharp.setStartPoint(this.startPoint);
-        }
+        if (this.sharp != null)
+            this.sharp.handleMouseDown(event)
     }
 
     @HostListener('mousemove', ['$event']) onMouseMove(event: MouseEvent) {
-        if (this.isMousedown && typeof(this.sharp) != 'undefined') {
-            this.isPaint = true;
-            this.curX = event.offsetX;
-            this.curY = event.offsetY;
-            this.sharp.setEndPoint(new Point(this.curX, this.curY));
-            this.sharp.update();
-        }
+        if (this.sharp != null)
+            this.sharp.handleMouseMove(event)
     }
 
     @HostListener('mouseup', ['$event']) onMouseUp(event: MouseEvent) {
-        if (this.isPaint) {
-            this.sharp.update();
-        }
-        this.isMousedown = false;
-        this.isPaint = false;
+        if (this.sharp != null)
+            this.sharp.handleMouseUp(event)
     }
 
     @HostListener('mouseleave', ['$event']) onMouseLeave(event: MouseEvent) {
@@ -91,12 +81,11 @@ export class ContourDirective implements OnInit {
     }
 
     @HostListener('dblclick', ['$event']) onDbClick(event: MouseEvent) {
-        this.isMousedown = false;
         this.curAction = "";
         this.contouringService.SetCurAction("quitDrawPri");
     }
     
-    getShapeContainerInstance(curAction:any,stage:any){
+    getShapeContainerInstance(curAction:any, stage:any){
         switch(curAction){
             case 'measure':
                 return LineFactory.getInstance().createSharpContainer(stage);
@@ -104,6 +93,8 @@ export class ContourDirective implements OnInit {
                 return RectangleFactory.getInstance().createSharpContainer(stage);
             case 'circle':
                 return CircleFactory.getInstance().createSharpContainer(stage);
+            case 'freepen':
+                return FreepenFactory.getInstance().createSharpContainer(stage);
         }
     }
 }

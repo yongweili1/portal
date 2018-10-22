@@ -212,6 +212,14 @@ export class ContouringTopBarComponent implements OnInit {
         console.log("butt-rectangle");
         this.conMessage.SetCurAction("rectangle");
     }
+
+    /**
+    * 自由笔
+    */
+    FuncFreepen() {
+        console.log("butt-freepen");
+        this.conMessage.SetCurAction("freepen");
+    }
 }
 
 export class PTreeNode {
