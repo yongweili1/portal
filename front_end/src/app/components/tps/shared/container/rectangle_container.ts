@@ -86,7 +86,29 @@ export class RectangleContainer extends BaseContainer {
         this.bottom_center.setCenter(new Point(start.x + (end.x - start.x) / 2, end.y))
     }
 
+    handleMouseDown(evt) {
+        console.log('[rectangle]handle MouseDown')
+        super.handleMouseDown(evt)
+        this.isMousedown = true;
+        if (evt.target.type != 'rectangle' && evt.target.type != 'controlpoint' && evt.target.type != 'text')
+            this.setStartPoint(new Point(evt.offsetX, evt.offsetY))
+    }
+    handleMouseMove(evt) {
+        if (this.isMousedown) {
+            console.log('[rectangle]handle MouseMove')
+            this.isPaint = true;
+            this.setEndPoint(new Point(evt.offsetX, evt.offsetY))
+            this.update();
+        }
+    }
+    handleMouseUp(evt) {
+        console.log('[rectangle]handle MouseUp')
+        this.isMousedown = false;
+        this.isPaint = false;
+    }
+
     handlePressMove(evt) {
+        console.log('[rectangle]handle PressMove')
         let delta_x = evt.stageX - this._tempPoint.x;
         let delta_y = evt.stageY - this._tempPoint.y;
         this._tempPoint.x = evt.stageX;

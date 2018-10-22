@@ -2,6 +2,8 @@ import { Point } from '../tools/point'
 declare var createjs: any;
 
 export class BaseContainer extends createjs.Container {
+    isPaint: boolean = false;
+    isMousedown: boolean = true;
     type: string;
     overlayStage: any;
     protected _tempPoint: Point;
@@ -30,19 +32,20 @@ export class BaseContainer extends createjs.Container {
     }
 
     handleMouseDown(evt) {
-        console.log('handleMouseDown')
+        console.log('[base_container]handle MouseDown')
         this._tempPoint = new Point(evt.stageX, evt.stageY);
     }
     handlePressMove(evt) {
+        console.log('[base_container]handle PressMove')
         this.update();
     }
     handlePressUp(evt) {
-        console.log('handlePressUp')
+        console.log('[base_container]handle PressUp')
         this._tempPoint = new Point(0, 0);
     }
 
     handleDbClick(evt) {
-        console.log('handleDbClick')
+        console.log('[base_container]handle DbClick')
         this.curTarget = evt.currentTarget;
         this.overlayStage.removeChild(this.curTarget);
         this.curTarget._cps.forEach(cp=>this.overlayStage.removeChild(cp))

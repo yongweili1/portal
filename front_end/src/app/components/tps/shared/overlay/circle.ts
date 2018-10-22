@@ -2,6 +2,7 @@ import { Overlay } from '../overlay/overlay'
 import { Hitbar } from '../overlay/hitbar'
 
 export class Circle extends Overlay {
+    type: string = 'circle';
 
     constructor(stage) {
         super(stage);

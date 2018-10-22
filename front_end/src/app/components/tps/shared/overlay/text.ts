@@ -4,6 +4,7 @@ import { Hitbar } from '../overlay/hitbar'
 declare var createjs: any;
 
 export class Text extends createjs.Text {
+    type: string = 'text';
     overlayStage: any;
     protected _cp: Point;
     protected _is_hover: boolean;
