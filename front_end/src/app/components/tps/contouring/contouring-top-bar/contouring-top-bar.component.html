@@ -1,4 +1,4 @@
-<div id="commonTools_0" class="btn-toolbar M3_B">
+<div id="commonTools_3" class="btn-toolbar M3_B">
   <div class="upfloor">
       <button type="button" class="btn activeToolButton" id="btn_load" title="加载序列" (click)="loadMPR()"><img src="/assets/img/sendImagefilm.svg"></button>
       <button type="button" class="btn activeToolButton" id="btn_series" title="显示/隐藏序列" (click)="OnHideList()"><img src="" class="fa fa-fw fa-lg fa-list-ul"></button>
@@ -38,7 +38,7 @@
       <span>TOOLS</span>
   </div>
 </div>
-<div id="commonTools_1" class="btn-toolbar M2_B">
+<div id="commonTools_2" class="btn-toolbar M2_B">
         <div class="upfloor">
             <select id="seriesSelect">
                 <option *ngFor="let series of seriesList" value="{{series}}">"{{series}}"</option>
@@ -48,7 +48,7 @@
             <span>Series List</span>
         </div>
 </div>
-<div id="commonTools_1" class="btn-toolbar M5_B">
+<div id="commonTools_5" class="btn-toolbar M5_B">
     <div class="upfloor">
         <button type="button" class="btn activeToolButton fa fa-video-camera" id="btn_macro_start" title="开始录制" (click)="OnStartMacro()"></button>
         <button type="button" class="btn activeToolButton fa fa-stop" id="btn_macro_end" title="停止录制" (click)="OnEndMacro()"></button>

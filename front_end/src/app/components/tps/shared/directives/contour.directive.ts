@@ -1,6 +1,8 @@
 import { Directive, ElementRef, Input, HostListener, OnInit, Output, EventEmitter } from '@angular/core';
 import { ConMessageService } from '../service/conMessage.service';
-import { SharpFactory } from '../tools/sharpfactory'
+import { CircleFactory } from '../tools/factory/circle-factory'
+import { LineFactory } from '../tools/factory/line-factory'
+import { RectangleFactory } from '../tools/factory/rectangle-factory'
 import { Point } from '../tools/point'
 
 declare var createjs: any;
@@ -60,7 +62,7 @@ export class ContourDirective implements OnInit {
         this.startX = event.offsetX;
         this.startY = event.offsetY;
         this.startPoint = new Point(event.offsetX, event.offsetY);
-        this.sharp = SharpFactory.getInstance().sharp(this.curAction, this.myStage);
+        this.sharp = this.getShapeContainerInstance(this.curAction, this.myStage);
         if (typeof(this.sharp) != 'undefined') {
             this.sharp.setStartPoint(this.startPoint);
         }
@@ -92,5 +94,16 @@ export class ContourDirective implements OnInit {
         this.isMousedown = false;
         this.curAction = "";
         this.contouringService.SetCurAction("quitDrawPri");
+    }
+    
+    getShapeContainerInstance(curAction:any,stage:any){
+        switch(curAction){
+            case 'measure':
+                return LineFactory.getInstance().createSharpContainer(stage);
+            case 'rectangle':
+                return RectangleFactory.getInstance().createSharpContainer(stage);
+            case 'circle':
+                return CircleFactory.getInstance().createSharpContainer(stage);
+        }
     }
 }

@@ -170,7 +170,7 @@ export class ContouringComponent implements OnInit {
             this.getSeriesList(this.patientId);
         }
         else{
-            this.elMessage.setOptions({ showClose: true })
+            this.elMessage.setOptions({ showClose: true,customClass:"elmessage" })
             this.elMessage['error']('请先选择病人')
             //this.router.navigate(['/base/patient-template']);
         }

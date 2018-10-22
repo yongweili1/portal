@@ -67,12 +67,10 @@ GetLocatePic(focus:any,display:any,crossPoint:any):Observable<any>{
     const getParams = new HttpParams()
     .set('focus_view', focus)
     .set('display_view',display)
-    .set('cursor_2D', crossPoint);
+    .set('cross_point', crossPoint);
    //return this.http.get('http://10.9.19.139:8000/image/pages/',{params : getParams});
    return this.http.get('http://10.9.19.24:8000/image/cross/',{params : getParams});
 }
-
-
 
 
 
