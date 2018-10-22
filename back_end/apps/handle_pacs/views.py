@@ -23,20 +23,6 @@ class GetPacs(APIView):
         client_ae_title = str(request.GET.get('client_ae_title')[1:-1])
         client_port = int(request.GET.get('client_port'))
 
-        # pacs_ae_title = str(request.GET.get('pacs_ae_title'))
-        # pacs_ip = str(request.GET.get('pacs_ip'))
-        # pacs_port = int(request.GET.get('pacs_port'))
-        #
-        # client_ae_title = str(request.GET.get('client_ae_title'))
-        # client_port = int(request.GET.get('client_port'))
-
-        # pacs_ae_title = str('UIHPACSSERVER')
-        # pacs_ip = str('10.9.19.175')
-        # pacs_port = 3333
-        #
-        # client_ae_title = str('WQ')
-        # client_port = 3333
-
         # a = DicomService(pacs_ae_title=pacs_ae_title, pacs_ip=pacs_ip, pacs_port=pacs_port,
         #                  client_ae_title=client_ae_title, client_port=client_port)
         # a.connect()

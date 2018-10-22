@@ -28,11 +28,12 @@ class Patinfo(APIView):
         :param request: a django rest framework request object
         :return: boolean true for success, false for failure
         """
-        files = request.FILES.getlist('dicom')
-        if len(files) == 0:
-            return Response('请选择上传文件')
 
         file_name_list = []
+
+        files = request.FILES.getlist('a')
+        if len(files) == 0:
+            return Response('请选择上传文件')
 
         # 将上传的文件存到本地
         for file in files:
@@ -44,8 +45,8 @@ class Patinfo(APIView):
 
         # 读取，解析保存的文件
         dataset_list = []
-
         series_path_list = []
+
         for file_name in file_name_list:
             file_path = os.path.join(SaveDicomFilePath.location_2, file_name)
             dataset = pydicom.dcmread(file_path, force=True)
@@ -77,7 +78,4 @@ class Patinfo(APIView):
             except Exception as e:
                 return Response('Volume入库异常')
 
-        return Response('OK')
-
-    def get(self, request):
-        return Response('GET')
+        return Response('success')

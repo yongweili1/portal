@@ -53,16 +53,16 @@ class GetSeriesUidList(APIView):
         :param request:
         :return:a list of seriesuid
         """
-        # patientid = request.GET.get('patientid', None)
-        # if patientid is None:
-        #     return Response('请输入patientid')
-        # studylist = Study.objects.filter(patientid=patientid)
-        # serieslist = []
-        # for study in studylist:
-        #     series_list = Series.objects.filter(studyuid=study.studyuid)
-        #
-        #     serieslist += series_list
-        serieslist = Series.objects.all()
+        patientid = request.GET.get('patientid', None)
+        if patientid is None:
+            return Response('请输入patientid')
+        studylist = Study.objects.filter(patientid=patientid)
+        serieslist = []
+        for study in studylist:
+            series_list = Series.objects.filter(studyuid=study.studyuid)
+
+            serieslist += series_list
+        # serieslist = Series.objects.all()
         seriesuidlist = []
         for ser in serieslist:
             seriesuidlist.append(ser.seriesuid)
@@ -639,7 +639,10 @@ class RunSript(APIView):
         volumepath = series_query[0].seriespixeldatafilepath
 
         try:
-            os.system('python static/macro/{}.py {} {}'.format(scriptname, seriesuid, volumepath))
+            command = 'python static/macro/{}.py {} {}'.format(scriptname, seriesuid, volumepath)
+            r = os.popen(command)
+            info = r.readlines()
+            print(info)
         except:
             return Response('script执行异常')
 
