@@ -2,6 +2,7 @@ import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { URLSearchParams } from '@angular/http';
 import { AuthHttp } from '../core/auth-http';
+import {  HttpClient,HttpHeaders } from '@angular/common/http';
 import { AppConfigService } from '../app.config';
 
 @Injectable()
@@ -14,13 +15,13 @@ export class UploadService {
      
      }
     
-   makeFileRequest (url: string, params: string[], files: File[]) {
+  makeFileRequest (url: string,  files: File[]) {
     return Observable.create(observer => {
       let formData: FormData = new FormData(),
         xhr: XMLHttpRequest = new XMLHttpRequest();
 
       for (let i = 0; i < files.length; i++) {
-        formData.append("uploads[]", files[i], files[i].name);
+        formData.append("a", files[i], files[i].name);
       }
 
       xhr.onreadystatechange = () => {
@@ -44,5 +45,8 @@ export class UploadService {
       xhr.send(formData);
     });
   }
-  
+
+  // postUploadStatus(){
+  //   this.http.post()
+  // }
 }

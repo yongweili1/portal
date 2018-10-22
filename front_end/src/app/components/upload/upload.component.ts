@@ -8,6 +8,12 @@ import { FileUploader } from 'ng2-file-upload';
 import {ToastService} from '../../core/toast.service';
 import { UploadService } from '../../services/upload.service'
 import { AppConfigService } from '../../app.config';
+import { forEach } from '@angular/router/src/utils/collection';
+import { ElMessageService } from 'element-angular'
+
+declare var $: any;
+
+
 @Component({
   selector: 'mpt-upload',
   templateUrl: './upload.component.html',
@@ -22,7 +28,8 @@ export class UploadComponent {
   constructor(
     private appConfig:AppConfigService,
     private messageService: ToastService,
-    private UploadService: UploadService
+    private UploadService: UploadService,
+    private elMessage: ElMessageService
   ) {
       this.uploader = new FileUploader({    
         url: `${this.appConfig.apiUrl}/dicom/patinfos/`,    
@@ -45,5 +52,18 @@ export class UploadComponent {
 
   public selectedFileOnChanged(event) {
     
+  }
+  public uploadAll(){
+    let files : Array<File> = [];
+    this.uploader.queue.forEach(fileItems =>{
+      files.push(fileItems._file);
+    })
+    $('#loading').showLoading();
+    this.UploadService.makeFileRequest("http://10.9.19.24:8000/dicom/patinfos/",files).subscribe(result=>
+    {
+      $('#loading').hideLoading();
+      this.elMessage.setOptions({ showClose: true,customClass:"elmessage" });
+      this.elMessage['info'](result);
+    });
   }
 }
