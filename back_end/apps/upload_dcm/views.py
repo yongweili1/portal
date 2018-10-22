@@ -19,7 +19,6 @@ from back_end.util.upload_vol_to_db import UploadVolume
 win32file._setmaxstdio(2048)  # 如果要部署到linux，则需要更改linux  /etc/security/limitd.conf的配置文件，修改最大打开文件数量
 
 
-# r'^patinfos/$'
 class Patinfo(APIView):
 
     def post(self, request):

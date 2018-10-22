@@ -176,13 +176,13 @@ class LoadVolume(APIView):
         :param seriesuid: series uid
         :return:boolean true for success, false for failure
         """
-        serid = request.GET.get('seriesuid', None)
+        seriesuid = request.GET.get('seriesuid', None)
         user_ip = request.META.get('REMOTE_ADDR', None)
-        if serid is None:
+        if seriesuid is None:
             return Response('请输入序列UID')
 
         params = {
-            'serid': serid,
+            'seriesuid': seriesuid,
             'user_ip': user_ip,
             'command': 'unload',
             'server_name': 'image',

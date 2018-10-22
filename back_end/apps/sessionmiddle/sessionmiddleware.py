@@ -1,10 +1,7 @@
 # -*-coding:utf-8-*-
-import base64
-from datetime import datetime
 import time
 
 from django.utils.deprecation import MiddlewareMixin
-from django.contrib.sessions.middleware import SessionMiddleware
 from models import NewDjangoSession, DjangoSession
 
 
@@ -46,5 +43,7 @@ class MySessionMiddleware(MiddlewareMixin):
             session_v = 'back_end'
 
             request.session[session_k] = session_v
+        response.setHeader('Access-Control-Allow-Credentials', 'true')
+        response.setHeader('Access-Control-Allow-Origin', request.getHeader('Origin'))
 
         return response

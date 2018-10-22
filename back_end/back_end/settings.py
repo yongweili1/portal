@@ -68,13 +68,16 @@ MIDDLEWARE = [
 
 # --------------------------------------------------------------------------------
 # CORS跨域
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = False
 # 跨域增加忽略
+CORS_ORIGIN_WHITELIST = (
+    'localhost:8000',
+    '127.0.0.1:8000',
+    '10.9.19.139:8000',
+    '10.9.19.24:8000',
+)
 # 允许携带cookie
 CORS_ALLOW_CREDENTIALS = True
-CORS_ORIGIN_WHITELIST = (
-    '*'
-)
 
 CORS_ALLOW_METHODS = (
     'DELETE',
