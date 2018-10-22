@@ -642,5 +642,5 @@ class RunSript(APIView):
             os.system('python static/macro/{}.py {} {}'.format(scriptname, seriesuid, volumepath))
         except:
             return Response('script执行异常')
-        
+
         return Response('OK')

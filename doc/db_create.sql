@@ -30,6 +30,8 @@ drop table if exists lung_segment;
 drop table if exists alg_csv;
 /* script related */
 drop table if exists script;
+/* session related */
+drop table if exists new_django_session;
 
 create table patient
 (
