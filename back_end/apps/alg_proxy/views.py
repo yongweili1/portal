@@ -14,12 +14,6 @@ from md.image3d.python.image3d_io import read_image
 import ConfigParser
 
 
-# conf = ConfigParser.ConfigParser()
-# conf.read('back_end/util/serverApi.ini')
-# load_alg_url = conf.get("algorithmApi", "load_alg_url")
-# get_alg_result_url = conf.get("algorithmApi", "get_alg_result_url")
-
-
 class LoadAlg(APIView):
     def get(self, request):
         serid = request.GET.get('seriesuid', None)
@@ -32,26 +26,7 @@ class LoadAlg(APIView):
 
         volumepath = seriesobject[0].seriespixeldatafilepath
 
-        # vol = read_image(volumepath)
-        # vol = vol.to_numpy()
-        vol = read_image(volumepath).to_numpy().tolist()
-
-        # with open(volumepath, 'rb') as f:
-        #     vol = f.read()
-        # print(type(vol))
-        # print(sys.getsizeof(vol))
-
-        data = {
-            'seriesuid': serid,
-            'volume': vol
-        }
-        data = urllib.urlencode(data)
-        req = urllib2.Request(load_alg_url, data)
-        try:
-            response = urllib2.urlopen(req)
-        except Exception as e:
-            return Response('algproxy_server Error')
-        resp = response.read()  # resp: Load succeed
+        resp = None  # resp: Load succeed
 
         return Response(resp)
 
@@ -60,12 +35,5 @@ class GetAlgResult(APIView):
 
     def get(self, request):
 
-        req = urllib2.Request(get_alg_result_url)
-        try:
-            response = urllib2.urlopen(req)
-        except Exception as e:
-            return Response('algproxy_server Error')
-        resp = response.read()
-        print(resp)
-
+        resp = None
         return Response(resp)

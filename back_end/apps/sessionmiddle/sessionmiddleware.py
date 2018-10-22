@@ -38,7 +38,9 @@ class MySessionMiddleware(MiddlewareMixin):
                 }
                 NewDjangoSession.objects.create(**data)
 
-        if not request.session._session:
+        sess = request.session._session
+        print(sess)
+        if not sess:
             now_time = time.time()
             session_k = str(now_time)
             session_v = 'back_end'

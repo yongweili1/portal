@@ -30,7 +30,7 @@ SECRET_KEY = 'uzk_o#6l#bt*@(0+^v@z4*iut28&plfv)tqwec#2k-=6o5kn!z'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '10.9.19.139', 'localhost', '10.9.19.148']
+ALLOWED_HOSTS = ['127.0.0.1', '10.9.19.139', 'localhost', '10.9.19.148', '10.9.19.24', '0.0.0.0']
 
 
 # Application definition
@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     'handle_pacs.apps.HandlePacsConfig',
     'upload_dcm.apps.UploadDcmConfig',
     'graph_element.apps.GraphElementConfig',
-    'middle.apps.MiddleConfig',
+    'sessionmiddle.apps.MiddleConfig',
 ]
 
 MIDDLEWARE = [
@@ -63,7 +63,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'middle.sessionmiddleware.MySessionMiddleware',
+    'sessionmiddle.sessionmiddleware.MySessionMiddleware',
 ]
 
 # --------------------------------------------------------------------------------
@@ -217,4 +217,4 @@ SESSION_COOKIE_AGE = 600                 # Session的cookie失效日期（2周�
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # 是否关闭浏览器使得Session过期（默认）
 SESSION_SAVE_EVERY_REQUEST = False      # 是否每次请求都保存Session，默认修改之后才保存（默认）
 
-DJANGO_SESSION_MODEL = 'middle.DjangoSession'
+DJANGO_SESSION_MODEL = 'sessionmiddle.DjangoSession'

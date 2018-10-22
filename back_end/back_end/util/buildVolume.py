@@ -20,23 +20,18 @@ class DicomToVolume(object):
 
         # 构造文件名
         dataset = datasetlist[0]
-        a = DcmPatient()
-        patient_dic = a.get_dicom_patient(dataset)
-        b = DcmStudy()
-        study_dic = b.get_dicom_study(dataset)
         c = DcmSeries()
         series_dic = c.get_dicom_series(dataset)
 
-        volpath = patient_dic['patientname'] + '-' + study_dic['studydescription'] + '-' + \
-                  series_dic['modality'] + '.nii.gz'
+        volume_name = str(series_dic['seriesuid']) + '.nii.gz'
 
-        volpath = volpath.replace(' ', '')
+        volume_name = volume_name.replace(' ', '')
         # 调用dicom to volume方法，获取响应数据
         budvol = BuildVolume()
         vol = budvol.volume(1, datasetlist, 1)
 
         # 保存文件到本地
-        volfilepath = os.path.join(SaveVolumeFilePath.volumepath, volpath)
+        volfilepath = os.path.join(SaveVolumeFilePath.volumepath, volume_name)
         if not write_image(vol, volfilepath):
             pass
 
