@@ -17,6 +17,7 @@ class MySessionMiddleware(MiddlewareMixin):
 
         try:
             sessionid = request.COOKIES['sessionid']
+            request.session.allow_save = False
         except:
             sessionid = None
 
