@@ -1,15 +1,10 @@
 # -*-coding:utf-8-*-
 import functools
-import json
 import os
-import struct
-import time
 import sys
 
 reload(sys)
 sys.setdefaultencoding('gbk')
-
-import image_msg_pb2 as msg
 
 
 class Macro(object):

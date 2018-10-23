@@ -23,6 +23,7 @@ class SplitDicoms(object):
             pass
         else:
             os.mkdir(patientpath)
+
         seriespath = self.split_series(patientpath, file_name, dataset)
 
         return seriespath
@@ -31,7 +32,7 @@ class SplitDicoms(object):
         """
         Distinguish DICOM files according to seriesuid
         :param patientpath:patient folder path
-        :param filename_dataset_dic:mapping between filename and dataset
+        :param file_name: dcm filename
         :param dataset:dicom filedataset
         :return:a series path of this upload
         """
@@ -44,22 +45,22 @@ class SplitDicoms(object):
             pass
         else:
             os.mkdir(seriespath)
-        self.save_dicom(file_name, seriespath, dataset)
+
+        self.save_dicom(file_name, seriespath)
 
         return seriespath
 
-    def save_dicom(self, file_name, seriespath, dataset):
+    def save_dicom(self, file_name, seriespath):
         """
         Save dicom data
-        :param filename_dataset_dic:mapping between filename and dataset
+        :param file_name: dcm filename
         :param seriespath:series folder path
-        :param dataset:dicom filedataset
         :return:
         """
         # file_name = [k for k, v in filename_dataset_dic.items() if v == dataset][0]
         file_path = os.path.join(SaveDicomFilePath.location_2, file_name)
         with open(file_path, 'rb') as f:
             filedata = f.read()
-        with open(seriespath + '\\' + file_name, 'wb+') as file:
-            file.write(filedata)
+        with open(seriespath + '\\' + file_name, 'wb+') as r:
+            r.write(filedata)
 

@@ -25,10 +25,11 @@ class GraphElement(APIView):
         seriesuid = request.POST.get('seriesuid', None)
         overlaytype = request.POST.get('overlaytype', None)
         dotposition = request.POST.get('dotposition', None)
+        user_name = request.user
         if seriesuid is None or type is None or dotposition is None:
             return Response('参数不完整')
-        file_name = time.time()
-        dotpositionpath = STATIC_ROOT + '\\dot_element\\' + file_name
+        file_name = user_name + str(time.time())
+        dotpositionpath = STATIC_ROOT + '\\dot_element\\' + file_name + '.txt'
 
         with open(dotpositionpath, 'wb') as f:
             f.write(dotposition)

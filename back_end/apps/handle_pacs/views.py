@@ -4,10 +4,10 @@ from __future__ import unicode_literals
 # Create your views here.
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
-# from md.dicom.python.dicom_service import DicomService
-# from handle_pacs.setPacs import PacsConf
+from md.dicom.python.dicom_service import DicomService
+from handle_pacs.setPacs import PacsConf
 from django.http import HttpResponse
-# from md.dicom.python.dicom_service import DicomService
+from md.dicom.python.dicom_service import DicomService
 from rest_framework.views import APIView
 
 from back_end.util.upload_dcm_to_db import UploadDcm

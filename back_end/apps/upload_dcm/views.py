@@ -34,6 +34,7 @@ class Patinfo(APIView):
         if len(files) == 0:
             return Response('请选择上传文件')
 
+        print('正在上传，loading...')
         # 将上传的文件存到本地
         for file in files:
             destination = open(SaveDicomFilePath.location_2 + file.name, 'wb+')
@@ -46,20 +47,25 @@ class Patinfo(APIView):
         dataset_list = []
         series_path_list = []
 
+        print('上传完成，正在执行DCM数据入库...')
         for file_name in file_name_list:
             file_path = os.path.join(SaveDicomFilePath.location_2, file_name)
             dataset = pydicom.dcmread(file_path, force=True)
             splitdicoms = SplitDicoms()
-            seriespath = splitdicoms.split_patient(file_name, dataset)
+            try:
+                seriespath = splitdicoms.split_patient(file_name, dataset)
+                series_path_list.append(seriespath)
+            except Exception as e:
+                print('分离DCM失败')
             dataset_list.append(dataset)
-            series_path_list.append(seriespath)
 
         try:
             uploaddcm = UploadDcm()
             uploaddcm.upload_dcm(dataset_list)
         except Exception as e:
-            return Response('DCM数据入库异常')
+            return Response('DCM数据入库失败，请检查DCM数据是否符合DB字段约束')
 
+        print('数据入库成功，正在build_volume（此操作比较耗时，请稍等）...')
         for seriespath in set(series_path_list):
             filelist = os.listdir(seriespath)
             datasetlist = []
@@ -70,11 +76,12 @@ class Patinfo(APIView):
             try:
                 buildvol = DicomToVolume()
                 volfilepath = buildvol.dicom_to_volume(datasetlist)
-            except ValueError:
+            except Exception as e:
                 return Response('dicom文件不完整,创建volume失败')
             try:
                 UploadVolume(volfilepath, datasetlist)
             except Exception as e:
-                return Response('Volume入库异常')
+                return Response('Volume入库失败')
+        print('build_volume完成')
 
         return Response('success')
