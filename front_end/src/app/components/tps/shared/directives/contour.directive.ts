@@ -34,6 +34,7 @@ export class ContourDirective implements OnInit {
     sharp: any;
     curTarget: any;
     @Input() backCanvas;
+    @Input() viewName;
 
     constructor(private el: ElementRef, private contouringService: ConMessageService) { }
 
@@ -48,6 +49,7 @@ export class ContourDirective implements OnInit {
 
         this.myContext.strokeStyle = this.contourColor;
         this.myContext.lineWidth = this.contourLineWidth;
+        
 
         let crossline = CrosslineFactory.getInstance().createSharpContainer(this.myStage);
         crossline.setHorizontal()
@@ -55,10 +57,19 @@ export class ContourDirective implements OnInit {
         crossline.update()
 
         this.contouringService.curAction$.subscribe(curAction => {
+            console.log('curAction')
             this.curAction = curAction
         })
-    }
 
+        this.contouringService.curAction$.subscribe(crossPoint => {
+            if (crossPoint['view'] == this.viewName) {
+                // update cross
+                let p = crossPoint['point']
+                console.log('update', this.viewName)
+            }
+        })
+    }
+    
     @HostListener('mousedown', ['$event']) onMouseDown(event: MouseEvent) {
         console.log('mousedown')
         this.sharp = this.getShapeContainerInstance(this.curAction, this.myStage);

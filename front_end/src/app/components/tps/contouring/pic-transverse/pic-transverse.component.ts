@@ -49,6 +49,7 @@ export class PicTransverseComponent implements OnChanges {
     glsource = new glsource();
     curAction: any;
     focus: any; display: any;
+    xyz: string;
 
 
     constructor(
@@ -63,6 +64,7 @@ export class PicTransverseComponent implements OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges) {
+        this.xyz = this.tag;
         this.wlold = this.wl;//窗位
         this.wwold = this.ww;// 窗宽
         this.pageindexit = this.pageindex * 2;
