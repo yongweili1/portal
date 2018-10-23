@@ -16,6 +16,7 @@ def load_volume(*args, **kwargs):
         f.close()
     except Exception as e:
         print('请检查volume路径是否正确，{}'.format(kwargs['volumepath']))
+        raise
 
     data = msg.RequestMsg()
     data.session = kwargs['user_ip']

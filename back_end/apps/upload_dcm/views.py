@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import os
+import time
+
 import pydicom
 # Create your views here.
 from rest_framework.response import Response
@@ -27,7 +29,6 @@ class Patinfo(APIView):
         :param request: a django rest framework request object
         :return: boolean true for success, false for failure
         """
-
         file_name_list = []
 
         files = request.FILES.getlist('a')
@@ -36,9 +37,9 @@ class Patinfo(APIView):
 
         print('正在上传，loading...')
         # 将上传的文件存到本地
-        for file in files:
-            destination = open(SaveDicomFilePath.location_2 + file.name, 'wb+')
-            for chunk in file.chunks():
+        for f in files:
+            destination = open(SaveDicomFilePath.location_2 + f.name, 'wb+')
+            for chunk in f.chunks():
                 destination.write(chunk)
             destination.close()
             file_name_list.append(file.name)
@@ -66,6 +67,7 @@ class Patinfo(APIView):
             return Response('DCM数据入库失败，请检查DCM数据是否符合DB字段约束')
 
         print('数据入库成功，正在build_volume（此操作比较耗时，请稍等）...')
+        start_time = time.time()
         for seriespath in set(series_path_list):
             filelist = os.listdir(seriespath)
             datasetlist = []
@@ -82,6 +84,10 @@ class Patinfo(APIView):
                 UploadVolume(volfilepath, datasetlist)
             except Exception as e:
                 return Response('Volume入库失败')
+
         print('build_volume完成')
+        end_time = time.time()
+        build_time = end_time - start_time
+        print('build_volume共耗时{}秒'.format(str(build_time)))
 
         return Response('success')

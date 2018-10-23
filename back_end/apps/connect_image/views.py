@@ -82,7 +82,7 @@ class MacroRecording(APIView):
         if macro_status == 'start':
             Macro.macro_status = True
         elif macro_status == 'finish':
-            macro_name = user_name + str(time.time())
+            macro_name = str(user_name) + str(time.time())
             scriptname = '{}.py'.format(macro_name)
             scriptpath = STATIC_ROOT + '\\macro\\' + scriptname
 
@@ -153,8 +153,8 @@ class LoadVolume(APIView):
         """
         seriesuid = request.GET.get('seriesuid', None)
         user_ip = request.META.get('REMOTE_ADDR', None)
-        request_server = request.path
-        request_server = request_server.split("/")[-2]
+        # request_server = request.path
+        # request_server = request_server.split("/")[-2]
 
         series_query = Series.objects.filter(seriesuid=seriesuid)
         if len(series_query) == 0:
@@ -225,8 +225,8 @@ class GetImage(APIView):
         height = request.GET.get('height', None)
         display_view = request.GET.get('display_view', 'all')
         user_ip = request.META.get('REMOTE_ADDR', None)
-        request_server = request.path
-        request_server = request_server.split("/")[-2]
+        # request_server = request.path
+        # request_server = request_server.split("/")[-2]
 
         if width is None or height is None:
             return Response('请输入完整的请求数据')
@@ -637,7 +637,7 @@ class RunSript(APIView):
 
     def get(self, request):
         seriesuid = request.GET.get('seriesuid', '1.3.12.2.1107.5.1.4.64606.30000018051006052134700006373')
-        scriptname = request.GET.get('scriptname', '1539914091.6')
+        scriptname = request.GET.get('scriptname', 'AnonymousUser1540275438.76')
         if not seriesuid or not scriptname:
             return Response('请输入有效的参数')
 
