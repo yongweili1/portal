@@ -110,23 +110,16 @@ export class ContouringComponent implements OnInit {
 
 
   aCross(event: any) {
-      
-    //   this.picLeft2.cross(event.cronPosition[0],event.cronPosition[1],1);
-    //   this.picLeft3.cross(event.sagPosition[0],event.sagPosition[1],1);
-      this.sendCrossInfo('cronal',  [event.cronPosition[0],event.cronPosition[1]])
+      this.sendCrossInfo('coronal',  [event.cronPosition[0],event.cronPosition[1]])
       this.sendCrossInfo('saggital',  [event.sagPosition[0],event.sagPosition[1]])
   }
   bCross(event: any) {
-    //   this.picLeft1.cross(event.transPosition[0],event.transPosition[1],1);
-    //   this.picLeft3.cross(event.sagPosition[0],event.sagPosition[1],1);
-      this.sendCrossInfo('transerval',  [event.transPosition[0],event.transPosition[1]])
+      this.sendCrossInfo('transverse',  [event.transPosition[0],event.transPosition[1]])
       this.sendCrossInfo('saggital',  [event.sagPosition[0],event.sagPosition[1]])
   }
   cCross(event: any) {
-    //   this.picLeft2.cross(event.cronPosition[0],event.cronPosition[1],1);
-    //   this.picLeft1.cross(event.transPosition[0],event.transPosition[1],1);
-    this.sendCrossInfo('cronal', [event.cronPosition[0],event.cronPosition[1]])
-    this.sendCrossInfo('transerval', [event.transPosition[0],event.transPosition[1]])
+    this.sendCrossInfo('coronal', [event.cronPosition[0],event.cronPosition[1]])
+    this.sendCrossInfo('transverse', [event.transPosition[0],event.transPosition[1]])
   }
   sendCrossInfo(viewName, point) {
     let crossInfo = {}
