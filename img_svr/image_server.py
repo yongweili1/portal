@@ -110,6 +110,10 @@ class ImageServer(object):
             self.volumes.pop(series_uid)
         if series_uid in self.configs:
             self.configs.pop(series_uid)
+        self.vol = None
+        self.cfg = {}
+
+        return True, 'Unload succeed.'
 
     def __get_raw_data(self, view, axis, width, height):
         """

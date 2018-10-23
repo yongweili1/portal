@@ -32,10 +32,17 @@ getSeriesList(patientId:any):Observable<Array<any>>{
  * 从后端获取序列图片
  * @param seriesId 
  */
-LoadSeries(seriesId:any):Observable<any>{
+LoadVolume(seriesId:any):Observable<any>{
     const getParams = new HttpParams()
     .set('seriesuid', seriesId);
     return this.http.get('http://10.9.19.24:8000/image/volumes/',{params : getParams});
+        
+}
+
+UnLoadVolume(seriesId:any):Observable<any>{
+    const getParams = new HttpParams()
+    .set('seriesuid', seriesId);
+    return this.http.delete('http://10.9.19.24:8000/image/volumes/',{params : getParams});
         
 }
 

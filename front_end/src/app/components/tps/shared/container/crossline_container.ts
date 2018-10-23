@@ -1,13 +1,15 @@
 import { BaseContainer } from '../container/base_container'
 import { Line } from '../overlay/line'
 import { ControlPoint } from '../overlay/controlpoint'
-import { Point } from '../tools/point';
+import { Point } from '../tools/point'
+import { Output, EventEmitter } from '@angular/core';
 
 export class CrosslineContainer extends BaseContainer {
     center: Point;
     horizontal: Line;
     vertical: Line;
     crossPoint: ControlPoint;
+    @Output() SendCrossInfoEvent: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(stage) {
         super(stage, 'crossline');

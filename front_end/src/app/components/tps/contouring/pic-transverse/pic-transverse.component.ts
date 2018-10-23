@@ -26,17 +26,20 @@ declare var vec4: any;
 export class PicTransverseComponent implements OnChanges {
 
     scale = 1.0; transX = 0.0; transY = 0.0;
-    canvas: any; canbas: any; nugevas: any; primitivecan: any; primitivedrawcan: any
+    canvas: any; canbas: any; crosscan: any; nugevas: any; primitivecan: any; primitivedrawcan: any
     @Input() tag: any; @Input() imageWidth; @Input() imageHeight; @Input() pageindex;
     @Input() wl; @Input() ww;// 窗宽
     @Input() spacingX; @Input() spacingY; @Input() gap; @Input() sliceAll;
     @Input() pixelRepresentation; @Input() rescaleSlope; @Input() rescaleIntercept;
-    @Input() firstImagePosition; @Input() lastImagePosition;
+    @Input() firstImagePosition; @Input() lastImagePosition;@Input() hasLoadVolume;
     containerWidth = $(".containe").width(); containerHeight = $(".containe").height();
     viewportWidth = Math.floor(this.containerWidth / 2) * 2; viewportHeight = Math.floor(this.containerHeight / 2) * 2;
     unts: any; ctx: any; wlx: any; wwx: any; wlold: any; wwold: any;// 窗位窗宽
     fitImageWidth: any; fitImageHeight: any; sx: any; mx: any; my: any;
     pageindexit: any;
+        //十字线
+    stage: any; horizontalLine: any; verticalLine: any; crossPoint: any; postPoint: any;
+    nix = 0.5; niy = 0.5;
     mpr2Patient: any; opM3: any;
     roiContourSets = new Array();
     Line: any;
@@ -49,8 +52,6 @@ export class PicTransverseComponent implements OnChanges {
     glsource = new glsource();
     curAction: any;
     focus: any; display: any;
-    xyz: string;
-    postPoint:any;
 
 
     constructor(
@@ -65,13 +66,13 @@ export class PicTransverseComponent implements OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        this.xyz = this.tag;
         this.wlold = this.wl;//窗位
         this.wwold = this.ww;// 窗宽
         this.pageindexit = this.pageindex * 2;
         if (this.tag == "transverse") {
             this.canvas = $(".a_class .icanvas").get(0);
             this.canbas = $(".a_class");
+            this.crosscan = $(".a_class .crosscan").get(0);
             this.primitivedrawcan = $(".a_class .primitivedrawcan").get(0);
             this.nugevas = $(".a_class #nugeCanvas").get(0);
             this.canbas.find(".mpr").text('Transverse');
@@ -81,6 +82,7 @@ export class PicTransverseComponent implements OnChanges {
         if (this.tag == "coronal") {
             this.canvas = $(".b_class .icanvas").get(0);
             this.canbas = $(".b_class");
+            this.crosscan = $(".b_class .crosscan").get(0);
             this.primitivedrawcan = $(".b_class .primitivedrawcan").get(0);
             this.nugevas = $(".b_class #nugeCanvas").get(0);
             this.canbas.find(".mpr").text('Coronal');
@@ -90,6 +92,7 @@ export class PicTransverseComponent implements OnChanges {
         if (this.tag == "saggital") {
             this.canvas = $(".c_class .icanvas").get(0);
             this.canbas = $(".c_class");
+            this.crosscan = $(".c_class .crosscan").get(0);
             this.primitivedrawcan = $(".c_class .primitivedrawcan").get(0);
             this.nugevas = $(".c_class #nugeCanvas").get(0);
             this.canbas.find(".mpr").text('Sagittal');
@@ -129,10 +132,13 @@ export class PicTransverseComponent implements OnChanges {
         this.viewportHeight = Math.floor(this.containerHeight / 2) * 2;
         this.canvas.setAttribute('width', this.viewportWidth);
         this.canvas.setAttribute('height', this.viewportHeight);
+        this.crosscan.setAttribute('width', this.viewportWidth);//十字线的canvas
+        this.crosscan.setAttribute('height', this.viewportHeight);
         this.primitivedrawcan.setAttribute('width', this.viewportWidth); //图元操作绘画层的canvas
         this.primitivedrawcan.setAttribute('height', this.viewportHeight);
         this.nugevas.setAttribute('width', this.viewportWidth);//nuge的canvas
         this.nugevas.setAttribute('height', this.viewportHeight);
+        this.drawCross(this.nix, this.niy, this.canbas.get(0));
     }
 
     opm3() {//计算窗口比例
@@ -195,7 +201,8 @@ export class PicTransverseComponent implements OnChanges {
 
     picScroll(delt: any) {
         let that = this;
-        this.seriesHttpService.GetSeriesPic(this.tag, this.tag, delt, this.canvas.width, this.canvas.height).subscribe((value) => {
+        if(this.hasLoadVolume == true){
+            this.seriesHttpService.GetSeriesPic(this.tag, this.tag, delt, this.canvas.width, this.canvas.height).subscribe((value) => {
             let data = JSON.parse(value);
             this.drawCanvasPic(data[this.tag]);
             that.postPoint = data.cross_position;
@@ -205,6 +212,7 @@ export class PicTransverseComponent implements OnChanges {
         }, (error) => {
             console.log(error);
         })
+        } 
     }
 
     // 翻页
@@ -231,10 +239,122 @@ export class PicTransverseComponent implements OnChanges {
         this.conMessage.SetCurAction("clearAll");
     }
 
-    getposition(x, y) {
-        var point = new Array(x, y);
-        this.changeCross.emit(point);
+    /**
+ * 画十字线和交点，绑定监听事件
+ * @param nix 
+ * @param niy 
+ * @param loca 
+ */
+drawCross(nix, niy, loca) {
+    this.stage = new createjs.Stage(this.crosscan);
+    var width = this.stage.canvas.width;
+    var height = this.stage.canvas.height;
+    createjs.Touch.enable(this.stage);
+    this.stage.enableMouseOver(50);
+    this.stage.mouseMoveOutside = true;
+  
+    this.horizontalLine = new createjs.Shape();// 横线
+    if (this.tag == "transverse") {
+        this.horizontalLine.graphics.beginStroke("#2196F3").setStrokeStyle(1, "round").moveTo(0, 0).lineTo(width, 0);
     }
+    if (this.tag == "coronal") {
+        this.horizontalLine.graphics.beginStroke("#F44336").setStrokeStyle(1, "round").moveTo(0, 0).lineTo(width, 0);
+    }
+    if (this.tag == "saggital") {
+        this.horizontalLine.graphics.beginStroke("#F44336").setStrokeStyle(1, "round").moveTo(0, 0).lineTo(width, 0);
+    }
+    var horizontalHitArea = new createjs.Shape();
+    horizontalHitArea.graphics.beginFill("black").drawRect(0, -5, width, 10);
+    this.horizontalLine.hitArea = horizontalHitArea;
+    // this.horizontalLine.cursor = "url('/assets/img/vertical.cur'),auto";
+  
+    this.verticalLine = new createjs.Shape();// 竖线
+    if (this.tag == "transverse") {
+        this.verticalLine.graphics.beginStroke("#CDDC39").setStrokeStyle(1, "round").moveTo(0, 0).lineTo(0, height);
+    }
+    if (this.tag == "coronal") {
+        this.verticalLine.graphics.beginStroke("#CDDC39").setStrokeStyle(1, "round").moveTo(0, 0).lineTo(0, height);
+    }
+    if (this.tag == "saggital") {
+        this.verticalLine.graphics.beginStroke("#2196F3").setStrokeStyle(1, "round").moveTo(0, 0).lineTo(0, height);
+    }
+    var verticalHitArea = new createjs.Shape();
+    verticalHitArea.graphics.beginFill("black").drawRect(-5, 0, 10, height);
+    this.verticalLine.hitArea = verticalHitArea;
+    // this.verticalLine.cursor = "url('/assets/img/horizontal.cur'),auto";
+  
+    this.crossPoint = new createjs.Shape();// 交点
+    this.crossPoint.graphics.beginFill("white").drawCircle(0, 0, 8);
+    this.crossPoint.alpha = 0.2;
+    // this.crossPoint.cursor = "url('/assets/img/move.cur'),auto";
+    this.stage.addChild(this.verticalLine);
+    this.stage.addChild(this.horizontalLine);
+    this.stage.addChild(this.crossPoint);
+    var width = this.stage.canvas.width;
+    var height = this.stage.canvas.height;
+    this.cross(nix * width, niy * height, loca);
+  
+    this.horizontalLine.addEventListener("pressmove", this.handlePressMove.bind(this));
+    this.verticalLine.addEventListener("pressmove", this.handlePressMove.bind(this));
+    this.crossPoint.addEventListener("pressmove", this.handlePressMove.bind(this));
+    this.horizontalLine.addEventListener("pressup", this.handlePressUp.bind(this));
+    this.verticalLine.addEventListener("pressup", this.handlePressUp.bind(this));
+    this.crossPoint.addEventListener("pressup", this.handlePressUp.bind(this));
+  }
+  
+  /**
+   * 调整初始的十字线、交点位置，更新stage
+   * @param width 
+   * @param height 
+   * @param loca 
+   */
+  cross(width, height, loca) {
+    this.clearmouse();
+    this.horizontalLine.y = height;
+    this.verticalLine.x = width;
+    this.crossPoint.x = this.verticalLine.x;
+    this.crossPoint.y = this.horizontalLine.y;
+    this.stage.update();
+  }
+  handlePressMove(evt) {
+    if (evt.currentTarget == this.verticalLine) {//竖线
+        evt.currentTarget.x = this.crossPoint.x = evt.stageX;
+        this.getposition(this.crossPoint.x, this.crossPoint.y);
+    }
+    if (evt.currentTarget == this.horizontalLine) {//横线
+        evt.currentTarget.y = this.crossPoint.y = evt.stageY;
+        this.getposition(this.crossPoint.x, this.crossPoint.y);
+    }
+    if (evt.currentTarget == this.crossPoint) {
+        evt.currentTarget.x = this.verticalLine.x = evt.stageX;
+        evt.currentTarget.y = this.horizontalLine.y = evt.stageY;
+        this.getposition(this.crossPoint.x, this.crossPoint.y);
+    }
+    this.stage.update();
+  }
+  handlePressUp(evt) {
+    if (evt.currentTarget == this.verticalLine) {//竖线
+        evt.currentTarget.x = this.crossPoint.x = evt.stageX;
+        this.getposition(this.crossPoint.x, this.crossPoint.y);
+    }
+    if (evt.currentTarget == this.horizontalLine) {//横线
+        evt.currentTarget.y = this.crossPoint.y = evt.stageY;
+        this.getposition(this.crossPoint.x, this.crossPoint.y);
+    }
+    if (evt.currentTarget == this.crossPoint) {
+        evt.currentTarget.x = this.crossPoint.x = evt.stageX;
+        evt.currentTarget.y = this.crossPoint.y = evt.stageY;
+        this.getposition(this.crossPoint.x, this.crossPoint.y);
+    }
+    this.stage.update();
+  }
+  
+  getposition(x, y) {
+    var point = new Array(x,y);
+    console.log(point);
+    this.changeCross.emit(point);
+  }
+
 
     //patient2screen
     patient2Mpr: any;
@@ -600,6 +720,7 @@ export class PicTransverseComponent implements OnChanges {
     locateUpdate(imageData, crossPoint) {
         this.drawCanvasPic(imageData);
         let crossPtX, crossPtY;
+        console.log(crossPoint)
         if (this.tag == "transverse") {
             crossPtX = crossPoint['transPosition'][0];
             crossPtY = crossPoint['transPosition'][1];
@@ -612,8 +733,9 @@ export class PicTransverseComponent implements OnChanges {
             crossPtX = crossPoint['cronPosition'][0];
             crossPtY = crossPoint['cronPosition'][1];
         }
-        // this.cross(crossPtX,crossPtY,1);
+        this.cross(crossPtX,crossPtY,1);
     }
+
 
     drawCanvasPic(imageData) {
         let img1 = new Image();
