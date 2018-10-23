@@ -43,7 +43,7 @@ class MySessionMiddleware(MiddlewareMixin):
             session_v = 'back_end'
 
             request.session[session_k] = session_v
-        response.setHeader('Access-Control-Allow-Credentials', 'true')
-        response.setHeader('Access-Control-Allow-Origin', request.getHeader('Origin'))
+        # response.setHeader('Access-Control-Allow-Credentials', 'true')
+        # response.setHeader('Access-Control-Allow-Origin', request.getHeader('Origin'))
 
         return response

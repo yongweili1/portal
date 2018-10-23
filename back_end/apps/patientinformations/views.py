@@ -33,8 +33,8 @@ class Patinfolist(APIView):
         :param page:current page
         :return: information list
         """
-        size = int(request.GET.get('size', int(15)))
-        page = int(request.GET.get('page', int(0)))
+        size = int(request.GET.get('size', 15))
+        page = int(request.GET.get('page', 0))
 
         # 调用自定义类，创建对象，获取信息列表
         infolist = InfoList()

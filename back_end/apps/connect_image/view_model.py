@@ -10,9 +10,12 @@ from twisted_client import be_factory
 
 @Macro()
 def load_volume(*args, **kwargs):
-    f = open(kwargs['volumepath'], 'rb')
-    vol = f.read()
-    f.close()
+    try:
+        f = open(kwargs['volumepath'], 'rb')
+        vol = f.read()
+        f.close()
+    except Exception as e:
+        print('请检查volume路径是否正确，{}'.format(kwargs['volumepath']))
 
     data = msg.RequestMsg()
     data.session = kwargs['user_ip']

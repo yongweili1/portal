@@ -47,6 +47,7 @@ class Home(APIView):
 
 
 class GetSeriesUidList(APIView):
+
     def get(self, request):
         """
         provide a list of seriesuid
@@ -60,7 +61,6 @@ class GetSeriesUidList(APIView):
         serieslist = []
         for study in studylist:
             series_list = Series.objects.filter(studyuid=study.studyuid)
-
             serieslist += series_list
         # serieslist = Series.objects.all()
         seriesuidlist = []
@@ -70,12 +70,19 @@ class GetSeriesUidList(APIView):
 
 
 class MacroRecording(APIView):
+
     def get(self, request):
+        """
+        Opening and closing macro recording, save script
+        :param macro_status: the status of macro recording
+        :return:
+        """
         macro_status = request.GET.get('macro_status', None)
+        user_name = request.user
         if macro_status == 'start':
             Macro.macro_status = True
         elif macro_status == 'finish':
-            macro_name = time.time()
+            macro_name = user_name + str(time.time())
             scriptname = '{}.py'.format(macro_name)
             scriptpath = STATIC_ROOT + '\\macro\\' + scriptname
 
@@ -84,6 +91,7 @@ class MacroRecording(APIView):
                     f.write(Macro.code_header + Macro.code)
             except:
                 Macro.code = Macro.code
+                return Response('脚本写入失败')
 
             Macro.macro_status = False
             Macro.code = ''
@@ -160,10 +168,10 @@ class LoadVolume(APIView):
             'command': 'load',
             'server_name': 'image',
         }
-        # try:
-        rst = load_volume(**params)
-        # except Exception as e:
-        #     return Response('服务间数据传输失败')
+        try:
+            rst = load_volume(**params)
+        except Exception as e:
+            return Response('服务间数据传输失败')
 
         if rst.success is False:
             return Response(rst.comment)
@@ -188,7 +196,7 @@ class LoadVolume(APIView):
             'server_name': 'image',
         }
         try:
-            rst = load_volume(**params)
+            rst = get_image(**params)
         except Exception as e:
             return Response('服务间数据传输失败')
 
