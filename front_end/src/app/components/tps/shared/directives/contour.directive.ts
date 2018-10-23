@@ -60,11 +60,22 @@ export class ContourDirective implements OnInit {
             console.log('curAction')
             this.curAction = curAction
         })
-
-        this.contouringService.curAction$.subscribe(crossPoint => {
+        let that = this; 
+        this.contouringService.crossPoint$.subscribe(crossPoint => {
             if (crossPoint['view'] == this.viewName) {
-                // update cross
                 let p = crossPoint['point']
+                let cross;
+                for (let index = 0; index < this.myStage.children.length; index++) {
+                    const shape = this.myStage.children[index];
+                    if (shape.type == 'crossline') {
+                        cross = shape;
+                        break;
+                    }
+                }
+                cross.setCenter(p)
+                cross.setHorizontal()
+                cross.setVertical()
+                cross.update()
                 console.log('update', this.viewName)
             }
         })

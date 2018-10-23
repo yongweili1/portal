@@ -50,6 +50,7 @@ export class PicTransverseComponent implements OnChanges {
     curAction: any;
     focus: any; display: any;
     xyz: string;
+    postPoint:any;
 
 
     constructor(
@@ -192,19 +193,19 @@ export class PicTransverseComponent implements OnChanges {
         return buffer;
     }
 
-    // picScroll(delt: any) {
-    //     let that = this;
-    //     this.seriesHttpService.GetSeriesPic(this.tag, this.tag, delt, this.canvas.width, this.canvas.height).subscribe((value) => {
-    //         let data = JSON.parse(value);
-    //         this.drawCanvasPic(data[this.tag]);
-    //         that.postPoint = data.cross_position;
-    //         console.log(that.postPoint);
-    //         that.P2Cross();
+    picScroll(delt: any) {
+        let that = this;
+        this.seriesHttpService.GetSeriesPic(this.tag, this.tag, delt, this.canvas.width, this.canvas.height).subscribe((value) => {
+            let data = JSON.parse(value);
+            this.drawCanvasPic(data[this.tag]);
+            that.postPoint = data.cross_position;
+            console.log(that.postPoint);
+            that.P2Cross();
 
-    //     }, (error) => {
-    //         console.log(error);
-    //     })
-    // }
+        }, (error) => {
+            console.log(error);
+        })
+    }
 
     // 翻页
     windowAddMouseWheel(tag) {
@@ -213,14 +214,14 @@ export class PicTransverseComponent implements OnChanges {
         var scrollFunc = function (e) {
             e = e || window.event;
             delt = e.wheelDelta / 120;
-            // that.picScroll(delt);
+            that.picScroll(delt);
         };
         this.canbas.get(0).onmousewheel = scrollFunc;
     }
 
     P2Cross() {
         // this.postPoint = vec4.fromValues(this.firstImagePosition[0] + (this.sliceAll[2]) * this.gap[0], this.firstImagePosition[1] + (this.sliceAll[1]) * this.gap[1], this.firstImagePosition[2] + (this.sliceAll[0]) * this.gap[2], 1);
-        // this.twoCross.emit(this.postPoint);
+        this.twoCross.emit(this.postPoint);
     }
     /**
      * 清除所有图元
