@@ -4,7 +4,6 @@ import { CircleFactory } from '../tools/factory/circle-factory'
 import { LineFactory } from '../tools/factory/line-factory'
 import { RectangleFactory } from '../tools/factory/rectangle-factory'
 import { FreepenFactory } from '../tools/factory/freepen-factory'
-import { CrosslineFactory } from '../tools/factory/crossline-factory'
 import { Point } from '../tools/point'
 
 declare var createjs: any;
@@ -34,7 +33,6 @@ export class ContourDirective implements OnInit {
     sharp: any;
     curTarget: any;
     @Input() backCanvas;
-    @Input() viewName;
 
     constructor(private el: ElementRef, private contouringService: ConMessageService) { }
 
@@ -50,32 +48,9 @@ export class ContourDirective implements OnInit {
         this.myContext.strokeStyle = this.contourColor;
         this.myContext.lineWidth = this.contourLineWidth;
         
-
-        let crossline = CrosslineFactory.getInstance().createSharpContainer(this.myStage);
-        crossline.setHorizontal()
-        crossline.setVertical()
-        crossline.update()
-
         this.contouringService.curAction$.subscribe(curAction => {
             console.log('curAction')
             this.curAction = curAction
-        })
-
-        this.contouringService.crossPoint$.subscribe(crossPoint => {
-            if (crossPoint['view'] == this.viewName) {
-                let p = crossPoint['point']
-                for (let index = 0; index < this.myStage.children.length; index++) {
-                    const shape = this.myStage.children[index];
-                    if (shape.type == 'crossline') {
-                        shape.setCenter(new Point(p[0], p[1]))
-                        shape.setHorizontal()
-                        shape.setVertical()
-                        shape.update()
-                        break;
-                    }
-                }
-                console.log('update', this.viewName)
-            }
         })
     }
     
@@ -87,13 +62,15 @@ export class ContourDirective implements OnInit {
     }
 
     @HostListener('mousemove', ['$event']) onMouseMove(event: MouseEvent) {
-        if (this.sharp != null)
+        if (this.sharp != null){
             this.sharp.handleMouseMove(event)
+        }
+            
     }
 
     @HostListener('mouseup', ['$event']) onMouseUp(event: MouseEvent) {
         if (this.sharp != null)
-            this.sharp.handleMouseUp(event)
+            this.sharp.handleMouseUp(event)   
     }
 
     @HostListener('mouseleave', ['$event']) onMouseLeave(event: MouseEvent) {
@@ -115,6 +92,8 @@ export class ContourDirective implements OnInit {
                 return CircleFactory.getInstance().createSharpContainer(stage);
             case 'freepen':
                 return FreepenFactory.getInstance().createSharpContainer(stage);
+            default:
+                return
         }
     }
 }

@@ -65,6 +65,9 @@ class Server(Protocol):
         return size, data
 
     def package(self, data):
+        if data is None:
+            print("package data is None")
+            return ""
         size = len(data)
         return struct.pack('i', size) + data
 

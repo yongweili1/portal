@@ -45,6 +45,8 @@ export class ContouringComponent implements OnInit {
   action:any;
   display: boolean = false;
   seriesList:any;
+  hasLoadVolume:any= false;
+  seriesId:any;
   
   @ViewChild('picLeft1') picLeft1;
   @ViewChild('picLeft2') picLeft2;
@@ -73,7 +75,7 @@ export class ContouringComponent implements OnInit {
         this.picLeft3.locateUpdate(data.saggital, data.cross_position);
     }
     )
-  }
+    }
 
   coronalChange(event: any) {
     let displayView = 'transverse,saggital'  
@@ -83,16 +85,15 @@ export class ContouringComponent implements OnInit {
         this.picLeft3.locateUpdate(data.saggital, data.cross_position);
     }
     )
-}
+    }
   saggitalChange(event: any) {
     let displayView = 'coronal,transverse'
     this.seriesHttpService.GetLocatePic('saggital',displayView,event).subscribe((value)=>{
         let data = JSON.parse(value);
         this.picLeft1.locateUpdate(data.transverse, data.cross_position);
         this.picLeft2.locateUpdate(data.coronal, data.cross_position);
+    })
     }
-    )
-}
 
   mainClearPri()
   {
@@ -110,22 +111,17 @@ export class ContouringComponent implements OnInit {
 
 
   aCross(event: any) {
-      this.sendCrossInfo('coronal',  [event.cronPosition[0],event.cronPosition[1]])
-      this.sendCrossInfo('saggital',  [event.sagPosition[0],event.sagPosition[1]])
-  }
+      
+    this.picLeft2.cross(event.cronPosition[0],event.cronPosition[1],1);
+    this.picLeft3.cross(event.sagPosition[0],event.sagPosition[1],1);
+  } 
   bCross(event: any) {
-      this.sendCrossInfo('transverse',  [event.transPosition[0],event.transPosition[1]])
-      this.sendCrossInfo('saggital',  [event.sagPosition[0],event.sagPosition[1]])
+    this.picLeft1.cross(event.transPosition[0],event.transPosition[1],1);
+    this.picLeft3.cross(event.sagPosition[0],event.sagPosition[1],1);
   }
   cCross(event: any) {
-    this.sendCrossInfo('coronal', [event.cronPosition[0],event.cronPosition[1]])
-    this.sendCrossInfo('transverse', [event.transPosition[0],event.transPosition[1]])
-  }
-  sendCrossInfo(viewName, point) {
-    let crossInfo = {}
-    crossInfo['view'] = viewName
-    crossInfo['point'] = point
-    this.conMessage.setCrossPoint(crossInfo)
+    this.picLeft2.cross(event.cronPosition[0],event.cronPosition[1],1);
+    this.picLeft1.cross(event.transPosition[0],event.transPosition[1],1);
   }
   mainQuitDraw()
   {
@@ -141,33 +137,22 @@ export class ContouringComponent implements OnInit {
       });
       this.conMessage.curAction$.subscribe(value=>{
           this.action = value;
-        //   if(this.action=="quitDrawPri"){
-        //       this.picLeft1.SetCanvasIndex("#crossCanvas",4);
-        //       this.picLeft2.SetCanvasIndex("#crossCanvas",4);
-        //       this.picLeft3.SetCanvasIndex("#crossCanvas",4);
-        //       this.picLeft1.SetCanvasIndex("#primitiveDrawCanvas",3);
-        //       this.picLeft2.SetCanvasIndex("#primitiveDrawCanvas",3);
-        //       this.picLeft3.SetCanvasIndex("#primitiveDrawCanvas",3);
-        //       this.picLeft1.SetCanvasIndex("#primitiveCanvas",2);
-        //       this.picLeft2.SetCanvasIndex("#primitiveCanvas",2);
-        //       this.picLeft3.SetCanvasIndex("#primitiveCanvas",2);
-        //   }
-        //   else if(this.action=="select"){
-        //       this.picLeft1.SetCanvasIndex("#primitiveCanvas",55);
-        //       this.picLeft2.SetCanvasIndex("#primitiveCanvas",55);
-        //       this.picLeft3.SetCanvasIndex("#primitiveCanvas",55);
-        //   }
-        //   else{
-        //     this.picLeft1.SetCanvasIndex("#crossCanvas",3);
-        //     this.picLeft2.SetCanvasIndex("#crossCanvas",3);
-        //     this.picLeft3.SetCanvasIndex("#crossCanvas",3);
-        //     this.picLeft1.SetCanvasIndex("#primitiveDrawCanvas",4);
-        //     this.picLeft2.SetCanvasIndex("#primitiveDrawCanvas",4);
-        //     this.picLeft3.SetCanvasIndex("#primitiveDrawCanvas",4);
-        //     this.picLeft1.SetCanvasIndex("#primitiveCanvas",2);
-        //     this.picLeft2.SetCanvasIndex("#primitiveCanvas",2);
-        //     this.picLeft3.SetCanvasIndex("#primitiveCanvas",2);
-        //   }
+          if(this.action=="croselect"){
+              this.picLeft1.SetCanvasIndex("#crossCanvas",10);
+              this.picLeft2.SetCanvasIndex("#crossCanvas",10);
+              this.picLeft3.SetCanvasIndex("#crossCanvas",10);
+              this.picLeft1.SetCanvasIndex("#primitiveDrawCanvas",9);
+              this.picLeft2.SetCanvasIndex("#primitiveDrawCanvas",9);
+              this.picLeft3.SetCanvasIndex("#primitiveDrawCanvas",9);
+          }
+          else{
+            this.picLeft1.SetCanvasIndex("#crossCanvas",9);
+            this.picLeft2.SetCanvasIndex("#crossCanvas",9);
+            this.picLeft3.SetCanvasIndex("#crossCanvas",9);
+            this.picLeft1.SetCanvasIndex("#primitiveDrawCanvas",10);
+            this.picLeft2.SetCanvasIndex("#primitiveDrawCanvas",10);
+            this.picLeft3.SetCanvasIndex("#primitiveDrawCanvas",10);
+          }
       });
       this.activeRoute.queryParams.subscribe(params => {
         this.patientId = params.patientId;
@@ -248,6 +233,7 @@ export class ContouringComponent implements OnInit {
    * @param seriesId 
    */
   loadSeries() {
+    $('#loading').hideLoading();
     $('#loading').showLoading();
     //this.showDialog();
     let img1 = new Image();
@@ -257,7 +243,7 @@ export class ContouringComponent implements OnInit {
     let saggitalCanvas = $(".c_class .icanvas").get(0);
     let coronalCanvas = $(".b_class .icanvas").get(0);
     let seriesId:any = $("#seriesSelect").val();
-    this.seriesHttpService.LoadSeries(seriesId).subscribe(value=>{
+    this.seriesHttpService.LoadVolume(seriesId).subscribe(value=>{
         if(value == "success")
         {
             this.seriesHttpService.GetSeries(seriesId,"","transverse",transverseCanvas.width,transverseCanvas.height).subscribe((value) =>{
@@ -393,6 +379,8 @@ export class ContouringComponent implements OnInit {
                 console.log(error);
             })
             console.log("wait for response")
+            this.hasLoadVolume = true;
+            this.seriesId = seriesId;
         }
     })
     console.log("wait for load response")
@@ -413,6 +401,11 @@ export class ContouringComponent implements OnInit {
 
   message(w) {
       this.load.message(w);
+  }
+  ngOnDestroy(){
+    this.hasLoadVolume = false;
+    this.seriesHttpService.UnLoadVolume(this.seriesId).subscribe();
+    $('#loading').hideLoading();
   }
 }
 

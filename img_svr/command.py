@@ -68,6 +68,24 @@ def load(**kwargs):
     return response(msg)
 
 
+@command.register('unload')
+def unload(**kwargs):
+    """
+    UnLoad volume data and managed in memory
+    :param seriesuid: series uid
+    :return:
+    """
+    try:
+        seriesuid = kwargs['seriesuid']
+    except Exception as err:
+        return response(success=False, message='Invalid parameters.')
+
+    print(seriesuid)
+    rst, msg = server.unload_volume(seriesuid)
+    print("Unload volume succeed")
+    return response(msg)
+
+
 @command.register('reset')
 def reset(**kwargs):
     """
@@ -91,20 +109,6 @@ def reset(**kwargs):
     server.reset_volume()
     imgs = server.get_images(display_view, width, height)
     return response(json.dumps(imgs))
-
-
-@command.register('unload')
-def unload(**kwargs):
-    """
-    Unload volume data from memory
-    :param series_uid: series uid
-    :return: Unload result
-    """
-    seriesuid = kwargs['seriesuid']
-    print(seriesuid)
-    # rst, msg = server.load_volume(volume, seriesuid)
-    # status = 200 if rst else 500
-    # return ResponseData(msg, status)
 
 
 @command.register('show')
@@ -372,19 +376,20 @@ def locate(**kwargs):
         'trans_direct_flag': 'screen2world',
         'focus_view': focus_view
     }
-    display_view_array = display_view.split(",")
     cursor_3d = server.dimension_translate(trans_para)
     server.set_cursor(cursor_3d)
-    server.set_look_at(cursor_3d, cursor_3d, cursor_3d)
-    imgs = server.get_multi_images(display_view_array)
     trans_para = {
         'point_3d': cursor_3d,
         'trans_direct_flag': 'world2screen'
     }
-    data = {}
     cursor_2d = server.dimension_translate(trans_para)
+    server.set_look_at(cursor_3d, cursor_3d, cursor_3d)
+    display_view_array = display_view.split(",")
+    imgs = server.get_multi_images(display_view_array)
+    data = {}
     data['cross_position'] = cursor_2d
     data.update(imgs)
-    print('send locate data time:')
-    print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f'))
+    # print('send locate data time:')
+    # print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f'))
+    print(data['cross_position'])
     return response(json.dumps(data))

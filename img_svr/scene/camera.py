@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from md.mdmath.python.rotation3d import axis_angle_to_rotation_matrix
 
-from scene.coord import Plane3D, project_point3d_on_plane
+from viewer3.BE.scene.coord import Plane3D, project_point3d_on_plane
 
 
 class SceneCamera(object):

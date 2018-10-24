@@ -7,7 +7,7 @@ from enum import Enum
 from md.image3d.python.image3d_tools import slice_nn
 from md.image3d.python.image3d_vis import slice_to_bytes, bytes_to_colors, multi_image_alpha_blend
 
-from scene.camera import SceneCamera
+from viewer3.BE.scene.camera import SceneCamera
 
 
 class SceneType(Enum):
@@ -39,6 +39,7 @@ class Orientation(Enum):
 class SceneBase(object):
     def __init__(self):
         self._image3d = None
+        self._image_result = None
         self._width = 512
         self._height = 512
         self._spacing = 1
@@ -65,6 +66,9 @@ class SceneBase(object):
     @camera.setter
     def camera(self, camera):
         self._camera = camera
+
+    def get_image_result(self):
+        return self._image_result
 
     def get_default_pos(self):
         return self.__camera_default_pos
@@ -122,7 +126,8 @@ class SliceScene(SceneBase):
         begin = datetime.now()
 
         self._spacing = max(self._camera.fov[0] / float(self._width), self._camera.fov[1] / float(self._height))
-        print 'spacing: {}, fov: {}, size: {}'.format(self._spacing, self._camera.fov, [self._width, self._height])
+        print 'spacing: {}, fov: {}, size: {}, wwwl: {}'.format(
+            self._spacing, self._camera.fov, [self._width, self._height], self.get_window_level())
         raw_data = slice_nn(self._image3d, self._camera.look_at,
                             self._camera.right, self._camera.up,
                             self._camera.look_at, [self._spacing, self._spacing],
@@ -151,6 +156,7 @@ class SliceScene(SceneBase):
         end = datetime.now()
         print 'render slice time: {}'.format(end - begin)
         print 'render end'
+        self._image_result = color_data
         return color_data
 
     def set_color_mode(self, mode):
