@@ -137,33 +137,22 @@ export class ContouringComponent implements OnInit {
       });
       this.conMessage.curAction$.subscribe(value=>{
           this.action = value;
-        //   if(this.action=="quitDrawPri"){
-        //       this.picLeft1.SetCanvasIndex("#crossCanvas",4);
-        //       this.picLeft2.SetCanvasIndex("#crossCanvas",4);
-        //       this.picLeft3.SetCanvasIndex("#crossCanvas",4);
-        //       this.picLeft1.SetCanvasIndex("#primitiveDrawCanvas",3);
-        //       this.picLeft2.SetCanvasIndex("#primitiveDrawCanvas",3);
-        //       this.picLeft3.SetCanvasIndex("#primitiveDrawCanvas",3);
-        //       this.picLeft1.SetCanvasIndex("#primitiveCanvas",2);
-        //       this.picLeft2.SetCanvasIndex("#primitiveCanvas",2);
-        //       this.picLeft3.SetCanvasIndex("#primitiveCanvas",2);
-        //   }
-        //   else if(this.action=="select"){
-        //       this.picLeft1.SetCanvasIndex("#primitiveCanvas",55);
-        //       this.picLeft2.SetCanvasIndex("#primitiveCanvas",55);
-        //       this.picLeft3.SetCanvasIndex("#primitiveCanvas",55);
-        //   }
-        //   else{
-        //     this.picLeft1.SetCanvasIndex("#crossCanvas",3);
-        //     this.picLeft2.SetCanvasIndex("#crossCanvas",3);
-        //     this.picLeft3.SetCanvasIndex("#crossCanvas",3);
-        //     this.picLeft1.SetCanvasIndex("#primitiveDrawCanvas",4);
-        //     this.picLeft2.SetCanvasIndex("#primitiveDrawCanvas",4);
-        //     this.picLeft3.SetCanvasIndex("#primitiveDrawCanvas",4);
-        //     this.picLeft1.SetCanvasIndex("#primitiveCanvas",2);
-        //     this.picLeft2.SetCanvasIndex("#primitiveCanvas",2);
-        //     this.picLeft3.SetCanvasIndex("#primitiveCanvas",2);
-        //   }
+          if(this.action=="croselect"){
+              this.picLeft1.SetCanvasIndex("#crossCanvas",10);
+              this.picLeft2.SetCanvasIndex("#crossCanvas",10);
+              this.picLeft3.SetCanvasIndex("#crossCanvas",10);
+              this.picLeft1.SetCanvasIndex("#primitiveDrawCanvas",9);
+              this.picLeft2.SetCanvasIndex("#primitiveDrawCanvas",9);
+              this.picLeft3.SetCanvasIndex("#primitiveDrawCanvas",9);
+          }
+          else{
+            this.picLeft1.SetCanvasIndex("#crossCanvas",9);
+            this.picLeft2.SetCanvasIndex("#crossCanvas",9);
+            this.picLeft3.SetCanvasIndex("#crossCanvas",9);
+            this.picLeft1.SetCanvasIndex("#primitiveDrawCanvas",10);
+            this.picLeft2.SetCanvasIndex("#primitiveDrawCanvas",10);
+            this.picLeft3.SetCanvasIndex("#primitiveDrawCanvas",10);
+          }
       });
       this.activeRoute.queryParams.subscribe(params => {
         this.patientId = params.patientId;

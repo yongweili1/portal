@@ -1,0 +1,91 @@
+{
+    "_ImageViewConfig__cols":1,
+    "_ImageViewConfig__rows":3,
+    "alpha_per_delta":0.1,
+    "colormap":{
+        "0":[
+            0,
+            0,
+            0
+        ],
+        "1":[
+            255,
+            0,
+            0
+        ],
+        "2":[
+            0,
+            255,
+            0
+        ],
+        "3":[
+            0,
+            0,
+            255
+        ],
+        "4":[
+            255,
+            255,
+            0
+        ],
+        "5":[
+            0,
+            255,
+            255
+        ],
+        "6":[
+            255,
+            0,
+            255
+        ],
+        "7":[
+            255,
+            255,
+            255
+        ]
+    },
+    "cross_radius":10,
+    "image_alpha":0.75,
+    "lm_radius":2,
+    "lm_vis_dist":0.5,
+    "lm_zoom_factor":0.2,
+    "max_alpha":30,
+    "max_zoom_factor":25,
+    "min_alpha":0,
+    "min_zoom_factor":0.01,
+    "name":"config_3x1",
+    "px_per_percent":240,
+    "px_per_zoom":120,
+    "views":[
+        {
+            "bottom_left_text":"image type:",
+            "bottom_right_text":"color table:",
+            "enable_text":true,
+            "top_left_text":{
+                "size":[],
+                "spacing":[]
+            },
+            "top_right_text":"zoom:"
+        },
+        {
+            "bottom_left_text":"image type:",
+            "bottom_right_text":"color table:",
+            "enable_text":true,
+            "top_left_text":{
+                "size":[],
+                "spacing":[]
+            },
+            "top_right_text":"zoom:"
+        },
+        {
+            "bottom_left_text":"image type:",
+            "bottom_right_text":"color table:",
+            "enable_text":true,
+            "top_left_text":{
+                "size":[],
+                "spacing":[]
+            },
+            "top_right_text":"zoom:"
+        }
+    ]
+}

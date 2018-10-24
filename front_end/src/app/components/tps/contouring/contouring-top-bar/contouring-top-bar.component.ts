@@ -171,6 +171,10 @@ export class ContouringTopBarComponent implements OnInit {
         this.conMessage.SetCurAction("select");
     }
 
+    OnCrossSelect(){
+        this.conMessage.SetCurAction("croselect");
+    }
+
     OnStartMacro(){
     this.conService.Macro("start").subscribe(result=>{
         if(result=="ok"){
