@@ -4,16 +4,14 @@ import { Point } from '../tools/point';
 
 export class Freepen extends Overlay {
     type: string = 'freepen';
-    size: number;
     protected _cps: Array<Point>;
 
     constructor(stage, default_color='white') {
         super(stage, default_color);
         this._cps = new Array();
-        this.size = 2;
     }
 
-    appendCp(point) {
+    appendCp(point: Point) {
         this._cps.push(point)
     }
 
@@ -23,6 +21,18 @@ export class Freepen extends Overlay {
         } else {
             return this._cps[index];
         }
+    }
+    updateCps(cps) {
+        this._cps = new Array()
+        cps.forEach(cp => {
+            this._cps.push(cp.getCenter())
+        }); 
+    }
+    moveCps(delta_x, delta_y) {
+        this._cps.forEach(cp => {
+            cp.x += delta_x;
+            cp.y += delta_y;
+        });
     }
 
     update() {

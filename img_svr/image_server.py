@@ -277,7 +277,8 @@ class ImageServer(object):
             data['saggital'] = convert_rgba_to_base64(saggital, 'PNG')
 
         if display_view == ViewEnum.coronal or display_view == ViewEnum.all:
-            coronal = self.__get_rgb_image(ViewEnum.coronal, self.view_size['coronal'][0], self.view_size['coronal'][1])
+            coronal = self.__get_rgb_image(ViewEnum.coronal, self.view_size['coronal'][0],
+                                           self.view_size['coronal'][1])
             data['coronal'] = convert_rgba_to_base64(coronal, 'PNG')
 
         return data

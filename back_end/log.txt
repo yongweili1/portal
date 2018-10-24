@@ -15515,3 +15515,57 @@
 2018-10-23 15:27:01,651 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:35] - INFO - enter volume_flip
 2018-10-23 15:27:01,651 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:37] - INFO - exit volume_flip
 2018-10-23 15:27:01,651 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:37] - INFO - exit volume
+2018-10-23 17:08:02,690 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:35] - INFO - enter volume
+2018-10-23 17:08:02,706 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:35] - INFO - enter zval_pixels
+2018-10-23 17:08:02,750 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:37] - INFO - exit zval_pixels
+2018-10-23 17:08:02,750 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:25] - INFO - enter sort
+2018-10-23 17:08:02,750 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:26] - INFO - arguments:(<md.dicom.python.build_volume.BuildVolume object at 0x0000000043C170B8>, 1), {}
+2018-10-23 17:08:02,750 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:28] - INFO - exit sort
+2018-10-23 17:08:02,750 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:25] - INFO - enter check_slices
+2018-10-23 17:08:02,752 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:26] - INFO - arguments:(<md.dicom.python.build_volume.BuildVolume object at 0x0000000043C170B8>, 1), {}
+2018-10-23 17:08:02,752 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:76] - INFO - All slice exist, volume will be built
+2018-10-23 17:08:02,752 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:28] - INFO - exit check_slices
+2018-10-23 17:08:02,752 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:25] - INFO - enter pixels_append
+2018-10-23 17:08:02,752 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:26] - INFO - arguments:(<md.dicom.python.build_volume.BuildVolume object at 0x0000000043C170B8>,), {}
+2018-10-23 17:08:02,752 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:28] - INFO - exit pixels_append
+2018-10-23 17:08:02,752 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:35] - INFO - enter pixels_to_np
+2018-10-23 17:08:07,818 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:37] - INFO - exit pixels_to_np
+2018-10-23 17:08:07,818 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:35] - INFO - enter volume_flip
+2018-10-23 17:08:07,818 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:37] - INFO - exit volume_flip
+2018-10-23 17:08:07,818 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:37] - INFO - exit volume
+2018-10-23 17:32:21,678 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:35] - INFO - enter volume
+2018-10-23 17:32:21,696 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:35] - INFO - enter zval_pixels
+2018-10-23 17:32:21,701 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:37] - INFO - exit zval_pixels
+2018-10-23 17:32:21,701 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:25] - INFO - enter sort
+2018-10-23 17:32:21,701 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:26] - INFO - arguments:(<md.dicom.python.build_volume.BuildVolume object at 0x00000000117E0278>, 1), {}
+2018-10-23 17:32:21,701 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:28] - INFO - exit sort
+2018-10-23 17:32:21,703 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:25] - INFO - enter check_slices
+2018-10-23 17:32:21,703 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:26] - INFO - arguments:(<md.dicom.python.build_volume.BuildVolume object at 0x00000000117E0278>, 1), {}
+2018-10-23 17:32:21,703 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:76] - INFO - All slice exist, volume will be built
+2018-10-23 17:32:21,703 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:28] - INFO - exit check_slices
+2018-10-23 17:32:21,703 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:25] - INFO - enter pixels_append
+2018-10-23 17:32:21,703 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:26] - INFO - arguments:(<md.dicom.python.build_volume.BuildVolume object at 0x00000000117E0278>,), {}
+2018-10-23 17:32:21,703 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:28] - INFO - exit pixels_append
+2018-10-23 17:32:21,703 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:35] - INFO - enter pixels_to_np
+2018-10-23 17:32:21,882 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:37] - INFO - exit pixels_to_np
+2018-10-23 17:32:21,882 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:35] - INFO - enter volume_flip
+2018-10-23 17:32:21,882 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:37] - INFO - exit volume_flip
+2018-10-23 17:32:21,882 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:37] - INFO - exit volume
+2018-10-23 17:34:49,400 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:35] - INFO - enter volume
+2018-10-23 17:34:49,401 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:35] - INFO - enter zval_pixels
+2018-10-23 17:34:49,451 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:37] - INFO - exit zval_pixels
+2018-10-23 17:34:49,451 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:25] - INFO - enter sort
+2018-10-23 17:34:49,451 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:26] - INFO - arguments:(<md.dicom.python.build_volume.BuildVolume object at 0x000000004B45CBA8>, 1), {}
+2018-10-23 17:34:49,451 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:28] - INFO - exit sort
+2018-10-23 17:34:49,451 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:25] - INFO - enter check_slices
+2018-10-23 17:34:49,451 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:26] - INFO - arguments:(<md.dicom.python.build_volume.BuildVolume object at 0x000000004B45CBA8>, 1), {}
+2018-10-23 17:34:49,453 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:76] - INFO - All slice exist, volume will be built
+2018-10-23 17:34:49,453 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:28] - INFO - exit check_slices
+2018-10-23 17:34:49,453 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:25] - INFO - enter pixels_append
+2018-10-23 17:34:49,453 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:26] - INFO - arguments:(<md.dicom.python.build_volume.BuildVolume object at 0x000000004B45CBA8>,), {}
+2018-10-23 17:34:49,453 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:28] - INFO - exit pixels_append
+2018-10-23 17:34:49,453 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:35] - INFO - enter pixels_to_np
+2018-10-23 17:34:53,391 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:37] - INFO - exit pixels_to_np
+2018-10-23 17:34:53,391 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:35] - INFO - enter volume_flip
+2018-10-23 17:34:53,822 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:37] - INFO - exit volume_flip
+2018-10-23 17:34:53,822 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\build_volume.py - build_volume.py - [line:37] - INFO - exit volume

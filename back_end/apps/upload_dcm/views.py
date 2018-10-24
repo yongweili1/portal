@@ -42,7 +42,7 @@ class Patinfo(APIView):
             for chunk in f.chunks():
                 destination.write(chunk)
             destination.close()
-            file_name_list.append(file.name)
+            file_name_list.append(f.name)
 
         # 读取，解析保存的文件
         dataset_list = []
@@ -66,7 +66,7 @@ class Patinfo(APIView):
         except Exception as e:
             return Response('DCM数据入库失败，请检查DCM数据是否符合DB字段约束')
 
-        print('数据入库成功，正在build_volume（此操作比较耗时，请稍等）...')
+        print('数据入库成功，重新build_volume（此操作比较耗时，请稍等）...')
         start_time = time.time()
         for seriespath in set(series_path_list):
             filelist = os.listdir(seriespath)

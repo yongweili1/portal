@@ -49,13 +49,16 @@ export class ContourDirective implements OnInit {
         this.myContext.lineWidth = this.contourLineWidth;
         
         this.contouringService.curAction$.subscribe(curAction => {
-            console.log('curAction')
             this.curAction = curAction
         })
     }
     
     @HostListener('mousedown', ['$event']) onMouseDown(event: MouseEvent) {
-        console.log('mousedown')
+        this.myStage.children.forEach(shape => {
+            if (shape.type == 'freepen') {
+                shape.editable = this.curAction == 'freepen2' ? true : false;
+            }
+        });
         this.sharp = this.getShapeContainerInstance(this.curAction, this.myStage);
         if (this.sharp != null)
             this.sharp.handleMouseDown(event)
