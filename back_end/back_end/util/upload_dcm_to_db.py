@@ -33,7 +33,7 @@ class UploadDcm(object):
                     # 创建自定义类的对象，提取dicom文件中的patient信息
                     a = DcmPatient()
                     patient_dic = a.get_dicom_patient(dataset)
-                    print(patient_dic)
+                    # print(patient_dic)
                     # 判断数据库中是否存在该对象，如有，更新时间，不执行数据入库
                     if len(Patient.objects.filter(patientid=patient_dic['patientid'])) != 0:
                         Patient.objects.filter(patientid=patient_dic['patientid']).update(
@@ -50,7 +50,7 @@ class UploadDcm(object):
                     # 创建自定义类的对象，提取dicom文件中的study信息
                     b = DcmStudy()
                     study_dic = b.get_dicom_study(dataset)
-                    print(study_dic)
+                    # print(study_dic)
                     if len(Study.objects.filter(studyuid=study_dic['studyuid'])) != 0:
                         Study.objects.filter(studyuid=study_dic['studyuid']).update(updatetime=datetime.datetime.now())
                     else:
@@ -63,7 +63,7 @@ class UploadDcm(object):
                     # 创建自定义类的对象，提取dicom文件中的series信息
                     c = DcmSeries()
                     series_dic = c.get_dicom_series(dataset)
-                    print(series_dic)
+                    # print(series_dic)
                     if len(Series.objects.filter(seriesuid=series_dic['seriesuid'])) != 0:
                         Series.objects.filter(seriesuid=series_dic['seriesuid']).update(buildvolumesign=int(1),
                                                                                         updatetime=datetime.datetime.now())
@@ -85,7 +85,7 @@ class UploadDcm(object):
                     image_dic = d.get_dicom_image(dataset)
                     # image_dic['updatesign'] = int(1)
                     # image_dic['updatetime'] = datetime.datetime.now()
-                    print(image_dic)
+                    # print(image_dic)
                     if len(Image.objects.filter(imageuid=image_dic['imageuid'])) != 0:
                         Image.objects.filter(imageuid=image_dic['imageuid']).update(updatesign=int(1),
                                                                                     updatetime=datetime.datetime.now())
