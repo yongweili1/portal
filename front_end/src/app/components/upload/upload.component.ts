@@ -24,6 +24,8 @@ export class UploadComponent {
   uploader:FileUploader;
   hasAnotherDropZoneOver:boolean;
   response:string;
+  uploadPercent:any = 0;
+  hiddenPercent:any = 'false';
   
   constructor(
     private appConfig:AppConfigService,
@@ -59,11 +61,16 @@ export class UploadComponent {
       files.push(fileItems._file);
     })
     $('#loading').showLoading();
+    this.hiddenPercent = 'true'
     this.UploadService.makeFileRequest("http://10.9.19.24:8000/dicom/patinfos/",files).subscribe(result=>
     {
       $('#loading').hideLoading();
+      this.hiddenPercent = 'false'
       this.elMessage.setOptions({ showClose: true,customClass:"elmessage" });
       this.elMessage['info'](result);
     });
+    this.UploadService.progress$.subscribe(result=>
+      this.uploadPercent = result
+    )
   }
 }

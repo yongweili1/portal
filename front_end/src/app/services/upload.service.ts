@@ -1,4 +1,5 @@
 import { Observable } from 'rxjs';
+import { share } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { URLSearchParams } from '@angular/http';
 import { AuthHttp } from '../core/auth-http';
@@ -9,11 +10,14 @@ import { AppConfigService } from '../app.config';
 export class UploadService {
   progress;
   progressObserver;
+  progress$:any;
   constructor(
     private http: AuthHttp,
     private appConfig: AppConfigService) {
-     
-     }
+      this.progress$ = Observable.create(observer => {
+        this.progressObserver = observer
+    });     
+  }
     
   makeFileRequest (url: string,  files: File[]) {
     return Observable.create(observer => {

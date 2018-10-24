@@ -8,6 +8,7 @@ import {
 } from 'primeng/primeng';
 import { FileUploadModule } from 'ng2-file-upload';
 import { SharedModule } from '../../shared/shared.module';
+import { ElModule } from 'element-angular'
 
 import { UploadComponent } from './upload.component';
 import { UploadService } from '../../services/upload.service';
@@ -26,7 +27,8 @@ const routes: Routes = [
     ...primengModule,
     SharedModule,
     FileUploadModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    ElModule.forRoot(),
   ],
   declarations: [
     UploadComponent,
