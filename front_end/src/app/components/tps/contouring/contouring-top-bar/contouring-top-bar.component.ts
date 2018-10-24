@@ -224,6 +224,10 @@ export class ContouringTopBarComponent implements OnInit {
         console.log("butt-freepen");
         this.conMessage.SetCurAction("freepen");
     }
+    FuncFreepenModify() {
+        console.log("butt-freepen");
+        this.conMessage.SetCurAction("freepen2");
+    }
 }
 
 export class PTreeNode {
