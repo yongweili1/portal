@@ -48,7 +48,7 @@ export class ContouringTopBarComponent implements OnInit {
     display: boolean = false;
     addPlanDisplay: boolean = false;
 
-    imgzoom() {
+    onImgZoom(){
         this.zoom.emit();
     }
 

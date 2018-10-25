@@ -78,8 +78,6 @@ export class PicTransverseComponent implements OnChanges {
             this.primitivedrawcan = $(".a_class .primitivedrawcan").get(0);
             this.nugevas = $(".a_class #nugeCanvas").get(0);
             this.canbas.find(".mpr").text('Transverse');
-            var myCanvas = $('.a_class #canvas-frame').get(0);
-            var lightPoint = new Array(0, -100, 25);
         }
         if (this.tag == "coronal") {
             this.canvas = $(".b_class .icanvas").get(0);
@@ -201,47 +199,6 @@ export class PicTransverseComponent implements OnChanges {
         return buffer;
     }
 
-    picScroll(delt: any) {
-        let that = this;
-        if(this.hasLoadVolume == true){
-            this.seriesHttpService.GetSeriesPic(this.tag, this.tag, delt, this.canvas.width, this.canvas.height).subscribe((value) => {
-            let data = JSON.parse(value);
-            this.drawCanvasPic(data[this.tag]);
-            that.postPoint = data.cross_position;
-            console.log(that.postPoint);
-            that.P2Cross();
-
-        }, (error) => {
-            console.log(error);
-        })
-        } 
-    }
-    // picScroll(delt: any){
-    //     let that = this;
-    //     let myurl = `${this.appConfig.apiUrl}/image/pages/`
-    //     if(this.hasLoadVolume == true){
-    //         $.ajax({
-    //             type: "get",
-    //             url: myurl,
-    //             data: {"delta":delt,"width":that.canvas.width,"height":that.canvas.height,"focus_view":that.tag,"display_view":that.tag},
-    //             cache: false,
-    //             async : true,
-    //             dataType: "json",
-    //             success: function (value)
-    //             {
-    //                 let data = JSON.parse(value);
-    //                 that.drawCanvasPic(data[that.tag]);
-    //                 that.postPoint = data.cross_position;
-    //                 console.log(that.postPoint);
-    //                 that.P2Cross();
-    //             },
-    //             error:function () {      
-    //                 alert("请求失败！");
-    //             }
-    //          });
-    //     }
-    // }
-
     // 翻页
     windowAddMouseWheel(tag) {
         let that = this;
@@ -249,14 +206,13 @@ export class PicTransverseComponent implements OnChanges {
         var scrollFunc = function (e) {
             e = e || window.event;
             delt = e.wheelDelta / 120;
-            that.picScroll(delt);
+            that.P2Cross(delt);
         };
         this.canbas.get(0).onmousewheel = scrollFunc;
     }
 
-    P2Cross() {
-        // this.postPoint = vec4.fromValues(this.firstImagePosition[0] + (this.sliceAll[2]) * this.gap[0], this.firstImagePosition[1] + (this.sliceAll[1]) * this.gap[1], this.firstImagePosition[2] + (this.sliceAll[0]) * this.gap[2], 1);
-        this.twoCross.emit(this.postPoint);
+    P2Cross(delt) {
+        this.twoCross.emit(delt);
     }
     /**
      * 清除所有图元
@@ -746,21 +702,7 @@ drawCross(nix, niy, loca) {
 
     locateUpdate(imageData, crossPoint) {
         this.drawCanvasPic(imageData);
-        let crossPtX, crossPtY;
-        console.log(crossPoint)
-        if (this.tag == "transverse") {
-            crossPtX = crossPoint['transPosition'][0];
-            crossPtY = crossPoint['transPosition'][1];
-        }
-        else if (this.tag == "saggital") {
-            crossPtX = crossPoint['sagPosition'][0];
-            crossPtY = crossPoint['sagPosition'][1];
-        }
-        else {
-            crossPtX = crossPoint['cronPosition'][0];
-            crossPtY = crossPoint['cronPosition'][1];
-        }
-        this.cross(crossPtX,crossPtY,1);
+        this.cross(crossPoint[0],crossPoint[1],1);
     }
 
 

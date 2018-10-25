@@ -5,7 +5,7 @@ from StringIO import StringIO
 
 import numpy as np
 from PIL import Image
-from enum import Enum
+from enum import IntEnum
 
 
 def get_args(argv):
@@ -25,40 +25,31 @@ def get_args(argv):
     return kwargs
 
 
-class ViewEnum(Enum):
-    all = 0,
-    transverse = 1,
+class ViewEnum(IntEnum):
+    transverse = 0,
+    coronal = 1,
     saggital = 2,
-    coronal = 3,
-
-
-def get_display_view(display_view):
-    if display_view == 'transverse':
-        return 0
-    elif display_view == 'saggital':
-        return 1
-    elif display_view == 'coronal':
-        return 2
-    else:
-        return 9
-
-
-def get_focus_view(focus_view):
-    if focus_view == 'transverse':
-        return ViewEnum.transverse
-    elif focus_view == 'saggital':
-        return ViewEnum.saggital
-    elif focus_view == 'coronal':
-        return ViewEnum.coronal
+    trans_and_cro = 3,
+    trans_and_sag = 4,
+    cro_and_sag = 5,
+    all = 6
 
 
 def get_view_index(view_name):
     if view_name == 'transverse':
-        return 0
-    elif view_name == 'coronal':
-        return 1
+        return ViewEnum['transverse'].value
     elif view_name == 'saggital':
-        return 2
+        return ViewEnum['saggital'].value
+    elif view_name == 'coronal':
+        return ViewEnum['coronal'].value
+    elif view_name == 'transverse,coronal':
+        return ViewEnum['trans_and_cro'].value
+    elif view_name == 'transverse,saggital':
+        return ViewEnum['trans_and_sag'].value
+    elif view_name == 'coronal,saggital':
+        return ViewEnum['cro_and_sag'].value
+    else:
+        return ViewEnum['all'].value
 
 
 def get_axis(view, cfg):
@@ -130,8 +121,33 @@ def convert_rgba_to_base64(rgba, format):
     return base64_data
 
 
-# def get_targetkey_content(map_data, key):
-#     result = {}
-#     for data in map_data if
+def view_filter(views, filter_image):
+    """
+    filter no need image data to improve performance
+    :param views:
+    :param filter_image_list:
+    :return:
+    """
+    filter_image_list = []
+    result = {}
+    if isinstance(filter_image, list):
+        filter_image_list = filter_image
+    else:
+        filter_image_list.append(filter_image)
+    for (view_key, view_value) in views.items():
+        if view_key in filter_image_list:
+            view_value['image'] = {}
+        result[view_key] = view_value
+
+    return result
 
 
+def get_page_filter_view(focus_view):
+        if focus_view == 0:
+            return [1, 2]
+        elif focus_view == 1:
+            return [0, 2]
+        elif focus_view == 2:
+            return [0, 1]
+        else:
+            print("focus_view index error")

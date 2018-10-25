@@ -38,7 +38,7 @@ class CellUpdater(BaseUpdater):
             print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! CellUpdater update() ---> {}'.format(e)
 
     def update_image(self, scene, workflow):
-        rgba_data = scene.render().tolist()
+        rgba_data = scene.render()
         self._result[RefreshType.Image] = convert_rgba_to_base64(rgba_data, 'PNG')
 
     def update_crosshair(self, scene, workflow):

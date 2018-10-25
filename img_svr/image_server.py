@@ -4,7 +4,7 @@ from md.image3d.python.image3d_vis import slice_to_bytes, bytes_to_colors
 from md.image3d.python.image3d_io import read_image
 from md.mdmath.python.rotation3d import axis_angle_to_rotation_matrix
 from utilities import get_axis, get_orthogonal_axis, get_two_spacing, get_orthogonal_spacing, ViewEnum, \
-    convert_rgba_to_base64, get_view_size, get_view_string, get_focus_view, get_view_index
+    convert_rgba_to_base64, get_view_size, get_view_string, get_view_index
 from scene.temp import translate_from_screen_to_world, translate_from_world_to_screen
 
 
@@ -333,7 +333,7 @@ class ImageServer(object):
         data = {}
         for display_view in display_view_array:
             width, height = self.view_size[display_view]
-            display_view = get_focus_view(display_view)
+            display_view = get_view_index(display_view)
             img = self.get_images(display_view, width, height)
             data.update(img)
 
