@@ -50,6 +50,7 @@ export class PicTransverseComponent implements OnChanges {
     @Output() twoCross: EventEmitter<any> = new EventEmitter<any>();
     @Output() message: EventEmitter<any> = new EventEmitter<any>();
     @Output() scroll: EventEmitter<any> = new EventEmitter<any>();
+    @Output() zoomReq: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
     glsource = new glsource();
     curAction: any;
     focus: any; display: any;
@@ -432,28 +433,28 @@ drawCross(nix, niy, loca) {
     }
 
     oldscale = 0; //缩放
-    zoom() {
+    addZoomEvent() {
         let that = this;
         $('#threebmp').removeClass().addClass("ZoomCursor");
         that.canbas.get(0).onmousedown = function (e) {
-            var clickY = e.clientY;
+            let zoom_factor = 0;
+            let preY = e.clientY;
             that.canbas.get(0).onmousemove = function (e) {
-                var curY = e.clientY;
-                that.sx = (clickY - curY) / 200;
-                that.scale = (1 + that.sx + that.oldscale).toFixed(2);
-                if (that.scale <= 0.1) {
-                    that.sx = 0;
-                    that.scale = that.scale;
-                    return false;
+                let curY = e.clientY;
+                let shiftY = curY - preY;
+                preY = curY;
+                if (shiftY >= 0){
+                    zoom_factor = 1.0 + shiftY * 1.0 / 120
                 }
-                that.affineMat3 = that.ceateAffineTrans(that.scale, that.transX * that.scale, that.transY * that.scale);
-                that.drawScene(that.gl, that.programInfo, that.buffers, that.texture);
-                // that.patient2screen(that.postPoint);
+                else{
+                    zoom_factor = 1.0 / (1.0 - shiftY * 1.0 / 120)
+                } 
+
+                that.zoomReq.emit([that.tag, zoom_factor]);
             }
             that.canbas.get(0).onmouseup = function (e) {
                 that.canbas.get(0).onmousemove = null;
                 that.canbas.get(0).onmouseup = null;
-                that.oldscale = that.sx + that.oldscale;
             }
         }
     }
@@ -700,11 +701,10 @@ drawCross(nix, niy, loca) {
         return shader;
     }
 
-    locateUpdate(imageData, crossPoint) {
+    cellUpdate(imageData, crossPoint) {
         this.drawCanvasPic(imageData);
         this.cross(crossPoint[0],crossPoint[1],1);
     }
-
 
     drawCanvasPic(imageData) {
         let img1 = new Image();

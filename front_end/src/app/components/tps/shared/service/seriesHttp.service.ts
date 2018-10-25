@@ -81,6 +81,13 @@ GetLocatePic(focus:any,display:any,crossPoint:any):Observable<any>{
    return this.http.get(`${this.appConfig.apiUrl}/image/cross/`,{params : getParams});
 }
 
+GetZoomPic(focus:any,factor:any):Observable<any>{
+    const getParams = new HttpParams()
+    .set('focus_view', focus)
+    .set('zoom_factor',factor);
+   return this.http.get<any>(`${this.appConfig.apiUrl}/image/zooms/`,{params : getParams});
+}
+
 
 
 }

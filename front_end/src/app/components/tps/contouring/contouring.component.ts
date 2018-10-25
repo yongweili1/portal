@@ -47,6 +47,9 @@ export class ContouringComponent implements OnInit {
   seriesList:any;
   hasLoadVolume:boolean= false;
   seriesId:any;
+  transverseCanvas:any;
+  saggitalCanvas:any;
+  coronalCanvas:any;
   
   @ViewChild('picLeft1') picLeft1;
   @ViewChild('picLeft2') picLeft2;
@@ -71,8 +74,8 @@ export class ContouringComponent implements OnInit {
     let displayView = 'coronal,saggital'  
     this.seriesHttpService.GetLocatePic('transverse',displayView,event).subscribe((value)=>{
         let data = JSON.parse(value);
-        this.picLeft2.locateUpdate(data['1']['image'], data['1']['crosshair']);
-        this.picLeft3.locateUpdate(data['2']['image'], data['2']['crosshair']);
+        this.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair']);
+        this.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair']);
     }
     )
     }
@@ -81,8 +84,8 @@ export class ContouringComponent implements OnInit {
     let displayView = 'transverse,saggital'  
     this.seriesHttpService.GetLocatePic('coronal',displayView,event).subscribe((value)=>{
         let data = JSON.parse(value);
-        this.picLeft1.locateUpdate(data['0']['image'], data['0']['crosshair']);
-        this.picLeft3.locateUpdate(data['2']['image'], data['2']['crosshair']);
+        this.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair']);
+        this.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair']);
     }
     )
     }
@@ -90,8 +93,8 @@ export class ContouringComponent implements OnInit {
     let displayView = 'transverse,coronal'
     this.seriesHttpService.GetLocatePic('saggital',displayView,event).subscribe((value)=>{
         let data = JSON.parse(value);
-        this.picLeft1.locateUpdate(data['0']['image'], data['0']['crosshair']);
-        this.picLeft2.locateUpdate(data['1']['image'], data['1']['crosshair']);
+        this.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair']);
+        this.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair']);
     })
     }
 
@@ -154,7 +157,10 @@ export class ContouringComponent implements OnInit {
  
   }
 
-  ngOnInit() {
+  ngOnInit() {      
+      this.transverseCanvas = $(".a_class .icanvas").get(0);
+      this.saggitalCanvas = $(".c_class .icanvas").get(0);
+      this.coronalCanvas = $(".b_class .icanvas").get(0);
       if (this.conMessage.seriList != undefined) {
           this.seriList = this.conMessage.seriList[0];
       }
@@ -205,12 +211,9 @@ export class ContouringComponent implements OnInit {
 
   getCanvasSize(){
     let view_size :any = {};
-    let transverseCanvas = $(".a_class .icanvas").get(0);
-    let saggitalCanvas = $(".c_class .icanvas").get(0);
-    let coronalCanvas = $(".b_class .icanvas").get(0);
-    view_size['transverse'] = [transverseCanvas.width,transverseCanvas.height];
-    view_size['coronal'] = [coronalCanvas.width,coronalCanvas.height];
-    view_size['saggital'] = [saggitalCanvas.width,saggitalCanvas.height];
+    view_size['transverse'] = [this.transverseCanvas.width,this.transverseCanvas.height];
+    view_size['coronal'] = [this.coronalCanvas.width,this.coronalCanvas.height];
+    view_size['saggital'] = [this.saggitalCanvas.width,this.saggitalCanvas.height];
 
     return view_size;
 
@@ -218,14 +221,24 @@ export class ContouringComponent implements OnInit {
 
   mainHideList(){
     document.getElementById("series_list").classList.toggle("series_inactive");
-    // document.getElementById("threebmp").classList.toggle("three_inactive");
   }
   mainzoom() {
-      $('#threebmp').removeClass().addClass("ZoomCursor");
-    
-      this.picLeft1.zoom();
-      this.picLeft2.zoom();
-      this.picLeft3.zoom();
+      this.picLeft1.addZoomEvent();
+      this.picLeft2.addZoomEvent();
+      this.picLeft3.addZoomEvent();
+  }
+  mainZoomPro(evt){
+      console.log(evt);
+      let focus_view = evt[0];
+      let factor = evt[1];
+      let that = this;
+      if(this.hasLoadVolume == true){
+        this.seriesHttpService.GetZoomPic(focus_view,factor).subscribe(result =>{
+            that.picLeft1.cellUpdate(result['0']['image'], result['0']['crosshair']);
+            that.picLeft2.cellUpdate(result['1']['image'], result['1']['crosshair']);
+            that.picLeft3.cellUpdate(result['2']['image'], result['2']['crosshair']);
+          })
+      }
   }
   mainwlww() {
       this.picLeft1.changewl();
@@ -320,94 +333,6 @@ export class ContouringComponent implements OnInit {
                         //this.hideDialog();
                         console.log(error);
                     })
-                    // this.seriesHttpService.GetSeries(seriesId,"","coronal",coronalCanvas.width,coronalCanvas.height).subscribe((value) =>{
-                    //     let data = JSON.parse(value);
-                    //     let base64Header = "data:image/png;base64,";
-                    //     let imgData:any;
-                    //     if (data.transverse != null)
-                    //     {
-                    //         console.log("pre transverse"); 
-                    //         imgData = base64Header + data.transverse;
-                    //         img1.src = imgData;
-                    //         img1.onload = function(){
-                    //             transverseCanvas.getContext("2d").clearRect(0,0,transverseCanvas.width,transverseCanvas.height);
-                    //             transverseCanvas.getContext("2d").drawImage(img1,0,0,transverseCanvas.width,transverseCanvas.height);
-                    //             console.log("onload transverse");    
-                    //         }
-                    //     }
-                    //     if (data.coronal != null)
-                    //     {
-                    //         console.log("pre coronal"); 
-                    //         imgData = base64Header + data.coronal;
-                    //         img2.src = imgData;
-                    //         img2.onload = function(){
-                    //             coronalCanvas.getContext("2d").clearRect(0,0,coronalCanvas.width,coronalCanvas.height);
-                    //             coronalCanvas.getContext("2d").drawImage(img2,0,0,coronalCanvas.width,coronalCanvas.height);
-                    //             console.log("onload coronal");     
-                    //         }
-                    //     }
-                    //     if (data.saggital != null)
-                    //     {
-                    //         console.log("pre saggital");
-                    //         imgData = base64Header + data.saggital;
-                    //         img3.src = imgData;
-                    //         img3.onload = function(){
-                    //             saggitalCanvas.getContext("2d").clearRect(0,0,saggitalCanvas.width,saggitalCanvas.height);
-                    //             saggitalCanvas.getContext("2d").drawImage(img3,0,0,saggitalCanvas.width,saggitalCanvas.height);
-                    //             console.log("onload saggital");     
-                    //         }
-                    //     }
-                    //     $('#loading').hideLoading();
-                    //     //this.hideDialog();
-                    // },(error)=>{
-                    //     $('#loading').hideLoading();
-                    //     //this.hideDialog();
-                    //     console.log(error);
-                    // })
-                    // this.seriesHttpService.GetSeries(seriesId,"","saggital",saggitalCanvas.width,saggitalCanvas.height).subscribe((value) =>{
-                    //     let data = JSON.parse(value);
-                    //     let base64Header = "data:image/png;base64,";
-                    //     let imgData:any;
-                    //     if (data.transverse != null)
-                    //     {
-                    //         console.log("pre transverse"); 
-                    //         imgData = base64Header + data.transverse;
-                    //         img1.src = imgData;
-                    //         img1.onload = function(){
-                    //             transverseCanvas.getContext("2d").clearRect(0,0,transverseCanvas.width,transverseCanvas.height);
-                    //             transverseCanvas.getContext("2d").drawImage(img1,0,0,transverseCanvas.width,transverseCanvas.height);
-                    //             console.log("onload transverse");    
-                    //         }
-                    //     }
-                    //     if (data.coronal != null)
-                    //     {
-                    //         console.log("pre coronal"); 
-                    //         imgData = base64Header + data.coronal;
-                    //         img2.src = imgData;
-                    //         img2.onload = function(){
-                    //             coronalCanvas.getContext("2d").clearRect(0,0,coronalCanvas.width,coronalCanvas.height);
-                    //             coronalCanvas.getContext("2d").drawImage(img2,0,0,coronalCanvas.width,coronalCanvas.height);
-                    //             console.log("onload coronal");     
-                    //         }
-                    //     }
-                    //     if (data.saggital != null)
-                    //     {
-                    //         console.log("pre saggital");
-                    //         imgData = base64Header + data.saggital;
-                    //         img3.src = imgData;
-                    //         img3.onload = function(){
-                    //             saggitalCanvas.getContext("2d").clearRect(0,0,saggitalCanvas.width,saggitalCanvas.height);
-                    //             saggitalCanvas.getContext("2d").drawImage(img3,0,0,saggitalCanvas.width,saggitalCanvas.height);
-                    //             console.log("onload saggital");     
-                    //         }
-                    //     }
-                    //     $('#loading').hideLoading();
-                    //     //this.hideDialog();
-                    // },(error)=>{
-                    //     $('#loading').hideLoading();
-                    //     //this.hideDialog();
-                    //     console.log(error);
-                    // })
                     console.log("wait for response")
                     this.hasLoadVolume = true;
                     this.seriesId = seriesId;

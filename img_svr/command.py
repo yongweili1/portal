@@ -178,12 +178,13 @@ def zoom(**kwargs):
     :return:
     """
     try:
-        shift = int(kwargs['shift'])
+        zoom_factor = kwargs['zoom_factor']
         focus_view = get_view_index(kwargs['focus_view'])
     except:
         return response(success=False, message='Invalid parameters.')
 
-    imageentity.zoom(focus_view, shift)
+    zoom_factor = float(zoom_factor)
+    imageentity.zoom(focus_view, zoom_factor)
     imageentity.updater().update(RefreshType.All)
     result = imageentity.updater().get_result()
     return response(json.dumps(result))
@@ -344,7 +345,6 @@ def resize(**kwargs):
     children_views[0].resize_(0, size['transverse'][0], size['transverse'][1])
     children_views[1].resize_(0, size['coronal'][0], size['coronal'][1])
     children_views[2].resize_(0, size['saggital'][0], size['saggital'][1])
-    print("resize succeed")
     return response(message='Set view size succeed')
 
 
@@ -356,8 +356,11 @@ def locate(**kwargs):
     except:
         return response(success=False, message='Invalid parameters.')
 
-    imageentity.locate(focus_view, cursor_2D)
-    imageentity.updater().update(RefreshType.All)
-    result = imageentity.updater().get_result()
-    result = view_filter(result, focus_view)
-    return response(json.dumps(result))
+    try:
+        imageentity.locate(focus_view, cursor_2D)
+        imageentity.updater().update(RefreshType.All)
+        result = imageentity.updater().get_result()
+        result = view_filter(result, focus_view)
+        return response(json.dumps(result))
+    except Exception as e:
+        return response(success=False, message='locate failed')

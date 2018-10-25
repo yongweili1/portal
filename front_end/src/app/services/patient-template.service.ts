@@ -42,13 +42,7 @@ export class PatientTemplateService {
     .set('studyDate', pageRequest.studyDate.toString());
     console.log(this.headers);
     return this.http
-      .get<Page<PatientPageRequest>>('http://10.9.19.139:8000/patientinformations/patinfolist/',{headers:this.headers});
-      // return this.http
-      // .get<Page<PatientPageRequest>>('http://127.0.0.1:8000/patientinformations/patinfolist/',{params:searchParams});
-    // return this.http
-    //   .get<Page<PatientPageRequest>>(`${this.appConfig.apiUrl}/patientinformations/patinfolist/`,{params:searchParams});
-    // return this.http
-    // .get<Page<PatientPageRequest>>(`${this.appConfig.apiUrl}/patientinformations/patinfolist/`, {params:searchParams});
+    .get<Page<PatientPageRequest>>(`${this.appConfig.apiUrl}/patientinformations/patinfolist/`, {params:searchParams});
   }
 
 
