@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LogServer>
+  <!-- Config Logger Server -->
+  <!-- The ServerIP is the log server IP, not support hostname -->
+  <!-- The LogServerPort is the log server Port -->
+  <ServerIP>127.0.0.1</ServerIP>
+  <LogServerPort>9998</LogServerPort>
+  <!-- End of Config Logger Server -->
+
+  <!-- Config Logger Trace Level -->
+  <!-- Trace Log Level is configurable and default setting should be Off in release version -->
+  <!-- But at present, we turn them on for users -->
+  <!-- On and Off is case sensitive -->
+  <LOG_TRACE_ERROR>On</LOG_TRACE_ERROR>
+  <LOG_TRACE_WARN>On</LOG_TRACE_WARN>
+  <LOG_TRACE_INFO>On</LOG_TRACE_INFO>
+  <!-- Config Logger Trace Level -->
+
+  <!-- LOG_CLIENT_NAME: The name of the Client or containee name -->
+  <!-- This Tag will be used to create folders for one process -->
+  <LOG_CLIENT_NAME>py.uii</LOG_CLIENT_NAME>
+  <LOG_TRACE_SOURCE_CODE_INFO>On</LOG_TRACE_SOURCE_CODE_INFO>
+
+</LogServer>
