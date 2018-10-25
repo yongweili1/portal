@@ -1,10 +1,10 @@
-from viewer3.BE.updater.baseupdater import BaseUpdater
+from updater.baseupdater import BaseUpdater
 
 
 class ImageUpdater(BaseUpdater):
     def __init__(self, entity):
         super(ImageUpdater, self).__init__(entity)
-        self._result = {'imageview': {}}
+        self._result = {}
 
     def get_result(self):
         return self._result
@@ -13,4 +13,4 @@ class ImageUpdater(BaseUpdater):
         for cell in self._entity.get_children_views():
             if cell.get_scene() is not None:
                 cell.updater().update(*render_type)
-                self._result['imageview'][cell.uid] = cell.updater().get_result()
+                self._result[cell.uid] = cell.updater().get_result()

@@ -6,8 +6,7 @@ from enum import Enum
 
 from md.image3d.python.image3d_tools import slice_nn
 from md.image3d.python.image3d_vis import slice_to_bytes, bytes_to_colors, multi_image_alpha_blend
-
-from viewer3.BE.scene.camera import SceneCamera
+from camera import SceneCamera
 
 
 class SceneType(Enum):

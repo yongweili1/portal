@@ -1,16 +1,15 @@
 import numpy as np
 
-from viewer3.args import RefreshType
-from viewer3.BE.model.cellmodel import CellModel, CellsInfo
-from viewer3.BE.model.imagemodel import VolumeInfo, GraphicModel
-from viewer3.BE.model.workflow import GET_CLASS_NAME
-from viewer3.BE.router.routerargs import GraphicState
-from viewer3.BE.router.routerentity import RouterEntity
-from viewer3.BE.scene.camera import SceneCamera
-from viewer3.BE.scene.coord import translate_from_screen_to_world
-from viewer3.BE.scene.scene import SliceScene, SceneType
-from viewer3.BE.scene.vrscene import VRScene, MeshScene
-from viewer3.BE.updater.cellupdater import CellUpdater
+from args import RefreshType
+from model.cellmodel import CellModel, CellsInfo
+from model.imagemodel import VolumeInfo, GraphicModel
+from model.workflow import GET_CLASS_NAME
+from router.routerargs import GraphicState
+from router.routerentity import RouterEntity
+from scene.camera import SceneCamera
+from scene.coord import translate_from_screen_to_world
+from scene.scene import SliceScene, SceneType
+from updater.cellupdater import CellUpdater
 
 
 class CellEntity(RouterEntity):

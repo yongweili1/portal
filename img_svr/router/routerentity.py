@@ -1,4 +1,4 @@
-from viewer3.BE.router.duplexrouter import DuplexRouter
+from router.duplexrouter import DuplexRouter
 
 
 class RouterEntity:

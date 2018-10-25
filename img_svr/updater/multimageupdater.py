@@ -1,4 +1,4 @@
-from viewer3.BE.updater.baseupdater import BaseUpdater
+from updater.baseupdater import BaseUpdater
 
 
 class MultiImageUpdater(BaseUpdater):

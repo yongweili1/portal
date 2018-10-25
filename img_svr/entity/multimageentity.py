@@ -1,7 +1,7 @@
-from viewer3.args import RefreshType
-from viewer3.BE.model.workflow import WorkflowController
-from viewer3.BE.router.routerentity import RouterEntity
-from viewer3.BE.updater.multimageupdater import MultiImageUpdater
+from args import RefreshType
+from model.workflow import WorkflowController
+from router.routerentity import RouterEntity
+from updater.multimageupdater import MultiImageUpdater
 
 
 class MultiImageEntity(RouterEntity):

@@ -62,7 +62,7 @@ export class UploadComponent {
     })
     $('#loading').showLoading();
     this.hiddenPercent = 'true'
-    this.UploadService.makeFileRequest("http://10.9.19.24:8000/dicom/patinfos/",files).subscribe(result=>
+    this.UploadService.makeFileRequest(`${this.appConfig.apiUrl}/dicom/patinfos/`,files).subscribe(result=>
     {
       $('#loading').hideLoading();
       this.hiddenPercent = 'false'

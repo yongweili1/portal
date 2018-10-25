@@ -1,9 +1,9 @@
-from viewer3.BE.model.imagemodel import VolumeInfo, GraphicModel
-from viewer3.BE.model.workflow import GET_CLASS_NAME
-from viewer3.BE.router.routerargs import GraphicType
-from viewer3.BE.scene.coord import translate_from_world_to_screen
-from viewer3.BE.updater.baseupdater import BaseUpdater
-from viewer3.args import RefreshType
+from model.imagemodel import VolumeInfo, GraphicModel
+from model.workflow import GET_CLASS_NAME
+from router.routerargs import GraphicType
+from scene.coord import translate_from_world_to_screen
+from updater.baseupdater import BaseUpdater
+from args import RefreshType
 
 
 class CellUpdater(BaseUpdater):

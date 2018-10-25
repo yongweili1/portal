@@ -8,6 +8,7 @@ import {HttpParams} from "@angular/common/http";
 import {LoadSeriesServiceMock} from '../../../../mocks/load-series-service.mock'
 import { ajax } from "rxjs/ajax";
 import { AjaxService } from "../../../../services/ajax.service";
+import { AppConfigService } from '../../../../app.config';
 
 @Injectable()
 export class SeriesHttpService {
@@ -15,6 +16,7 @@ export class SeriesHttpService {
     constructor(
         private aj:AjaxService,
         private http: HttpClient,
+        private appConfig: AppConfigService,
         private loadSeriesServiceMock:LoadSeriesServiceMock
     ) {
         const headers: HttpHeaders = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' })
@@ -23,7 +25,7 @@ export class SeriesHttpService {
 getSeriesList(patientId:any):Observable<Array<any>>{
     const getParams = new HttpParams()
     .set('patientid', patientId);
-    return this.http.get<Array<any>>('http://10.9.19.24:8000/image/serids/',{params : getParams});
+    return this.http.get<Array<any>>(`${this.appConfig.apiUrl}/image/serids/`,{params : getParams});
 }
 
 
@@ -35,14 +37,14 @@ getSeriesList(patientId:any):Observable<Array<any>>{
 LoadVolume(seriesId:any):Observable<any>{
     const getParams = new HttpParams()
     .set('seriesuid', seriesId);
-    return this.http.get('http://10.9.19.24:8000/image/volumes/',{params : getParams});
+    return this.http.get(`${this.appConfig.apiUrl}/image/volumes/`,{params : getParams});
         
 }
 
 UnLoadVolume(seriesId:any):Observable<any>{
     const getParams = new HttpParams()
     .set('seriesuid', seriesId);
-    return this.http.delete('http://10.9.19.24:8000/image/volumes/',{params : getParams});
+    return this.http.delete(`${this.appConfig.apiUrl}/image/volumes/`,{params : getParams});
         
 }
 
@@ -54,7 +56,7 @@ GetSeries(seriesId:any,focus:any,display:any,width:any,height:any):Observable<an
      .set('height', height)
      .set('display_view', display);
     //return this.http.get('http://10.9.19.139:8000/image/images/',{params : getParams});
-    return this.http.get('http://10.9.19.24:8000/image/images/',{params : getParams});
+    return this.http.get(`${this.appConfig.apiUrl}/image/images/`,{params : getParams});
     
 }
 
@@ -66,7 +68,7 @@ GetSeriesPic(focus:any,display:any,delta:any,width:any,height:any):Observable<an
      .set('focus_view', focus)
      .set('display_view', display);
     //return this.http.get('http://10.9.19.139:8000/image/pages/',{params : getParams});
-    return this.aj.get('http://10.9.19.24:8000/image/pages/',{params : getParams});
+    return this.aj.get(`${this.appConfig.apiUrl}/image/pages/`,{params : getParams});
     
 }
 
@@ -76,7 +78,7 @@ GetLocatePic(focus:any,display:any,crossPoint:any):Observable<any>{
     .set('display_view',display)
     .set('cross_point', crossPoint);
    //return this.http.get('http://10.9.19.139:8000/image/pages/',{params : getParams});
-   return this.http.get('http://10.9.19.24:8000/image/cross/',{params : getParams});
+   return this.http.get(`${this.appConfig.apiUrl}/image/cross/`,{params : getParams});
 }
 
 

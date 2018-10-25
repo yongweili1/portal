@@ -24,6 +24,7 @@ export class AppConfigService {
   constructor() {
     const appConfig = window['appConfig'] || {};
     this.apiUrl = appConfig.apiUrl || (location.protocol + '//' + location.host);
+    //this.apiUrl = appConfig.apiUrl;
     this.messagingUrl = appConfig.messagingUrl || (location.protocol + '//' + location.host);
     this.lang = appConfig.locale || 'zh_CN';
     this.theme = appConfig.theme || 'lightness';

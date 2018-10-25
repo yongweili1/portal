@@ -2,16 +2,16 @@
 import numpy as np
 from md import Image3d
 
-from viewer3.args import RefreshType
-from viewer3.BE.model.cellmodel import CellsInfo
-from viewer3.BE.model.imagemodel import VolumeInfo, GraphicModel
-from viewer3.BE.model.workflow import GET_CLASS_NAME, Workflow
-from viewer3.BE.router.routerargs import GraphicType
-from viewer3.BE.router.routerentity import RouterEntity
-from viewer3.BE.scene.camera import SceneCamera
-from viewer3.BE.scene.coord import translate_from_screen_to_world
-from viewer3.BE.scene.scene import CameraPos, SceneType
-from viewer3.BE.updater.imageupdater import ImageUpdater
+from args import RefreshType
+from model.cellmodel import CellsInfo
+from model.imagemodel import VolumeInfo, GraphicModel
+from model.workflow import GET_CLASS_NAME, Workflow
+from router.routerargs import GraphicType
+from router.routerentity import RouterEntity
+from scene.camera import SceneCamera
+from scene.coord import translate_from_screen_to_world
+from scene.scene import CameraPos, SceneType
+from updater.imageupdater import ImageUpdater
 
 
 class ImageEntity(RouterEntity):
@@ -78,11 +78,14 @@ class ImageEntity(RouterEntity):
             self._cellviews[1].init_scene(volume, CameraPos.Coronal, [350, 350], 2000, 0, SceneType.Slice)
         if num_cells > 2:
             self._cellviews[2].init_scene(volume, CameraPos.Sagittal, [350, 350], 2000, 0, SceneType.Slice)
-        for i in range(3):
-            self._cellviews[i].set_default_action()
 
     def get_children_views(self):
         return self._cellviews
+
+    def add_child_entity(self, cell_entity):
+        self._cellviews.append(cell_entity)
+        self._workflow.add_cellview(cell_entity)
+        self._router.set_sender(cell_entity.router)
 
     def updater(self):
         return self._updater

@@ -17,14 +17,19 @@ import {ToastService} from '../core/toast.service';
 
 @Injectable()
 export class PatientTemplateService {
-
+  headers: HttpHeaders; 
   constructor(
     private http: HttpClient,
     private appConfig: AppConfigService,
     private messageService: ToastService,
     private patientService: PatientTemplateServiceMock,
     private aj :AjaxService
-) { }
+) { 
+    this.headers = new HttpHeaders({
+      'Content-Type':  'application/json',
+      // 'withCredentials': 'true'
+  })
+}
 
   public getPatientTemplate(pageRequest: PatientPageRequest): Observable<Page<PatientPageRequest>> {
     const searchParams = new HttpParams()
@@ -35,14 +40,15 @@ export class PatientTemplateService {
     .set('gender', pageRequest.gender)
     .set('modality', pageRequest.modality)
     .set('studyDate', pageRequest.studyDate.toString());
-    // return this.http
-    //   .get<Page<PatientPageRequest>>('http://10.9.19.139:8000/patientinformations/patinfolist/',{params:searchParams});
+    console.log(this.headers);
+    return this.http
+      .get<Page<PatientPageRequest>>('http://10.9.19.139:8000/patientinformations/patinfolist/',{headers:this.headers});
       // return this.http
       // .get<Page<PatientPageRequest>>('http://127.0.0.1:8000/patientinformations/patinfolist/',{params:searchParams});
     // return this.http
     //   .get<Page<PatientPageRequest>>(`${this.appConfig.apiUrl}/patientinformations/patinfolist/`,{params:searchParams});
-    return this.http
-    .get<Page<PatientPageRequest>>('http://10.9.19.24:8000/patientinformations/patinfolist/');
+    // return this.http
+    // .get<Page<PatientPageRequest>>(`${this.appConfig.apiUrl}/patientinformations/patinfolist/`, {params:searchParams});
   }
 
 

@@ -6,6 +6,7 @@ import { ConMessageService } from '../../shared/service/conMessage.service';
 import { SeriesHttpService } from '../../shared/service/seriesHttp.service';
 import { glsource } from './glsource.modal';
 import { LoadSeriesServiceMock } from '../../../../mocks/load-series-service.mock'
+import { AppConfigService } from '../../../../app.config';
 declare var $: any;
 declare var createjs: any;
 declare var THREE: any;
@@ -62,6 +63,7 @@ export class PicTransverseComponent implements OnChanges {
         private element: ElementRef,
         private loadSeriesServiceMock: LoadSeriesServiceMock,
         private seriesHttpService: SeriesHttpService,
+        private appConfig :AppConfigService
     ) {
     }
 
@@ -199,46 +201,46 @@ export class PicTransverseComponent implements OnChanges {
         return buffer;
     }
 
-    // picScroll(delt: any) {
-    //     let that = this;
-    //     if(this.hasLoadVolume == true){
-    //         this.seriesHttpService.GetSeriesPic(this.tag, this.tag, delt, this.canvas.width, this.canvas.height).subscribe((value) => {
-    //         let data = JSON.parse(value);
-    //         this.drawCanvasPic(data[this.tag]);
-    //         that.postPoint = data.cross_position;
-    //         console.log(that.postPoint);
-    //         that.P2Cross();
-
-    //     }, (error) => {
-    //         console.log(error);
-    //     })
-    //     } 
-    // }
-    picScroll(delt: any){
+    picScroll(delt: any) {
         let that = this;
-        let myurl = 'http://10.9.19.24:8000/image/pages/'
         if(this.hasLoadVolume == true){
-            $.ajax({
-                type: "get",
-                url: myurl,
-                data: {"delta":delt,"width":this.canvas.width,"height":this.canvas.height,"focus_view":this.tag,"display_view":this.tag},
-                cache: false,
-                async : false,
-                dataType: "json",
-                success: function (value)
-                {
-                    let data = JSON.parse(value);
-                    this.drawCanvasPic(data[this.tag]);
-                    that.postPoint = data.cross_position;
-                    console.log(that.postPoint);
-                    that.P2Cross();
-                },
-                error:function () {      
-                    alert("请求失败！");
-                }
-             });
-        }
+            this.seriesHttpService.GetSeriesPic(this.tag, this.tag, delt, this.canvas.width, this.canvas.height).subscribe((value) => {
+            let data = JSON.parse(value);
+            this.drawCanvasPic(data[this.tag]);
+            that.postPoint = data.cross_position;
+            console.log(that.postPoint);
+            that.P2Cross();
+
+        }, (error) => {
+            console.log(error);
+        })
+        } 
     }
+    // picScroll(delt: any){
+    //     let that = this;
+    //     let myurl = `${this.appConfig.apiUrl}/image/pages/`
+    //     if(this.hasLoadVolume == true){
+    //         $.ajax({
+    //             type: "get",
+    //             url: myurl,
+    //             data: {"delta":delt,"width":that.canvas.width,"height":that.canvas.height,"focus_view":that.tag,"display_view":that.tag},
+    //             cache: false,
+    //             async : true,
+    //             dataType: "json",
+    //             success: function (value)
+    //             {
+    //                 let data = JSON.parse(value);
+    //                 that.drawCanvasPic(data[that.tag]);
+    //                 that.postPoint = data.cross_position;
+    //                 console.log(that.postPoint);
+    //                 that.P2Cross();
+    //             },
+    //             error:function () {      
+    //                 alert("请求失败！");
+    //             }
+    //          });
+    //     }
+    // }
 
     // 翻页
     windowAddMouseWheel(tag) {

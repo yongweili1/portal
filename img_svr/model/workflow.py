@@ -1,5 +1,5 @@
-from viewer3.BE.model.cellmodel import CellsInfo
-from viewer3.BE.model.imagemodel import GraphicModel, VolumeInfo
+from model.cellmodel import CellsInfo
+from model.imagemodel import GraphicModel, VolumeInfo
 
 
 def GET_CLASS_NAME(class_name):

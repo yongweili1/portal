@@ -1,9 +1,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import time
+
+from entity.cellentity import CellEntity
 from image_server import ImageServer
 from message import response
 from utilities import get_display_view, get_focus_view, get_orthogonal_spacing, ViewEnum
+from entity.imageentity import ImageEntity
+import md.image3d.python.image3d_io as cio
 
 import json
 import datetime
@@ -29,6 +34,14 @@ command = Command()
 # single instance of ImageServer
 server = ImageServer()
 
+imageentity = ImageEntity(0, True)
+
+# vol = cio.read_image(r'D:\volume\SHENYU-Thorax10_ZRY_LDCT_Head_first(Adult)-CT.nii.gz')
+# imageentity.set_volume(vol)
+# imageentity.add_child_entity(CellEntity(0, False))
+# imageentity.add_child_entity(CellEntity(1, False))
+# imageentity.add_child_entity(CellEntity(2, False))
+# imageentity.init_default_scenes(vol)
 
 @command.register('greeting')
 def greeting(**kwargs):
@@ -164,6 +177,7 @@ def page(**kwargs):
     except:
         return response(success=False, message='Invalid parameters.')
 
+    a = time.time()
     data = {}
     cursor_3d = server.update_cursor(focus_view, delta)
     server.update_look_at(focus_view, delta)
@@ -175,6 +189,8 @@ def page(**kwargs):
     cursor_2d = server.dimension_translate(trans_para)
     data['cross_position'] = cursor_2d
     data.update(imgs)
+    b = time.time()
+    print("svr page cost time  = %f ms" % ((b-a)*1000))
     return response(json.dumps(data))
 
 
@@ -360,6 +376,10 @@ def resize(**kwargs):
     return response(message='Setting view size succeed')
 
 
+class RefreshType(object):
+    pass
+
+
 @command.register('locate')
 def locate(**kwargs):
     try:
@@ -371,6 +391,12 @@ def locate(**kwargs):
     except:
         return response(success=False, message='Invalid parameters.')
 
+    # imageentity.locate(0, (100, 100))
+    # imageentity.updater().update(RefreshType.All)
+    # result = imageentity.updater().get_result()
+    # return json.dumps(result)
+
+    a = time.time()
     trans_para = {
         'point_2d': cursor_2D,
         'trans_direct_flag': 'screen2world',
@@ -389,7 +415,7 @@ def locate(**kwargs):
     data = {}
     data['cross_position'] = cursor_2d
     data.update(imgs)
-    # print('send locate data time:')
-    # print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f'))
+    b = time.time()
+    print("svr cost time  = %d" % (b-a))
     print(data['cross_position'])
     return response(json.dumps(data))
