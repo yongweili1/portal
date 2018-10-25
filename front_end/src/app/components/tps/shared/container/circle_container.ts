@@ -17,42 +17,29 @@ export class CircleContainer extends BaseContainer {
         this.end = new ControlPoint(stage)
         this.text = new Text(stage, 'Length: * mm')
         this.addChild(this.circle, this.start, this.end, this.text)
+        this.initCps(2)
     }
 
     update() {
         super.update()
-        this.circle.update()
-        this.start.update()
-        this.end.update()
+        this.start.update(this.cps[0])
+        this.circle.update(this.cps[0], this.cps[1])
+        this.end.update(this.cps[1])
         this.updateText()
     }
 
-    setStartPoint(point) {
-        this.start.setCenter(point)
-    }
-
-    setEndPoint(point) {
-        this.end.setCenter(point)
-        this._setCircle()
-    }
-
     updateText() {
-        if (this.start.getCenter().x > this.end.getCenter().x) {
-            this.text.setCp(this.start.getCenter())
+        if (this.cps[0].x > this.cps[1].x) {
+            this.text.setCp(this.cps[0])
         } else {
-            this.text.setCp(this.end.getCenter())
+            this.text.setCp(this.cps[1])
         }
-        let x_side = this.end.getCenter().x - this.start.getCenter().x
-        let y_side = this.end.getCenter().y - this.start.getCenter().y
+        let x_side = this.cps[1].x - this.cps[0].x
+        let y_side = this.cps[1].y - this.cps[0].y
         let r = Math.sqrt(x_side * x_side + y_side * y_side) / 2
         let area = Math.PI * r * r;
-        this.text.setText('Area: ' + area.toFixed(2) + ' pixel2')
+        this.text.setText('Area: ' + area.toFixed(2) + ' pixel')
         this.text.update()
-    }
-
-    _setCircle() {
-        this.circle.setStartPoint(this.start.getCenter())
-        this.circle.setEndPoint(this.end.getCenter())
     }
 
     handleMouseDown(evt) {
@@ -60,13 +47,13 @@ export class CircleContainer extends BaseContainer {
         super.handleMouseDown(evt)
         this.isMousedown = true;
         if (evt.target.type != 'circle' && evt.target.type != 'controlpoint' && evt.target.type != 'text')
-            this.setStartPoint(new Point(evt.offsetX, evt.offsetY))
+            this.updateCp(0, evt.offsetX, evt.offsetY)
     }
     handleMouseMove(evt) {
         if (this.isMousedown) {
             console.log('[circle]handle MouseMove')
             this.isPaint = true;
-            this.setEndPoint(new Point(evt.offsetX, evt.offsetY))
+            this.updateCp(1, evt.offsetX, evt.offsetY)
             this.update();
         }
     }
@@ -84,10 +71,12 @@ export class CircleContainer extends BaseContainer {
         this._tempPoint.y = evt.stageY;
         
         if (evt.target == this.circle || evt.target == this.text) {
-            this.x += delta_x;
-            this.y += delta_y;
-        } else {
-            evt.target.updateCenter(delta_x, delta_y)
+            this.cps[0].offset(delta_x, delta_y)
+            this.cps[1].offset(delta_x, delta_y)
+        } else if (evt.target == this.start) {
+            this.cps[0].offset(delta_x, delta_y)
+        } else if (evt.target == this.end) {
+            this.cps[1].offset(delta_x, delta_y)
         }
 
         this.update();

@@ -2,6 +2,7 @@ import { Point } from '../tools/point';
 import { Hitbar } from '../overlay/hitbar'
 
 declare var createjs: any;
+declare var showcps: any;
 
 export class ControlPoint extends createjs.Shape {
     type: string = 'controlpoint';
@@ -24,42 +25,30 @@ export class ControlPoint extends createjs.Shape {
         this.overlayStage.addChild(this);
     }
 
-    setCenter(point) {
-        this._center = point
-    }
-    getCenter() {
-        return this._center
-    }
-    updateCenter(delta_x=null, delta_y=null) {
-        if (delta_x != null) {
-            this._center.x += delta_x
+    update(point) {
+        this._center = point;
+        if (showcps) {
+            this.overlayStage.clear();
+            this.graphics.clear();
+            this.graphics.beginStroke(this._color)
+                         .rect(point.x - 2, point.y - 2, 4, 4);
+            let hit = new Hitbar();
+            hit.graphics.rect(point.x - 3, point.y - 3, 6, 6);
+            this.hitArea = hit;
+            this.overlayStage.update();
         }
-        if (delta_y != null) {
-            this._center.y += delta_y
-        }
-    }
-
-    update() {
-        this.overlayStage.clear();
-        this.graphics.clear();
-        this.graphics.beginStroke(this._color)
-                     .rect(this._center.x - 2, this._center.y - 2, 4, 4);
-        let hit = new Hitbar();
-        hit.graphics.rect(this._center.x - 3, this._center.y - 3, 6, 6);
-        this.hitArea = hit;
-        this.overlayStage.update();
     }
 
     handleMouseOver(evt) {
         console.log('handle MouseOver', evt.currentTarget.type)
         this._is_hover = true;
         this._color = 'red';
-        this.update()
+        this.update(this._center)
     }
     handleMouseOut(evt) {
         console.log('handle MouseOut', evt.currentTarget.type)
         this._is_hover = false;
         this._color = 'yellow';
-        this.update()
+        this.update(this._center)
     }
 }

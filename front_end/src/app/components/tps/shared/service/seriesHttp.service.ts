@@ -55,7 +55,6 @@ GetSeries(seriesId:any,focus:any,display:any,width:any,height:any):Observable<an
      .set('width', width)
      .set('height', height)
      .set('display_view', display);
-    //return this.http.get('http://10.9.19.139:8000/image/images/',{params : getParams});
     return this.http.get(`${this.appConfig.apiUrl}/image/images/`,{params : getParams});
     
 }
@@ -67,7 +66,6 @@ GetSeriesPic(focus:any,display:any,delta:any,width:any,height:any):Observable<an
      .set('height', height)
      .set('focus_view', focus)
      .set('display_view', display);
-    //return this.http.get('http://10.9.19.139:8000/image/pages/',{params : getParams});
     return this.aj.get(`${this.appConfig.apiUrl}/image/pages/`,{params : getParams});
     
 }
@@ -77,7 +75,6 @@ GetLocatePic(focus:any,display:any,crossPoint:any):Observable<any>{
     .set('focus_view', focus)
     .set('display_view',display)
     .set('cross_point', crossPoint);
-   //return this.http.get('http://10.9.19.139:8000/image/pages/',{params : getParams});
    return this.http.get(`${this.appConfig.apiUrl}/image/cross/`,{params : getParams});
 }
 

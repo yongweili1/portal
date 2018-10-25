@@ -31,59 +31,46 @@ export class RectangleContainer extends BaseContainer {
         this.addChild(this.rectangle, this.top_left, this.top_center, 
                       this.top_right, this.left_center, this.right_center, 
                       this.bottom_left, this.bottom_center, this.bottom_right, this.text)
+        this.initCps(8)
     }
 
     update() {
         super.update()
-        this.rectangle.update()
-        this.top_left.update()
-        this.top_center.update()
-        this.top_right.update()
-        this.left_center.update()
-        this.right_center.update()
-        this.bottom_left.update()
-        this.bottom_center.update()
-        this.bottom_right.update()
+        this._updateFollowCps()
+        this.rectangle.update(this.cps[0], this.cps[7])
+        this.top_left.update(this.cps[0])
+        this.top_center.update(this.cps[1])
+        this.top_right.update(this.cps[2])
+        this.left_center.update(this.cps[3])
+        this.right_center.update(this.cps[4])
+        this.bottom_left.update(this.cps[5])
+        this.bottom_center.update(this.cps[6])
+        this.bottom_right.update(this.cps[7])
         this.updateText()
     }
 
-    setStartPoint(point) {
-        this.top_left.setCenter(point)
-    }
-
-    setEndPoint(point) {
-        this.bottom_right.setCenter(point)
-        this._setRectangle()
-        this._updateCps()
-    }
-
     updateText() {
-        if (this.top_left.getCenter().x > this.top_right.getCenter().x) {
-            this.text.setCp(this.top_left.getCenter())
+        if (this.cps[0].x > this.cps[2].x) {
+            this.text.setCp(this.cps[0])
         } else {
-            this.text.setCp(this.top_right.getCenter())
+            this.text.setCp(this.cps[2])
         }
-        let x_side = this.top_right.getCenter().x - this.top_left.getCenter().x
-        let y_side = this.bottom_left.getCenter().y - this.top_left.getCenter().y
+        let x_side = this.cps[2].x - this.cps[0].x
+        let y_side = this.cps[5].y - this.cps[0].y
         let area = x_side * x_side + y_side * y_side
-        this.text.setText('Area: ' + area.toFixed(2) + ' pixel2')
+        this.text.setText('Area: ' + area.toFixed(2) + ' pixel')
         this.text.update()
     }
 
-    _setRectangle() {
-        this.rectangle.setStartPoint(this.top_left.getCenter())
-        this.rectangle.setEndPoint(this.bottom_right.getCenter())
-    }
-
-    _updateCps() {
-        let start = this.top_left.getCenter()
-        let end = this.bottom_right.getCenter()
-        this.top_center.setCenter(new Point(start.x + (end.x - start.x) / 2, start.y))
-        this.top_right.setCenter(new Point(end.x, start.y))
-        this.left_center.setCenter(new Point(start.x, start.y + (end.y - start.y) / 2))
-        this.right_center.setCenter(new Point(end.x, start.y + (end.y - start.y) / 2))
-        this.bottom_left.setCenter(new Point(start.x, end.y))
-        this.bottom_center.setCenter(new Point(start.x + (end.x - start.x) / 2, end.y))
+    _updateFollowCps() {
+        let start = this.cps[0]
+        let end = this.cps[7]
+        this.updateCp(1, start.x + (end.x - start.x) / 2, start.y)
+        this.updateCp(2, end.x, start.y)
+        this.updateCp(3, start.x, start.y + (end.y - start.y) / 2)
+        this.updateCp(4, end.x, start.y + (end.y - start.y) / 2)
+        this.updateCp(5, start.x, end.y)
+        this.updateCp(6, start.x + (end.x - start.x) / 2, end.y)
     }
 
     handleMouseDown(evt) {
@@ -91,13 +78,13 @@ export class RectangleContainer extends BaseContainer {
         super.handleMouseDown(evt)
         this.isMousedown = true;
         if (evt.target.type != 'rectangle' && evt.target.type != 'controlpoint' && evt.target.type != 'text')
-            this.setStartPoint(new Point(evt.offsetX, evt.offsetY))
+            this.updateCp(0, evt.offsetX, evt.offsetY)
     }
     handleMouseMove(evt) {
         if (this.isMousedown) {
             console.log('[rectangle]handle MouseMove')
             this.isPaint = true;
-            this.setEndPoint(new Point(evt.offsetX, evt.offsetY))
+            this.updateCp(7, evt.offsetX, evt.offsetY)
             this.update();
         }
     }
@@ -113,31 +100,30 @@ export class RectangleContainer extends BaseContainer {
         let delta_y = evt.stageY - this._tempPoint.y;
         this._tempPoint.x = evt.stageX;
         this._tempPoint.y = evt.stageY;
+        
         if (evt.target == this.top_left) {
-            this.top_left.updateCenter(delta_x, delta_y)
+            this.cps[0].offset(delta_x, delta_y)
         } else if (evt.target == this.top_center) {
-            this.top_left.updateCenter(null, delta_y)
+            this.cps[0].offset(null, delta_y)
         } else if (evt.target == this.top_right) {
-            this.top_left.updateCenter(null, delta_y)
-            this.bottom_right.updateCenter(delta_x, null)
+            this.cps[0].offset(null, delta_y)
+            this.cps[7].offset(delta_x, null)
         } else if (evt.target == this.left_center) {
-            this.top_left.updateCenter(delta_x, null)
+            this.cps[0].offset(delta_x, null)
         } else if (evt.target == this.right_center) {
-            this.bottom_right.updateCenter(delta_x, null)
+            this.cps[7].offset(delta_x, null)
         } else if (evt.target == this.bottom_left) {
-            this.top_left.updateCenter(delta_x, null)
-            this.bottom_right.updateCenter(null, delta_y)
+            this.cps[0].offset(delta_x, null)
+            this.cps[7].offset(null, delta_y)
         } else if (evt.target == this.bottom_center) {
-            this.bottom_right.updateCenter(null, delta_y)
+            this.cps[7].offset(null, delta_y)
         } else if (evt.target == this.bottom_right) {
-            this.bottom_right.updateCenter(delta_x, delta_y)
+            this.cps[7].offset(delta_x, delta_y)
         } else {
-            this.x += delta_x;
-            this.y += delta_y;
+            this.cps[0].offset(delta_x, delta_y)
+            this.cps[7].offset(delta_x, delta_y)
         }
 
-        this._setRectangle()
-        this._updateCps()
         this.update();
     }
 }

@@ -5,70 +5,47 @@ import { Point } from '../tools/point';
 import { Text } from '../overlay/text';
 
 export class FreepenContainer extends BaseContainer {
-    shape: any;
-    cps: Array<ControlPoint>;
+    shape: Freepen;
     text: Text;
     editable: false;
     nearestStartCp: any;
     nearestEndCp: any;
 
-    extendShape: any;
-    extendCps: Array<ControlPoint>;
+    extendShape: Freepen;
+    extendCps: Array<Point>;
 
     constructor(stage) {
         super(stage, 'freepen');
         this.shape = new Freepen(stage);
-        this.cps = new Array();
         this.extendShape = new Freepen(stage);
+        this.initCps()
         this.extendCps =new Array();
         this.text = new Text(stage, '* cps')
         this.addChild(this.shape, this.text);
-        this.status = '';
     }
 
     update() {
         super.update()
-        this.shape.update()
+        this.shape.update(this.cps)
+        this.extendShape.update(this.extendCps)
         // this.cps.forEach(cp => {
         //     cp.update()
         // });
         this.updateText()
-        this.extendShape.update()
-    }
-
-    createCp(point) {
-        const cp = new ControlPoint(this.overlayStage)
-        cp.setCenter(point)
-        this.addChild(cp)
-        this.cps.push(cp)
-    }
-
-    updateCps(delta_x, delta_y) {
-        this.cps.forEach(cp => {
-            cp.updateCenter(delta_x, delta_y)
-        });
-        this.shape.moveCps(delta_x, delta_y);
-    }
-    
-    createExtendCp(point) {
-        const cp = new ControlPoint(this.overlayStage)
-        cp.setCenter(point)
-        this.extendCps.push(cp)
     }
     
     clearPaint() {
         this.extendCps = new Array()
-        this.extendShape.updateCps(this.extendCps)
+        this.extendShape.update(this.extendCps)
     }
 
     getNearestCp(p: Point) {
         let index = 0;
         let nearestCp = this.cps[0];
-        let distance = this.getDistance(p, nearestCp.getCenter())
+        let distance = this.getDistance(p, nearestCp)
         for (let i = 0; i < this.cps.length; i++) {
             const cp = this.cps[i];
-            let point = cp.getCenter()
-            let dis = Math.sqrt((point.x - p.x)**2 + (point.y - p.y)**2)
+            let dis = Math.sqrt((cp.x - p.x)**2 + (cp.y - p.y)**2)
             if (dis < distance) {
                 index = i;
                 distance = dis;
@@ -82,7 +59,7 @@ export class FreepenContainer extends BaseContainer {
     getLength(start, end, points) {
         let length = 0
         for (let index = start + 1; index < end; index++) {
-            length += this.getDistance(points[index - 1].getCenter(), points[index].getCenter())
+            length += this.getDistance(points[index - 1], points[index])
         }
         return length
     }
@@ -98,18 +75,16 @@ export class FreepenContainer extends BaseContainer {
     }
 
     getRightCp() {
-        let p = this.cps[0].getCenter()
+        let p = this.cps[0]
         this.cps.forEach(cp => {
-            if (cp.getCenter().x > p.x) {
-                p = cp.getCenter()
+            if (cp.x > p.x) {
+                p = cp
             }
         });
         return p;
     }
     compareCp(cp1, cp2) {
-        let p1 = cp1.getCenter()
-        let p2 = cp2.getCenter()
-        if (p1.x == p2.x && p1.y == p2.y) {
+        if (cp1.x == cp2.x && cp1.y == cp2.y) {
             return true;
         } else {
             return false;
@@ -119,7 +94,6 @@ export class FreepenContainer extends BaseContainer {
         let range = [this.nearestStartCp[0], this.nearestEndCp[0]]
         if (this.nearestStartCp[0] > this.nearestEndCp[0]) {
             range = [this.nearestEndCp[0], this.nearestStartCp[0]]
-            // this.extendCps.reverse()
         }
         let totalDistance = this.getLength(0, this.cps.length, this.cps)
         let distance = this.getLength(range[0], range[1], this.cps)
@@ -154,12 +128,8 @@ export class FreepenContainer extends BaseContainer {
         for (let index = 0; index < this.cps.length; index++) {
             this.removeChildAt(2)
         }
-        _cps.push(_cps[0])
+        _cps.push(_cps[0].copy())
         this.cps = _cps;
-        this.shape.updateCps(_cps);
-        this.cps.forEach(cp => {
-            this.addChild(cp)
-        });
         this.clearPaint()
     }
 
@@ -171,17 +141,13 @@ export class FreepenContainer extends BaseContainer {
         if (this.editable) {
             const point = new Point(evt.stageX, evt.stageY)
             this.nearestStartCp = this.getNearestCp(point)
-            this.extendShape.appendCp(this.nearestStartCp[1].getCenter())
-            this.createExtendCp(this.nearestStartCp[1].getCenter())
-            this.extendShape.appendCp(point)
-            this.createExtendCp(point)
-        } else {    
+            this.extendCps.push(this.nearestStartCp[1])
+            this.extendCps.push(point)
+        } else {
             if (evt.target.type != 'freepen' 
                 && evt.target.type != 'controlpoint' 
                 && evt.target.type != 'text') {
-                const point = new Point(evt.offsetX, evt.offsetY)
-                this.shape.appendCp(point);
-                this.createCp(point)
+                this.cps.push(new Point(evt.offsetX, evt.offsetY));
             }
         }
     }
@@ -192,13 +158,11 @@ export class FreepenContainer extends BaseContainer {
             
             if (this.editable) {
                 const point = new Point(evt.stageX, evt.stageY)
-                this.extendShape.appendCp(point)
-                this.createExtendCp(point)
+                this.extendCps.push(point)
                 this.update();
             } else {
-                const point = new Point(evt.offsetX, evt.offsetY)
-                this.shape.appendCp(point)
-                this.createCp(point)
+                console.log('push a new point')
+                this.cps.push(new Point(evt.offsetX, evt.offsetY));
                 this.update();
             }
         }
@@ -208,18 +172,16 @@ export class FreepenContainer extends BaseContainer {
         if (this.isPaint) {
             if (this.editable) {
                 const point = new Point(evt.stageX, evt.stageY)
-                this.extendShape.appendCp(point)
-                this.createExtendCp(point)
+                this.extendCps.push(point)
 
                 this.nearestEndCp = this.getNearestCp(point)
-                this.extendShape.appendCp(this.nearestEndCp[1].getCenter())
-                this.createExtendCp(this.nearestEndCp[1].getCenter())
+                this.extendCps.push(this.nearestEndCp)
                 
                 this.modifyShape()
                 this.update();
             } else {
                 console.log('[freepen]close the shape')
-                this.shape.appendCp(this.shape.getCp(0))
+                this.cps.push(this.cps[0].copy());
                 this.update();
             }
         }
@@ -243,11 +205,9 @@ export class FreepenContainer extends BaseContainer {
             return;
         }
         if (evt.target == this.shape || evt.target == this.text) {
-            this.x += delta_x;
-            this.y += delta_y;
-            // this.updateCps(delta_x, delta_y);
-        } else {
-            evt.target.updateCenter(delta_x, delta_y);
+            this.cps.forEach(cp => {
+                cp.offset(delta_x, delta_y);
+            });
         }
 
         this.update();
