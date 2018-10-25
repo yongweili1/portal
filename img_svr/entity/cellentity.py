@@ -1,6 +1,6 @@
 import numpy as np
 
-from args import RefreshType
+from updater.args import RefreshType
 from model.cellmodel import CellModel, CellsInfo
 from model.imagemodel import VolumeInfo, GraphicModel
 from model.workflow import GET_CLASS_NAME
@@ -131,4 +131,4 @@ class CellEntity(RouterEntity):
     def resize_(self, index, width, height):
         if self._scene is not None:
             self._scene.set_display_size(width, height)
-            self.updater().update(RefreshType.All)
+

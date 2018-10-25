@@ -206,6 +206,9 @@
             "endTime": "End Time",
             "durationInMillis": "Length of stay(Minute)"
         },
+        "data": {
+            "title": "DATA"
+        },
         "datetime-range-picker": {
             "title": "Select date time range"
         }

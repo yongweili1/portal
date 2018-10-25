@@ -53,6 +53,10 @@ export const ROUTES: Routes = [
             // },
             //component: ContouringComponent,
           },
+          {
+            path: 'pacs',
+            loadChildren: './components/pacs/pacs.module#PacsModule',
+          },
           
           {
             path: 'patient-template',

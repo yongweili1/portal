@@ -1,6 +1,6 @@
 from PyQt5.QtCore import QObject, pyqtSignal
 
-from args import RefreshType
+from updater.args import RefreshType
 
 
 class SendRouter(QObject):

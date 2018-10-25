@@ -34,13 +34,13 @@ class ViewEnum(Enum):
 
 def get_display_view(display_view):
     if display_view == 'transverse':
-        return ViewEnum.transverse
+        return 0
     elif display_view == 'saggital':
-        return ViewEnum.saggital
+        return 1
     elif display_view == 'coronal':
-        return ViewEnum.coronal
+        return 2
     else:
-        return ViewEnum.all
+        return 9
 
 
 def get_focus_view(focus_view):
@@ -50,6 +50,15 @@ def get_focus_view(focus_view):
         return ViewEnum.saggital
     elif focus_view == 'coronal':
         return ViewEnum.coronal
+
+
+def get_view_index(view_name):
+    if view_name == 'transverse':
+        return 0
+    elif view_name == 'coronal':
+        return 1
+    elif view_name == 'saggital':
+        return 2
 
 
 def get_axis(view, cfg):
@@ -119,4 +128,10 @@ def convert_rgba_to_base64(rgba, format):
     binary_data = output_buffer.getvalue()
     base64_data = base64.b64encode(binary_data)
     return base64_data
+
+
+# def get_targetkey_content(map_data, key):
+#     result = {}
+#     for data in map_data if
+
 

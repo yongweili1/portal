@@ -2,7 +2,6 @@
 import numpy as np
 from md import Image3d
 
-from args import RefreshType
 from model.cellmodel import CellsInfo
 from model.imagemodel import VolumeInfo, GraphicModel
 from model.workflow import GET_CLASS_NAME, Workflow

@@ -35,8 +35,8 @@ export class ContouringService {
     return this.http.get(`${this.appConfig.apiUrl}/image/macro/`,{params:getParams});
   }
 
-  noticeSize(canvasSize){
-    return this.http.post(`${this.appConfig.apiUrl}/image/size/`,canvasSize,this.options);
+  noticeSize(canvasSize):Observable<any>{
+    return this.http.post<any>(`${this.appConfig.apiUrl}/image/size/`,canvasSize,this.options);
   }
 
 }

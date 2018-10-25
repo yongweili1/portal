@@ -45,7 +45,7 @@ export class ContouringComponent implements OnInit {
   action:any;
   display: boolean = false;
   seriesList:any;
-  hasLoadVolume:any= false;
+  hasLoadVolume:boolean= false;
   seriesId:any;
   
   @ViewChild('picLeft1') picLeft1;
@@ -167,15 +167,12 @@ export class ContouringComponent implements OnInit {
       });
       let that = this;
       let canvasSize:any = {};
-      setTimeout(()=>{
-            canvasSize['view_size'] = that.getCanvasSize();
-            that.conService.noticeSize(canvasSize).subscribe();
-        },300);
       $(window).resize(function() {
         setTimeout(()=>{
-            canvasSize['view_size'] = that.getCanvasSize();
-            //canvasSize = {'view_size':"cc"}
-            that.conService.noticeSize(canvasSize).subscribe();
+            if(that.hasLoadVolume == true){
+                canvasSize['view_size'] = that.getCanvasSize();
+                that.conService.noticeSize(canvasSize).subscribe();
+            }
         },300);
     });
   }
@@ -243,147 +240,155 @@ export class ContouringComponent implements OnInit {
     let saggitalCanvas = $(".c_class .icanvas").get(0);
     let coronalCanvas = $(".b_class .icanvas").get(0);
     let seriesId:any = $("#seriesSelect").val();
+    let canvasSize:any = {}
+    canvasSize['view_size'] = this.getCanvasSize();
+    console.log(canvasSize)
     this.seriesHttpService.LoadVolume(seriesId).subscribe(value=>{
         if(value == "success")
         {
-            this.seriesHttpService.GetSeries(seriesId,"","transverse",transverseCanvas.width,transverseCanvas.height).subscribe((value) =>{
-                let data = JSON.parse(value);
-                let base64Header = "data:image/png;base64,";
-                let imgData:any;
-                if (data.transverse != null)
-                {
-                    console.log("pre transverse"); 
-                    imgData = base64Header + data.transverse;
-                    img1.src = imgData;
-                    img1.onload = function(){
-                        transverseCanvas.getContext("2d").clearRect(0,0,transverseCanvas.width,transverseCanvas.height);
-                        transverseCanvas.getContext("2d").drawImage(img1,0,0,transverseCanvas.width,transverseCanvas.height);
-                        console.log("onload transverse");    
-                    }
+                this.conService.noticeSize(canvasSize).subscribe(result=>{
+                if(result.body == "success"){
+                        this.seriesHttpService.GetSeries(seriesId,"","transverse",transverseCanvas.width,transverseCanvas.height).subscribe((value) =>{
+                        let data = JSON.parse(value);
+                        let base64Header = "data:image/png;base64,";
+                        let imgData:any;
+                        if (data.transverse != null)
+                        {
+                            console.log("pre transverse"); 
+                            imgData = base64Header + data.transverse;
+                            img1.src = imgData;
+                            img1.onload = function(){
+                                transverseCanvas.getContext("2d").clearRect(0,0,transverseCanvas.width,transverseCanvas.height);
+                                transverseCanvas.getContext("2d").drawImage(img1,0,0,transverseCanvas.width,transverseCanvas.height);
+                                console.log("onload transverse");    
+                            }
+                        }
+                        if (data.coronal != null)
+                        {
+                            console.log("pre coronal"); 
+                            imgData = base64Header + data.coronal;
+                            img2.src = imgData;
+                            img2.onload = function(){
+                                coronalCanvas.getContext("2d").clearRect(0,0,coronalCanvas.width,coronalCanvas.height);
+                                coronalCanvas.getContext("2d").drawImage(img2,0,0,coronalCanvas.width,coronalCanvas.height);
+                                console.log("onload coronal");     
+                            }
+                        }
+                        if (data.saggital != null)
+                        {
+                            console.log("pre saggital");
+                            imgData = base64Header + data.saggital;
+                            img3.src = imgData;
+                            img3.onload = function(){
+                                saggitalCanvas.getContext("2d").clearRect(0,0,saggitalCanvas.width,saggitalCanvas.height);
+                                saggitalCanvas.getContext("2d").drawImage(img3,0,0,saggitalCanvas.width,saggitalCanvas.height);
+                                console.log("onload saggital");     
+                            }
+                        }
+                        $('#loading').hideLoading();
+                        //this.hideDialog();
+                    },(error)=>{
+                        $('#loading').hideLoading();
+                        //this.hideDialog();
+                        console.log(error);
+                    })
+                    this.seriesHttpService.GetSeries(seriesId,"","coronal",coronalCanvas.width,coronalCanvas.height).subscribe((value) =>{
+                        let data = JSON.parse(value);
+                        let base64Header = "data:image/png;base64,";
+                        let imgData:any;
+                        if (data.transverse != null)
+                        {
+                            console.log("pre transverse"); 
+                            imgData = base64Header + data.transverse;
+                            img1.src = imgData;
+                            img1.onload = function(){
+                                transverseCanvas.getContext("2d").clearRect(0,0,transverseCanvas.width,transverseCanvas.height);
+                                transverseCanvas.getContext("2d").drawImage(img1,0,0,transverseCanvas.width,transverseCanvas.height);
+                                console.log("onload transverse");    
+                            }
+                        }
+                        if (data.coronal != null)
+                        {
+                            console.log("pre coronal"); 
+                            imgData = base64Header + data.coronal;
+                            img2.src = imgData;
+                            img2.onload = function(){
+                                coronalCanvas.getContext("2d").clearRect(0,0,coronalCanvas.width,coronalCanvas.height);
+                                coronalCanvas.getContext("2d").drawImage(img2,0,0,coronalCanvas.width,coronalCanvas.height);
+                                console.log("onload coronal");     
+                            }
+                        }
+                        if (data.saggital != null)
+                        {
+                            console.log("pre saggital");
+                            imgData = base64Header + data.saggital;
+                            img3.src = imgData;
+                            img3.onload = function(){
+                                saggitalCanvas.getContext("2d").clearRect(0,0,saggitalCanvas.width,saggitalCanvas.height);
+                                saggitalCanvas.getContext("2d").drawImage(img3,0,0,saggitalCanvas.width,saggitalCanvas.height);
+                                console.log("onload saggital");     
+                            }
+                        }
+                        $('#loading').hideLoading();
+                        //this.hideDialog();
+                    },(error)=>{
+                        $('#loading').hideLoading();
+                        //this.hideDialog();
+                        console.log(error);
+                    })
+                    this.seriesHttpService.GetSeries(seriesId,"","saggital",saggitalCanvas.width,saggitalCanvas.height).subscribe((value) =>{
+                        let data = JSON.parse(value);
+                        let base64Header = "data:image/png;base64,";
+                        let imgData:any;
+                        if (data.transverse != null)
+                        {
+                            console.log("pre transverse"); 
+                            imgData = base64Header + data.transverse;
+                            img1.src = imgData;
+                            img1.onload = function(){
+                                transverseCanvas.getContext("2d").clearRect(0,0,transverseCanvas.width,transverseCanvas.height);
+                                transverseCanvas.getContext("2d").drawImage(img1,0,0,transverseCanvas.width,transverseCanvas.height);
+                                console.log("onload transverse");    
+                            }
+                        }
+                        if (data.coronal != null)
+                        {
+                            console.log("pre coronal"); 
+                            imgData = base64Header + data.coronal;
+                            img2.src = imgData;
+                            img2.onload = function(){
+                                coronalCanvas.getContext("2d").clearRect(0,0,coronalCanvas.width,coronalCanvas.height);
+                                coronalCanvas.getContext("2d").drawImage(img2,0,0,coronalCanvas.width,coronalCanvas.height);
+                                console.log("onload coronal");     
+                            }
+                        }
+                        if (data.saggital != null)
+                        {
+                            console.log("pre saggital");
+                            imgData = base64Header + data.saggital;
+                            img3.src = imgData;
+                            img3.onload = function(){
+                                saggitalCanvas.getContext("2d").clearRect(0,0,saggitalCanvas.width,saggitalCanvas.height);
+                                saggitalCanvas.getContext("2d").drawImage(img3,0,0,saggitalCanvas.width,saggitalCanvas.height);
+                                console.log("onload saggital");     
+                            }
+                        }
+                        $('#loading').hideLoading();
+                        //this.hideDialog();
+                    },(error)=>{
+                        $('#loading').hideLoading();
+                        //this.hideDialog();
+                        console.log(error);
+                    })
+                    console.log("wait for response")
+                    this.hasLoadVolume = true;
+                    this.seriesId = seriesId;
                 }
-                if (data.coronal != null)
-                {
-                    console.log("pre coronal"); 
-                    imgData = base64Header + data.coronal;
-                    img2.src = imgData;
-                    img2.onload = function(){
-                        coronalCanvas.getContext("2d").clearRect(0,0,coronalCanvas.width,coronalCanvas.height);
-                        coronalCanvas.getContext("2d").drawImage(img2,0,0,coronalCanvas.width,coronalCanvas.height);
-                        console.log("onload coronal");     
-                    }
-                }
-                if (data.saggital != null)
-                {
-                    console.log("pre saggital");
-                    imgData = base64Header + data.saggital;
-                    img3.src = imgData;
-                    img3.onload = function(){
-                        saggitalCanvas.getContext("2d").clearRect(0,0,saggitalCanvas.width,saggitalCanvas.height);
-                        saggitalCanvas.getContext("2d").drawImage(img3,0,0,saggitalCanvas.width,saggitalCanvas.height);
-                        console.log("onload saggital");     
-                    }
-                }
-                $('#loading').hideLoading();
-                //this.hideDialog();
-            },(error)=>{
-                $('#loading').hideLoading();
-                //this.hideDialog();
-                console.log(error);
-            })
-            this.seriesHttpService.GetSeries(seriesId,"","coronal",coronalCanvas.width,coronalCanvas.height).subscribe((value) =>{
-                let data = JSON.parse(value);
-                let base64Header = "data:image/png;base64,";
-                let imgData:any;
-                if (data.transverse != null)
-                {
-                    console.log("pre transverse"); 
-                    imgData = base64Header + data.transverse;
-                    img1.src = imgData;
-                    img1.onload = function(){
-                        transverseCanvas.getContext("2d").clearRect(0,0,transverseCanvas.width,transverseCanvas.height);
-                        transverseCanvas.getContext("2d").drawImage(img1,0,0,transverseCanvas.width,transverseCanvas.height);
-                        console.log("onload transverse");    
-                    }
-                }
-                if (data.coronal != null)
-                {
-                    console.log("pre coronal"); 
-                    imgData = base64Header + data.coronal;
-                    img2.src = imgData;
-                    img2.onload = function(){
-                        coronalCanvas.getContext("2d").clearRect(0,0,coronalCanvas.width,coronalCanvas.height);
-                        coronalCanvas.getContext("2d").drawImage(img2,0,0,coronalCanvas.width,coronalCanvas.height);
-                        console.log("onload coronal");     
-                    }
-                }
-                if (data.saggital != null)
-                {
-                    console.log("pre saggital");
-                    imgData = base64Header + data.saggital;
-                    img3.src = imgData;
-                    img3.onload = function(){
-                        saggitalCanvas.getContext("2d").clearRect(0,0,saggitalCanvas.width,saggitalCanvas.height);
-                        saggitalCanvas.getContext("2d").drawImage(img3,0,0,saggitalCanvas.width,saggitalCanvas.height);
-                        console.log("onload saggital");     
-                    }
-                }
-                $('#loading').hideLoading();
-                //this.hideDialog();
-            },(error)=>{
-                $('#loading').hideLoading();
-                //this.hideDialog();
-                console.log(error);
-            })
-            this.seriesHttpService.GetSeries(seriesId,"","saggital",saggitalCanvas.width,saggitalCanvas.height).subscribe((value) =>{
-                let data = JSON.parse(value);
-                let base64Header = "data:image/png;base64,";
-                let imgData:any;
-                if (data.transverse != null)
-                {
-                    console.log("pre transverse"); 
-                    imgData = base64Header + data.transverse;
-                    img1.src = imgData;
-                    img1.onload = function(){
-                        transverseCanvas.getContext("2d").clearRect(0,0,transverseCanvas.width,transverseCanvas.height);
-                        transverseCanvas.getContext("2d").drawImage(img1,0,0,transverseCanvas.width,transverseCanvas.height);
-                        console.log("onload transverse");    
-                    }
-                }
-                if (data.coronal != null)
-                {
-                    console.log("pre coronal"); 
-                    imgData = base64Header + data.coronal;
-                    img2.src = imgData;
-                    img2.onload = function(){
-                        coronalCanvas.getContext("2d").clearRect(0,0,coronalCanvas.width,coronalCanvas.height);
-                        coronalCanvas.getContext("2d").drawImage(img2,0,0,coronalCanvas.width,coronalCanvas.height);
-                        console.log("onload coronal");     
-                    }
-                }
-                if (data.saggital != null)
-                {
-                    console.log("pre saggital");
-                    imgData = base64Header + data.saggital;
-                    img3.src = imgData;
-                    img3.onload = function(){
-                        saggitalCanvas.getContext("2d").clearRect(0,0,saggitalCanvas.width,saggitalCanvas.height);
-                        saggitalCanvas.getContext("2d").drawImage(img3,0,0,saggitalCanvas.width,saggitalCanvas.height);
-                        console.log("onload saggital");     
-                    }
-                }
-                $('#loading').hideLoading();
-                //this.hideDialog();
-            },(error)=>{
-                $('#loading').hideLoading();
-                //this.hideDialog();
-                console.log(error);
-            })
-            console.log("wait for response")
-            this.hasLoadVolume = true;
-            this.seriesId = seriesId;
+            }
+        
+            );
         }
     })
-    console.log("wait for load response")
   }
 
   auto(node: any) {

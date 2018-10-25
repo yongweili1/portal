@@ -1,4 +1,3 @@
-from args import RefreshType
 from model.workflow import WorkflowController
 from router.routerentity import RouterEntity
 from updater.multimageupdater import MultiImageUpdater

@@ -6,7 +6,8 @@ import time
 from entity.cellentity import CellEntity
 from image_server import ImageServer
 from message import response
-from utilities import get_display_view, get_focus_view, get_orthogonal_spacing, ViewEnum
+from updater.args import RefreshType
+from utilities import get_display_view, get_focus_view, get_orthogonal_spacing, ViewEnum, get_view_index
 from entity.imageentity import ImageEntity
 import md.image3d.python.image3d_io as cio
 
@@ -36,12 +37,6 @@ server = ImageServer()
 
 imageentity = ImageEntity(0, True)
 
-# vol = cio.read_image(r'D:\volume\SHENYU-Thorax10_ZRY_LDCT_Head_first(Adult)-CT.nii.gz')
-# imageentity.set_volume(vol)
-# imageentity.add_child_entity(CellEntity(0, False))
-# imageentity.add_child_entity(CellEntity(1, False))
-# imageentity.add_child_entity(CellEntity(2, False))
-# imageentity.init_default_scenes(vol)
 
 @command.register('greeting')
 def greeting(**kwargs):
@@ -76,9 +71,17 @@ def load(**kwargs):
     except Exception as err:
         return response(success=False, message='Invalid parameters.')
 
-    print(seriesuid)
-    rst, msg = server.load_volume(volume_path, seriesuid)
-    return response(msg)
+    try:
+        vol = cio.read_image(volume_path)
+        imageentity.set_volume(vol)
+        imageentity.add_child_entity(CellEntity(0, False))
+        imageentity.add_child_entity(CellEntity(1, False))
+        imageentity.add_child_entity(CellEntity(2, False))
+        imageentity.init_default_scenes(vol)
+        print("load volume succeed")
+        return response(success=True, message='load volume succeed')
+    except Exception as err:
+        return response(success=False, message='load volume failed')
 
 
 @command.register('unload')
@@ -146,13 +149,15 @@ def show(**kwargs):
     except:
         return response(success=False, message='Invalid parameters.')
 
-    vol, cfg = server.change_volume(series_uid)
-    if vol is None or cfg is None:
-        return response(success=False,
-                            message='Volumn: {} doesn`s exist'.format(series_uid))
-
-    imgs = server.get_images(display_view, width, height)
-    return response(json.dumps(imgs), message=kwargs['display_view'])
+    # vol, cfg = server.change_volume(series_uid)
+    # if vol is None or cfg is None:
+    #     return response(success=False,
+    #                         message='Volumn: {} doesn`s exist'.format(series_uid))
+    #
+    # imgs = server.get_images(display_view, width, height)
+    imageentity.updater().update(RefreshType.All)
+    result = imageentity.updater().get_result()
+    return response(json.dumps(result))
 
 
 @command.register('page')
@@ -177,20 +182,26 @@ def page(**kwargs):
     except:
         return response(success=False, message='Invalid parameters.')
 
-    a = time.time()
-    data = {}
-    cursor_3d = server.update_cursor(focus_view, delta)
-    server.update_look_at(focus_view, delta)
-    imgs = server.get_images(display_view, width, height)
-    trans_para = {
-        'point_3d': cursor_3d,
-        'trans_direct_flag': 'world2screen',
-    }
-    cursor_2d = server.dimension_translate(trans_para)
-    data['cross_position'] = cursor_2d
-    data.update(imgs)
-    b = time.time()
-    print("svr page cost time  = %f ms" % ((b-a)*1000))
+    view_index = get_view_index(focus_view)
+    imageentity.page(view_index, delta)
+    imageentity.updater().update(RefreshType.All)
+    result = imageentity.updater().get_result()
+    return response(json.dumps(result))
+
+    # a = time.time()
+    # data = {}
+    # cursor_3d = server.update_cursor(focus_view, delta)
+    # server.update_look_at(focus_view, delta)
+    # imgs = server.get_images(display_view, width, height)
+    # trans_para = {
+    #     'point_3d': cursor_3d,
+    #     'trans_direct_flag': 'world2screen',
+    # }
+    # cursor_2d = server.dimension_translate(trans_para)
+    # data['cross_position'] = cursor_2d
+    # data.update(imgs)
+    # b = time.time()
+    # print("svr page cost time  = %f ms" % ((b-a)*1000))
     return response(json.dumps(data))
 
 
@@ -372,12 +383,12 @@ def resize(**kwargs):
         return response(success=False, message='Invalid parameters.')
 
     size = dict(size)
-    server.set_view_size(**size)
-    return response(message='Setting view size succeed')
-
-
-class RefreshType(object):
-    pass
+    children_views = imageentity.get_children_views()
+    children_views[0].resize_(0, size['transverse'][0], size['transverse'][1])
+    children_views[0].resize_(0, size['coronal'][0], size['coronal'][1])
+    children_views[0].resize_(0, size['saggital'][0], size['saggital'][1])
+    print("resize succeed")
+    return response(message='Set view size succeed')
 
 
 @command.register('locate')
@@ -386,36 +397,35 @@ def locate(**kwargs):
         focus_view = kwargs['focus_view']
         cursor_2D = kwargs['cross_point'].split(",")
         display_view = kwargs['display_view']
-        print('receive locate command time:')
-        print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f'))
     except:
         return response(success=False, message='Invalid parameters.')
 
-    # imageentity.locate(0, (100, 100))
-    # imageentity.updater().update(RefreshType.All)
-    # result = imageentity.updater().get_result()
-    # return json.dumps(result)
+    view_index = get_view_index(focus_view)
+    imageentity.locate(view_index, cursor_2D)
+    imageentity.updater().update(RefreshType.All)
+    result = imageentity.updater().get_result()
+    return response(json.dumps(result))
 
-    a = time.time()
-    trans_para = {
-        'point_2d': cursor_2D,
-        'trans_direct_flag': 'screen2world',
-        'focus_view': focus_view
-    }
-    cursor_3d = server.dimension_translate(trans_para)
-    server.set_cursor(cursor_3d)
-    trans_para = {
-        'point_3d': cursor_3d,
-        'trans_direct_flag': 'world2screen'
-    }
-    cursor_2d = server.dimension_translate(trans_para)
-    server.set_look_at(cursor_3d, cursor_3d, cursor_3d)
-    display_view_array = display_view.split(",")
-    imgs = server.get_multi_images(display_view_array)
-    data = {}
-    data['cross_position'] = cursor_2d
-    data.update(imgs)
-    b = time.time()
-    print("svr cost time  = %d" % (b-a))
-    print(data['cross_position'])
-    return response(json.dumps(data))
+    # a = time.time()
+    # trans_para = {
+    #     'point_2d': cursor_2D,
+    #     'trans_direct_flag': 'screen2world',
+    #     'focus_view': focus_view
+    # }
+    # cursor_3d = server.dimension_translate(trans_para)
+    # server.set_cursor(cursor_3d)
+    # trans_para = {
+    #     'point_3d': cursor_3d,
+    #     'trans_direct_flag': 'world2screen'
+    # }
+    # cursor_2d = server.dimension_translate(trans_para)
+    # server.set_look_at(cursor_3d, cursor_3d, cursor_3d)
+    # display_view_array = display_view.split(",")
+    # imgs = server.get_multi_images(display_view_array)
+    # data = {}
+    # data['cross_position'] = cursor_2d
+    # data.update(imgs)
+    # b = time.time()
+    # print("svr cost time  = %d" % (b-a))
+    # print(data['cross_position'])
+    # return response(json.dumps(data))

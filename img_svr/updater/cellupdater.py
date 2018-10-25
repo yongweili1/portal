@@ -3,7 +3,8 @@ from model.workflow import GET_CLASS_NAME
 from router.routerargs import GraphicType
 from scene.coord import translate_from_world_to_screen
 from updater.baseupdater import BaseUpdater
-from args import RefreshType
+from updater.args import RefreshType
+from utilities import convert_rgba_to_base64
 
 
 class CellUpdater(BaseUpdater):
@@ -37,7 +38,8 @@ class CellUpdater(BaseUpdater):
             print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! CellUpdater update() ---> {}'.format(e)
 
     def update_image(self, scene, workflow):
-        self._result[RefreshType.Image] = scene.render()
+        rgba_data = scene.render().tolist()
+        self._result[RefreshType.Image] = convert_rgba_to_base64(rgba_data, 'PNG')
 
     def update_crosshair(self, scene, workflow):
         model_vol = workflow.get_model(GET_CLASS_NAME(VolumeInfo))

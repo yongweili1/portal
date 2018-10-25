@@ -16,11 +16,21 @@ export class SideBarComponent implements OnInit {
 
   public menuData = [
     {
-      link: '/base/upload',
+      name: 'system-data',
       icon: 'fa fa-fw fa-lg fa-folder',
-      title: 'Files Upload',
-      resName: 'base.patient-template'
-    },
+      title: 'base.data.title',
+      items: [  {
+        link: '/base/upload',
+        title: 'Files Upload',
+        resName: 'base.patient-template'
+      },
+      {
+        link: '/base/pacs',
+        title: 'Pacs',
+        resName: 'base.patient-template'
+      }
+      ]
+    },    
    {
       link: '/base/patient-template',
       icon: 'fa fa-fw fa-lg fa-list-ul',

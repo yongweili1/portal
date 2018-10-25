@@ -25,6 +25,7 @@ import { ForgotPasswordModule } from './base/forgot-password/forgot-password.mod
 import { RenewPasswordModule } from './base/renew-password/renew-password.module';
 import { ContouringModule} from './components/tps/contouring/contouring.module';
 import { HomeComponent } from './components/home/home.component'
+import {PacsModule} from './components/pacs/pacs.module'
 
 export function HttpLoaderFactory(http: HttpClient) {
   const appConfig = window['appConfig'] || {};
