@@ -32,8 +32,9 @@ export class Text extends createjs.Text {
 
     update(){
         this.overlayStage.clear();
-        this.x = this._cp.x + 10
-        this.y = this._cp.y
+        if (this._cp == null) return;
+        this.x = this._cp.x + 10;
+        this.y = this._cp.y;
         this.overlayStage.update();
     }
 
