@@ -486,14 +486,14 @@ class Zoom(APIView):
               'saggital' for saggital, 'coronal' for coronal, 'all' for all view
         :return: rgb image data
         """
-        shift = request.GET.get('shift', '0')
+        zoom_factor = request.GET.get('zoom_factor', '0')
         focus_view = request.GET.get('focus_view', None)
         user_ip = request.META.get('REMOTE_ADDR', None)
         if focus_view is None:
             return Response('请输入完整的请求数据')
 
         params = {
-            'shift': shift,
+            'zoom_factor': zoom_factor,
             'focus_view': focus_view,
             'user_ip': user_ip,
             'server_name': 'image',
