@@ -7,6 +7,7 @@ export class BaseContainer extends createjs.Container {
     type: string;
     overlayStage: any;
     protected _tempPoint: Point;
+    cps: Array<Point>;
 
     constructor(stage, type) {
         super();
@@ -18,18 +19,24 @@ export class BaseContainer extends createjs.Container {
         this.addEventListener("dblclick", this.handleDbClick.bind(this));
         this.addEventListener("pressup", this.handlePressUp.bind(this));
         this.overlayStage.addChild(this);
+        this.initCps()
     }
 
-    setStartPoint(p) {
-        this._startPoint = p;
+    initCps(count:number=-1) {
+        this.cps = new Array()
+        for (let index = 0; index < count; index++) {
+            this.cps.push(new Point(0, 0))
+        }
     }
 
-    setEndPoint(p) {
-        this._endPoint = p;
+    updateCp(index:number, x, y) {
+        if (index < this.cps.length)
+            this.cps[index].update(x, y)
     }
 
     update(){
     }
+    
 
     handleMouseDown(evt) {
         console.log('[base_container]handle MouseDown')

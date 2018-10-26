@@ -8,16 +8,16 @@ export class Line extends Overlay {
         super(stage, default_color);
     }
 
-    update() {
-        super.update();
+    update(start, end) {
         this.overlayStage.clear();
         this.graphics.clear();
+        
         this.graphics.beginStroke(this._color)
-                     .moveTo(this._startPoint.x, this._startPoint.y)
-                     .lineTo(this._endPoint.x, this._endPoint.y);
+                     .moveTo(start.x, start.y)
+                     .lineTo(end.x, end.y);
         let hit = new Hitbar();
-        hit.graphics.moveTo(this._startPoint.x, this._startPoint.y)
-                    .lineTo(this._endPoint.x, this._endPoint.y);
+        hit.graphics.moveTo(start.x, start.y)
+                    .lineTo(end.x, end.y);
         this.hitArea = hit;
         this.overlayStage.update();
     }

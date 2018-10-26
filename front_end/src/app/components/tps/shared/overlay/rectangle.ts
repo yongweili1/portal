@@ -8,15 +8,14 @@ export class Rectangle extends Overlay {
         super(stage);
     }
 
-    update(){
-        super.update();
+    update(start, end) {
         this.overlayStage.clear();
         this.graphics.clear();
-        let width = this._endPoint.x - this._startPoint.x
-        let height = this._endPoint.y - this._startPoint.y
-        this.graphics.beginStroke(this._color).rect(this._startPoint.x, this._startPoint.y, width, height);
+        let width = end.x - start.x
+        let height = end.y - start.y
+        this.graphics.beginStroke(this._color).rect(start.x, start.y, width, height);
         let hit = new Hitbar();
-        hit.graphics.rect(this._startPoint.x, this._startPoint.y, width, height);
+        hit.graphics.rect(start.x, start.y, width, height);
         this.hitArea = hit;
         this.overlayStage.update();
     }

@@ -43,6 +43,8 @@ class Home(APIView):
     def get(self, request):
         # user_ip = request.META.get('REMOTE_ADDR', None)
 
+        print('路由分发后:{}'.format(str(time.time())))
+        print('响应经由中间件前:{}'.format(str(time.time())))
         return render(request, 'main.html')
 
 
@@ -355,19 +357,16 @@ class Pan(APIView):
               'saggital' for saggital, 'coronal' for coronal, 'all' for all view
         :return: rgb image data
         """
-        shift = request.GET.get('shift', '0')
-        width = request.GET.get('width', None)
-        height = request.GET.get('height', None)
+        pos_pre = request.GET.get('pos_pre ', None)
+        pos_cur = request.GET.get('pos_cur', None)
         focus_view = request.GET.get('focus_view', None)
-        display_view = request.GET.get('display_view', 'all')
         user_ip = request.META.get('REMOTE_ADDR', None)
-        if width is None or height is None:
+        if pos_pre  is None or pos_cur is None:
             return Response('请输入完整的请求数据')
 
         params = {
-            'shift': shift,
-            'width': width,
-            'height': height,
+            'pos_pre ': pos_pre ,
+            'pos_cur': pos_cur,
             'focus_view': focus_view,
             'user_ip': user_ip,
             'server_name': 'image',
@@ -490,7 +489,7 @@ class Zoom(APIView):
         zoom_factor = request.GET.get('zoom_factor', '0')
         focus_view = request.GET.get('focus_view', None)
         user_ip = request.META.get('REMOTE_ADDR', None)
-        if focus_view is None or zoom_factor is None:
+        if focus_view is None:
             return Response('请输入完整的请求数据')
 
         params = {

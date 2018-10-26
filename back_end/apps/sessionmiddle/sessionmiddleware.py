@@ -13,29 +13,31 @@ class MySessionMiddleware(MiddlewareMixin):
     def process_response(self, request, response):
 
         try:
-            sessionid = request.COOKIES['sessionid']
+            besessionid = request.COOKIES['besessionid']
+            print(besessionid)
             request.session.allow_save = False
         except:
-            sessionid = None
+            besessionid = None
 
-        if sessionid:
-            session_queryset = DjangoSession.objects.filter(session_key=sessionid)
+        if besessionid:
+            session_queryset = DjangoSession.objects.filter(session_key=besessionid)
             session_obj = session_queryset[0]
             session_value = session_obj.session_data
             expire_date = session_obj.expire_date
             user_ip = request.META.get('REMOTE_ADDR', None)
 
-            newsession_obj = NewDjangoSession.objects.filter(session_key=sessionid)
+            newsession_obj = NewDjangoSession.objects.filter(session_key=besessionid)
             if not newsession_obj:
                 data = {
                     'client_ip': user_ip,
-                    'session_key': sessionid,
+                    'session_key': besessionid,
                     'session_data': session_value,
                     'expire_date': expire_date
                 }
                 NewDjangoSession.objects.create(**data)
 
         sess = request.session._session
+
         print(sess)
         if not sess:
             now_time = time.time()
@@ -43,7 +45,9 @@ class MySessionMiddleware(MiddlewareMixin):
             session_v = 'back_end'
 
             request.session[session_k] = session_v
-        # response.setHeader('Access-Control-Allow-Credentials', 'true')
-        # response.setHeader('Access-Control-Allow-Origin', request.getHeader('Origin'))
+            response.set_cookie('besessionid', session_v)
+        # response['Access-Control-Allow-Credentials'] = 'true'
+        # print(request.GET.get('Origin'))
+        # response['Access-Control-Allow-Origin'] = request.META.get('Origin')
 
         return response

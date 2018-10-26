@@ -269,17 +269,17 @@ class ImageServer(object):
         if display_view == ViewEnum.transverse or display_view == ViewEnum.all:
             transverse = self.__get_rgb_image(ViewEnum.transverse, self.view_size['transverse'][0],
                                               self.view_size['transverse'][1])
-            data['transverse'] = convert_rgba_to_base64(transverse, 'PNG')
+            data['transverse'] = convert_rgba_to_base64(transverse, 'jpeg')
 
         if display_view == ViewEnum.saggital or display_view == ViewEnum.all:
             saggital = self.__get_rgb_image(ViewEnum.saggital, self.view_size['saggital'][0],
                                             self.view_size['saggital'][1])
-            data['saggital'] = convert_rgba_to_base64(saggital, 'PNG')
+            data['saggital'] = convert_rgba_to_base64(saggital, 'jpeg')
 
         if display_view == ViewEnum.coronal or display_view == ViewEnum.all:
             coronal = self.__get_rgb_image(ViewEnum.coronal, self.view_size['coronal'][0],
                                            self.view_size['coronal'][1])
-            data['coronal'] = convert_rgba_to_base64(coronal, 'PNG')
+            data['coronal'] = convert_rgba_to_base64(coronal, 'jpeg')
 
         return data
 

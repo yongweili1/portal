@@ -8,15 +8,14 @@ export class Circle extends Overlay {
         super(stage);
     }
 
-    update(){
-        super.update();
+    update(start, end){
         this.overlayStage.clear();
         this.graphics.clear();
 
-        let x = (this._endPoint.x + this._startPoint.x) / 2;
-        let y = (this._endPoint.y + this._startPoint.y) / 2;
-        let x_side = this._endPoint.x - this._startPoint.x
-        let y_side = this._endPoint.y - this._startPoint.y
+        let x = (end.x + start.x) / 2;
+        let y = (end.y + start.y) / 2;
+        let x_side = end.x - start.x
+        let y_side = end.y - start.y
         let radio = Math.sqrt(x_side * x_side + y_side * y_side) / 2;
         this.graphics.beginStroke(this._color).drawCircle(x, y, radio);
         let hit = new Hitbar();

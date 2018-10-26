@@ -28,19 +28,14 @@ export class Overlay extends createjs.Shape {
         this._endPoint = p;
     }
 
-    update(){
-    }
-
     handleMouseOver(evt) {
         console.log(evt.currentTarget.type + ': handle MouseOver')
         this._is_hover = true;
         this._color = 'red';
-        this.update()
     }
     handleMouseOut(evt) {
         console.log(evt.currentTarget.type + ': handle MouseOut')
         this._is_hover = false;
         this._color = this._default_color;
-        this.update()
     }
 }

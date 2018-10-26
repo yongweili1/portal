@@ -30,8 +30,7 @@ SECRET_KEY = 'uzk_o#6l#bt*@(0+^v@z4*iut28&plfv)tqwec#2k-=6o5kn!z'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '10.9.19.139', 'localhost', '10.9.19.148', '10.9.19.24', '0.0.0.0']
-
+ALLOWED_HOSTS = ['*', ]
 
 # Application definition
 INSTALLED_APPS = [
@@ -68,15 +67,13 @@ MIDDLEWARE = [
 
 # --------------------------------------------------------------------------------
 # CORS跨域
-CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_ALLOW_ALL = False
+# CORS_ORIGIN_ALLOW_ALL = True
 # 跨域增加忽略
 CORS_ORIGIN_WHITELIST = (
-    # 'localhost:8080',
-    # '127.0.0.1:8080',
-    # '10.9.19.139:8080',
-    # '10.9.19.24:8080',
-    # '10.9.19.119:8080',
-    '*'
+    'localhost:4200',
+    '127.0.0.1:8000',
+    # '*'
 )
 # CORS_ORIGIN_REGEX_WHITELIST =  正则白名单    withCredentials
 # 允许携带cookie
@@ -104,6 +101,8 @@ CORS_ALLOW_HEADERS = (
     'x-csrftoken',
     'x-requested-with',
     'Pragma',
+    'withcredentials',
+    'Cache-Control',
 )
 
 # --------------------------------------------------------------------------------
@@ -152,7 +151,7 @@ DATABASES = {
         'OPTIONS': {
          "init_command": "SET foreign_key_checks = 0;",
         },
-        'default_transaction_isolation': 'read committed'
+        'isolation_level': 'read committed'
     }
 }
 # ---------------------------------------------------------------------------------------
@@ -214,13 +213,17 @@ REST_FRAMEWORK = {
 # session
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # 引擎（默认）
 
-SESSION_COOKIE_NAME = "sessionid"        # Session的cookie保存在浏览器上时的key，即：sessionid＝随机字符串（默认）
-SESSION_COOKIE_PATH = "/"                # Session的cookie保存的路径（默认）
+SESSION_COOKIE_NAME = "besessionid"         # Session的cookie保存在浏览器上时的key，即：besessionid＝随机字符串（默认）
+SESSION_COOKIE_PATH = "/"                 # Session的cookie保存的路径（默认）
 SESSION_COOKIE_DOMAIN = None             # Session的cookie保存的域名（默认）
-SESSION_COOKIE_SECURE = False            # 是否Https传输cookie（默认）
-SESSION_COOKIE_HTTPONLY = True           # 是否Session的cookie只支持http传输（默认）
-SESSION_COOKIE_AGE = 600                 # Session的cookie失效日期（2周）（默认）
-SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # 是否关闭浏览器使得Session过期（默认）
-SESSION_SAVE_EVERY_REQUEST = False      # 是否每次请求都保存Session，默认修改之后才保存（默认）
+SESSION_COOKIE_SECURE = False             # 是否Https传输cookie（默认）
+SESSION_COOKIE_HTTPONLY = True            # 是否Session的cookie只支持http传输（默认）
+SESSION_COOKIE_AGE = 600                  # Session的cookie失效日期（2周）（默认）
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False   # 是否关闭浏览器使得Session过期（默认）
+SESSION_SAVE_EVERY_REQUEST = False        # 是否每次请求都保存Session，默认修改之后才保存（默认）
+SESSION_CACHE_ALIAS = 'default'
+SESSION_COOKIE_SAMESITE = 'Lax'
+SESSION_FILE_PATH = None
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
 DJANGO_SESSION_MODEL = 'sessionmiddle.DjangoSession'

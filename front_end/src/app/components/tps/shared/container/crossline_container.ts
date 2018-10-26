@@ -22,9 +22,9 @@ export class CrosslineContainer extends BaseContainer {
 
     update() {
         super.update()
-        this.horizontal.update()
-        this.vertical.update()
-        this.crossPoint.update()
+        // this.horizontal.update()
+        // this.vertical.update()
+        // this.crossPoint.update()
     }
 
     setCenter(point) {

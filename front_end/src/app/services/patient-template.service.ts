@@ -42,35 +42,8 @@ export class PatientTemplateService {
     .set('studyDate', pageRequest.studyDate.toString());
     console.log(this.headers);
     return this.http
-    .get<Page<PatientPageRequest>>(`${this.appConfig.apiUrl}/patientinformations/patinfolist/`, {params:searchParams});
+      .get<Page<PatientPageRequest>>(`${this.appConfig.apiUrl}/patientinformations/patinfolist/`,{headers:this.headers});
   }
-
-
-  // downloadExcel(patientTemplate: PatientTemplateInfoRequest) {
-  //   const params = new URLSearchParams();
-  //   params.set('patientId', patientTemplate.patientId);
-  //   params.set('patientName', patientTemplate.patientName);
-  //   params.set('gender', patientTemplate.gender);
-  //   params.set('modality', patientTemplate.modality);
-  //   params.set('studyDescription',patientTemplate.studyDescription);
-  //   params.set('studyDate', patientTemplate.studyDate.toString());
-  //   const url = `${this.appConfig.apiUrl}/api/patient-template/download`;
-  //   this.http.get(url, {responseType: 3, search: params})
-  //     .subscribe((res) => {
-  //       let type;
-  //       type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-  //       let blob = new Blob([res.json()], { type });
-  //       let fileName = new Date().getTime() + '.xlsx';
-  //       let a = document.createElement('a');
-  //       document.body.appendChild(a);
-  //       a.download = fileName;
-  //       a.href = URL.createObjectURL(blob);
-  //       a.click();
-  //     }, (error) => {
-  //       this.messageService.error(error);
-  //     }, () => {
-  //     });
-  // }
 }
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })

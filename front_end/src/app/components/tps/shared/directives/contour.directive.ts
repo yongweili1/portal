@@ -54,6 +54,14 @@ export class ContourDirective implements OnInit {
     }
     
     @HostListener('mousedown', ['$event']) onMouseDown(event: MouseEvent) {
+        let info = 'MouseDown info: '
+        info += 'xy: (' + event.x + ', ' + event.y + ')'
+        info += ' client: (' + event.clientX + ', ' + event.clientY + ')'
+        info += ' offset: (' + event.offsetX + ', ' + event.offsetY + ')'
+        info += ' screen: (' + event.screenX + ', ' + event.screenY + ')'
+        info += ' layer: (' + event.layerX + ', ' + event.layerY + ')'
+        info += ' movement: (' + event.movementX + ', ' + event.movementY + ')'
+        document.getElementById('clickInfo').innerText = info
         this.myStage.children.forEach(shape => {
             if (shape.type == 'freepen') {
                 shape.editable = this.curAction == 'freepen2' ? true : false;
@@ -65,10 +73,17 @@ export class ContourDirective implements OnInit {
     }
 
     @HostListener('mousemove', ['$event']) onMouseMove(event: MouseEvent) {
+        let info = 'MouseMove info: '
+        info += 'xy: (' + event.x + ', ' + event.y + ')'
+        info += ' client: (' + event.clientX + ', ' + event.clientY + ')'
+        info += ' offset: (' + event.offsetX + ', ' + event.offsetY + ')'
+        info += ' screen: (' + event.screenX + ', ' + event.screenY + ')'
+        info += ' layer: (' + event.layerX + ', ' + event.layerY + ')'
+        info += ' movement: (' + event.movementX + ', ' + event.movementY + ')'
+        document.getElementById('moveInfo').innerText = info
         if (this.sharp != null){
             this.sharp.handleMouseMove(event)
         }
-            
     }
 
     @HostListener('mouseup', ['$event']) onMouseUp(event: MouseEvent) {

@@ -5,12 +5,12 @@ from django.views.decorators.csrf import csrf_exempt
 from . import views
 
 urlpatterns = [
+    url(r'^pages/$', views.TurnPage.as_view(), name='pages'),
     url(r'^home/$', views.Home.as_view(), name='home'),
     url(r'^macro/$', views.MacroRecording.as_view(), name='macro'),
     url(r'^volumes/$', views.LoadVolume.as_view(), name='volumes'),
     url(r'^images/$', views.GetImage.as_view(), name='images'),
     url(r'^colors/$', views.ChangeColor.as_view(), name='colors'),
-    url(r'^pages/$', views.TurnPage.as_view(), name='pages'),
     url(r'^seats/$', views.Pan.as_view(), name='seats'),
     url(r'^roll/$', views.Roll.as_view(), name='roll'),
     url(r'^rotate/$', views.Rotate.as_view(), name='rotate'),

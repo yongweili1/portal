@@ -1,15 +1,20 @@
-import json
-
 from command import command as cmd
 from message import RequestData
-from utilities import get_args
 
 from twisted.internet.protocol import Factory, Protocol
-from twisted.internet import reactor
 import struct
 from twisted.python import log
+
+from netbase import comproxy
+from netbase import McsfNetBase
 import sys
+import ctypes
+import platform
+
+import time
+
 log.startLogging(sys.stdout)
+sys.path.append('..')
 
 
 class Server(Protocol):
@@ -80,10 +85,34 @@ class ServerFactory(Factory):
         return Server()
 
 
+class MyCommandHandler(McsfNetBase.ICLRCommandHandlerEx):
+    def __init__(self):
+        McsfNetBase.ICLRCommandHandlerEx.__init__(self)
+
+    def HandleCommandCLR(self, pContext):
+        a = time.time()
+        current_package_data = pContext.GetSerializeObject()
+        data = RequestData(current_package_data)
+        b = time.time()
+
+        rsp = cmd.commands[data.command](**data.kwargs)
+        c = time.time()
+        pContext.Reply(rsp)
+        d = time.time()
+        print('handler use{} ms'.format(str((c - b) * 1000)))
+
+
 if __name__ == '__main__':
-    kwargs = get_args(sys.argv[1:])
-    host = kwargs['host'] if kwargs['host'] is not None else '0.0.0.0'
-    port = kwargs['port'] if kwargs['port'] is not None else 0
-    reactor.listenTCP(port, ServerFactory())
-    reactor.run()
+    so = ctypes.cdll.LoadLibrary
+    if platform.system == 'linux':
+        lib = so("../netbase/libMcsfLogger.so")
+    else:
+        lib = so("../netbase/McsfLogger.dll")
+    lib.GLogLoadConfig("../netbase/log_config.xml")
+
+    proxy = comproxy.PyCommProxy("img_srv", "127.0.0.1:10000")
+    x = MyCommandHandler()
+    proxy.register_cmd_handler_ex(100, x)
+
+    time.sleep(10000)
 

@@ -24,12 +24,12 @@ schema_view = get_schema_view(title='我的API',
                               renderer_classes=[OpenAPIRenderer, SwaggerUIRenderer])
 
 urlpatterns = [
+    url(r'^image/', include('connect_image.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^docs/', schema_view),
     url(r'^patientinformations/', include('patientinformations.urls')),
     url(r'^dicom/', include('upload_dcm.urls')),
     url(r'^algproxy/', include('alg_proxy.urls')),
-    url(r'^pacsserver/', include('handle_pacs.urls')),
-    url(r'^image/', include('connect_image.urls')),
+    url(r'^pacs/', include('handle_pacs.urls')),
     url(r'^overlay/', include('graph_element.urls')),
 ]
