@@ -2834,3 +2834,7 @@ h6,
 .my-tree .ui-tree .ui-treenode-children {
   padding: 0 0 0 30.84px;
 }
+
+.fa {
+  font-size: 9px;
+}

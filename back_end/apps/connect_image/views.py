@@ -521,18 +521,9 @@ class ReSetVolume(APIView):
               'saggital' for saggital, 'coronal' for coronal, 'all' for all view
         :return: True or False
         """
-        width = request.GET.get('width', None)
-        height = request.GET.get('height', None)
-        focus_view = request.GET.get('focus_view', None)
-        display_view = request.GET.get('display_view', 'all')
         user_ip = request.META.get('REMOTE_ADDR', None)
-        if width is None or height is None:
-            return Response('请输入完整的请求数据')
 
         params = {
-            'width': width,
-            'height': height,
-            'focus_view': focus_view,
             'user_ip': user_ip,
             'server_name': 'image',
             'command': 'reset',

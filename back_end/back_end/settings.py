@@ -68,13 +68,13 @@ MIDDLEWARE = [
 # --------------------------------------------------------------------------------
 # CORS跨域
 # CORS_ORIGIN_ALLOW_ALL = False
-# CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = True
 # 跨域增加忽略
-CORS_ORIGIN_WHITELIST = (
-    'localhost:4200',
-    '127.0.0.1:8000',
-    # '*'
-)
+# CORS_ORIGIN_WHITELIST = (
+#     'localhost:4200',
+#     '127.0.0.1:8000',
+#     # '*'
+# )
 # CORS_ORIGIN_REGEX_WHITELIST =  正则白名单    withCredentials
 # 允许携带cookie
 CORS_ALLOW_CREDENTIALS = True
@@ -143,7 +143,7 @@ DATABASES = {
         # 数据库登陆密码
         'PASSWORD': '111111',
         # 主机名
-        'HOST': 'localhost',
+        'HOST': '10.9.19.139',
         # 端口号
         'PORT': '3306',
         # 编码格式

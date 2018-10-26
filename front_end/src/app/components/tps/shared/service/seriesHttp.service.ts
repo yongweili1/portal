@@ -101,6 +101,10 @@ GetRotatePic(focus:any,prePos:any,curPos:any):Observable<any>{
    return this.http.get<any>(`${this.appConfig.apiUrl}/image/rotate/`,{params : getParams});
 }
 
+GetResetPic():Observable<any>{
+   return this.http.get<any>(`${this.appConfig.apiUrl}/image/backs/`);
+}
+
 
 
 
