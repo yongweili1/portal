@@ -1,4 +1,4 @@
-#-*-coding:utf-8-*-
+# -*-coding:utf-8-*-
 
 import json
 import time
@@ -20,7 +20,7 @@ def load_volume(*args, **kwargs):
         vol = f.read()
         f.close()
     except Exception as e:
-        print('请检查volume路径是否正确，{}'.format(kwargs['volumepath']))
+        print('请检查volume路径或文件格式是否正确:{}'.format(kwargs['volumepath']))
         raise
 
     data = msg.RequestMsg()

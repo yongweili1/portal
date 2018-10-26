@@ -442,19 +442,16 @@ class Rotate(APIView):
               'saggital' for saggital, 'coronal' for coronal, 'all' for all view
         :return: rgb image data
         """
-        angle = request.GET.get('angle', '0')
-        width = request.GET.get('width', None)
-        height = request.GET.get('height', None)
+        pos_pre = request.GET.get('pos_pre', None)
+        pos_cur = request.GET.get('pos_cur', None)
         focus_view = request.GET.get('focus_view', None)
-        display_view = request.GET.get('display_view', 'all')
         user_ip = request.META.get('REMOTE_ADDR', None)
-        if width is None or height is None:
+        if pos_pre is None or pos_cur is None:
             return Response('请输入完整的请求数据')
 
         params = {
-            'angle': angle,
-            'width': width,
-            'height': height,
+            'pos_pre': pos_pre,
+            'pos_cur': pos_cur,
             'focus_view': focus_view,
             'user_ip': user_ip,
             'server_name': 'image',
