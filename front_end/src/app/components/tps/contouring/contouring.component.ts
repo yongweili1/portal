@@ -246,10 +246,25 @@ export class ContouringComponent implements OnInit {
       this.picLeft2.changewl();
       this.picLeft3.changewl();
   }
-  mainmove() {
-      this.picLeft1.move();
-      this.picLeft2.move();
-      this.picLeft3.move();
+  mainpan() {
+      this.picLeft1.addPanEvent();
+      this.picLeft2.addPanEvent();
+      this.picLeft3.addPanEvent();
+  }
+  mainPanPro(evt){
+    console.log(evt);
+    let focus_view = evt[0];
+    let prePos = evt[1];
+    let curPso = evt[2];
+    let that = this;
+    if(this.hasLoadVolume == true){
+      this.seriesHttpService.GetPanPic(focus_view,prePos,curPso).subscribe(result =>{
+          result = JSON.parse(result);
+          that.picLeft1.cellUpdate(result['0']['image'], result['0']['crosshair']);
+          that.picLeft2.cellUpdate(result['1']['image'], result['1']['crosshair']);
+          that.picLeft3.cellUpdate(result['2']['image'], result['2']['crosshair']);
+        })
+    }
   }
   sfile() {
       this.picLeft1.file();

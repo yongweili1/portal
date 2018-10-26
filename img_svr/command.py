@@ -8,7 +8,7 @@ from image_server import ImageServer
 from message import response
 from updater.args import RefreshType
 from utilities import get_view_index, get_orthogonal_spacing, ViewEnum, get_view_index, get_page_filter_view, \
-    view_filter
+    view_filter, string_int_trans
 from entity.imageentity import ImageEntity
 import md.image3d.python.image3d_io as cio
 
@@ -231,18 +231,20 @@ def pan(**kwargs):
     :return: rgb image data
     """
     try:
-        shift = kwargs['shift'].split(',')
-        shift = [float(shift[0]), float(shift[1]), float(shift[2])]
-        width = int(kwargs['width'])
-        height = int(kwargs['height'])
+        pos_pre = string_int_trans(kwargs['pos_pre'].split(','), 's2i')
+        pos_cur = string_int_trans(kwargs['pos_cur'].split(','), 's2i')
         focus_view = get_view_index(kwargs['focus_view'])
-        display_view = get_view_index(kwargs['display_view'])
     except:
         return response(success=False, message='Invalid parameters.')
 
-    server.update_center(shift)
-    imgs = server.get_images(display_view, width, height)
-    return response(json.dumps(imgs))
+    try:
+        imageentity.pan(focus_view, pos_pre, pos_cur)
+        imageentity.updater().update(RefreshType.All)
+        result = imageentity.updater().get_result()
+        return response(json.dumps(result))
+    except Exception as e:
+        return response(success=False, message='pan failed')
+
 
 
 @command.register('roll')

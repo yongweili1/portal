@@ -151,3 +151,17 @@ def get_page_filter_view(focus_view):
             return [0, 1]
         else:
             print("focus_view index error")
+
+
+def string_int_trans(origin, flag):
+    if flag == 'i2s':
+        if isinstance(origin, list):
+            return map(str, origin)
+        else:
+            return str(origin)
+
+    else:
+        if isinstance(origin, list):
+            return map(int, origin)
+        else:
+            return int(origin)

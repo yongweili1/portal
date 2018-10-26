@@ -88,6 +88,15 @@ GetZoomPic(focus:any,factor:any):Observable<any>{
    return this.http.get<any>(`${this.appConfig.apiUrl}/image/zooms/`,{params : getParams});
 }
 
+GetPanPic(focus:any,prePos:any,curPos:any):Observable<any>{
+    const getParams = new HttpParams()
+    .set('focus_view', focus)
+    .set('pos_pre',prePos)
+    .set('pos_cur',curPos);
+   return this.http.get<any>(`${this.appConfig.apiUrl}/image/seats/`,{params : getParams});
+}
+
+
 
 
 }

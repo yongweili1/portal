@@ -51,6 +51,7 @@ export class PicTransverseComponent implements OnChanges {
     @Output() message: EventEmitter<any> = new EventEmitter<any>();
     @Output() scroll: EventEmitter<any> = new EventEmitter<any>();
     @Output() zoomReq: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
+    @Output() panReq: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
     glsource = new glsource();
     curAction: any;
     focus: any; display: any;
@@ -401,38 +402,23 @@ drawCross(nix, niy, loca) {
         // this.canbas.get(0).onmouseup = null;
     }
 
-    oldX = 0; //平移
-    oldY = 0;
-    move() {
+    addPanEvent() {
         let that = this;
         $('#threebmp').removeClass().addClass("MoveCursor");
         that.canbas.get(0).onmousedown = function (e) {
-            var shortSide = (this.clientHeight > this.clientWidth) ? this.clientWidth : this.clientHeight;
-            var clickX = e.clientX;
-            var clickY = e.clientY;
+            let prePos = [e.clientX, e.clientY];
             that.canbas.get(0).onmousemove = function (e) {
-                var curX = e.clientX;
-                var curY = e.clientY;
-                that.mx = (curX - clickX);
-                that.my = (curY - clickY);
-                that.transX = (that.oldX + that.mx).toFixed(2);
-                that.transY = (that.oldY + that.my).toFixed(2);
-                that.transX = (-1 * that.transX) / shortSide;
-                that.transY = that.transY / shortSide;
-                that.affineMat3 = that.ceateAffineTrans(that.scale, that.transX * that.scale, that.transY * that.scale);
-                that.drawScene(that.gl, that.programInfo, that.buffers, that.texture);
-                // that.patient2screen(that.postPoint);
+                let curPos = [e.clientX, e.clientY];
+                that.panReq.emit([that.tag, prePos, curPos]);
+                prePos = curPos;
             };
             that.canbas.get(0).onmouseup = function () {
                 that.canbas.get(0).onmousemove = null;
                 that.canbas.get(0).onmouseup = null;
-                that.oldX = that.oldX + that.mx;
-                that.oldY = that.oldY + that.my;
             };
         }
     }
 
-    oldscale = 0; //缩放
     addZoomEvent() {
         let that = this;
         $('#threebmp').removeClass().addClass("ZoomCursor");
