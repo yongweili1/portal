@@ -1,3 +1,63 @@
-<p>
-  pacs works!
-</p>
+<div class="my-page">
+  <div class="my-page-title">
+    <span></span>{{'base.pacs.title' | translate}}
+  </div>
+  <p-panel styleClass="my-panel no-header">
+    <p-table>
+        <ng-template pTemplate="header">
+            <tr>
+                <th>
+                    <label>PATIENT ID</label>
+                    <br>
+                    <input type="text">
+                </th>
+                <th>
+                    <label>PATIENT NAME</label>
+                    <br>
+                    <input type="text">
+                </th>
+                <th>
+                    <label>Gender</label>
+                    <br>
+                    <p-dropdown id="gender" [options]="gender" placeholder="Select Gender" optionLabel="label"></p-dropdown>
+                </th>
+                <th>
+                    <label>MODALITY</label>
+                    <br>
+                    <p-dropdown id="modality" [options]="modality" placeholder="Select Modality" optionLabel="label"></p-dropdown>
+                </th>
+                <th>
+                    <button style="margin-top:20px;" pButton type="button" class="my-button search" [label]="'btn.search' | translate" (click)="search()"></button>
+                </th>
+            </tr>
+        </ng-template>
+    </p-table>
+  </p-panel>
+  <p-dataTable #dt expandableRows="true" [value]="pageModel?.content" selectionMode="multiple" [resizableColumns]="true" styleClass="my-table text-center" [emptyMessage]="'text.empty-data' | translate">
+    <p-header class="ui-helper-clearfix">
+        <div class="pull-left">
+            <mpt-icon-button class="pull-right margin-right-10" [label]="'btn.down' | translate" icon="fa fa-download fa-lg" (click)="download()"></mpt-icon-button>
+        </div>
+    </p-header>
+    <p-column [style]="{'width':'30px','padding-left':'10px'}" selectionMode="multiple"></p-column>
+    <p-column [header]="'No' | translate" field="no" [style]="{'width':'30px','text-align':'center'}"></p-column>
+    <p-column *ngFor="let col of cols" [header]="col.header | translate" [style]="{'width':'120px'}">
+        <ng-template pTemplate="body" let-row="rowData">
+            <tr (click)="toContouring(row.patientId)">
+                <td style="text-align:center">
+                    {{row[col.field]}}
+                </td>
+            </tr>
+        </ng-template>
+    </p-column>
+    <p-footer>
+        <div class="ui-helper-clearfix" *ngIf="pageModel?.totalElements>0">
+            <span class="paginator-text pull-left">{{ 'text.pagination-records' | translate: {size: pageModel?.numberOfElements, total: pageModel?.totalElements} }}</span>
+            <span class="paginator-buttons pull-right">
+                <p-paginator *ngIf="pageModel?.totalPages>0"  [(rows)]="tablePageRows[1]" [pageLinkSize]="5" [rowsPerPageOptions]="tablePageRows"
+                [totalRecords]="pageModel?.totalElements" (onPageChange)="loadPatientTemplate($event)"></p-paginator>
+            </span>
+        </div>
+    </p-footer>
+  </p-dataTable>
+</div>

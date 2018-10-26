@@ -32,6 +32,7 @@
         "unlock": "Unlock",
         "locking": "Locking",
         "export": "Export",
+        "button":"Download",
         "print": "Print",
         "back": "Back",
         "next": "Next",
@@ -189,6 +190,9 @@
         "locales-mgnt": {
             "title": "Locales",
             "dlg-edit": "Edit text"
+        },
+        "pacs":{
+            "title":"Pacs"
         },
         "palist": {
             "title": "Pa List",
