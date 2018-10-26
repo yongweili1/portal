@@ -6,7 +6,6 @@ import struct
 from apps.connect_image import image_msg_pb2 as msg
 
 
-
 class ResponseData(object):
     def __init__(self, response_data):
         self.success = True
@@ -123,4 +122,4 @@ class BackEndFactory(protocol.ClientFactory):
 
 
 # single instance of BackEndFactory
-be_factory = 0
+be_factory = BackEndFactory()

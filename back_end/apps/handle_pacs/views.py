@@ -2,37 +2,48 @@
 from __future__ import unicode_literals
 
 # Create your views here.
-from rest_framework.generics import GenericAPIView
+import json
+import math
+
 from rest_framework.response import Response
 from md.dicom.python.dicom_service import DicomService
-from handle_pacs.setPacs import PacsConf
-from django.http import HttpResponse
 from md.dicom.python.dicom_service import DicomService
 from rest_framework.views import APIView
+from infoFromPacs import pacsinfo
+from infoFromPacs import ConnectPacsERROR
 
 from back_end.util.upload_dcm_to_db import UploadDcm
 
 
-class GetPacs(APIView):
+class GetPatient(APIView):
 
     def get(self, request):
-        pacs_ae_title = str(request.GET.get('pacs_ae_title')[1:-1])
-        pacs_ip = str(request.GET.get('pacs_ip')[1:-1])
-        pacs_port = int(request.GET.get('pacs_port'))
 
-        client_ae_title = str(request.GET.get('client_ae_title')[1:-1])
-        client_port = int(request.GET.get('client_port'))
+        size = int(request.GET.get('size', 15))
+        page = int(request.GET.get('page', 0))
 
-        # a = DicomService(pacs_ae_title=pacs_ae_title, pacs_ip=pacs_ip, pacs_port=pacs_port,
-        #                  client_ae_title=client_ae_title, client_port=client_port)
-        # a.connect()
-        #
-        # b = a.find_studies_by_patient_id_and_accession_number('R1107693', '10306916')
-        # print b
+        try:
+            patients_list = pacsinfo.getinformations()
+        except ConnectPacsERROR as e:
+            return Response(e)
+        totalelements = len(patients_list)
+        if totalelements == 0:
+            return Response('PACS服务器无数据,请检查PACS')
 
-        response = Response("ok")
+        totalpages = int(math.ceil(float(totalelements) / float(size)))
+        totalpatients = patients_list[size * page:size * (page + 1)]
+        numberofelements = len(totalpatients)
 
-        return response
+        data = {
+            'content': totalpatients,
+            'totalPages': totalpages,
+            'totalElements': totalelements,
+            'size': size,
+            'number': page,
+            'numberOfElements': numberofelements
+        }
+
+        return Response(data)
 
 
 class GetPacsSeries(APIView):
@@ -55,6 +66,9 @@ class GetPacsSeries(APIView):
         # print patient_series
         #
         # return Response(patient_series)
+
+        # b = a.find_studies_by_patient_id_and_accession_number('R1107693', '10306916')
+        # print b
 
 
 class SavePacsImage(APIView):
