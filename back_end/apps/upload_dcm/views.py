@@ -29,13 +29,13 @@ class Patinfo(APIView):
         :param request: a django rest framework request object
         :return: boolean true for success, false for failure
         """
+        print('正在上传，loading...')
         file_name_list = []
 
         files = request.FILES.getlist('a')
         if len(files) == 0:
             return Response('请选择上传文件')
 
-        print('正在上传，loading...')
         # 将上传的文件存到本地
         for f in files:
             destination = open(SaveDicomFilePath.location_2 + f.name, 'wb+')
@@ -69,19 +69,13 @@ class Patinfo(APIView):
         print('数据入库成功，重新build_volume（此操作比较耗时，请稍等）...')
         start_time = time.time()
         for seriespath in set(series_path_list):
-            filelist = os.listdir(seriespath)
-            datasetlist = []
-            for filename in filelist:
-                filepath = os.path.join(seriespath, filename)
-                dataset = pydicom.dcmread(filepath, force=True)
-                datasetlist.append(dataset)
             try:
                 buildvol = DicomToVolume()
-                volfilepath = buildvol.dicom_to_volume(datasetlist)
+                volfilepath, seriesuid = buildvol.dicom_to_volume(seriespath)
             except Exception as e:
                 return Response('dicom文件不完整,创建volume失败')
             try:
-                UploadVolume(volfilepath, datasetlist)
+                UploadVolume(volfilepath, seriesuid)
             except Exception as e:
                 return Response('Volume入库失败')
 
