@@ -266,6 +266,26 @@ export class ContouringComponent implements OnInit {
         })
     }
   }
+  mainrotate(){
+      this.picLeft1.addRotateEvent();
+      this.picLeft2.addRotateEvent();
+      this.picLeft3.addRotateEvent();
+  }
+  mainRotatePro(evt){
+    console.log(evt);
+    let focus_view = evt[0];
+    let prePos = evt[1];
+    let curPso = evt[2];
+    let that = this;
+    if(this.hasLoadVolume == true){
+      this.seriesHttpService.GetRotatePic(focus_view,prePos,curPso).subscribe(result =>{
+          result = JSON.parse(result);
+          that.picLeft1.cellUpdate(result['0']['image'], result['0']['crosshair']);
+          that.picLeft2.cellUpdate(result['1']['image'], result['1']['crosshair']);
+          that.picLeft3.cellUpdate(result['2']['image'], result['2']['crosshair']);
+        })
+    }
+  }
   sfile() {
       this.picLeft1.file();
   }

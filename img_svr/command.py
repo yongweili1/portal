@@ -8,7 +8,7 @@ from image_server import ImageServer
 from message import response
 from updater.args import RefreshType
 from utilities import get_view_index, get_orthogonal_spacing, ViewEnum, get_view_index, get_page_filter_view, \
-    view_filter, string_int_trans
+    view_filter, string_int_trans, cal_angle
 from entity.imageentity import ImageEntity
 import md.image3d.python.image3d_io as cio
 
@@ -183,11 +183,14 @@ def zoom(**kwargs):
     except:
         return response(success=False, message='Invalid parameters.')
 
-    zoom_factor = float(zoom_factor)
-    imageentity.zoom(focus_view, zoom_factor)
-    imageentity.updater().update(RefreshType.All)
-    result = imageentity.updater().get_result()
-    return response(json.dumps(result))
+    try:
+        zoom_factor = float(zoom_factor)
+        imageentity.zoom(focus_view, zoom_factor)
+        imageentity.updater().update(RefreshType.All)
+        result = imageentity.updater().get_result()
+        return response(json.dumps(result))
+    except Exception as e:
+        return response(success=False, message='zoom failed')
 
 
 @command.register('rotate')
@@ -204,17 +207,22 @@ def rotate(**kwargs):
     :return: rgb image data
     """
     try:
-        angle = float(kwargs['angle'])
-        width = int(kwargs['width'])
-        height = int(kwargs['height'])
+        pos_pre = float(kwargs['pos_pre'])
+        pos_cur = int(kwargs['pos_cur'])
         focus_view = get_view_index(kwargs['focus_view'])
-        display_view = get_view_index(kwargs['display_view'])
     except:
         return response(success=False, message='Invalid parameters.')
 
-    server.update_axis(focus_view, angle)
-    imgs = server.get_images(display_view, width, height)
-    return response(json.dumps(imgs))
+    try:
+        views = imageentity.get_children_views()
+        size = views[focus_view].get_scene().get_display_size()
+        angle = cal_angle(size, pos_pre, pos_cur)
+        imageentity.rotate(focus_view, angle)
+        imageentity.updater().update(RefreshType.All)
+        result = imageentity.updater().get_result()
+        return response(json.dumps(result))
+    except Exception as e:
+        return response(success=False, message='rotate failed')
 
 
 @command.register('pan')
