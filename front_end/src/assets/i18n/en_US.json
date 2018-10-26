@@ -32,7 +32,7 @@
         "unlock": "Unlock",
         "locking": "Locking",
         "export": "Export",
-        "button":"Download",
+        "down":"Download",
         "print": "Print",
         "back": "Back",
         "next": "Next",
