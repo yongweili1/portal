@@ -9,16 +9,14 @@ class DBError(Exception):
     pass
 
 
-def UploadVolume(volfilepath, datasetlist):
+def UploadVolume(volfilepath, seriesuid):
 
-    dcmseries = DcmSeries()
-    series_dic = dcmseries.get_dicom_series(datasetlist[0])
     series_data = {
         'seriespixeldatafilepath': volfilepath,
         'buildvolumesign': int(0)
     }
 
     try:
-        Series.objects.filter(seriesuid=series_dic['seriesuid']).update(**series_data)
+        Series.objects.filter(seriesuid=seriesuid).update(**series_data)
     except Exception as e:
         raise DBError
