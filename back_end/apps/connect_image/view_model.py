@@ -1,12 +1,17 @@
 #-*-coding:utf-8-*-
 
 import json
-import struct
+import time
 
 import image_msg_pb2 as msg
-from connect_image.macro_recording import Macro
-from twisted_client import be_factory
+from macro_recording import Macro
+import sys
+from twisted_client import ResponseData
+sys.path.append('..')
+from netbase import comproxy
+# from twisted_client import be_factory
 
+proxy = comproxy.PyCommProxy("web_be", "127.0.0.1:10000")
 
 @Macro()
 def load_volume(*args, **kwargs):
@@ -25,12 +30,9 @@ def load_volume(*args, **kwargs):
     data.content.params = json.dumps({'seriesuid': kwargs['seriesuid']})
     data.content.volume = vol
     data = data.SerializeToString()
-    size = len(data)
-    size = struct.pack('i', size)
-    data = size + data
+    rst = proxy.sync_send_command(data, 100, 'img_srv')
+    rst = ResponseData(rst)
 
-    be_factory.protocol.request(data)
-    rst = be_factory.protocol.waiting_for_result()
     return rst
 
 
@@ -42,10 +44,11 @@ def get_image(*args, **kwargs):
     data.command = kwargs['command']
     data.content.params = json.dumps(kwargs)
     data = data.SerializeToString()
-    size = len(data)
-    size = struct.pack('i', size)
-    data = size + data
+    b = time.time()
 
-    be_factory.protocol.request(data)
-    rst = be_factory.protocol.waiting_for_result()
+    rst = proxy.sync_send_command(data, 100, 'img_srv')
+    c = time.time()
+    rst = ResponseData(rst)
+
+    print('req&resp use {} ms'.format(str((c - b) * 1000)))
     return rst

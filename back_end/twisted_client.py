@@ -122,4 +122,4 @@ class BackEndFactory(protocol.ClientFactory):
 
 
 # single instance of BackEndFactory
-be_factory = BackEndFactory()
+be_factory = 0

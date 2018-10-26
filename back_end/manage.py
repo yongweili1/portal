@@ -48,13 +48,6 @@ if __name__ == "__main__":
     else:
         os.mkdir(SaveVolumeFilePath.volumepath)
 
-    # Start a new thread for reactor loop
-    try:
-        reactor.connectTCP('127.0.0.1', 8001, be_factory)
-        thread.start_new_thread(reactor.run, (0,))
-    except Exception as e:
-        print('初始化连接image_server失败')
-
     if os.name == 'nt':
         win32file._setmaxstdio(2048)
 
