@@ -8,7 +8,7 @@ from image_server import ImageServer
 from message import response
 from updater.args import RefreshType
 from utilities import get_view_index, get_orthogonal_spacing, ViewEnum, get_view_index, get_page_filter_view, \
-    view_filter, string_int_trans
+    view_filter, string_int_trans, cal_angle
 from entity.imageentity import ImageEntity
 import md.image3d.python.image3d_io as cio
 
@@ -107,25 +107,15 @@ def unload(**kwargs):
 def reset(**kwargs):
     """
     Reset voulme data
-    :param width: width of viewport
-    :param height: height of viewport
-    :param focus_view: current focused view, 'transverse' for transverse,
-    'saggital' for saggital, 'coronal' for coronal
-    :param display_view: need to displayed on screen, 'transverse' for transverse,
-    'saggital' for saggital, 'coronal' for coronal, 'all' for all view
-    :return: True or False
+    :return: base64 png image data
     """
     try:
-        width = int(kwargs['width'])
-        height = int(kwargs['height'])
-        focus_view = get_view_index(kwargs['focus_view'])
-        display_view = get_view_index(kwargs['display_view'])
-    except:
-        return response(success=False, message='Invalid parameters.')
-
-    server.reset_volume()
-    imgs = server.get_images(display_view, width, height)
-    return response(json.dumps(imgs))
+        imageentity.reset_scenes()
+        imageentity.updater().update(RefreshType.All)
+        result = imageentity.updater().get_result()
+        return response(json.dumps(result))
+    except Exception as e:
+        return response(success=False, message='reset failed')
 
 
 @command.register('show')
@@ -147,13 +137,9 @@ def page(**kwargs):
     """
     Page turning
     :param delta: cursor delta
-    :param width: width of viewport
-    :param height: height of viewport
     :param focus_view: current focused view, 'transverse' for transverse,
     'saggital' for saggital, 'coronal' for coronal
-    :param display_view: need to displayed on screen, 'transverse' for transverse,
-    'saggital' for saggital, 'coronal' for coronal, 'all' for all view
-    :return: rgb image data
+    :return: png base64 image data
     """
     try:
         delta = int(kwargs['delta'])
@@ -183,51 +169,54 @@ def zoom(**kwargs):
     except:
         return response(success=False, message='Invalid parameters.')
 
-    zoom_factor = float(zoom_factor)
-    imageentity.zoom(focus_view, zoom_factor)
-    imageentity.updater().update(RefreshType.All)
-    result = imageentity.updater().get_result()
-    return response(json.dumps(result))
+    try:
+        zoom_factor = float(zoom_factor)
+        imageentity.zoom(focus_view, zoom_factor)
+        imageentity.updater().update(RefreshType.All)
+        result = imageentity.updater().get_result()
+        return response(json.dumps(result))
+    except Exception as e:
+        return response(success=False, message='zoom failed')
 
 
 @command.register('rotate')
 def rotate(**kwargs):
     """
     Rotate
-    :param angle: rotate angle
-    :param width: width of viewport
-    :param height: height of viewport
+    :param pos_pre:
+    :param pos_cur:
     :param focus_view: current focused view, 'transverse' for transverse,
     'saggital' for saggital, 'coronal' for coronal
-    :param display_view: need to displayed on screen, 'transverse' for transverse,
-    'saggital' for saggital, 'coronal' for coronal, 'all' for all view
     :return: rgb image data
     """
     try:
-        angle = float(kwargs['angle'])
-        width = int(kwargs['width'])
-        height = int(kwargs['height'])
+        pos_pre = string_int_trans(kwargs['pos_pre'].split(','), 's2i')
+        pos_cur = string_int_trans(kwargs['pos_cur'].split(','), 's2i')
         focus_view = get_view_index(kwargs['focus_view'])
-        display_view = get_view_index(kwargs['display_view'])
+        print("=== enter rotate ===")
     except:
         return response(success=False, message='Invalid parameters.')
 
-    server.update_axis(focus_view, angle)
-    imgs = server.get_images(display_view, width, height)
-    return response(json.dumps(imgs))
+    try:
+        views = imageentity.get_children_views()
+        size = views[focus_view].get_scene().get_display_size()
+        angle = cal_angle(size, pos_pre, pos_cur)
+        imageentity.rotate(focus_view, angle)
+        imageentity.updater().update(RefreshType.All)
+        result = imageentity.updater().get_result()
+        return response(json.dumps(result))
+    except Exception as e:
+        return response(success=False, message='rotate failed')
 
 
 @command.register('pan')
 def pan(**kwargs):
     """
     Pan
-    :param shift: center shift, like [1,1,2], you should pass it like `'1,1,2'`
-    :param width: width of viewport
-    :param height: height of viewport
+    :param pos_pre:
+    :param pos_cur:
     :param focus_view: current focused view, 'transverse' for transverse,
     'saggital' for saggital, 'coronal' for coronal
-    :param display_view: need to displayed on screen, 'transverse' for transverse,
-    'saggital' for saggital, 'coronal' for coronal, 'all' for all view
     :return: rgb image data
     """
     try:

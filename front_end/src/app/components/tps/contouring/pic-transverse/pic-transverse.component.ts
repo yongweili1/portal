@@ -53,6 +53,7 @@ export class PicTransverseComponent implements OnChanges {
     @Output() scroll: EventEmitter<any> = new EventEmitter<any>();
     @Output() zoomReq: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
     @Output() panReq: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
+    @Output() rotateReq: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
     glsource = new glsource();
     curAction: any;
     focus: any; display: any;
@@ -441,6 +442,22 @@ export class PicTransverseComponent implements OnChanges {
                 that.canbas.get(0).onmousemove = null;
                 that.canbas.get(0).onmouseup = null;
             }
+        }
+    }
+
+    addRotateEvent(){
+        let that = this;
+        that.canbas.get(0).onmousedown = function (e) {
+            let prePos = [e.clientX, e.clientY];
+            that.canbas.get(0).onmousemove = function (e) {
+                let curPos = [e.clientX, e.clientY];
+                that.rotateReq.emit([that.tag, prePos, curPos]);
+                prePos = curPos;
+            };
+            that.canbas.get(0).onmouseup = function () {
+                that.canbas.get(0).onmousemove = null;
+                that.canbas.get(0).onmouseup = null;
+            };
         }
     }
 

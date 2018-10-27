@@ -3,31 +3,24 @@
       <button type="button" class="btn activeToolButton" id="btn_load" title="加载序列" (click)="loadMPR()"><img src="/assets/img/sendImagefilm.svg"></button>
       <button type="button" class="btn activeToolButton" id="btn_series" title="显示/隐藏序列" (click)="OnHideList()"><img src="" class="fa fa-fw fa-lg fa-list-ul"></button>
       <!-- <button type="button" class="btn activeToolButton" id="btn_file" title="打开文件夹">
-      <input type="file" id="file"><span>File</span></button>
-      <button type="button" class="btn activeToolButton" id="btn_load" title="显示图像" (click)="file()"><span>Show</span></button>
-      <button type="button" class="btn activeToolButton" id="btn_rect" title="矩形" (click)="OnRectangleClick()"><img src="/assets/img/butt-rectangle.svg"></button>
-      <button type="button" class="btn activeToolButton" id="btn_oval" title="椭圆" (click)="OnCircleClick()"><img src="/assets/img/butt-ellipse.svg"></button>
-      <button type="button" class="btn activeToolButton" id="btn_freepen" title="自由笔" (click)="OnBrushClick()"><img src="/assets/img/butt-freepen.svg"></button> -->
+      <input type="file" id="file"><span>File</span></button> -->
   </div>
   <div class="downfloor">
       <span>LOAD FILE</span>
   </div>
 </div>
+<div id="commonTools_2" class="btn-toolbar M2_B">
+    <div class="upfloor">
+        <select id="seriesSelect">
+            <option *ngFor="let series of seriesList" value="{{series}}">"{{series}}"</option>
+        </select>
+    </div>
+    <div class="downfloor">
+        <span>Series List</span>
+    </div>
+</div>
 <div id="commonTools_1" class="btn-toolbar M1_B">
   <div class="upfloor">
-      <!-- <button type="button" class="btn activeToolButton toolSelected" id="btn_select" title="选择" (click)="removemose()"><img src="/assets/img/butt-leftmouse-select.svg"></button>
-      <button type="button" class="btn activeToolButton" id="btn_translate" title="图像平移" (click)="imgmove()"><img src="/assets/img/butt-leftmouse-pan.svg"></button>
-      <button type="button" class="btn activeToolButton" id="btn_zoom" title="图像缩放" (click)="imgzoom()"><img src="/assets/img/butt-zooming.svg"></button>
-      <button type="button" class="btn activeToolButton" id="btn_setwl" title="窗宽窗位" (click)="imgwlww()"><img src="/assets/img/butt-leftmouse-window.svg"></button> -->
-      <!--   <div class="UIH_ComboBox L" name="combobox">
-          <button type="button" class="btn  activeToolButton " id="btn_freepen" title="自由笔"><img src="/assets/img/butt-freepen.svg"></button><span class="arrow" style="right: 3px;bottom: 3px;"></span>
-          <div class="Up open">
-              <button type="button" class="btn  activeToolButton" id="btn_circle" title="圆形"><img src="/assets/img/butt-circle.svg"></button>
-              <button type="button" class="btn activeToolButton" id="btn_rect" title="矩形"><img src="/assets/img/butt-rectangle.svg"></button>
-              <button type="button" class="btn  activeToolButton" id="btn_oval" title="椭圆"><img src="/assets/img/butt-ellipse.svg"></button>
-              <button type="button" class="btn  activeToolButton" id="btn_freepen" title="自由笔"><img src="/assets/img/butt-freepen.svg"></button>
-          </div>
-      </div> -->
       <button type="button" class="btn activeToolButton" id="btn_circle" title="选择图元" (click)="OnSelect()"><img src="/assets/img/butt-arrow.svg"></button>
       <button type="button" class="btn activeToolButton" id="btn_measure" title="测量" (click)="FuncMeasure()"><img src="/assets/img/butt-measure.svg"></button>
       <button type="button" class="btn activeToolButton" id="btn_rect" title="矩形" (click)="FuncRectangle()"><img src="/assets/img/butt-rectangle.svg"></button>
@@ -35,7 +28,6 @@
       <button type="button" class="btn activeToolButton" id="btn_freepen" title="自由笔" (click)="FuncFreepen()"><img src="/assets/img/butt-freepen.svg"></button>
       <button type="button" class="btn activeToolButton" id="btn_freepen2" title="自由笔2" (click)="FuncFreepenModify()"><img src="/assets/img/butt-freepen.svg"></button>
       <button type="button" class="btn activeToolButton" id="btn_removeAll" title="清除所有图元" (click)="OnClearAllClick()"><img src="/assets/img/butt-clear.svg"></button>
-
   </div>
   <div class="downfloor">
       <span>GRAPHICS</span>
@@ -46,23 +38,14 @@
         <button type="button" class="btn activeToolButton" id="btn_cross" title="十字线" (click)="OnCrossSelect()"><img src="/assets/img/butt-point.svg"></button>      
         <button type="button" class="btn activeToolButton" id="btn_zoom" title="图像缩放" (click)="onImgZoom()"><img src="/assets/img/butt-zooming.svg"></button>
         <button type="button" class="btn activeToolButton" id="btn_translate" title="图像平移" (click)="onImgPan()"><img src="/assets/img/butt-leftmouse-pan.svg"></button>
-
+        <button type="button" class="btn activeToolButton fa fa-repeat" id="btn_rotate" title="图像旋转" (click)="onImgRotate()"></button>
+        <button type="button" class="btn activeToolButton" id="btn_reset" title="重置" (click)="onImgReset()"><img src="/assets/img/butt-reset-window.svg"></button>
   
     </div>
     <div class="downfloor">
         <span>TOOLS</span>
     </div>
   </div>
-<div id="commonTools_2" class="btn-toolbar M2_B">
-        <div class="upfloor">
-            <select id="seriesSelect">
-                <option *ngFor="let series of seriesList" value="{{series}}">"{{series}}"</option>
-            </select>
-        </div>
-        <div class="downfloor">
-            <span>Series List</span>
-        </div>
-</div>
 <div id="commonTools_5" class="btn-toolbar M5_B">
     <div class="upfloor">
         <button type="button" class="btn activeToolButton fa fa-video-camera" id="btn_macro_start" title="开始录制" (click)="OnStartMacro()"></button>

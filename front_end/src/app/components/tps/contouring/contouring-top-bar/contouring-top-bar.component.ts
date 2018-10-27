@@ -15,6 +15,8 @@ export class ContouringTopBarComponent implements OnInit {
     @Output() zoom: EventEmitter<any> = new EventEmitter<any>();
     @Output() wlww: EventEmitter<any> = new EventEmitter<any>();
     @Output() pan: EventEmitter<any> = new EventEmitter<any>();
+    @Output() rotate: EventEmitter<any> = new EventEmitter<any>();
+    @Output() reset: EventEmitter<any> = new EventEmitter<any>();
     @Output() sfile: EventEmitter<any> = new EventEmitter<any>();
     @Output() loadSeries: EventEmitter<any> = new EventEmitter<any>();
     @Output() auto: EventEmitter<any> = new EventEmitter<any>();
@@ -54,6 +56,12 @@ export class ContouringTopBarComponent implements OnInit {
 
     onImgPan(){
         this.pan.emit();
+    }
+    onImgRotate(){
+        this.rotate.emit();
+    }
+    onImgReset(){
+        this.reset.emit();
     }
 
     imgwlww() {
