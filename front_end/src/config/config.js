@@ -19,4 +19,4 @@ var showcps = true;
 // unit: ms
 var delta_time = 100;
 
-var delta_count = 5;
+var delta_count = 4;

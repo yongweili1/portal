@@ -39,6 +39,7 @@ export class ContourDirective implements OnInit {
     ngOnInit() {
         this.myContext = this.el.nativeElement.getContext("2d");
         this.myStage = new createjs.Stage(this.el.nativeElement);
+        this.curAction = 'croselect'
         
         createjs.Touch.enable(this.myStage);
         this.myStage.enableMouseOver();
