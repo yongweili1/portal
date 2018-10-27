@@ -54,6 +54,7 @@ export class PicTransverseComponent implements OnChanges {
     @Output() zoomReq: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
     @Output() panReq: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
     @Output() rotateReq: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
+    @Output() wwwlReq: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
     glsource = new glsource();
     curAction: any;
     focus: any; display: any;
@@ -175,28 +176,6 @@ export class PicTransverseComponent implements OnChanges {
     }
 
 
-    // GetContourSet() {
-    //     // var contourdata = [{'x':10,'y':10},{'x':50,'y':10},{'x':100,'y':60},{'x':150,'y':30},{'x':310,'y':80}];
-    //     this.stage.removeChild(this.Line);
-    //     this.Line = new createjs.Shape();
-    //     this.Line.graphics.setStrokeStyle(1).beginStroke("red");
-    //     this.roiContourSets = this.conMessage.contourset;
-    //     if (this.tag == "transverse") {
-    //         var contourData = this.roiContourSets[this.pageindex].contourData;
-    //         for (var j = 0; j < contourData.length; ++j) {
-    //             var dataShape = contourData[j];
-    //             this.Line.graphics.moveTo(dataShape[0].x + 500, dataShape[0].y + 320);
-    //             for (var i = 0; i < dataShape.length; i++) {
-    //                 var x0 = dataShape[i].x + 500;
-    //                 var y0 = dataShape[i].y + 320;
-    //                 this.Line.graphics.lineTo(x0, y0);
-    //             }
-    //         }
-    //     }
-    //     this.stage.addChild(this.Line);
-    //     this.stage.update();
-    // }
-
     base64tobin(base64) {
         var text = window.atob(base64);
         var buffer = new ArrayBuffer(text.length);
@@ -255,7 +234,7 @@ export class PicTransverseComponent implements OnChanges {
         var horizontalHitArea = new createjs.Shape();
         horizontalHitArea.graphics.beginFill("black").drawRect(0, -5, width, 10);
         this.horizontalLine.hitArea = horizontalHitArea;
-        // this.horizontalLine.cursor = "url('/assets/img/vertical.cur'),auto";
+        this.horizontalLine.cursor = "url('/assets/img/vertical.cur'),auto";
 
         this.verticalLine = new createjs.Shape();// 竖线
         if (this.tag == "transverse") {
@@ -270,12 +249,12 @@ export class PicTransverseComponent implements OnChanges {
         var verticalHitArea = new createjs.Shape();
         verticalHitArea.graphics.beginFill("black").drawRect(-5, 0, 10, height);
         this.verticalLine.hitArea = verticalHitArea;
-        // this.verticalLine.cursor = "url('/assets/img/horizontal.cur'),auto";
+        this.verticalLine.cursor = "url('/assets/img/horizontal.cur'),auto";
 
         this.crossPoint = new createjs.Shape();// 交点
         this.crossPoint.graphics.beginFill("white").drawCircle(0, 0, 8);
         this.crossPoint.alpha = 0.2;
-        // this.crossPoint.cursor = "url('/assets/img/move.cur'),auto";
+        this.crossPoint.cursor = "url('/assets/img/move.cur'),auto";
         this.stage.addChild(this.verticalLine);
         this.stage.addChild(this.horizontalLine);
         this.stage.addChild(this.crossPoint);
@@ -359,33 +338,6 @@ export class PicTransverseComponent implements OnChanges {
         //   this.cross(this.scrCrossPt[0], this.scrCrossPt[1], this.canbas.get(0));
     }
 
-    //调整窗宽窗位
-    changewl() {
-        let that = this;
-        $('#threebmp').removeClass().addClass("mouse_windows");
-        that.canbas.get(0).onmousedown = function (e) {
-            var clickY = e.clientY;
-            var clickX = e.clientX;
-            that.canbas.get(0).onmousemove = function (e) {
-                var curY = e.clientY;
-                var curX = e.clientX;
-                that.wlx = (clickY - curY);
-                that.wl = that.wlold + that.wlx;
-                that.wwx = (clickX - curX);
-                that.ww = that.wwold + that.wwx;
-                $(this).parent().find(".ww").val(that.ww);
-                $(this).parent().find(".wl").val(that.wl);
-                that.drawScene(that.gl, that.programInfo, that.buffers, that.texture);
-            }
-            that.canbas.get(0).onmouseup = function (e) {
-                that.canbas.get(0).onmousemove = null;
-                that.canbas.get(0).onmouseup = null;
-                that.wlold = that.wl;
-                that.wwold = that.ww;
-            }
-        }
-    }
-
     onClickwl(inval) {
         this.wl = inval;
         $(this).parent().find(".wl").val(this.wl);
@@ -445,7 +397,7 @@ export class PicTransverseComponent implements OnChanges {
         }
     }
 
-    addRotateEvent(){
+    addRotateEvent() {
         let that = this;
         that.canbas.get(0).onmousedown = function (e) {
             let prePos = [e.clientX, e.clientY];
@@ -458,6 +410,33 @@ export class PicTransverseComponent implements OnChanges {
                 that.canbas.get(0).onmousemove = null;
                 that.canbas.get(0).onmouseup = null;
             };
+        }
+    }
+    addChangeWlEvent(){
+        let that = this;
+        that.canbas.get(0).onmousedown = function (e) {
+            let ww_factor = 0;
+            let wl_factor = 0;
+            let preX = e.clientX
+            let preY = e.clientY;
+            that.canbas.get(0).onmousemove = function (e) {
+                let curX = e.clientX;
+                let curY = e.clientY;
+                let shiftY = curY - preY;
+                if (shiftY >= 0) {
+                    ww_factor = 1.0 + shiftY * 1.0 / 120
+                } else {
+                    ww_factor = 1.0 / (1.0 - shiftY * 1.0 / 120)
+                }
+                wl_factor = (preX - curX) * 1.0 / 240;
+                preX = curX;
+                preY = curY;
+                that.wwwlReq.emit([that.tag, ww_factor, wl_factor]);
+            }
+            that.canbas.get(0).onmouseup = function (e) {
+                that.canbas.get(0).onmousemove = null;
+                that.canbas.get(0).onmouseup = null;
+            }
         }
     }
 

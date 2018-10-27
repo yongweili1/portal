@@ -2,7 +2,7 @@ import { Component, ViewChild, OnInit, Input, Output, EventEmitter, SimpleChange
 import { ConMessageService } from '../../shared/service/conMessage.service';
 //import { PatientHttpService } from 'TpsShared/TpsService/patientHttp.service';
 import { MenuItem } from '../../../patient-template/shared/patient-template.model'
-import {ContouringService} from '../../shared/service/contouring.service'
+import { ContouringService } from '../../shared/service/contouring.service'
 
 
 @Component({
@@ -36,35 +36,29 @@ export class ContouringTopBarComponent implements OnInit {
     atlasData: any = new Array();
 
     ngOnInit() {
-    //   if (this.conMessage.serieses != undefined) {
-    //       this.seriesId = this.conMessage.serieses;
-    //   }
-    //   this.conMessage.serieses$.subscribe(value => {
-    //       this.seriesId = value;
-    //   });
-  }
-  ngOnChanges(changes: SimpleChanges) {
-       
-  }
+    }
+    ngOnChanges(changes: SimpleChanges) {
+
+    }
 
     display: boolean = false;
     addPlanDisplay: boolean = false;
 
-    onImgZoom(){
+    onImgZoom() {
         this.zoom.emit();
     }
 
-    onImgPan(){
+    onImgPan() {
         this.pan.emit();
     }
-    onImgRotate(){
+    onImgRotate() {
         this.rotate.emit();
     }
-    onImgReset(){
+    onImgReset() {
         this.reset.emit();
     }
 
-    imgwlww() {
+    onImgWindow() {
         this.wlww.emit();
     }
 
@@ -179,27 +173,27 @@ export class ContouringTopBarComponent implements OnInit {
         this.conMessage.SetCurAction("select");
     }
 
-    OnCrossSelect(){
+    OnCrossSelect() {
         this.conMessage.SetCurAction("croselect");
     }
 
-    OnStartMacro(){
-    this.conService.Macro("start").subscribe(result=>{
-        if(result=="ok"){
-            console.log("start macro transcribe");
-        }
-    },(error)=>{
+    OnStartMacro() {
+        this.conService.Macro("start").subscribe(result => {
+            if (result == "ok") {
+                console.log("start macro transcribe");
+            }
+        }, (error) => {
             console.log("start macro transcribe failed")
         }
 
-    );
-  }
-  OnEndMacro(){
-    this.conService.Macro("finish").subscribe();
-  }
-  OnRunMacro(){
-    this.conService.Macro("run").subscribe();
-  }
+        );
+    }
+    OnEndMacro() {
+        this.conService.Macro("finish").subscribe();
+    }
+    OnRunMacro() {
+        this.conService.Macro("run").subscribe();
+    }
 
     /**
     * 测量，直线
