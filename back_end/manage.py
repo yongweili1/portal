@@ -50,7 +50,7 @@ if __name__ == "__main__":
         if os.path.exists(SaveVolumeFilePath.volumePath):
             pass
         else:
-            os.mkdir(SaveVolumeFilePath.volumepath)
+            os.mkdir(SaveVolumeFilePath.volumePath)
     elif platform.system() == 'Linux':
         if os.path.exists(LinuxFilePath.dicomPath):
             pass
