@@ -19,6 +19,7 @@ import {
 import { ToastService } from '../../../core/toast.service';
 import { Page, PageRequest } from '../../../shared/models';
 import { LazyExcuteHandler } from './lazy_excute_handler';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 declare var $: any;
 
@@ -76,30 +77,36 @@ export class ContouringComponent implements OnInit {
 
     transverseChange(event: any) {
         let displayView = 'coronal,saggital'
-        this.seriesHttpService.GetLocatePic('transverse', displayView, event).subscribe((value) => {
-            let data = JSON.parse(value);
-            this.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair']);
-            this.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair']);
+        if(this.hasLoadVolume == true){
+            this.seriesHttpService.GetLocatePic('transverse', displayView, event).subscribe((value) => {
+                let data = JSON.parse(value);
+                this.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair']);
+                this.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair']);
+            }
+            )            
         }
-        )
     }
 
     coronalChange(event: any) {
         let displayView = 'transverse,saggital'
-        this.seriesHttpService.GetLocatePic('coronal', displayView, event).subscribe((value) => {
-            let data = JSON.parse(value);
-            this.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair']);
-            this.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair']);
+        if(this.hasLoadVolume == true){
+            this.seriesHttpService.GetLocatePic('coronal', displayView, event).subscribe((value) => {
+                let data = JSON.parse(value);
+                this.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair']);
+                this.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair']);
         }
         )
     }
+    }
     saggitalChange(event: any) {
         let displayView = 'transverse,coronal'
-        this.seriesHttpService.GetLocatePic('saggital', displayView, event).subscribe((value) => {
-            let data = JSON.parse(value);
-            this.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair']);
-            this.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair']);
-        })
+        if(this.hasLoadVolume == true){
+            this.seriesHttpService.GetLocatePic('saggital', displayView, event).subscribe((value) => {
+                let data = JSON.parse(value);
+                this.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair']);
+                this.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair']);
+            })
+        }
     }
 
     mainClearPri() {
@@ -209,57 +216,12 @@ export class ContouringComponent implements OnInit {
                     canvasSize['view_size'] = that.getCanvasSize();
                     that.conService.noticeSize(canvasSize).subscribe(result => {
                         if (result.body == "success" && that.hasLoadVolume == true) {
-                            let img1 = new Image();
-                            let img2 = new Image();
-                            let img3 = new Image();
-                            let transverseCanvas = $(".a_class .icanvas").get(0);
-                            let saggitalCanvas = $(".c_class .icanvas").get(0);
-                            let coronalCanvas = $(".b_class .icanvas").get(0);
-                            let seriesId: any = $("#seriesSelect").val();
-                            this.seriesHttpService.GetSeries("", "", "all", transverseCanvas.width, transverseCanvas.height).subscribe((value) => {
-                                let data = JSON.parse(value);
-                                let base64Header = "data:image/png;base64,";
-                                let imgData: any;
-                                if (data['0']['image'] != null) {
-                                    console.log("pre transverse");
-                                    imgData = base64Header + data['0']['image'];
-                                    img1.src = imgData;
-                                    img1.onload = function () {
-                                        transverseCanvas.getContext("2d").clearRect(0, 0, transverseCanvas.width, transverseCanvas.height);
-                                        transverseCanvas.getContext("2d").drawImage(img1, 0, 0, transverseCanvas.width, transverseCanvas.height);
-                                        console.log("onload transverse");
-                                    }
-                                }
-                                if (data['1']['image'] != null) {
-                                    console.log("pre coronal");
-                                    imgData = base64Header + data['1']['image'];
-                                    img2.src = imgData;
-                                    img2.onload = function () {
-                                        coronalCanvas.getContext("2d").clearRect(0, 0, coronalCanvas.width, coronalCanvas.height);
-                                        coronalCanvas.getContext("2d").drawImage(img2, 0, 0, coronalCanvas.width, coronalCanvas.height);
-                                        console.log("onload coronal");
-                                    }
-                                }
-                                if (data['2']['image'] != null) {
-                                    console.log("pre saggital");
-                                    imgData = base64Header + data['2']['image'];
-                                    img3.src = imgData;
-                                    img3.onload = function () {
-                                        saggitalCanvas.getContext("2d").clearRect(0, 0, saggitalCanvas.width, saggitalCanvas.height);
-                                        saggitalCanvas.getContext("2d").drawImage(img3, 0, 0, saggitalCanvas.width, saggitalCanvas.height);
-                                        console.log("onload saggital");
-                                    }
-                                }
-                                $('#loading').hideLoading();
-                                //this.hideDialog();
-                            }, (error) => {
-                                $('#loading').hideLoading();
-                                //this.hideDialog();
-                                console.log(error);
+                            that.seriesHttpService.GetSeries("", "", "all", "", "").subscribe(data => {
+                                data = JSON.parse(data);
+                                that.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair']);
+                                that.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair']);
+                                that.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair']);
                             })
-                            console.log("wait for response")
-                            this.hasLoadVolume = true;
-                            this.seriesId = seriesId;
                         }
                     });
                 }
@@ -370,71 +332,29 @@ export class ContouringComponent implements OnInit {
         })
     }
 
-    sliceX: any; sliceY: any; sliceZ: any; gap: any; sliceAll: any;
-    /**
-     * 加载序列响应函数，暂时向service随便发一个seriesId
-     * @param seriesId 
-     */
     loadSeries() {
         $('#loading').hideLoading();
         $('#loading').showLoading();
-        //this.showDialog();
-        let img1 = new Image();
-        let img2 = new Image();
-        let img3 = new Image();
         let transverseCanvas = $(".a_class .icanvas").get(0);
-        let saggitalCanvas = $(".c_class .icanvas").get(0);
-        let coronalCanvas = $(".b_class .icanvas").get(0);
         let seriesId: any = $("#seriesSelect").val();
         let canvasSize: any = {}
         canvasSize['view_size'] = this.getCanvasSize();
         console.log(canvasSize)
+        let that = this;
         this.seriesHttpService.LoadVolume(seriesId).subscribe(value => {
             if (value == "success") {
                 this.conService.noticeSize(canvasSize).subscribe(result => {
                     if (result.body == "success") {
                         this.seriesHttpService.GetSeries(seriesId, "", "all", transverseCanvas.width, transverseCanvas.height).subscribe((value) => {
                             let data = JSON.parse(value);
-                            let base64Header = "data:image/png;base64,";
-                            let imgData: any;
-                            if (data['0']['image'] != null) {
-                                console.log("pre transverse");
-                                imgData = base64Header + data['0']['image'];
-                                img1.src = imgData;
-                                img1.onload = function () {
-                                    transverseCanvas.getContext("2d").clearRect(0, 0, transverseCanvas.width, transverseCanvas.height);
-                                    transverseCanvas.getContext("2d").drawImage(img1, 0, 0, transverseCanvas.width, transverseCanvas.height);
-                                    console.log("onload transverse");
-                                }
-                            }
-                            if (data['1']['image'] != null) {
-                                console.log("pre coronal");
-                                imgData = base64Header + data['1']['image'];
-                                img2.src = imgData;
-                                img2.onload = function () {
-                                    coronalCanvas.getContext("2d").clearRect(0, 0, coronalCanvas.width, coronalCanvas.height);
-                                    coronalCanvas.getContext("2d").drawImage(img2, 0, 0, coronalCanvas.width, coronalCanvas.height);
-                                    console.log("onload coronal");
-                                }
-                            }
-                            if (data['2']['image'] != null) {
-                                console.log("pre saggital");
-                                imgData = base64Header + data['2']['image'];
-                                img3.src = imgData;
-                                img3.onload = function () {
-                                    saggitalCanvas.getContext("2d").clearRect(0, 0, saggitalCanvas.width, saggitalCanvas.height);
-                                    saggitalCanvas.getContext("2d").drawImage(img3, 0, 0, saggitalCanvas.width, saggitalCanvas.height);
-                                    console.log("onload saggital");
-                                }
-                            }
+                            that.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair']);
+                            that.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair']);
+                            that.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair']);
                             $('#loading').hideLoading();
-                            //this.hideDialog();
                         }, (error) => {
                             $('#loading').hideLoading();
-                            //this.hideDialog();
                             console.log(error);
                         })
-                        console.log("wait for response")
                         this.hasLoadVolume = true;
                         this.seriesId = seriesId;
                     }
