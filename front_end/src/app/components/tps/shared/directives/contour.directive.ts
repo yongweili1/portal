@@ -49,7 +49,11 @@ export class ContourDirective implements OnInit {
         this.myContext.lineWidth = this.contourLineWidth;
         
         this.contouringService.curAction$.subscribe(curAction => {
-            this.curAction = curAction
+            if (curAction == 'clearAllShape') {
+                this.myStage.removeAllChildren()
+            } else {
+                this.curAction = curAction
+            }
         })
     }
     

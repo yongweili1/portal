@@ -203,8 +203,8 @@ export class PicTransverseComponent implements OnChanges {
      * 清除所有图元
      */
     clearPri() {
-        this.primitivecan.getContext("2d").clearRect(0, 0, this.primitivecan.width, this.primitivecan.height);
-        this.conMessage.SetCurAction("clearAll");
+        this.primitivedrawcan.getContext("2d").clearRect(0, 0, this.primitivedrawcan.width, this.primitivedrawcan.height);
+        this.conMessage.SetCurAction("clearAllShape");
     }
 
     /**
