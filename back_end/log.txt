@@ -15935,3 +15935,543 @@
 2018-10-25 16:41:53,255 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:57] - INFO - find_patients association established
 2018-10-25 16:41:53,411 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit find_patients
 2018-10-25 16:41:53,411 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:05:21,246 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter connect
+2018-10-26 17:05:21,246 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000B341A90>,), {}
+2018-10-26 17:05:21,246 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter ping
+2018-10-26 17:05:21,246 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000B341898>,), {}
+2018-10-26 17:05:21,246 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter _setup_c_echo_assoc
+2018-10-26 17:05:21,246 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000B341898>,), {}
+2018-10-26 17:05:21,348 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit _setup_c_echo_assoc
+2018-10-26 17:05:21,349 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:64] - INFO - c_echo association established
+2018-10-26 17:05:21,440 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit ping
+2018-10-26 17:05:21,440 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit connect
+2018-10-26 17:05:21,441 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:05:21,441 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000B341A90>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:05:21,443 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:05:21,443 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000B341B00>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:05:21,443 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter _setup_c_find_assoc
+2018-10-26 17:05:21,443 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000B341B00>,), {}
+2018-10-26 17:05:21,549 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit _setup_c_find_assoc
+2018-10-26 17:05:21,549 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:57] - INFO - find_patients association established
+2018-10-26 17:05:21,816 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:05:21,816 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:05:40,243 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter connect
+2018-10-26 17:05:40,243 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000B268E10>,), {}
+2018-10-26 17:05:40,243 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter ping
+2018-10-26 17:05:40,243 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000B268BE0>,), {}
+2018-10-26 17:05:40,244 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter _setup_c_echo_assoc
+2018-10-26 17:05:40,244 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000B268BE0>,), {}
+2018-10-26 17:05:40,348 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit _setup_c_echo_assoc
+2018-10-26 17:05:40,348 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:64] - INFO - c_echo association established
+2018-10-26 17:05:40,437 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit ping
+2018-10-26 17:05:40,437 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit connect
+2018-10-26 17:05:40,437 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:05:40,437 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000B268E10>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:05:40,437 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:05:40,437 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000B268978>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:05:40,437 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter _setup_c_find_assoc
+2018-10-26 17:05:40,437 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000B268978>,), {}
+2018-10-26 17:05:41,348 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit _setup_c_find_assoc
+2018-10-26 17:05:41,348 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:57] - INFO - find_patients association established
+2018-10-26 17:05:41,591 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:05:41,591 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:07:54,002 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter connect
+2018-10-26 17:07:54,002 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000B537748>,), {}
+2018-10-26 17:07:54,003 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter ping
+2018-10-26 17:07:54,003 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000B5539B0>,), {}
+2018-10-26 17:07:54,003 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter _setup_c_echo_assoc
+2018-10-26 17:07:54,003 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000B5539B0>,), {}
+2018-10-26 17:07:54,105 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit _setup_c_echo_assoc
+2018-10-26 17:07:54,105 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:64] - INFO - c_echo association established
+2018-10-26 17:07:54,191 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit ping
+2018-10-26 17:07:54,191 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit connect
+2018-10-26 17:07:54,191 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:07:54,191 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000B537748>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:07:54,193 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:07:54,193 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000B553AC8>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:07:54,193 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter _setup_c_find_assoc
+2018-10-26 17:07:54,193 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000B553AC8>,), {}
+2018-10-26 17:07:54,296 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit _setup_c_find_assoc
+2018-10-26 17:07:54,296 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:57] - INFO - find_patients association established
+2018-10-26 17:07:54,555 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:07:54,555 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:16:46,190 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter connect
+2018-10-26 17:16:46,190 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000B86B9B0>,), {}
+2018-10-26 17:16:46,190 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter ping
+2018-10-26 17:16:46,190 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000B8819B0>,), {}
+2018-10-26 17:16:46,190 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter _setup_c_echo_assoc
+2018-10-26 17:16:46,190 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000B8819B0>,), {}
+2018-10-26 17:16:56,233 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit _setup_c_echo_assoc
+2018-10-26 17:16:56,233 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:64] - INFO - c_echo association established
+2018-10-26 17:16:56,250 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit ping
+2018-10-26 17:16:56,250 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit connect
+2018-10-26 17:16:56,250 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:16:56,250 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000B86B9B0>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:16:56,252 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:16:56,252 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000B881AC8>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:16:56,252 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter _setup_c_find_assoc
+2018-10-26 17:16:56,253 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000B881AC8>,), {}
+2018-10-26 17:16:57,163 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit _setup_c_find_assoc
+2018-10-26 17:16:57,163 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:57] - INFO - find_patients association established
+2018-10-26 17:16:57,306 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:16:57,306 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:17:02,546 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter connect
+2018-10-26 17:17:02,548 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000B910630>,), {}
+2018-10-26 17:17:02,548 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter ping
+2018-10-26 17:17:02,549 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000B910978>,), {}
+2018-10-26 17:17:02,549 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter _setup_c_echo_assoc
+2018-10-26 17:17:02,549 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000B910978>,), {}
+2018-10-26 17:17:02,653 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit _setup_c_echo_assoc
+2018-10-26 17:17:02,653 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:64] - INFO - c_echo association established
+2018-10-26 17:17:02,677 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit ping
+2018-10-26 17:17:02,677 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit connect
+2018-10-26 17:17:02,678 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:17:02,678 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000B910630>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:17:02,678 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:17:02,678 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000B9109B0>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:17:02,678 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter _setup_c_find_assoc
+2018-10-26 17:17:02,678 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000B9109B0>,), {}
+2018-10-26 17:17:03,684 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit _setup_c_find_assoc
+2018-10-26 17:17:03,684 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:57] - INFO - find_patients association established
+2018-10-26 17:17:03,811 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:17:03,811 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:17:48,405 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter connect
+2018-10-26 17:17:48,405 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000B9206A0>,), {}
+2018-10-26 17:17:48,407 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter ping
+2018-10-26 17:17:48,407 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000B920908>,), {}
+2018-10-26 17:17:48,407 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter _setup_c_echo_assoc
+2018-10-26 17:17:48,407 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000B920908>,), {}
+2018-10-26 17:17:48,509 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit _setup_c_echo_assoc
+2018-10-26 17:17:48,509 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:64] - INFO - c_echo association established
+2018-10-26 17:17:48,539 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit ping
+2018-10-26 17:17:48,540 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit connect
+2018-10-26 17:17:48,540 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:17:48,540 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000B9206A0>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:17:48,540 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:17:48,540 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000B920940>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:17:48,540 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter _setup_c_find_assoc
+2018-10-26 17:17:48,540 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000B920940>,), {}
+2018-10-26 17:17:48,648 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit _setup_c_find_assoc
+2018-10-26 17:17:48,648 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:57] - INFO - find_patients association established
+2018-10-26 17:17:48,762 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:17:48,762 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:24:18,259 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter connect
+2018-10-26 17:24:18,259 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000B9EF240>,), {}
+2018-10-26 17:24:18,259 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter ping
+2018-10-26 17:24:18,259 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000B920208>,), {}
+2018-10-26 17:24:18,259 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter _setup_c_echo_assoc
+2018-10-26 17:24:18,259 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000B920208>,), {}
+2018-10-26 17:24:18,361 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit _setup_c_echo_assoc
+2018-10-26 17:24:18,361 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:64] - INFO - c_echo association established
+2018-10-26 17:24:18,460 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit ping
+2018-10-26 17:24:18,460 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit connect
+2018-10-26 17:24:18,460 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:24:18,460 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000B9EF240>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:24:18,460 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:24:18,460 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000B9DD7B8>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:24:18,460 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter _setup_c_find_assoc
+2018-10-26 17:24:18,461 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000B9DD7B8>,), {}
+2018-10-26 17:24:18,569 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit _setup_c_find_assoc
+2018-10-26 17:24:18,569 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:57] - INFO - find_patients association established
+2018-10-26 17:24:18,825 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:24:18,825 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:32:45,453 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter connect
+2018-10-26 17:32:45,453 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000B9F4898>,), {}
+2018-10-26 17:32:45,453 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter ping
+2018-10-26 17:32:45,453 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000B9F4F98>,), {}
+2018-10-26 17:32:45,453 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter _setup_c_echo_assoc
+2018-10-26 17:32:45,453 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000B9F4F98>,), {}
+2018-10-26 17:32:45,556 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit _setup_c_echo_assoc
+2018-10-26 17:32:45,556 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:64] - INFO - c_echo association established
+2018-10-26 17:32:45,651 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit ping
+2018-10-26 17:32:45,653 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit connect
+2018-10-26 17:32:45,653 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:32:45,653 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000B9F4898>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:32:45,653 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:32:45,654 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000B9F4B70>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:32:45,654 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter _setup_c_find_assoc
+2018-10-26 17:32:45,654 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000B9F4B70>,), {}
+2018-10-26 17:32:45,759 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit _setup_c_find_assoc
+2018-10-26 17:32:45,759 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:57] - INFO - find_patients association established
+2018-10-26 17:32:46,015 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:32:46,015 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:37:58,753 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter connect
+2018-10-26 17:37:58,753 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000BA609E8>,), {}
+2018-10-26 17:37:58,755 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter ping
+2018-10-26 17:37:58,755 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000BA5F048>,), {}
+2018-10-26 17:37:58,755 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter _setup_c_echo_assoc
+2018-10-26 17:37:58,755 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000BA5F048>,), {}
+2018-10-26 17:37:58,858 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit _setup_c_echo_assoc
+2018-10-26 17:37:58,858 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:64] - INFO - c_echo association established
+2018-10-26 17:37:58,946 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit ping
+2018-10-26 17:37:58,946 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit connect
+2018-10-26 17:37:58,946 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:37:58,946 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000BA609E8>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:37:58,946 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:37:58,946 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000BA32B38>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:37:58,946 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter _setup_c_find_assoc
+2018-10-26 17:37:58,947 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000BA32B38>,), {}
+2018-10-26 17:37:59,051 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit _setup_c_find_assoc
+2018-10-26 17:37:59,051 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:57] - INFO - find_patients association established
+2018-10-26 17:37:59,308 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:37:59,308 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:39:25,476 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter connect
+2018-10-26 17:39:25,476 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000BA66C88>,), {}
+2018-10-26 17:39:25,476 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter ping
+2018-10-26 17:39:25,476 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000BA6A048>,), {}
+2018-10-26 17:39:25,476 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter _setup_c_echo_assoc
+2018-10-26 17:39:25,476 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000BA6A048>,), {}
+2018-10-26 17:39:25,578 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit _setup_c_echo_assoc
+2018-10-26 17:39:25,578 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:64] - INFO - c_echo association established
+2018-10-26 17:39:25,668 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit ping
+2018-10-26 17:39:25,668 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit connect
+2018-10-26 17:39:25,668 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:39:25,668 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000BA66C88>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:39:25,670 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:39:25,670 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000BA6A438>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:39:25,671 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter _setup_c_find_assoc
+2018-10-26 17:39:25,671 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000BA6A438>,), {}
+2018-10-26 17:39:25,778 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit _setup_c_find_assoc
+2018-10-26 17:39:25,778 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:57] - INFO - find_patients association established
+2018-10-26 17:39:26,030 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:39:26,030 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:40:38,196 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter connect
+2018-10-26 17:40:38,197 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000BA66DA0>,), {}
+2018-10-26 17:40:38,197 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter ping
+2018-10-26 17:40:38,197 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000BA35668>,), {}
+2018-10-26 17:40:38,197 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter _setup_c_echo_assoc
+2018-10-26 17:40:38,197 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000BA35668>,), {}
+2018-10-26 17:40:38,299 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit _setup_c_echo_assoc
+2018-10-26 17:40:38,299 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:64] - INFO - c_echo association established
+2018-10-26 17:40:38,385 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit ping
+2018-10-26 17:40:38,385 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit connect
+2018-10-26 17:40:38,385 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:40:38,385 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000BA66DA0>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:40:38,385 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:40:38,385 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000BA353C8>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:40:38,385 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter _setup_c_find_assoc
+2018-10-26 17:40:38,385 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000BA353C8>,), {}
+2018-10-26 17:40:38,490 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit _setup_c_find_assoc
+2018-10-26 17:40:38,490 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:57] - INFO - find_patients association established
+2018-10-26 17:40:38,759 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:40:38,759 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:40:42,790 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter connect
+2018-10-26 17:40:42,790 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000BA668D0>,), {}
+2018-10-26 17:40:42,792 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter ping
+2018-10-26 17:40:42,792 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000BA66208>,), {}
+2018-10-26 17:40:42,792 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter _setup_c_echo_assoc
+2018-10-26 17:40:42,792 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000BA66208>,), {}
+2018-10-26 17:40:42,895 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit _setup_c_echo_assoc
+2018-10-26 17:40:42,895 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:64] - INFO - c_echo association established
+2018-10-26 17:40:42,994 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit ping
+2018-10-26 17:40:42,996 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit connect
+2018-10-26 17:40:42,996 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:40:42,996 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000BA668D0>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:40:42,996 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:40:42,996 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000BA5F048>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:40:42,996 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter _setup_c_find_assoc
+2018-10-26 17:40:42,996 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000BA5F048>,), {}
+2018-10-26 17:40:43,903 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit _setup_c_find_assoc
+2018-10-26 17:40:43,903 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:57] - INFO - find_patients association established
+2018-10-26 17:40:44,160 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:40:44,160 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:40:50,664 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter connect
+2018-10-26 17:40:50,664 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000BA6AA20>,), {}
+2018-10-26 17:40:50,664 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter ping
+2018-10-26 17:40:50,664 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000BA6A828>,), {}
+2018-10-26 17:40:50,664 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter _setup_c_echo_assoc
+2018-10-26 17:40:50,664 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000BA6A828>,), {}
+2018-10-26 17:40:50,766 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit _setup_c_echo_assoc
+2018-10-26 17:40:50,766 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:64] - INFO - c_echo association established
+2018-10-26 17:40:50,854 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit ping
+2018-10-26 17:40:50,855 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit connect
+2018-10-26 17:40:50,855 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:40:50,855 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000BA6AA20>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:40:50,855 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:40:50,855 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000B916A20>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:40:50,855 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter _setup_c_find_assoc
+2018-10-26 17:40:50,855 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000B916A20>,), {}
+2018-10-26 17:40:51,759 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit _setup_c_find_assoc
+2018-10-26 17:40:51,759 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:57] - INFO - find_patients association established
+2018-10-26 17:40:52,022 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:40:52,022 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:41:04,266 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter connect
+2018-10-26 17:41:04,266 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000BB6CEF0>,), {}
+2018-10-26 17:41:04,266 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter ping
+2018-10-26 17:41:04,266 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000BB6CC50>,), {}
+2018-10-26 17:41:04,266 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter _setup_c_echo_assoc
+2018-10-26 17:41:04,266 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000BB6CC50>,), {}
+2018-10-26 17:41:04,369 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit _setup_c_echo_assoc
+2018-10-26 17:41:04,369 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:64] - INFO - c_echo association established
+2018-10-26 17:41:04,460 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit ping
+2018-10-26 17:41:04,460 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit connect
+2018-10-26 17:41:04,460 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:41:04,460 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000BB6CEF0>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:41:04,460 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:41:04,460 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000BB6CCC0>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:41:04,460 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter _setup_c_find_assoc
+2018-10-26 17:41:04,460 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000BB6CCC0>,), {}
+2018-10-26 17:41:05,369 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit _setup_c_find_assoc
+2018-10-26 17:41:05,369 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:57] - INFO - find_patients association established
+2018-10-26 17:41:05,619 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:41:05,619 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:41:10,601 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter connect
+2018-10-26 17:41:10,601 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000BB79B00>,), {}
+2018-10-26 17:41:10,601 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter ping
+2018-10-26 17:41:10,601 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000BA9AE48>,), {}
+2018-10-26 17:41:10,601 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter _setup_c_echo_assoc
+2018-10-26 17:41:10,601 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000BA9AE48>,), {}
+2018-10-26 17:41:10,703 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit _setup_c_echo_assoc
+2018-10-26 17:41:10,703 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:64] - INFO - c_echo association established
+2018-10-26 17:41:10,799 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit ping
+2018-10-26 17:41:10,799 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit connect
+2018-10-26 17:41:10,799 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:41:10,799 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000BB79B00>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:41:10,799 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:41:10,799 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000BA9AC50>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:41:10,799 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter _setup_c_find_assoc
+2018-10-26 17:41:10,799 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000BA9AC50>,), {}
+2018-10-26 17:41:10,903 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit _setup_c_find_assoc
+2018-10-26 17:41:10,903 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:57] - INFO - find_patients association established
+2018-10-26 17:41:11,155 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:41:11,155 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:41:34,305 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter connect
+2018-10-26 17:41:34,306 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000BA32588>,), {}
+2018-10-26 17:41:34,306 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter ping
+2018-10-26 17:41:34,306 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000BA60588>,), {}
+2018-10-26 17:41:34,306 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter _setup_c_echo_assoc
+2018-10-26 17:41:34,306 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000BA60588>,), {}
+2018-10-26 17:41:34,408 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit _setup_c_echo_assoc
+2018-10-26 17:41:34,408 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:64] - INFO - c_echo association established
+2018-10-26 17:41:34,503 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit ping
+2018-10-26 17:41:34,503 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit connect
+2018-10-26 17:41:34,503 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:41:34,505 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000BA32588>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:41:34,505 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:41:34,505 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000BA60B70>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:41:34,505 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter _setup_c_find_assoc
+2018-10-26 17:41:34,505 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000BA60B70>,), {}
+2018-10-26 17:41:34,607 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit _setup_c_find_assoc
+2018-10-26 17:41:34,607 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:57] - INFO - find_patients association established
+2018-10-26 17:41:34,943 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:41:34,943 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:41:38,234 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter connect
+2018-10-26 17:41:38,234 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000BA669B0>,), {}
+2018-10-26 17:41:38,234 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter ping
+2018-10-26 17:41:38,234 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000BB7F4E0>,), {}
+2018-10-26 17:41:38,234 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter _setup_c_echo_assoc
+2018-10-26 17:41:38,234 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000BB7F4E0>,), {}
+2018-10-26 17:41:38,336 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit _setup_c_echo_assoc
+2018-10-26 17:41:38,336 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:64] - INFO - c_echo association established
+2018-10-26 17:41:38,433 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit ping
+2018-10-26 17:41:38,433 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit connect
+2018-10-26 17:41:38,433 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:41:38,433 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000BA669B0>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:41:38,433 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:41:38,433 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000BB7FBA8>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:41:38,433 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter _setup_c_find_assoc
+2018-10-26 17:41:38,433 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000BB7FBA8>,), {}
+2018-10-26 17:41:38,536 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit _setup_c_find_assoc
+2018-10-26 17:41:38,536 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:57] - INFO - find_patients association established
+2018-10-26 17:41:38,789 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:41:38,789 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:41:50,609 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter connect
+2018-10-26 17:41:50,609 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000BB9F860>,), {}
+2018-10-26 17:41:50,611 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter ping
+2018-10-26 17:41:50,611 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000BB9FEB8>,), {}
+2018-10-26 17:41:50,611 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter _setup_c_echo_assoc
+2018-10-26 17:41:50,611 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000BB9FEB8>,), {}
+2018-10-26 17:41:50,716 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit _setup_c_echo_assoc
+2018-10-26 17:41:50,716 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:64] - INFO - c_echo association established
+2018-10-26 17:41:50,838 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit ping
+2018-10-26 17:41:50,838 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit connect
+2018-10-26 17:41:50,838 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:41:50,838 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000BB9F860>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:41:50,838 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:41:50,838 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000BB9F908>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:41:50,838 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter _setup_c_find_assoc
+2018-10-26 17:41:50,838 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000BB9F908>,), {}
+2018-10-26 17:41:50,947 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit _setup_c_find_assoc
+2018-10-26 17:41:50,947 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:57] - INFO - find_patients association established
+2018-10-26 17:41:51,201 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:41:51,201 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:42:15,095 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter connect
+2018-10-26 17:42:15,095 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000BBAAE10>,), {}
+2018-10-26 17:42:15,095 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter ping
+2018-10-26 17:42:15,095 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000BBB5E80>,), {}
+2018-10-26 17:42:15,095 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter _setup_c_echo_assoc
+2018-10-26 17:42:15,095 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000BBB5E80>,), {}
+2018-10-26 17:42:15,197 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit _setup_c_echo_assoc
+2018-10-26 17:42:15,197 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:64] - INFO - c_echo association established
+2018-10-26 17:42:15,292 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit ping
+2018-10-26 17:42:15,292 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit connect
+2018-10-26 17:42:15,292 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:42:15,292 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000BBAAE10>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:42:15,292 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:42:15,292 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000BBB5BA8>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:42:15,292 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter _setup_c_find_assoc
+2018-10-26 17:42:15,292 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000BBB5BA8>,), {}
+2018-10-26 17:42:15,398 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit _setup_c_find_assoc
+2018-10-26 17:42:15,398 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:57] - INFO - find_patients association established
+2018-10-26 17:42:15,657 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:42:15,657 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:42:17,736 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter connect
+2018-10-26 17:42:17,736 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000BBBEC50>,), {}
+2018-10-26 17:42:17,736 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter ping
+2018-10-26 17:42:17,736 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000BBC6668>,), {}
+2018-10-26 17:42:17,736 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter _setup_c_echo_assoc
+2018-10-26 17:42:17,736 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000BBC6668>,), {}
+2018-10-26 17:42:17,839 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit _setup_c_echo_assoc
+2018-10-26 17:42:17,839 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:64] - INFO - c_echo association established
+2018-10-26 17:42:17,934 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit ping
+2018-10-26 17:42:17,934 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit connect
+2018-10-26 17:42:17,934 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:42:17,934 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000BBBEC50>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:42:17,934 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:42:17,934 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000BBC6EB8>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:42:17,934 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter _setup_c_find_assoc
+2018-10-26 17:42:17,934 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000BBC6EB8>,), {}
+2018-10-26 17:42:18,038 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit _setup_c_find_assoc
+2018-10-26 17:42:18,038 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:57] - INFO - find_patients association established
+2018-10-26 17:42:18,315 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:42:18,315 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:42:18,480 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter connect
+2018-10-26 17:42:18,480 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000DA06A90>,), {}
+2018-10-26 17:42:18,480 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter ping
+2018-10-26 17:42:18,480 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000DA06F60>,), {}
+2018-10-26 17:42:18,480 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter _setup_c_echo_assoc
+2018-10-26 17:42:18,480 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000DA06F60>,), {}
+2018-10-26 17:42:18,584 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit _setup_c_echo_assoc
+2018-10-26 17:42:18,584 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:64] - INFO - c_echo association established
+2018-10-26 17:42:18,673 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit ping
+2018-10-26 17:42:18,673 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit connect
+2018-10-26 17:42:18,673 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:42:18,673 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000DA06A90>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:42:18,673 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:42:18,673 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000DA06E48>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:42:18,673 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter _setup_c_find_assoc
+2018-10-26 17:42:18,673 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000DA06E48>,), {}
+2018-10-26 17:42:18,776 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit _setup_c_find_assoc
+2018-10-26 17:42:18,776 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:57] - INFO - find_patients association established
+2018-10-26 17:42:19,048 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:42:19,048 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:42:22,900 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter connect
+2018-10-26 17:42:22,900 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000BBD3B38>,), {}
+2018-10-26 17:42:22,900 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter ping
+2018-10-26 17:42:22,900 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000DA1DEB8>,), {}
+2018-10-26 17:42:22,901 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter _setup_c_echo_assoc
+2018-10-26 17:42:22,901 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000DA1DEB8>,), {}
+2018-10-26 17:42:23,002 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit _setup_c_echo_assoc
+2018-10-26 17:42:23,002 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:64] - INFO - c_echo association established
+2018-10-26 17:42:23,102 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit ping
+2018-10-26 17:42:23,102 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit connect
+2018-10-26 17:42:23,102 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:42:23,102 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000BBD3B38>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:42:23,102 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:42:23,102 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000DA1DE80>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:42:23,102 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter _setup_c_find_assoc
+2018-10-26 17:42:23,102 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000DA1DE80>,), {}
+2018-10-26 17:42:23,207 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit _setup_c_find_assoc
+2018-10-26 17:42:23,207 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:57] - INFO - find_patients association established
+2018-10-26 17:42:23,461 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:42:23,461 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:42:26,773 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter connect
+2018-10-26 17:42:26,773 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000DA2EA58>,), {}
+2018-10-26 17:42:26,773 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter ping
+2018-10-26 17:42:26,773 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000DA2E1D0>,), {}
+2018-10-26 17:42:26,773 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter _setup_c_echo_assoc
+2018-10-26 17:42:26,773 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000DA2E1D0>,), {}
+2018-10-26 17:42:26,875 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit _setup_c_echo_assoc
+2018-10-26 17:42:26,875 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:64] - INFO - c_echo association established
+2018-10-26 17:42:26,963 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit ping
+2018-10-26 17:42:26,963 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit connect
+2018-10-26 17:42:26,963 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:42:26,963 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000DA2EA58>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:42:26,963 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:42:26,963 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000DA29128>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:42:26,963 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter _setup_c_find_assoc
+2018-10-26 17:42:26,963 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000DA29128>,), {}
+2018-10-26 17:42:27,869 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit _setup_c_find_assoc
+2018-10-26 17:42:27,869 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:57] - INFO - find_patients association established
+2018-10-26 17:42:28,125 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:42:28,125 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:42:58,947 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter connect
+2018-10-26 17:42:58,947 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000DA1D4A8>,), {}
+2018-10-26 17:42:58,947 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter ping
+2018-10-26 17:42:58,947 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000DA3B588>,), {}
+2018-10-26 17:42:58,947 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter _setup_c_echo_assoc
+2018-10-26 17:42:58,947 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000DA3B588>,), {}
+2018-10-26 17:42:59,049 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit _setup_c_echo_assoc
+2018-10-26 17:42:59,049 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:64] - INFO - c_echo association established
+2018-10-26 17:42:59,141 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit ping
+2018-10-26 17:42:59,141 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit connect
+2018-10-26 17:42:59,141 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:42:59,141 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000DA1D4A8>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:42:59,141 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:42:59,141 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000DA3B780>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:42:59,141 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter _setup_c_find_assoc
+2018-10-26 17:42:59,141 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000DA3B780>,), {}
+2018-10-26 17:42:59,243 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit _setup_c_find_assoc
+2018-10-26 17:42:59,243 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:57] - INFO - find_patients association established
+2018-10-26 17:42:59,496 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:42:59,496 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:43:08,888 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter connect
+2018-10-26 17:43:08,888 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000DA43550>,), {}
+2018-10-26 17:43:08,890 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter ping
+2018-10-26 17:43:08,890 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000DA43C18>,), {}
+2018-10-26 17:43:08,890 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter _setup_c_echo_assoc
+2018-10-26 17:43:08,891 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000DA43C18>,), {}
+2018-10-26 17:43:08,994 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit _setup_c_echo_assoc
+2018-10-26 17:43:08,994 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:64] - INFO - c_echo association established
+2018-10-26 17:43:09,085 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit ping
+2018-10-26 17:43:09,085 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit connect
+2018-10-26 17:43:09,085 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:43:09,085 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000DA43550>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:43:09,085 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:43:09,085 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000DA5AB00>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:43:09,086 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter _setup_c_find_assoc
+2018-10-26 17:43:09,086 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000DA5AB00>,), {}
+2018-10-26 17:43:09,188 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit _setup_c_find_assoc
+2018-10-26 17:43:09,188 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:57] - INFO - find_patients association established
+2018-10-26 17:43:09,461 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:43:09,461 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:43:23,812 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter connect
+2018-10-26 17:43:23,812 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000DA52588>,), {}
+2018-10-26 17:43:23,812 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter ping
+2018-10-26 17:43:23,812 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000DA71A90>,), {}
+2018-10-26 17:43:23,812 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter _setup_c_echo_assoc
+2018-10-26 17:43:23,812 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000DA71A90>,), {}
+2018-10-26 17:43:23,913 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit _setup_c_echo_assoc
+2018-10-26 17:43:23,913 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:64] - INFO - c_echo association established
+2018-10-26 17:43:24,005 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit ping
+2018-10-26 17:43:24,005 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit connect
+2018-10-26 17:43:24,005 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:43:24,006 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000DA52588>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:43:24,006 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:43:24,006 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000DA71C18>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:43:24,006 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter _setup_c_find_assoc
+2018-10-26 17:43:24,006 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000DA71C18>,), {}
+2018-10-26 17:43:24,108 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit _setup_c_find_assoc
+2018-10-26 17:43:24,108 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:57] - INFO - find_patients association established
+2018-10-26 17:43:24,374 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:43:24,374 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:44:12,148 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter connect
+2018-10-26 17:44:12,148 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000DA687F0>,), {}
+2018-10-26 17:44:12,148 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter ping
+2018-10-26 17:44:12,148 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000DA689B0>,), {}
+2018-10-26 17:44:12,148 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:24] - INFO - enter _setup_c_echo_assoc
+2018-10-26 17:44:12,148 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:25] - INFO - arguments:(<md.dicom.python.c_echo_scu.CEchoScu object at 0x000000000DA689B0>,), {}
+2018-10-26 17:44:12,252 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit _setup_c_echo_assoc
+2018-10-26 17:44:12,252 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:64] - INFO - c_echo association established
+2018-10-26 17:44:12,344 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_echo_scu.py - c_echo_scu.py - [line:27] - INFO - exit ping
+2018-10-26 17:44:12,344 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit connect
+2018-10-26 17:44:12,344 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:44:12,344 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:21] - INFO - arguments:(<md.dicom.python.dicom_service.DicomService object at 0x000000000DA687F0>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:44:12,345 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter find_patients
+2018-10-26 17:44:12,345 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000DA43D30>,), {'date_range': '', 'patient_sex': '', 'modality': '', 'patient_name': ''}
+2018-10-26 17:44:12,345 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:20] - INFO - enter _setup_c_find_assoc
+2018-10-26 17:44:12,345 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:21] - INFO - arguments:(<md.dicom.python.c_find_scu.CFindScu object at 0x000000000DA43D30>,), {}
+2018-10-26 17:44:12,447 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit _setup_c_find_assoc
+2018-10-26 17:44:12,447 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:57] - INFO - find_patients association established
+2018-10-26 17:44:12,704 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\c_find_scu.py - c_find_scu.py - [line:23] - INFO - exit find_patients
+2018-10-26 17:44:12,704 - md-0.1.7c0480cf-py2-none-win_amd64\md\dicom\python\dicom_service.py - dicom_service.py - [line:23] - INFO - exit find_patients

@@ -29,8 +29,8 @@ class GetInfoFromPacs(object):
         if length != 0:
             for patient in patients:
                 patient_dict = {}
-                patient_dict['name'] = patient.name
-                patient_dict['id'] = patient.id
+                patient_dict['patientName'] = patient.name
+                patient_dict['patientId'] = patient.id
                 self.patients_list.append(patient_dict)
         return self.patients_list
 
