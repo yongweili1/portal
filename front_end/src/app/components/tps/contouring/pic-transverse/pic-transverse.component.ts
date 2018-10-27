@@ -54,6 +54,7 @@ export class PicTransverseComponent implements OnChanges {
     @Output() zoomReq: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
     @Output() panReq: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
     @Output() rotateReq: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
+    @Output() wwwlReq: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
     glsource = new glsource();
     curAction: any;
     focus: any; display: any;
@@ -337,33 +338,6 @@ export class PicTransverseComponent implements OnChanges {
         //   this.cross(this.scrCrossPt[0], this.scrCrossPt[1], this.canbas.get(0));
     }
 
-    //调整窗宽窗位
-    changewl() {
-        let that = this;
-        $('#threebmp').removeClass().addClass("mouse_windows");
-        that.canbas.get(0).onmousedown = function (e) {
-            var clickY = e.clientY;
-            var clickX = e.clientX;
-            that.canbas.get(0).onmousemove = function (e) {
-                var curY = e.clientY;
-                var curX = e.clientX;
-                that.wlx = (clickY - curY);
-                that.wl = that.wlold + that.wlx;
-                that.wwx = (clickX - curX);
-                that.ww = that.wwold + that.wwx;
-                $(this).parent().find(".ww").val(that.ww);
-                $(this).parent().find(".wl").val(that.wl);
-                that.drawScene(that.gl, that.programInfo, that.buffers, that.texture);
-            }
-            that.canbas.get(0).onmouseup = function (e) {
-                that.canbas.get(0).onmousemove = null;
-                that.canbas.get(0).onmouseup = null;
-                that.wlold = that.wl;
-                that.wwold = that.ww;
-            }
-        }
-    }
-
     onClickwl(inval) {
         this.wl = inval;
         $(this).parent().find(".wl").val(this.wl);
@@ -436,6 +410,33 @@ export class PicTransverseComponent implements OnChanges {
                 that.canbas.get(0).onmousemove = null;
                 that.canbas.get(0).onmouseup = null;
             };
+        }
+    }
+    addChangeWlEvent(){
+        let that = this;
+        that.canbas.get(0).onmousedown = function (e) {
+            let ww_factor = 0;
+            let wl_factor = 0;
+            let preX = e.clientX
+            let preY = e.clientY;
+            that.canbas.get(0).onmousemove = function (e) {
+                let curX = e.clientX;
+                let curY = e.clientY;
+                let shiftY = curY - preY;
+                if (shiftY >= 0) {
+                    ww_factor = 1.0 + shiftY * 1.0 / 120
+                } else {
+                    ww_factor = 1.0 / (1.0 - shiftY * 1.0 / 120)
+                }
+                wl_factor = (preX - curX) * 1.0 / 240;
+                preX = curX;
+                preY = curY;
+                that.wwwlReq.emit([that.tag, ww_factor, wl_factor]);
+            }
+            that.canbas.get(0).onmouseup = function (e) {
+                that.canbas.get(0).onmousemove = null;
+                that.canbas.get(0).onmouseup = null;
+            }
         }
     }
 

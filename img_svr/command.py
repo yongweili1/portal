@@ -295,28 +295,28 @@ def color(**kwargs):
 def wcww(**kwargs):
     """
     Change window center and window width
-    :param shift: shift of mouse point, like [10, 10], you should pass it like `'10, 10'`
-    :param width: width of viewport
-    :param height: height of viewport
+    :param ww_factor:
+    :param wl_factor:
     :param focus_view: current focused view, 'transverse' for transverse,
     'saggital' for saggital, 'coronal' for coronal
-    :param display_view: need to displayed on screen, 'transverse' for transverse,
-    'saggital' for saggital, 'coronal' for coronal, 'all' for all view
     :return: rgb image data
     """
     try:
-        shift = kwargs['shift'].split(',')
-        shift = [float(shift[0]), float(shift[1])]
-        width = int(kwargs['width'])
-        height = int(kwargs['height'])
+        print(kwargs['ww_factor'])
+        ww_factor = float(kwargs['ww_factor'])
+        wl_factor = float(kwargs['wl_factor'])
         focus_view = get_view_index(kwargs['focus_view'])
-        display_view = get_view_index(kwargs['display_view'])
-    except:
+    except Exception as err:
+        print(err)
         return response(success=False, message='Invalid parameters.')
 
-    server.set_wcww(shift)
-    imgs = server.get_images(display_view, width, height)
-    return response(json.dumps(imgs))
+    try:
+        imageentity.window_(focus_view, ww_factor, wl_factor)
+        imageentity.updater().update(RefreshType.All)
+        result = imageentity.updater().get_result()
+        return response(json.dumps(result))
+    except Exception as e:
+        return response(success=False, message='windows failed')
 
 
 @command.register('resize')

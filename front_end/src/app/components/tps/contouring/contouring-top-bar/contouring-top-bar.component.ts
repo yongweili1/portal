@@ -58,7 +58,7 @@ export class ContouringTopBarComponent implements OnInit {
         this.reset.emit();
     }
 
-    imgwlww() {
+    onImgWindow() {
         this.wlww.emit();
     }
 
