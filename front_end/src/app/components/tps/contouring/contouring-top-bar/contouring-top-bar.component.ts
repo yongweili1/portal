@@ -45,13 +45,16 @@ export class ContouringTopBarComponent implements OnInit {
     addPlanDisplay: boolean = false;
 
     onImgZoom() {
+        this.conMessage.SetCurAction("zoom");
         this.zoom.emit();
     }
 
     onImgPan() {
+        this.conMessage.SetCurAction("pan");
         this.pan.emit();
     }
     onImgRotate() {
+        this.conMessage.SetCurAction("rotate");
         this.rotate.emit();
     }
     onImgReset() {
@@ -59,6 +62,7 @@ export class ContouringTopBarComponent implements OnInit {
     }
 
     onImgWindow() {
+        this.conMessage.SetCurAction("wwwl");
         this.wlww.emit();
     }
 
