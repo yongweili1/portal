@@ -7,6 +7,7 @@ import { SeriesHttpService } from '../../shared/service/seriesHttp.service';
 import { glsource } from './glsource.modal';
 import { LoadSeriesServiceMock } from '../../../../mocks/load-series-service.mock'
 import { AppConfigService } from '../../../../app.config';
+import { LazyExcuteHandler } from '../lazy_excute_handler';
 declare var $: any;
 declare var createjs: any;
 declare var THREE: any;
@@ -32,13 +33,13 @@ export class PicTransverseComponent implements OnChanges {
     @Input() wl; @Input() ww;// 窗宽
     @Input() spacingX; @Input() spacingY; @Input() gap; @Input() sliceAll;
     @Input() pixelRepresentation; @Input() rescaleSlope; @Input() rescaleIntercept;
-    @Input() firstImagePosition; @Input() lastImagePosition;@Input() hasLoadVolume;
+    @Input() firstImagePosition; @Input() lastImagePosition; @Input() hasLoadVolume;
     containerWidth = $(".containe").width(); containerHeight = $(".containe").height();
     viewportWidth = Math.floor(this.containerWidth / 2) * 2; viewportHeight = Math.floor(this.containerHeight / 2) * 2;
     unts: any; ctx: any; wlx: any; wwx: any; wlold: any; wwold: any;// 窗位窗宽
     fitImageWidth: any; fitImageHeight: any; sx: any; mx: any; my: any;
     pageindexit: any;
-        //十字线
+    //十字线
     stage: any; horizontalLine: any; verticalLine: any; crossPoint: any; postPoint: any;
     nix = 0.5; niy = 0.5;
     mpr2Patient: any; opM3: any;
@@ -56,6 +57,7 @@ export class PicTransverseComponent implements OnChanges {
     glsource = new glsource();
     curAction: any;
     focus: any; display: any;
+    lazyExcuteHandler: LazyExcuteHandler;
 
 
     constructor(
@@ -66,8 +68,9 @@ export class PicTransverseComponent implements OnChanges {
         private element: ElementRef,
         private loadSeriesServiceMock: LoadSeriesServiceMock,
         private seriesHttpService: SeriesHttpService,
-        private appConfig :AppConfigService
+        private appConfig: AppConfigService
     ) {
+        this.lazyExcuteHandler = new LazyExcuteHandler();
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -231,115 +234,112 @@ export class PicTransverseComponent implements OnChanges {
  * @param niy 
  * @param loca 
  */
-drawCross(nix, niy, loca) {
-    this.stage = new createjs.Stage(this.crosscan);
-    var width = this.stage.canvas.width;
-    var height = this.stage.canvas.height;
-    createjs.Touch.enable(this.stage);
-    this.stage.enableMouseOver(50);
-    this.stage.mouseMoveOutside = true;
-  
-    this.horizontalLine = new createjs.Shape();// 横线
-    if (this.tag == "transverse") {
-        this.horizontalLine.graphics.beginStroke("#2196F3").setStrokeStyle(1, "round").moveTo(0, 0).lineTo(width, 0);
+    drawCross(nix, niy, loca) {
+        this.stage = new createjs.Stage(this.crosscan);
+        var width = this.stage.canvas.width;
+        var height = this.stage.canvas.height;
+        createjs.Touch.enable(this.stage);
+        this.stage.enableMouseOver(50);
+        this.stage.mouseMoveOutside = true;
+
+        this.horizontalLine = new createjs.Shape();// 横线
+        if (this.tag == "transverse") {
+            this.horizontalLine.graphics.beginStroke("#2196F3").setStrokeStyle(1, "round").moveTo(0, 0).lineTo(width, 0);
+        }
+        if (this.tag == "coronal") {
+            this.horizontalLine.graphics.beginStroke("#F44336").setStrokeStyle(1, "round").moveTo(0, 0).lineTo(width, 0);
+        }
+        if (this.tag == "saggital") {
+            this.horizontalLine.graphics.beginStroke("#F44336").setStrokeStyle(1, "round").moveTo(0, 0).lineTo(width, 0);
+        }
+        var horizontalHitArea = new createjs.Shape();
+        horizontalHitArea.graphics.beginFill("black").drawRect(0, -5, width, 10);
+        this.horizontalLine.hitArea = horizontalHitArea;
+        // this.horizontalLine.cursor = "url('/assets/img/vertical.cur'),auto";
+
+        this.verticalLine = new createjs.Shape();// 竖线
+        if (this.tag == "transverse") {
+            this.verticalLine.graphics.beginStroke("#CDDC39").setStrokeStyle(1, "round").moveTo(0, 0).lineTo(0, height);
+        }
+        if (this.tag == "coronal") {
+            this.verticalLine.graphics.beginStroke("#CDDC39").setStrokeStyle(1, "round").moveTo(0, 0).lineTo(0, height);
+        }
+        if (this.tag == "saggital") {
+            this.verticalLine.graphics.beginStroke("#2196F3").setStrokeStyle(1, "round").moveTo(0, 0).lineTo(0, height);
+        }
+        var verticalHitArea = new createjs.Shape();
+        verticalHitArea.graphics.beginFill("black").drawRect(-5, 0, 10, height);
+        this.verticalLine.hitArea = verticalHitArea;
+        // this.verticalLine.cursor = "url('/assets/img/horizontal.cur'),auto";
+
+        this.crossPoint = new createjs.Shape();// 交点
+        this.crossPoint.graphics.beginFill("white").drawCircle(0, 0, 8);
+        this.crossPoint.alpha = 0.2;
+        // this.crossPoint.cursor = "url('/assets/img/move.cur'),auto";
+        this.stage.addChild(this.verticalLine);
+        this.stage.addChild(this.horizontalLine);
+        this.stage.addChild(this.crossPoint);
+        var width = this.stage.canvas.width;
+        var height = this.stage.canvas.height;
+        this.cross(nix * width, niy * height, loca);
+
+        this.horizontalLine.addEventListener("pressmove", this.handlePressMove.bind(this));
+        this.verticalLine.addEventListener("pressmove", this.handlePressMove.bind(this));
+        this.crossPoint.addEventListener("pressmove", this.handlePressMove.bind(this));
+        this.horizontalLine.addEventListener("pressup", this.handlePressUp.bind(this));
+        this.verticalLine.addEventListener("pressup", this.handlePressUp.bind(this));
+        this.crossPoint.addEventListener("pressup", this.handlePressUp.bind(this));
     }
-    if (this.tag == "coronal") {
-        this.horizontalLine.graphics.beginStroke("#F44336").setStrokeStyle(1, "round").moveTo(0, 0).lineTo(width, 0);
+
+    /**
+     * 调整初始的十字线、交点位置，更新stage
+     * @param width 
+     * @param height 
+     * @param loca 
+     */
+    cross(width, height, loca) {
+        console.log('update')
+        this.clearmouse();
+        this.horizontalLine.y = height;
+        this.verticalLine.x = width;
+        this.crossPoint.x = this.verticalLine.x;
+        this.crossPoint.y = this.horizontalLine.y;
+        this.stage.update();
     }
-    if (this.tag == "saggital") {
-        this.horizontalLine.graphics.beginStroke("#F44336").setStrokeStyle(1, "round").moveTo(0, 0).lineTo(width, 0);
-    }
-    var horizontalHitArea = new createjs.Shape();
-    horizontalHitArea.graphics.beginFill("black").drawRect(0, -5, width, 10);
-    this.horizontalLine.hitArea = horizontalHitArea;
-    // this.horizontalLine.cursor = "url('/assets/img/vertical.cur'),auto";
-  
-    this.verticalLine = new createjs.Shape();// 竖线
-    if (this.tag == "transverse") {
-        this.verticalLine.graphics.beginStroke("#CDDC39").setStrokeStyle(1, "round").moveTo(0, 0).lineTo(0, height);
-    }
-    if (this.tag == "coronal") {
-        this.verticalLine.graphics.beginStroke("#CDDC39").setStrokeStyle(1, "round").moveTo(0, 0).lineTo(0, height);
-    }
-    if (this.tag == "saggital") {
-        this.verticalLine.graphics.beginStroke("#2196F3").setStrokeStyle(1, "round").moveTo(0, 0).lineTo(0, height);
-    }
-    var verticalHitArea = new createjs.Shape();
-    verticalHitArea.graphics.beginFill("black").drawRect(-5, 0, 10, height);
-    this.verticalLine.hitArea = verticalHitArea;
-    // this.verticalLine.cursor = "url('/assets/img/horizontal.cur'),auto";
-  
-    this.crossPoint = new createjs.Shape();// 交点
-    this.crossPoint.graphics.beginFill("white").drawCircle(0, 0, 8);
-    this.crossPoint.alpha = 0.2;
-    // this.crossPoint.cursor = "url('/assets/img/move.cur'),auto";
-    this.stage.addChild(this.verticalLine);
-    this.stage.addChild(this.horizontalLine);
-    this.stage.addChild(this.crossPoint);
-    var width = this.stage.canvas.width;
-    var height = this.stage.canvas.height;
-    this.cross(nix * width, niy * height, loca);
-  
-    this.horizontalLine.addEventListener("pressmove", this.handlePressMove.bind(this));
-    this.verticalLine.addEventListener("pressmove", this.handlePressMove.bind(this));
-    this.crossPoint.addEventListener("pressmove", this.handlePressMove.bind(this));
-    this.horizontalLine.addEventListener("pressup", this.handlePressUp.bind(this));
-    this.verticalLine.addEventListener("pressup", this.handlePressUp.bind(this));
-    this.crossPoint.addEventListener("pressup", this.handlePressUp.bind(this));
-  }
-  
-  /**
-   * 调整初始的十字线、交点位置，更新stage
-   * @param width 
-   * @param height 
-   * @param loca 
-   */
-  cross(width, height, loca) {
-    this.clearmouse();
-    this.horizontalLine.y = height;
-    this.verticalLine.x = width;
-    this.crossPoint.x = this.verticalLine.x;
-    this.crossPoint.y = this.horizontalLine.y;
-    this.stage.update();
-  }
-  handlePressMove(evt) {
-    if (evt.currentTarget == this.verticalLine) {//竖线
-        evt.currentTarget.x = this.crossPoint.x = evt.stageX;
+    handlePressMove(evt) {
+        if (!this.lazyExcuteHandler.canExcuteByCount()) return;
+        if (evt.currentTarget == this.verticalLine) {//竖线
+            evt.currentTarget.x = this.crossPoint.x = evt.stageX;
+        } else if (evt.currentTarget == this.horizontalLine) {//横线
+            evt.currentTarget.y = this.crossPoint.y = evt.stageY;
+        } else if (evt.currentTarget == this.crossPoint) {
+            evt.currentTarget.x = this.verticalLine.x = evt.stageX;
+            evt.currentTarget.y = this.horizontalLine.y = evt.stageY;
+        }
         this.getposition(this.crossPoint.x, this.crossPoint.y);
+        this.stage.update();
     }
-    if (evt.currentTarget == this.horizontalLine) {//横线
-        evt.currentTarget.y = this.crossPoint.y = evt.stageY;
+    handlePressUp(evt) {
+        if (evt.currentTarget == this.verticalLine) {//竖线
+            evt.currentTarget.x = this.crossPoint.x = evt.stageX;
+        }
+        if (evt.currentTarget == this.horizontalLine) {//横线
+            evt.currentTarget.y = this.crossPoint.y = evt.stageY;
+        }
+        if (evt.currentTarget == this.crossPoint) {
+            evt.currentTarget.x = this.crossPoint.x = evt.stageX;
+            evt.currentTarget.y = this.crossPoint.y = evt.stageY;
+        }
         this.getposition(this.crossPoint.x, this.crossPoint.y);
+        this.stage.update();
+        this.cross(this.crossPoint.x, this.crossPoint.y, 1)
     }
-    if (evt.currentTarget == this.crossPoint) {
-        evt.currentTarget.x = this.verticalLine.x = evt.stageX;
-        evt.currentTarget.y = this.horizontalLine.y = evt.stageY;
-        this.getposition(this.crossPoint.x, this.crossPoint.y);
+
+    getposition(x, y) {
+        var point = new Array(x, y);
+        console.log(point);
+        this.changeCross.emit(point);
     }
-    this.stage.update();
-  }
-  handlePressUp(evt) {
-    if (evt.currentTarget == this.verticalLine) {//竖线
-        evt.currentTarget.x = this.crossPoint.x = evt.stageX;
-        this.getposition(this.crossPoint.x, this.crossPoint.y);
-    }
-    if (evt.currentTarget == this.horizontalLine) {//横线
-        evt.currentTarget.y = this.crossPoint.y = evt.stageY;
-        this.getposition(this.crossPoint.x, this.crossPoint.y);
-    }
-    if (evt.currentTarget == this.crossPoint) {
-        evt.currentTarget.x = this.crossPoint.x = evt.stageX;
-        evt.currentTarget.y = this.crossPoint.y = evt.stageY;
-        this.getposition(this.crossPoint.x, this.crossPoint.y);
-    }
-    this.stage.update();
-  }
-  
-  getposition(x, y) {
-    var point = new Array(x,y);
-    console.log(point);
-    this.changeCross.emit(point);
-  }
 
 
     //patient2screen
@@ -430,12 +430,11 @@ drawCross(nix, niy, loca) {
                 let curY = e.clientY;
                 let shiftY = curY - preY;
                 preY = curY;
-                if (shiftY >= 0){
+                if (shiftY >= 0) {
                     zoom_factor = 1.0 + shiftY * 1.0 / 120
-                }
-                else{
+                } else {
                     zoom_factor = 1.0 / (1.0 - shiftY * 1.0 / 120)
-                } 
+                }
 
                 that.zoomReq.emit([that.tag, zoom_factor]);
             }
@@ -706,7 +705,7 @@ drawCross(nix, niy, loca) {
 
     cellUpdate(imageData, crossPoint) {
         this.drawCanvasPic(imageData);
-        this.cross(crossPoint[0],crossPoint[1],1);
+        this.cross(crossPoint[0], crossPoint[1], 1);
     }
 
     drawCanvasPic(imageData) {
