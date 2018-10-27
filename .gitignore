@@ -65,3 +65,4 @@ CMakeLists.txt.user
 
 *.uihlog
 /netbase/log/
+log.txt
