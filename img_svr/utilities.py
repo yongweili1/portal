@@ -165,3 +165,13 @@ def string_int_trans(origin, flag):
             return map(int, origin)
         else:
             return int(origin)
+
+
+def cal_angle(size, pre_pos, cur_pos):
+    center_pos = map(lambda x: x / 2.0, size)
+    cent_x, cent_y = center_pos[0], center_pos[1]
+    pre_vec = np.array([pre_pos[0] - cent_x, pre_pos[1] - cent_y])
+    cur_vec = np.array([cur_pos[0] - cent_x, cur_pos[1] - cent_y])
+    cos_angle = pre_vec.dot(cur_vec) / np.linalg.norm(pre_vec) / np.linalg.norm(cur_vec)
+    angle = np.arccos(cos_angle)
+    return angle

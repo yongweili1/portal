@@ -70,7 +70,7 @@ export class ContouringComponent implements OnInit {
         private router: Router,
         private conService: ContouringService,
         private elMessage: ElMessageService,
-    ) { 
+    ) {
         this.lazyExcuteHandler = new LazyExcuteHandler()
     }
 
@@ -207,7 +207,61 @@ export class ContouringComponent implements OnInit {
             setTimeout(() => {
                 if (that.hasLoadVolume == true) {
                     canvasSize['view_size'] = that.getCanvasSize();
-                    that.conService.noticeSize(canvasSize).subscribe();
+                    that.conService.noticeSize(canvasSize).subscribe(result => {
+                        if (result.body == "success" && that.hasLoadVolume == true) {
+                            let img1 = new Image();
+                            let img2 = new Image();
+                            let img3 = new Image();
+                            let transverseCanvas = $(".a_class .icanvas").get(0);
+                            let saggitalCanvas = $(".c_class .icanvas").get(0);
+                            let coronalCanvas = $(".b_class .icanvas").get(0);
+                            let seriesId: any = $("#seriesSelect").val();
+                            this.seriesHttpService.GetSeries("", "", "all", transverseCanvas.width, transverseCanvas.height).subscribe((value) => {
+                                let data = JSON.parse(value);
+                                let base64Header = "data:image/png;base64,";
+                                let imgData: any;
+                                if (data['0']['image'] != null) {
+                                    console.log("pre transverse");
+                                    imgData = base64Header + data['0']['image'];
+                                    img1.src = imgData;
+                                    img1.onload = function () {
+                                        transverseCanvas.getContext("2d").clearRect(0, 0, transverseCanvas.width, transverseCanvas.height);
+                                        transverseCanvas.getContext("2d").drawImage(img1, 0, 0, transverseCanvas.width, transverseCanvas.height);
+                                        console.log("onload transverse");
+                                    }
+                                }
+                                if (data['1']['image'] != null) {
+                                    console.log("pre coronal");
+                                    imgData = base64Header + data['1']['image'];
+                                    img2.src = imgData;
+                                    img2.onload = function () {
+                                        coronalCanvas.getContext("2d").clearRect(0, 0, coronalCanvas.width, coronalCanvas.height);
+                                        coronalCanvas.getContext("2d").drawImage(img2, 0, 0, coronalCanvas.width, coronalCanvas.height);
+                                        console.log("onload coronal");
+                                    }
+                                }
+                                if (data['2']['image'] != null) {
+                                    console.log("pre saggital");
+                                    imgData = base64Header + data['2']['image'];
+                                    img3.src = imgData;
+                                    img3.onload = function () {
+                                        saggitalCanvas.getContext("2d").clearRect(0, 0, saggitalCanvas.width, saggitalCanvas.height);
+                                        saggitalCanvas.getContext("2d").drawImage(img3, 0, 0, saggitalCanvas.width, saggitalCanvas.height);
+                                        console.log("onload saggital");
+                                    }
+                                }
+                                $('#loading').hideLoading();
+                                //this.hideDialog();
+                            }, (error) => {
+                                $('#loading').hideLoading();
+                                //this.hideDialog();
+                                console.log(error);
+                            })
+                            console.log("wait for response")
+                            this.hasLoadVolume = true;
+                            this.seriesId = seriesId;
+                        }
+                    });
                 }
             }, 300);
         });
@@ -263,6 +317,37 @@ export class ContouringComponent implements OnInit {
         let that = this;
         if (this.hasLoadVolume == true) {
             this.seriesHttpService.GetPanPic(focus_view, prePos, curPso).subscribe(result => {
+                result = JSON.parse(result);
+                that.picLeft1.cellUpdate(result['0']['image'], result['0']['crosshair']);
+                that.picLeft2.cellUpdate(result['1']['image'], result['1']['crosshair']);
+                that.picLeft3.cellUpdate(result['2']['image'], result['2']['crosshair']);
+            })
+        }
+    }
+    mainrotate() {
+        this.picLeft1.addRotateEvent();
+        this.picLeft2.addRotateEvent();
+        this.picLeft3.addRotateEvent();
+    }
+    mainRotatePro(evt) {
+        console.log(evt);
+        let focus_view = evt[0];
+        let prePos = evt[1];
+        let curPso = evt[2];
+        let that = this;
+        if (this.hasLoadVolume == true) {
+            this.seriesHttpService.GetRotatePic(focus_view, prePos, curPso).subscribe(result => {
+                result = JSON.parse(result);
+                that.picLeft1.cellUpdate(result['0']['image'], result['0']['crosshair']);
+                that.picLeft2.cellUpdate(result['1']['image'], result['1']['crosshair']);
+                that.picLeft3.cellUpdate(result['2']['image'], result['2']['crosshair']);
+            })
+        }
+    }
+    mainreset() {
+        let that = this;
+        if (this.hasLoadVolume == true) {
+            this.seriesHttpService.GetResetPic().subscribe(result => {
                 result = JSON.parse(result);
                 that.picLeft1.cellUpdate(result['0']['image'], result['0']['crosshair']);
                 that.picLeft2.cellUpdate(result['1']['image'], result['1']['crosshair']);
