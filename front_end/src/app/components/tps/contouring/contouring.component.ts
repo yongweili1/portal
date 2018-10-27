@@ -261,11 +261,28 @@ export class ContouringComponent implements OnInit {
             })
         }
     }
-    mainwlww() {
-        this.picLeft1.changewl();
-        this.picLeft2.changewl();
-        this.picLeft3.changewl();
+    mainWLWW(){
+        this.picLeft1.addChangeWlEvent();
+        this.picLeft2.addChangeWlEvent();
+        this.picLeft3.addChangeWlEvent();
     }
+
+    mainWWWLPro(evt){
+        console.log(evt);
+        let focus_view = evt[0];
+        let ww_factor = evt[1];
+        let wl_factor = evt[2];
+        let that = this;
+        if (this.hasLoadVolume == true) {
+            this.seriesHttpService.GetWindowPic(focus_view, ww_factor, wl_factor).subscribe(result => {
+                result = JSON.parse(result);
+                that.picLeft1.cellUpdate(result['0']['image'], result['0']['crosshair']);
+                that.picLeft2.cellUpdate(result['1']['image'], result['1']['crosshair']);
+                that.picLeft3.cellUpdate(result['2']['image'], result['2']['crosshair']);
+            })
+        }
+    }
+
     mainpan() {
         this.picLeft1.addPanEvent();
         this.picLeft2.addPanEvent();

@@ -105,6 +105,13 @@ GetResetPic():Observable<any>{
    return this.http.get<any>(`${this.appConfig.apiUrl}/image/backs/`);
 }
 
+GetWindowPic(focus:any,ww_factor:any,wl_factor:any):Observable<any>{
+    const getParams = new HttpParams()
+    .set('focus_view', focus)
+    .set('ww_factor',ww_factor)
+    .set('wl_factor',wl_factor);
+    return this.http.get<any>(`${this.appConfig.apiUrl}/image/windows/`,{params : getParams})
+}
 
 
 
