@@ -3,7 +3,13 @@ from __future__ import unicode_literals
 from django.core.files.storage import FileSystemStorage
 
 
-# 上传dicom文件的存储路径
+class LinuxFilePath(FileSystemStorage):
+    basePath = '../../'
+    dicomPath = basePath + 'dicoms'
+    splitDicomPath = basePath + 'split_dicom'
+    volumePath = basePath + 'volume'
+
+
 class SaveDicomFilePath(FileSystemStorage):
     location_1 = 'D:\\temp\\'
     location_2 = 'D:\\dicoms\\'
@@ -11,8 +17,8 @@ class SaveDicomFilePath(FileSystemStorage):
 
 
 class SaveVolumeFilePath(FileSystemStorage):
-    volumepath = 'D:\\volume\\'
+    volumePath = 'D:\\volume\\'
 
 
 class DotPositionFilePath(FileSystemStorage):
-    dotpospath = 'D:\\dotpostion\\'
+    dotPosPath = 'D:\\dotpostion\\'
