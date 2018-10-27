@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'rest_framework_swagger',
+    # 'devserver',
 
     'connect_image.apps.ConnectImageConfig',
     'patientinformations.apps.PatientinformationsConfig',

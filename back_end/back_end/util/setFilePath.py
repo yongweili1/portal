@@ -4,7 +4,7 @@ from django.core.files.storage import FileSystemStorage
 
 
 class LinuxFilePath(FileSystemStorage):
-    basePath = '../../'
+    basePath = '../'
     dicomPath = basePath + 'dicoms'
     splitDicomPath = basePath + 'split_dicom'
     volumePath = basePath + 'volume'
