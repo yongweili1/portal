@@ -5,8 +5,6 @@ import os
 from md.image3d.python.image3d_io import write_image, read_dicom_series
 
 from back_end.util.setFilePath import SaveVolumeFilePath
-from back_end.util.readDcm import DcmPatient, DcmStudy, DcmSeries
-from patientinformations.models import Series, Image
 
 
 class DicomToVolume(object):
@@ -22,7 +20,7 @@ class DicomToVolume(object):
         volume_name = seriesuid + '.nii.gz'
 
         # 保存文件到本地
-        volfilepath = os.path.join(SaveVolumeFilePath.volumepath, volume_name)
+        volfilepath = os.path.join(SaveVolumeFilePath.volumePath, volume_name)
         if not write_image(vol, volfilepath):
             pass
 

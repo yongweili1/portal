@@ -36,7 +36,6 @@ class Patinfo(APIView):
         if len(files) == 0:
             return Response('请选择上传文件')
 
-        # 将上传的文件存到本地
         for f in files:
             destination = open(SaveDicomFilePath.location_2 + f.name, 'wb+')
             for chunk in f.chunks():
@@ -44,7 +43,6 @@ class Patinfo(APIView):
             destination.close()
             file_name_list.append(f.name)
 
-        # 读取，解析保存的文件
         dataset_list = []
         series_path_list = []
 

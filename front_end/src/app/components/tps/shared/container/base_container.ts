@@ -50,13 +50,7 @@ export class BaseContainer extends createjs.Container {
         console.log('[base_container]handle PressUp')
         this._tempPoint = new Point(0, 0);
     }
-
     handleDbClick(evt) {
         console.log('[base_container]handle DbClick')
-        this.curTarget = evt.currentTarget;
-        this.overlayStage.removeChild(this.curTarget);
-        this.curTarget._cps.forEach(cp=>this.overlayStage.removeChild(cp))
-        this.overlayStage.clear();
-        this.overlayStage.update();
     }
 }
