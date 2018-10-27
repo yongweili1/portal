@@ -47,7 +47,7 @@ if __name__ == "__main__":
         else:
             os.mkdir(SaveDicomFilePath.location_3)
 
-        if os.path.exists(SaveVolumeFilePath.volumepath):
+        if os.path.exists(SaveVolumeFilePath.volumePath):
             pass
         else:
             os.mkdir(SaveVolumeFilePath.volumepath)
