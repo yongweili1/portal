@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, Injector, ElementRef } from '@angular/cor
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { HttpClient } from "@angular/common/http";
 import { switchMap } from 'rxjs/operators';
-import { Router} from '@angular/router';
+import { Router } from '@angular/router';
 import { ElMessageService } from 'element-angular'
 
 import { ConMessageService } from '../shared/service/conMessage.service';
@@ -13,150 +13,153 @@ import { ContouringService } from '../shared/service/contouring.service';
 
 
 import {
-  LazyLoadEvent, ConfirmationService, Paginator
+    LazyLoadEvent, ConfirmationService, Paginator
 } from 'primeng/primeng';
 
 import { ToastService } from '../../../core/toast.service';
 import { Page, PageRequest } from '../../../shared/models';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { LazyExcuteHandler } from './lazy_excute_handler';
 
 declare var $: any;
 
 @Component({
-  selector: 'mpt-contouring',
-  templateUrl: './contouring.component.html',
-  styleUrls: ['./contouring.component.less']
+    selector: 'mpt-contouring',
+    templateUrl: './contouring.component.html',
+    styleUrls: ['./contouring.component.less']
 })
 export class ContouringComponent implements OnInit {
-  patientId: any = "";
-  imageX: any;
-  imageY: any;
-  imageZ: any;
-  wl: any;
-  ww: any;
-  spacingX: any;
-  spacingY: any;
-  spacingZ: any;
-  pixelRepresentation: any;
-  rescaleSlope: any;
-  rescaleIntercept: any;
-  firstImagePosition: any;
-  lastImagePosition: any;
-  seriList: any;
-  action:any;
-  display: boolean = false;
-  seriesList:any;
-  hasLoadVolume:boolean= false;
-  seriesId:any;
-  transverseCanvas:any;
-  saggitalCanvas:any;
-  coronalCanvas:any;
-  
-  @ViewChild('picLeft1') picLeft1;
-  @ViewChild('picLeft2') picLeft2;
-  @ViewChild('picLeft3') picLeft3;
-  @ViewChild('load') load;
+    patientId: any = "";
+    imageX: any;
+    imageY: any;
+    imageZ: any;
+    wl: any;
+    ww: any;
+    spacingX: any;
+    spacingY: any;
+    spacingZ: any;
+    pixelRepresentation: any;
+    rescaleSlope: any;
+    rescaleIntercept: any;
+    firstImagePosition: any;
+    lastImagePosition: any;
+    seriList: any;
+    action: any;
+    display: boolean = false;
+    seriesList: any;
+    hasLoadVolume: boolean = false;
+    seriesId: any;
+    transverseCanvas: any;
+    saggitalCanvas: any;
+    coronalCanvas: any;
+    lazyExcuteHandler: LazyExcuteHandler;
 
-  constructor(
-    private injector: Injector, 
-    private http: HttpClient, 
-    public activeRoute: ActivatedRoute, 
-    //private seriesHttp: SeriesHttpService, 
-    private conMessage: ConMessageService,
-    public roiHttp: RoiHttpService, 
-    private storageService: StorageService, 
-    private seriesHttpService: SeriesHttpService,
-    private router:Router,
-    private conService:ContouringService,
-    private elMessage: ElMessageService,
-    ) {
-  }
-  transverseChange(event: any) {
-    let displayView = 'coronal,saggital'  
-    this.seriesHttpService.GetLocatePic('transverse',displayView,event).subscribe((value)=>{
-        let data = JSON.parse(value);
-        this.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair']);
-        this.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair']);
-    }
-    )
+    @ViewChild('picLeft1') picLeft1;
+    @ViewChild('picLeft2') picLeft2;
+    @ViewChild('picLeft3') picLeft3;
+    @ViewChild('load') load;
+
+    constructor(
+        private injector: Injector,
+        private http: HttpClient,
+        public activeRoute: ActivatedRoute,
+        //private seriesHttp: SeriesHttpService, 
+        private conMessage: ConMessageService,
+        public roiHttp: RoiHttpService,
+        private storageService: StorageService,
+        private seriesHttpService: SeriesHttpService,
+        private router: Router,
+        private conService: ContouringService,
+        private elMessage: ElMessageService,
+    ) { 
+        this.lazyExcuteHandler = new LazyExcuteHandler()
     }
 
-  coronalChange(event: any) {
-    let displayView = 'transverse,saggital'  
-    this.seriesHttpService.GetLocatePic('coronal',displayView,event).subscribe((value)=>{
-        let data = JSON.parse(value);
-        this.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair']);
-        this.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair']);
-    }
-    )
-    }
-  saggitalChange(event: any) {
-    let displayView = 'transverse,coronal'
-    this.seriesHttpService.GetLocatePic('saggital',displayView,event).subscribe((value)=>{
-        let data = JSON.parse(value);
-        this.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair']);
-        this.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair']);
-    })
+    transverseChange(event: any) {
+        let displayView = 'coronal,saggital'
+        this.seriesHttpService.GetLocatePic('transverse', displayView, event).subscribe((value) => {
+            let data = JSON.parse(value);
+            this.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair']);
+            this.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair']);
+        }
+        )
     }
 
-  mainClearPri()
-  {
-      this.picLeft1.clearPri();
-      this.picLeft2.clearPri();
-      this.picLeft3.clearPri();
-  }
+    coronalChange(event: any) {
+        let displayView = 'transverse,saggital'
+        this.seriesHttpService.GetLocatePic('coronal', displayView, event).subscribe((value) => {
+            let data = JSON.parse(value);
+            this.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair']);
+            this.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair']);
+        }
+        )
+    }
+    saggitalChange(event: any) {
+        let displayView = 'transverse,coronal'
+        this.seriesHttpService.GetLocatePic('saggital', displayView, event).subscribe((value) => {
+            let data = JSON.parse(value);
+            this.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair']);
+            this.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair']);
+        })
+    }
 
-  showDialog() {
-    this.display = true;
-  }
-  hideDialog() {
-    this.display = false;
-  }
+    mainClearPri() {
+        this.picLeft1.clearPri();
+        this.picLeft2.clearPri();
+        this.picLeft3.clearPri();
+    }
 
+    showDialog() {
+        this.display = true;
+    }
+    hideDialog() {
+        this.display = false;
+    }
 
-  aCross(event: any) {
-    let data = {}
-    if(this.hasLoadVolume == true){
-        this.seriesHttpService.GetSeriesPic('transverse', 'transverse', event, "", "").subscribe((value) => {
-        data = JSON.parse(value);
-        this.picLeft1.drawCanvasPic(data['0']['image']);
-        this.picLeft2.cross(data['1']['crosshair'][0],data['1']['crosshair'][1],1);
-        this.picLeft3.cross(data['2']['crosshair'][0],data['2']['crosshair'][1],1);
-    }, (error) => {
-        console.log(error);
-    })
-    } 
-  } 
-  bCross(event: any) {
-    let data = {}
-    if(this.hasLoadVolume == true){
-        this.seriesHttpService.GetSeriesPic('coronal', 'coronal', event, "", "").subscribe((value) => {
-        data = JSON.parse(value);
-        this.picLeft2.drawCanvasPic(data['1']['image']);
-        this.picLeft1.cross(data['0']['crosshair'][0],data['0']['crosshair'][1],1);
-        this.picLeft3.cross(data['2']['crosshair'][0],data['2']['crosshair'][1],1);
-    }, (error) => {
-        console.log(error);
-    })
-    } 
-  }
-  cCross(event: any) {
-    let data = {}
-    if(this.hasLoadVolume == true){
-        this.seriesHttpService.GetSeriesPic('saggital', 'saggital', event, "", "").subscribe((value) => {
-        data = JSON.parse(value);
-        this.picLeft3.drawCanvasPic(data['2']['image']);
-        this.picLeft2.cross(data['1']['crosshair'][0],data['1']['crosshair'][1],1);
-        this.picLeft1.cross(data['0']['crosshair'][0],data['0']['crosshair'][1],1);
-    }, (error) => {
-        console.log(error);
-    })
-    } 
-  }
-  mainQuitDraw()
-  {
- 
-  }
+    aCross(event: any) {
+        if (!this.lazyExcuteHandler.canExcute(new Date().getTime(), 'a')) return;
+        let data = {}
+        if (this.hasLoadVolume == true) {
+            this.seriesHttpService.GetSeriesPic('transverse', 'transverse', event, "", "").subscribe((value) => {
+                data = JSON.parse(value);
+                this.picLeft1.drawCanvasPic(data['0']['image']);
+                this.picLeft2.cross(data['1']['crosshair'][0], data['1']['crosshair'][1], 1);
+                this.picLeft3.cross(data['2']['crosshair'][0], data['2']['crosshair'][1], 1);
+            }, (error) => {
+                console.log(error);
+            })
+        }
+    }
+    bCross(event: any) {
+        if (!this.lazyExcuteHandler.canExcute(new Date().getTime(), 'b')) return;
+        let data = {}
+        if (this.hasLoadVolume == true) {
+            this.seriesHttpService.GetSeriesPic('coronal', 'coronal', event, "", "").subscribe((value) => {
+                data = JSON.parse(value);
+                this.picLeft2.drawCanvasPic(data['1']['image']);
+                this.picLeft1.cross(data['0']['crosshair'][0], data['0']['crosshair'][1], 1);
+                this.picLeft3.cross(data['2']['crosshair'][0], data['2']['crosshair'][1], 1);
+            }, (error) => {
+                console.log(error);
+            })
+        }
+    }
+    cCross(event: any) {
+        if (!this.lazyExcuteHandler.canExcute(new Date().getTime(), 'c')) return;
+        let data = {}
+        if (this.hasLoadVolume == true) {
+            this.seriesHttpService.GetSeriesPic('saggital', 'saggital', event, "", "").subscribe((value) => {
+                data = JSON.parse(value);
+                this.picLeft3.drawCanvasPic(data['2']['image']);
+                this.picLeft2.cross(data['1']['crosshair'][0], data['1']['crosshair'][1], 1);
+                this.picLeft1.cross(data['0']['crosshair'][0], data['0']['crosshair'][1], 1);
+            }, (error) => {
+                console.log(error);
+            })
+        }
+    }
+    mainQuitDraw() {
+
+    }
 
   ngOnInit() {      
       this.transverseCanvas = $(".a_class .icanvas").get(0);
@@ -267,15 +270,15 @@ export class ContouringComponent implements OnInit {
     });
   }
 
-  getCanvasSize(){
-    let view_size :any = {};
-    view_size['transverse'] = [this.transverseCanvas.width,this.transverseCanvas.height];
-    view_size['coronal'] = [this.coronalCanvas.width,this.coronalCanvas.height];
-    view_size['saggital'] = [this.saggitalCanvas.width,this.saggitalCanvas.height];
+    getCanvasSize() {
+        let view_size: any = {};
+        view_size['transverse'] = [this.transverseCanvas.width, this.transverseCanvas.height];
+        view_size['coronal'] = [this.coronalCanvas.width, this.coronalCanvas.height];
+        view_size['saggital'] = [this.saggitalCanvas.width, this.saggitalCanvas.height];
 
-    return view_size;
+        return view_size;
 
-  }
+    }
 
   mainHideList(){
     document.getElementById("series_list").classList.toggle("series_inactive");
@@ -449,17 +452,17 @@ export class ContouringComponent implements OnInit {
     })
   }
 
-  fb(a) {
-      this.load.loadbar(a)
-  }
+    fb(a) {
+        this.load.loadbar(a)
+    }
 
-  message(w) {
-      this.load.message(w);
-  }
-  ngOnDestroy(){
-    this.hasLoadVolume = false;
-    this.seriesHttpService.UnLoadVolume(this.seriesId).subscribe();
-    $('#loading').hideLoading();
-  }
+    message(w) {
+        this.load.message(w);
+    }
+    ngOnDestroy() {
+        this.hasLoadVolume = false;
+        this.seriesHttpService.UnLoadVolume(this.seriesId).subscribe();
+        $('#loading').hideLoading();
+    }
 }
 
