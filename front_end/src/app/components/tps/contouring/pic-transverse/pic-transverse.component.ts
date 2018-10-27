@@ -8,6 +8,7 @@ import { glsource } from './glsource.modal';
 import { LoadSeriesServiceMock } from '../../../../mocks/load-series-service.mock'
 import { AppConfigService } from '../../../../app.config';
 import { LazyExcuteHandler } from '../lazy_excute_handler';
+import { Hitbar } from '../../shared/overlay/hitbar';
 declare var $: any;
 declare var createjs: any;
 declare var THREE: any;
@@ -72,6 +73,7 @@ export class PicTransverseComponent implements OnChanges {
         private appConfig: AppConfigService
     ) {
         this.lazyExcuteHandler = new LazyExcuteHandler();
+        this.curAction = 'croselect';
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -208,11 +210,11 @@ export class PicTransverseComponent implements OnChanges {
     }
 
     /**
- * 画十字线和交点，绑定监听事件
- * @param nix 
- * @param niy 
- * @param loca 
- */
+     * 画十字线和交点，绑定监听事件
+     * @param nix 
+     * @param niy 
+     * @param loca 
+     */
     drawCross(nix, niy, loca) {
         this.stage = new createjs.Stage(this.crosscan);
         var width = this.stage.canvas.width;
@@ -231,9 +233,9 @@ export class PicTransverseComponent implements OnChanges {
         if (this.tag == "saggital") {
             this.horizontalLine.graphics.beginStroke("#F44336").setStrokeStyle(1, "round").moveTo(0, 0).lineTo(width, 0);
         }
-        var horizontalHitArea = new createjs.Shape();
-        horizontalHitArea.graphics.beginFill("black").drawRect(0, -5, width, 10);
-        this.horizontalLine.hitArea = horizontalHitArea;
+        let horizontalHitbar = new Hitbar()
+        horizontalHitbar.graphics.moveTo(0, 0).lineTo(width, 0);
+        this.horizontalLine.hitArea = horizontalHitbar
         this.horizontalLine.cursor = "url('/assets/img/vertical.cur'),auto";
 
         this.verticalLine = new createjs.Shape();// 竖线
@@ -246,9 +248,9 @@ export class PicTransverseComponent implements OnChanges {
         if (this.tag == "saggital") {
             this.verticalLine.graphics.beginStroke("#2196F3").setStrokeStyle(1, "round").moveTo(0, 0).lineTo(0, height);
         }
-        var verticalHitArea = new createjs.Shape();
-        verticalHitArea.graphics.beginFill("black").drawRect(-5, 0, 10, height);
-        this.verticalLine.hitArea = verticalHitArea;
+        var verticalHitbar = new Hitbar();
+        verticalHitbar.graphics.moveTo(0, 0).lineTo(0, height);
+        this.verticalLine.hitArea = verticalHitbar;
         this.verticalLine.cursor = "url('/assets/img/horizontal.cur'),auto";
 
         this.crossPoint = new createjs.Shape();// 交点
@@ -262,12 +264,25 @@ export class PicTransverseComponent implements OnChanges {
         var height = this.stage.canvas.height;
         this.cross(nix * width, niy * height, loca);
 
+        this.stage.canvas.addEventListener('mousedown', this.handleMouseDown.bind(this))
         this.horizontalLine.addEventListener("pressmove", this.handlePressMove.bind(this));
         this.verticalLine.addEventListener("pressmove", this.handlePressMove.bind(this));
         this.crossPoint.addEventListener("pressmove", this.handlePressMove.bind(this));
         this.horizontalLine.addEventListener("pressup", this.handlePressUp.bind(this));
         this.verticalLine.addEventListener("pressup", this.handlePressUp.bind(this));
         this.crossPoint.addEventListener("pressup", this.handlePressUp.bind(this));
+    }
+
+    handleMouseDown(evt) {
+        if (this.curAction != 'croselect' 
+            || evt.currentTarget == this.verticalLine
+            || evt.currentTarget == this.horizontalLine
+            || evt.currentTarget == this.crossPoint) return;
+        this.crossPoint.x = evt.offsetX
+        this.crossPoint.y = evt.offsetY
+        this.cross(this.crossPoint.x, this.crossPoint.y, 1)
+        this.getposition(this.crossPoint.x, this.crossPoint.y);
+        this.stage.update();
     }
 
     /**
@@ -361,6 +376,7 @@ export class PicTransverseComponent implements OnChanges {
         that.canbas.get(0).onmousedown = function (e) {
             let prePos = [e.clientX, e.clientY];
             that.canbas.get(0).onmousemove = function (e) {
+                if (!that.lazyExcuteHandler.canExcuteByCount()) return;
                 let curPos = [e.clientX, e.clientY];
                 that.panReq.emit([that.tag, prePos, curPos]);
                 prePos = curPos;
@@ -379,6 +395,7 @@ export class PicTransverseComponent implements OnChanges {
             let zoom_factor = 0;
             let preY = e.clientY;
             that.canbas.get(0).onmousemove = function (e) {
+                if (!that.lazyExcuteHandler.canExcuteByCount()) return;
                 let curY = e.clientY;
                 let shiftY = curY - preY;
                 preY = curY;
@@ -402,6 +419,7 @@ export class PicTransverseComponent implements OnChanges {
         that.canbas.get(0).onmousedown = function (e) {
             let prePos = [e.clientX, e.clientY];
             that.canbas.get(0).onmousemove = function (e) {
+                if (!that.lazyExcuteHandler.canExcuteByCount()) return;
                 let curPos = [e.clientX, e.clientY];
                 that.rotateReq.emit([that.tag, prePos, curPos]);
                 prePos = curPos;
@@ -412,7 +430,7 @@ export class PicTransverseComponent implements OnChanges {
             };
         }
     }
-    addChangeWlEvent(){
+    addChangeWlEvent() {
         let that = this;
         that.canbas.get(0).onmousedown = function (e) {
             let ww_factor = 0;
@@ -420,6 +438,7 @@ export class PicTransverseComponent implements OnChanges {
             let preX = e.clientX
             let preY = e.clientY;
             that.canbas.get(0).onmousemove = function (e) {
+                if (!that.lazyExcuteHandler.canExcuteByCount()) return;
                 let curX = e.clientX;
                 let curY = e.clientY;
                 let shiftY = curY - preY;
