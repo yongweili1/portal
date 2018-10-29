@@ -16,8 +16,8 @@ export class FreepenContainer extends BaseContainer {
 
     constructor(stage) {
         super(stage, 'freepen');
-        this.shape = new Freepen(stage);
-        this.extendShape = new Freepen(stage);
+        this.shape = new Freepen(stage, 'yellow');
+        this.extendShape = new Freepen(stage, 'yellow');
         this.initCps()
         this.extendCps =new Array();
         this.text = new Text(stage, '* cps')

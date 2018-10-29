@@ -81,10 +81,9 @@ export class ContouringComponent implements OnInit {
         if(this.hasLoadVolume == true){
             this.seriesHttpService.GetLocatePic('transverse', displayView, event).subscribe((value) => {
                 let data = JSON.parse(value);
-                this.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair']);
-                this.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair']);
-            }
-            )            
+                this.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair'], data['1']['graphic']['contours']);
+                this.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair'], data['2']['graphic']['contours']);
+            })
         }
     }
 
@@ -93,19 +92,18 @@ export class ContouringComponent implements OnInit {
         if(this.hasLoadVolume == true){
             this.seriesHttpService.GetLocatePic('coronal', displayView, event).subscribe((value) => {
                 let data = JSON.parse(value);
-                this.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair']);
-                this.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair']);
+                this.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair'], data['0']['graphic']['contours']);
+                this.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair'], data['2']['graphic']['contours']);
+            })
         }
-        )
-    }
     }
     saggitalChange(event: any) {
         let displayView = 'transverse,coronal'
         if(this.hasLoadVolume == true){
             this.seriesHttpService.GetLocatePic('saggital', displayView, event).subscribe((value) => {
                 let data = JSON.parse(value);
-                this.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair']);
-                this.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair']);
+                this.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair'], data['0']['graphic']['contours']);
+                this.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair'], data['1']['graphic']['contours']);
             })
         }
     }
@@ -129,9 +127,9 @@ export class ContouringComponent implements OnInit {
         if (this.hasLoadVolume == true) {
             this.seriesHttpService.GetSeriesPic('transverse', 'transverse', event, "", "").subscribe((value) => {
                 data = JSON.parse(value);
-                this.picLeft1.drawCanvasPic(data['0']['image']);
-                this.picLeft2.cross(data['1']['crosshair'][0], data['1']['crosshair'][1], 1);
-                this.picLeft3.cross(data['2']['crosshair'][0], data['2']['crosshair'][1], 1);
+                this.picLeft1.cellUpdate(data['0']['image'], null, data['0']['graphic']['contours'])
+                this.picLeft2.cellUpdate(null, data['1']['crosshair'], data['1']['graphic']['contours'])
+                this.picLeft3.cellUpdate(null, data['2']['crosshair'], data['2']['graphic']['contours'])
             }, (error) => {
                 console.log(error);
             })
@@ -143,9 +141,9 @@ export class ContouringComponent implements OnInit {
         if (this.hasLoadVolume == true) {
             this.seriesHttpService.GetSeriesPic('coronal', 'coronal', event, "", "").subscribe((value) => {
                 data = JSON.parse(value);
-                this.picLeft2.drawCanvasPic(data['1']['image']);
-                this.picLeft1.cross(data['0']['crosshair'][0], data['0']['crosshair'][1], 1);
-                this.picLeft3.cross(data['2']['crosshair'][0], data['2']['crosshair'][1], 1);
+                this.picLeft1.cellUpdate(null, data['0']['crosshair'], data['0']['graphic']['contours'])
+                this.picLeft2.cellUpdate(data['1']['image'], null, data['1']['graphic']['contours'])
+                this.picLeft3.cellUpdate(null, data['2']['crosshair'], data['2']['graphic']['contours'])
             }, (error) => {
                 console.log(error);
             })
@@ -157,9 +155,9 @@ export class ContouringComponent implements OnInit {
         if (this.hasLoadVolume == true) {
             this.seriesHttpService.GetSeriesPic('saggital', 'saggital', event, "", "").subscribe((value) => {
                 data = JSON.parse(value);
-                this.picLeft3.drawCanvasPic(data['2']['image']);
-                this.picLeft2.cross(data['1']['crosshair'][0], data['1']['crosshair'][1], 1);
-                this.picLeft1.cross(data['0']['crosshair'][0], data['0']['crosshair'][1], 1);
+                this.picLeft1.cellUpdate(null, data['0']['crosshair'], data['0']['graphic']['contours'])
+                this.picLeft2.cellUpdate(null, data['1']['crosshair'], data['1']['graphic']['contours'])
+                this.picLeft3.cellUpdate(data['2']['image'], null, data['2']['graphic']['contours'])
             }, (error) => {
                 console.log(error);
             })
@@ -211,9 +209,9 @@ export class ContouringComponent implements OnInit {
                         if (result.body == "success" && that.hasLoadVolume == true) {
                             that.seriesHttpService.GetSeries("", "", "all", "", "").subscribe(data => {
                                 data = JSON.parse(data);
-                                that.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair']);
-                                that.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair']);
-                                that.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair']);
+                                that.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair'], data['0']['graphic']['contours']);
+                                that.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair'], data['1']['graphic']['contours']);
+                                that.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair'], data['2']['graphic']['contours']);
                             })
                         }
                     });
@@ -257,9 +255,9 @@ export class ContouringComponent implements OnInit {
         if (this.hasLoadVolume == true) {
             this.seriesHttpService.GetZoomPic(focus_view, factor).subscribe(result => {
                 result = JSON.parse(result);
-                that.picLeft1.cellUpdate(result['0']['image'], result['0']['crosshair']);
-                that.picLeft2.cellUpdate(result['1']['image'], result['1']['crosshair']);
-                that.picLeft3.cellUpdate(result['2']['image'], result['2']['crosshair']);
+                that.picLeft1.cellUpdate(result['0']['image'], result['0']['crosshair'], result['0']['graphic']['contours']);
+                that.picLeft2.cellUpdate(result['1']['image'], result['1']['crosshair'], result['1']['graphic']['contours']);
+                that.picLeft3.cellUpdate(result['2']['image'], result['2']['crosshair'], result['2']['graphic']['contours']);
             })
         }
     }
@@ -278,9 +276,9 @@ export class ContouringComponent implements OnInit {
         if (this.hasLoadVolume == true) {
             this.seriesHttpService.GetWindowPic(focus_view, ww_factor, wl_factor).subscribe(result => {
                 result = JSON.parse(result);
-                that.picLeft1.cellUpdate(result['0']['image'], result['0']['crosshair']);
-                that.picLeft2.cellUpdate(result['1']['image'], result['1']['crosshair']);
-                that.picLeft3.cellUpdate(result['2']['image'], result['2']['crosshair']);
+                that.picLeft1.cellUpdate(result['0']['image'], result['0']['crosshair'], result['0']['graphic']['contours']);
+                that.picLeft2.cellUpdate(result['1']['image'], result['1']['crosshair'], result['1']['graphic']['contours']);
+                that.picLeft3.cellUpdate(result['2']['image'], result['2']['crosshair'], result['2']['graphic']['contours']);
             })
         }
     }
@@ -299,9 +297,9 @@ export class ContouringComponent implements OnInit {
         if (this.hasLoadVolume == true) {
             this.seriesHttpService.GetPanPic(focus_view, prePos, curPso).subscribe(result => {
                 result = JSON.parse(result);
-                that.picLeft1.cellUpdate(result['0']['image'], result['0']['crosshair']);
-                that.picLeft2.cellUpdate(result['1']['image'], result['1']['crosshair']);
-                that.picLeft3.cellUpdate(result['2']['image'], result['2']['crosshair']);
+                that.picLeft1.cellUpdate(result['0']['image'], result['0']['crosshair'], result['0']['graphic']['contours']);
+                that.picLeft2.cellUpdate(result['1']['image'], result['1']['crosshair'], result['1']['graphic']['contours']);
+                that.picLeft3.cellUpdate(result['2']['image'], result['2']['crosshair'], result['2']['graphic']['contours']);
             })
         }
     }
@@ -319,9 +317,9 @@ export class ContouringComponent implements OnInit {
         if (this.hasLoadVolume == true) {
             this.seriesHttpService.GetRotatePic(focus_view, prePos, curPso).subscribe(result => {
                 result = JSON.parse(result);
-                that.picLeft1.cellUpdate(result['0']['image'], result['0']['crosshair']);
-                that.picLeft2.cellUpdate(result['1']['image'], result['1']['crosshair']);
-                that.picLeft3.cellUpdate(result['2']['image'], result['2']['crosshair']);
+                that.picLeft1.cellUpdate(result['0']['image'], result['0']['crosshair'], result['0']['graphic']['contours']);
+                that.picLeft2.cellUpdate(result['1']['image'], result['1']['crosshair'], result['1']['graphic']['contours']);
+                that.picLeft3.cellUpdate(result['2']['image'], result['2']['crosshair'], result['2']['graphic']['contours']);
             })
         }
     }
@@ -341,9 +339,9 @@ export class ContouringComponent implements OnInit {
         if (this.hasLoadVolume == true) {
             this.seriesHttpService.GetResetPic().subscribe(result => {
                 result = JSON.parse(result);
-                that.picLeft1.cellUpdate(result['0']['image'], result['0']['crosshair']);
-                that.picLeft2.cellUpdate(result['1']['image'], result['1']['crosshair']);
-                that.picLeft3.cellUpdate(result['2']['image'], result['2']['crosshair']);
+                that.picLeft1.cellUpdate(result['0']['image'], result['0']['crosshair'], result['0']['graphic']['contours']);
+                that.picLeft2.cellUpdate(result['1']['image'], result['1']['crosshair'], result['1']['graphic']['contours']);
+                that.picLeft3.cellUpdate(result['2']['image'], result['2']['crosshair'], result['2']['graphic']['contours']);
             })
         }
     }
@@ -380,9 +378,9 @@ export class ContouringComponent implements OnInit {
                     if (result.body == "success") {
                         this.seriesHttpService.GetSeries(seriesId, "", "all", transverseCanvas.width, transverseCanvas.height).subscribe((value) => {
                             let data = JSON.parse(value);
-                            that.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair']);
-                            that.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair']);
-                            that.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair']);
+                            that.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair'], data['0']['graphic']['contours']);
+                            that.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair'], data['1']['graphic']['contours']);
+                            that.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair'], data['2']['graphic']['contours']);
                             this.priMessageService.add({severity:'success', detail:'Load volume succeed.'});
                         }, (error) => {
                             this.priMessageService.add({severity:'error', detail:'Load volume failed.'});
