@@ -40,7 +40,7 @@ class CellEntity(RouterEntity):
         self._scene.volume = vol
         self._scene.init_camera(cam_pos, np.array(vol.center()), cam_fov)
         self._scene.set_window_level(ww, wl)
-        #temp fix
+        #TODO temp fixed page spacing
         self._scene.set_page_spacing(vol.spacing()[2])
 
         cell_model = CellModel()
