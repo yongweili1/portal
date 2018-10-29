@@ -12,10 +12,6 @@ import { StorageService } from '../shared/service/storage.service';
 import { ContouringService } from '../shared/service/contouring.service';
 
 
-import {
-    LazyLoadEvent, ConfirmationService, Paginator
-} from 'primeng/primeng';
-
 import { ToastService } from '../../../core/toast.service';
 import { Page, PageRequest } from '../../../shared/models';
 import { LazyExcuteHandler } from './lazy_excute_handler';
@@ -361,7 +357,7 @@ export class ContouringComponent implements OnInit {
     }
 
     loadSeries() {
-                let transverseCanvas = $(".a_class .icanvas").get(0);
+        let transverseCanvas = $(".a_class .icanvas").get(0);
         let seriesId: any = $("#seriesSelect").val();
         let canvasSize: any = {}
         canvasSize['view_size'] = this.getCanvasSize();
@@ -371,19 +367,25 @@ export class ContouringComponent implements OnInit {
             this.priMessageService.add({severity:'error', detail:'No series selected.'});
             return;
         }
-        this.priMessageService.add({severity:'info', detail:'Loading volume now, please wait.'});
+        this.priMessageService.add({severity:'info', detail:'Loading now, please wait.'});
         this.seriesHttpService.LoadVolume(seriesId).subscribe(value => {
             if (value == "success") {
                 this.conService.noticeSize(canvasSize).subscribe(result => {
                     if (result.body == "success") {
                         this.seriesHttpService.GetSeries(seriesId, "", "all", transverseCanvas.width, transverseCanvas.height).subscribe((value) => {
                             let data = JSON.parse(value);
+                            if(data.hasOwnProperty("0") == false)
+                            {
+                                this.priMessageService.add({severity:'error', detail:'Load failed.'});
+                                console.log(data);
+                                return;
+                            }
                             that.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair'], data['0']['graphic']['contours']);
                             that.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair'], data['1']['graphic']['contours']);
                             that.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair'], data['2']['graphic']['contours']);
-                            this.priMessageService.add({severity:'success', detail:'Load volume succeed.'});
+                            this.priMessageService.add({severity:'success', detail:'Load succeed.'});
                         }, (error) => {
-                            this.priMessageService.add({severity:'error', detail:'Load volume failed.'});
+                            this.priMessageService.add({severity:'error', detail:'Load failed.'});
                             console.log(error);
                         })
                         this.hasLoadVolume = true;
@@ -406,7 +408,6 @@ export class ContouringComponent implements OnInit {
     ngOnDestroy() {
         this.hasLoadVolume = false;
         this.seriesHttpService.UnLoadVolume(this.seriesId).subscribe();
-        $('#loading').hideLoading();
     }
 }
 
