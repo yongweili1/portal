@@ -1,4 +1,4 @@
-<div id="commonTools_3" class="btn-toolbar M3_B">
+<div id="commonTools_3" class="btn-toolbar">
   <div class="upfloor">
       <button type="button" class="btn activeToolButton" id="btn_load" title="加载序列" (click)="loadMPR()"><img src="/assets/img/sendImagefilm.svg"></button>
       <button type="button" class="btn activeToolButton" id="btn_series" title="显示/隐藏序列" (click)="OnHideList()"><img src="" class="fa fa-fw fa-lg fa-list-ul"></button>
@@ -9,7 +9,7 @@
       <span>LOAD FILE</span>
   </div>
 </div>
-<div id="commonTools_2" class="btn-toolbar M2_B">
+<div id="commonTools_2" class="btn-toolbar">
     <div class="upfloor">
         <select id="seriesSelect">
             <option *ngFor="let series of seriesList" value="{{series}}">"{{series}}"</option>
@@ -19,7 +19,7 @@
         <span>Series List</span>
     </div>
 </div>
-<div id="commonTools_1" class="btn-toolbar M1_B">
+<div id="commonTools_1" class="btn-toolbar">
   <div class="upfloor">
       <button type="button" class="btn activeToolButton" id="btn_circle" title="选择图元" (click)="OnSelect()"><img src="/assets/img/butt-arrow.svg"></button>
       <button type="button" class="btn activeToolButton" id="btn_measure" title="测量" (click)="FuncMeasure()"><img src="/assets/img/butt-measure.svg"></button>
@@ -33,7 +33,7 @@
       <span>GRAPHICS</span>
   </div>
 </div>
-<div id="commonTools_1" class="btn-toolbar M4_B">
+<div id="commonTools_1" class="btn-toolbar">
     <div class="upfloor">
         <button type="button" class="btn activeToolButton" id="btn_cross" title="十字线" (click)="OnCrossSelect()"><img src="/assets/img/butt-point.svg"></button>      
         <button type="button" class="btn activeToolButton" id="btn_zoom" title="图像缩放" (click)="onImgZoom()"><img src="/assets/img/butt-zooming.svg"></button>
@@ -48,7 +48,7 @@
         <span>TOOLS</span>
     </div>
   </div>
-<div id="commonTools_5" class="btn-toolbar M5_B">
+<div id="commonTools_5" class="btn-toolbar">
     <div class="upfloor">
         <button type="button" class="btn activeToolButton fa fa-video-camera" id="btn_macro_start" title="开始录制" (click)="OnStartMacro()"></button>
         <button type="button" class="btn activeToolButton fa fa-stop" id="btn_macro_end" title="停止录制" (click)="OnEndMacro()"></button>
