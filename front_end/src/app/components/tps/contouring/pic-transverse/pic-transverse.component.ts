@@ -708,7 +708,7 @@ export class PicTransverseComponent implements OnChanges {
 
     drawCanvasPic(imageData) {
         let img1 = new Image();
-        let base64Header = "data:image/png;base64,";
+        let base64Header = "data:image/jpeg;base64,";
         let imgData1 = base64Header + imageData;
         img1.src = imgData1;
         let that = this;

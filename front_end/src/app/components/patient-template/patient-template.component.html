@@ -29,7 +29,7 @@
                     <th>
                         <label for="studyDate">{{'STUDY DATE' | translate}}</label>
                         <br>
-                        <p-calendar id="studyDate" selectionMode="range" readonlyInput="true" [(ngModel)]="patientParam.studyDate" [showIcon]="true"></p-calendar>
+                        <p-calendar id="studyDate" selectionMode="range" readonlyInput="true" [(ngModel)]="patientParam.studyDate" [showIcon]="true" inputStyleClass="styleClass calendar"></p-calendar>
                     </th>
                     <th>
                         <button style="margin-top:20px;" pButton type="button" class="my-button search" [label]="'btn.search' | translate" (click)="search()"></button>
