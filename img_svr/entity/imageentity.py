@@ -149,7 +149,10 @@ class ImageEntity(RouterEntity):
         if self._cellviews is not None and len(self._cellviews) > index:
             cell_operate = self._cellviews[index]
             scene_operate = cell_operate.get_scene()
-            spacing_operate = scene_operate.get_spacing()
+            if index == 0:
+                spacing_operate = scene_operate.get_page_spacing()
+            else:
+                spacing_operate = scene_operate.get_spacing()
             step = delta * spacing_operate
             camera_operate = scene_operate.camera
             normal_operate = np.cross(camera_operate.up, camera_operate.right)

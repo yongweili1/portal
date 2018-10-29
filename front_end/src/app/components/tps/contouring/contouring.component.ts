@@ -324,9 +324,9 @@ export class ContouringComponent implements OnInit {
         if (this.hasLoadVolume == true) {
             this.seriesHttpService.GetCenterPic().subscribe(result => {
                 result = JSON.parse(result);
-                that.picLeft1.cellUpdate(result['0']['image'], result['0']['crosshair']);
-                that.picLeft2.cellUpdate(result['1']['image'], result['1']['crosshair']);
-                that.picLeft3.cellUpdate(result['2']['image'], result['2']['crosshair']);
+                that.picLeft1.cellUpdate(result['0']['image'], result['0']['crosshair'], result['0']['graphic']['contours']);
+                that.picLeft2.cellUpdate(result['1']['image'], result['1']['crosshair'], result['1']['graphic']['contours']);
+                that.picLeft3.cellUpdate(result['2']['image'], result['2']['crosshair'], result['2']['graphic']['contours']);
             })
         }
     }
@@ -374,12 +374,6 @@ export class ContouringComponent implements OnInit {
                     if (result.body == "success") {
                         this.seriesHttpService.GetSeries(seriesId, "", "all", transverseCanvas.width, transverseCanvas.height).subscribe((value) => {
                             let data = JSON.parse(value);
-                            if(data.hasOwnProperty("0") == false)
-                            {
-                                this.priMessageService.add({severity:'error', detail:'Load failed.'});
-                                console.log(data);
-                                return;
-                            }
                             that.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair'], data['0']['graphic']['contours']);
                             that.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair'], data['1']['graphic']['contours']);
                             that.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair'], data['2']['graphic']['contours']);
@@ -394,6 +388,9 @@ export class ContouringComponent implements OnInit {
                 }
 
                 );
+            }
+            else{
+                this.priMessageService.add({severity:'error', detail:'Load failed.'});
             }
         })
     }

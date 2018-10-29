@@ -120,6 +120,7 @@ class SliceScene(SceneBase):
         self.__default_v = -1024
         self.__contours_list = []
         self.__voi_list = []
+        self._page_spacing = 1
 
     def render(self):
         print 'render start'
@@ -181,6 +182,11 @@ class SliceScene(SceneBase):
         for v in voi:
             self.__voi_list.append(v)
 
+    def set_page_spacing(self, page_spacing):
+        self._page_spacing = page_spacing
+
+    def get_page_spacing(self):
+        return self._page_spacing
 
 class FusionScene(SliceScene):
     def __init__(self):
