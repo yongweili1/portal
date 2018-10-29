@@ -9,10 +9,11 @@ import {
 import { FileUploadModule } from 'ng2-file-upload';
 import { SharedModule } from '../../shared/shared.module';
 import { ElModule } from 'element-angular'
+import { ToastModule } from 'primeng/toast';
 
 import { UploadComponent } from './upload.component';
 import { UploadService } from '../../services/upload.service';
-import { MessageService } from '../../shared/common/messageservice';
+// import { MessageService } from '../../shared/common/messageservice';
 
 
 const primengModule = [primengSharedModule, PanelModule,
@@ -29,6 +30,7 @@ const routes: Routes = [
     FileUploadModule,
     RouterModule.forChild(routes),
     ElModule.forRoot(),
+    ToastModule
   ],
   declarations: [
     UploadComponent,
@@ -36,7 +38,8 @@ const routes: Routes = [
   exports: [
     UploadComponent,
   ],
-  providers: [UploadService,MessageService],
+  //providers: [UploadService,MessageService],
+  providers: [UploadService],
   entryComponents: [
   ]
 })

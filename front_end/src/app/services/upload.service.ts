@@ -39,9 +39,16 @@ export class UploadService {
         }
       };
 
+      if ('onprogress' in xhr.upload) {
+        console.log('upload progress event supported');
+      }
+      else{
+        console.log('upload progress event not supported');
+      }
+
       xhr.upload.onprogress = (event) => {
         this.progress = Math.round(event.loaded / event.total * 100);
-
+        console.log('上传比例'+this.progress)
         this.progressObserver.next(this.progress);
       };
 

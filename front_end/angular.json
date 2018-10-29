@@ -29,7 +29,7 @@
               "node_modules/quill/dist/quill.snow.css",
               "node_modules/ng-easyui/themes/material/easyui.css",
               "node_modules/ng-easyui/themes/angular.css",
-              "node_modules/ng-easyui/themes/icon.css"
+              "node_modules/ng-easyui/themes/icon.css"             
             ],
             "scripts": [
               "src/assets/fonts/iconfont.js",

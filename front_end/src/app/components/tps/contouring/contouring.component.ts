@@ -3,7 +3,7 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 import { HttpClient } from "@angular/common/http";
 import { switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { ElMessageService } from 'element-angular'
+import { MessageService } from 'primeng/api';
 
 import { ConMessageService } from '../shared/service/conMessage.service';
 import { SeriesHttpService } from '../shared/service/seriesHttp.service';
@@ -26,7 +26,8 @@ declare var $: any;
 @Component({
     selector: 'mpt-contouring',
     templateUrl: './contouring.component.html',
-    styleUrls: ['./contouring.component.less']
+    styleUrls: ['./contouring.component.less'],
+    providers: [MessageService]
 })
 export class ContouringComponent implements OnInit {
     patientId: any = "";
@@ -70,7 +71,7 @@ export class ContouringComponent implements OnInit {
         private seriesHttpService: SeriesHttpService,
         private router: Router,
         private conService: ContouringService,
-        private elMessage: ElMessageService,
+        private priMessageService: MessageService
     ) {
         this.lazyExcuteHandler = new LazyExcuteHandler()
     }
@@ -199,14 +200,6 @@ export class ContouringComponent implements OnInit {
         });
         this.activeRoute.queryParams.subscribe(params => {
             this.patientId = params.patientId;
-            if (this.patientId != "" && this.patientId != undefined && this.patientId != null) {
-                this.getSeriesList(this.patientId);
-            }
-            else {
-                this.elMessage.setOptions({ showClose: true, customClass: "elmessage" })
-                this.elMessage['error']('请先选择病人')
-                //this.router.navigate(['/base/patient-template']);
-            }
         });
         let that = this;
         let canvasSize: any = {};
@@ -227,6 +220,15 @@ export class ContouringComponent implements OnInit {
                 }
             }, 300);
         });
+    }
+
+    ngAfterViewInit(){
+        if (this.patientId == "" || this.patientId == undefined || this.patientId == null) {
+            this.priMessageService.add({severity:'error', detail:'Please select the patient first.'});
+        }
+        else {
+            this.getSeriesList(this.patientId);
+        }
     }
 
     getCanvasSize() {
@@ -361,14 +363,17 @@ export class ContouringComponent implements OnInit {
     }
 
     loadSeries() {
-        $('#loading').hideLoading();
-        $('#loading').showLoading();
-        let transverseCanvas = $(".a_class .icanvas").get(0);
+                let transverseCanvas = $(".a_class .icanvas").get(0);
         let seriesId: any = $("#seriesSelect").val();
         let canvasSize: any = {}
         canvasSize['view_size'] = this.getCanvasSize();
         console.log(canvasSize)
         let that = this;
+        if(seriesId == "" || seriesId == null ||seriesId == undefined){
+            this.priMessageService.add({severity:'error', detail:'No series selected.'});
+            return;
+        }
+        this.priMessageService.add({severity:'info', detail:'Loading volume now, please wait.'});
         this.seriesHttpService.LoadVolume(seriesId).subscribe(value => {
             if (value == "success") {
                 this.conService.noticeSize(canvasSize).subscribe(result => {
@@ -378,9 +383,9 @@ export class ContouringComponent implements OnInit {
                             that.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair']);
                             that.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair']);
                             that.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair']);
-                            $('#loading').hideLoading();
+                            this.priMessageService.add({severity:'success', detail:'Load volume succeed.'});
                         }, (error) => {
-                            $('#loading').hideLoading();
+                            this.priMessageService.add({severity:'error', detail:'Load volume failed.'});
                             console.log(error);
                         })
                         this.hasLoadVolume = true;
