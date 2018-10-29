@@ -143,14 +143,11 @@ def view_filter(views, filter_image):
 
 
 def get_page_filter_view(focus_view):
-        if focus_view == 0:
-            return [1, 2]
-        elif focus_view == 1:
-            return [0, 2]
-        elif focus_view == 2:
-            return [0, 1]
-        else:
-            print("focus_view index error")
+    try:
+        focus_view_list = [0, 1, 2]
+        return focus_view_list.remove(focus_view)
+    except Exception as e:
+        print("focus_view index error")
 
 
 def string_int_trans(origin, flag):

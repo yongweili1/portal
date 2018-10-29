@@ -24,6 +24,7 @@ export class ContouringTopBarComponent implements OnInit {
     @Output() measure: EventEmitter<any> = new EventEmitter<any>();
     @Output() clear: EventEmitter<any> = new EventEmitter<any>();
     @Output() hideList: EventEmitter<any> = new EventEmitter<any>();
+    @Output() setcenter:EventEmitter<any> = new EventEmitter<any>();
     @Input() seriesList: string[];
 
     constructor(
@@ -64,6 +65,11 @@ export class ContouringTopBarComponent implements OnInit {
     onImgWindow() {
         this.conMessage.SetCurAction("wwwl");
         this.wlww.emit();
+    }
+
+    onImgCenter(){
+        this.conMessage.SetCurAction("croselect")
+        this.setcenter.emit();
     }
 
     file() {

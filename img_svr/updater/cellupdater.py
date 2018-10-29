@@ -39,7 +39,7 @@ class CellUpdater(BaseUpdater):
 
     def update_image(self, scene, workflow):
         rgba_data = scene.render()
-        self._result[RefreshType.Image] = convert_rgba_to_base64(rgba_data, 'PNG')
+        self._result[RefreshType.Image] = convert_rgba_to_base64(rgba_data, 'jpeg')
 
     def update_crosshair(self, scene, workflow):
         model_vol = workflow.get_model(GET_CLASS_NAME(VolumeInfo))

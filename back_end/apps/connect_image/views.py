@@ -634,3 +634,24 @@ class RunSript(APIView):
             return Response('script执行异常')
 
         return Response('OK')
+
+
+class SetCenter(APIView):
+
+    def get(self, request):
+        user_ip = request.META.get('REMOTE_ADDR', None)
+        params = {
+            'user_ip': user_ip,
+            'server_name': 'image',
+            'command': 'center',
+        }
+
+        try:
+            rst = get_image(**params)
+        except Exception as e:
+            return Response('服务间数据传输失败')
+
+        if rst.success is False:
+            return Response(rst.comment)
+
+        return Response(rst.kwargs)

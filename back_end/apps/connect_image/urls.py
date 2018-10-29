@@ -21,4 +21,5 @@ urlpatterns = [
     url(r'^size/$', views.WindowSize.as_view(), name='size'),
     url(r'^cross/$', views.CrossLineLocation.as_view(), name='cross'),
     url(r'^script/$', views.RunSript.as_view(), name='script'),
+    url(r'^center/$', views.SetCenter.as_view(), name='center'),
 ]
