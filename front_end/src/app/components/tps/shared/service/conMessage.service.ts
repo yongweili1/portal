@@ -17,12 +17,14 @@ export class ConMessageService {
     private curActionSource = new Subject<string>();
     private roisSource = new Subject<Array<any>>();
     private contourSource = new Subject<Array<any>>();
+    private graphicsSource = new Subject<Array<any>>();
 
     serieses$ = this.seriesesSource.asObservable();// 作为可观察对象/订阅
     seriList$ = this.seriListSource.asObservable();
     curAction$ = this.curActionSource.asObservable();
     rois$ = this.roisSource.asObservable();
     contour$ = this.contourSource.asObservable();
+    graphics$ = this.graphicsSource.asObservable();
 
     SetSerieses(serieses: Array<any>) {
         this.seriesesSource.next(serieses);//发布通知： 实际产生的数据，包括数字、字符串、对象等 选择tree的id
@@ -46,5 +48,9 @@ export class ConMessageService {
     Setcontour(contour){
         this.contourSource.next(contour);
         this.contourset = contour;
+    }
+
+    setGraphics(graphics) {
+        this.graphicsSource.next(graphics);
     }
 }

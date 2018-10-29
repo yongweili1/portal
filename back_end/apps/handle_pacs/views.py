@@ -7,7 +7,6 @@ import math
 
 from rest_framework.response import Response
 from md.dicom.python.dicom_service import DicomService
-from md.dicom.python.dicom_service import DicomService
 from rest_framework.views import APIView
 from infoFromPacs import pacsinfo
 from infoFromPacs import ConnectPacsERROR

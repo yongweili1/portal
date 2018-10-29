@@ -60,7 +60,7 @@ export class PicTransverseComponent implements OnChanges {
     curAction: any;
     focus: any; display: any;
     lazyExcuteHandler: LazyExcuteHandler;
-
+    name: string;
 
     constructor(
         public http: HttpClient,
@@ -77,6 +77,7 @@ export class PicTransverseComponent implements OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges) {
+        this.name = this.tag
         this.wlold = this.wl;//窗位
         this.wwold = this.ww;// 窗宽
         this.pageindexit = this.pageindex * 2;
@@ -701,9 +702,17 @@ export class PicTransverseComponent implements OnChanges {
         return shader;
     }
 
-    cellUpdate(imageData, crossPoint) {
-        this.drawCanvasPic(imageData);
-        this.cross(crossPoint[0], crossPoint[1], 1);
+    cellUpdate(imageData, crossPoint, graphics=null) {
+        if (imageData != null)
+            this.drawCanvasPic(imageData);
+        if (crossPoint != null)
+            this.cross(crossPoint[0], crossPoint[1], 1);
+        this.updateGraphics(graphics);
+    }
+
+    updateGraphics(graphics) {
+        let g = [this.tag, graphics]
+        this.conMessage.setGraphics(g);
     }
 
     drawCanvasPic(imageData) {

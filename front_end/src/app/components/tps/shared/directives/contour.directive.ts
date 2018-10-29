@@ -5,6 +5,7 @@ import { LineFactory } from '../tools/factory/line-factory'
 import { RectangleFactory } from '../tools/factory/rectangle-factory'
 import { FreepenFactory } from '../tools/factory/freepen-factory'
 import { Point } from '../tools/point'
+import { FreepenContainer } from '../container/freepen_container';
 
 declare var createjs: any;
 
@@ -33,6 +34,7 @@ export class ContourDirective implements OnInit {
     sharp: any;
     curTarget: any;
     @Input() backCanvas;
+    @Input() name;
 
     constructor(private el: ElementRef, private contouringService: ConMessageService) { }
 
@@ -55,6 +57,32 @@ export class ContourDirective implements OnInit {
             } else {
                 this.curAction = curAction
             }
+        })
+
+        this.contouringService.graphics$.subscribe(data => {
+            if (this.name != data[0]) return;
+            this.myStage.removeAllChildren()
+            this.myStage.clear()
+            let graphics = data[1]
+            let contours = []
+            if (graphics == null || graphics.length == 0) return;
+            graphics.forEach(graphic => {
+                if (graphic == null || graphic.length == 0) return;
+                graphic.forEach(shape => {
+                    let contour = []
+                    shape.forEach(cp => {
+                        contour.push(new Point(cp[0][0], cp[0][1]))
+                    });
+                    contours.push(contour)
+                });
+            });
+            // draw graphics
+            contours.forEach(cps => {
+                cps.push(cps[0].copy())
+                let freepen = new FreepenContainer(this.myStage)
+                freepen.cps = cps
+                freepen.update()
+            });
         })
     }
     
