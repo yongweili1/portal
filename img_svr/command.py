@@ -355,3 +355,14 @@ def locate(**kwargs):
         return response(json.dumps(result))
     except Exception as e:
         return response(success=False, message='locate failed')
+
+
+@command.register('center')
+def center(**kwargs):
+    try:
+        imageentity.locate_center()
+        imageentity.updater().update(RefreshType.All)
+        result = imageentity.updater().get_result()
+        return response(json.dumps(result))
+    except Exception as e:
+        return response(success=False, message='set center failed')

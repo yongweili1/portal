@@ -113,6 +113,8 @@ GetWindowPic(focus:any,ww_factor:any,wl_factor:any):Observable<any>{
     return this.http.get<any>(`${this.appConfig.apiUrl}/image/windows/`,{params : getParams})
 }
 
-
+GetCenterPic():Observable<any>{
+    return this.http.get<any>(`${this.appConfig.apiUrl}/image/center/`)
+}
 
 }
