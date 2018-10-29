@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 import time
-
+import os
 from entity.cellentity import CellEntity
 from image_server import ImageServer
 from message import response
@@ -74,15 +74,30 @@ def load(**kwargs):
 
     try:
         vol = cio.read_image(volume_path)
+        mask_path = volume_path.rstrip('.nii.gz') + '_Tumors.nii.gz'
+
+        mask = None
+        if os.path.isfile(mask_path):
+            mask = cio.read_image(mask_path)
         imageentity.set_volume(vol)
         imageentity.add_child_entity(CellEntity(0, False))
         imageentity.add_child_entity(CellEntity(1, False))
         imageentity.add_child_entity(CellEntity(2, False))
         imageentity.init_default_scenes(vol)
+
+        views = imageentity.get_children_views()
+        if mask is not None:
+            scene = views[0].get_scene()
+            scene.add_voi(mask)
+            scene = views[1].get_scene()
+            scene.add_voi(mask)
+            scene = views[2].get_scene()
+            scene.add_voi(mask)
+
         print("load volume succeed")
         return response(success=True, message='load volume succeed')
     except Exception as err:
-        return response(success=False, message='load volume failed')
+        return response(success=False, message=err.message)
 
 
 @command.register('unload')
@@ -354,7 +369,7 @@ def locate(**kwargs):
         result = view_filter(result, focus_view)
         return response(json.dumps(result))
     except Exception as e:
-        return response(success=False, message='locate failed')
+        return response(success=False, message=e.message)
 
 
 @command.register('center')
