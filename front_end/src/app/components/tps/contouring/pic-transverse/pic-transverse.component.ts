@@ -356,13 +356,11 @@ export class PicTransverseComponent implements OnChanges {
 
     onClickwl(inval) {
         this.wl = inval;
-        $(this).parent().find(".wl").val(this.wl);
-        this.drawScene(this.gl, this.programInfo, this.buffers, this.texture);
+        //$(this).parent().find(".wl").val(this.wl);
     }
     onClickww(inval) {
         this.ww = inval;
-        $(this).parent().find(".ww").val(this.ww);
-        this.drawScene(this.gl, this.programInfo, this.buffers, this.texture);
+        //$(this).parent().find(".ww").val(this.ww);
     }
 
     clearmouse() {

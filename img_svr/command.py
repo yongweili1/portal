@@ -381,3 +381,23 @@ def center(**kwargs):
         return response(json.dumps(result))
     except Exception as e:
         return response(success=False, message='set center failed')
+
+
+@command.register('wwwl')
+def wwwl(**kwargs):
+    try:
+        ww = float(kwargs['ww'])
+        wl = float(kwargs['wl'])
+    except Exception as err:
+        return response(success=False, message='Invalid parameters.')
+    try:
+        views = imageentity.get_children_views()
+        for view in views:
+            scene = view.get_scene()
+            if scene is not None:
+                scene.set_window_level(ww, wl)
+        imageentity.updater().update(RefreshType.All)
+        result = imageentity.updater().get_result()
+        return response(json.dumps(result))
+    except Exception as e:
+        return response(success=False, message='set ww wl failed')
