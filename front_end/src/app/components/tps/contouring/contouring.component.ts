@@ -323,6 +323,17 @@ export class ContouringComponent implements OnInit {
             })
         }
     }
+    mainSetCenterPro(){
+        let that = this;
+        if (this.hasLoadVolume == true) {
+            this.seriesHttpService.GetCenterPic().subscribe(result => {
+                result = JSON.parse(result);
+                that.picLeft1.cellUpdate(result['0']['image'], result['0']['crosshair']);
+                that.picLeft2.cellUpdate(result['1']['image'], result['1']['crosshair']);
+                that.picLeft3.cellUpdate(result['2']['image'], result['2']['crosshair']);
+            })
+        }
+    }
     mainreset() {
         let that = this;
         if (this.hasLoadVolume == true) {
