@@ -6,7 +6,6 @@ import time
 import image_msg_pb2 as msg
 from macro_recording import Macro
 import sys
-from twisted_client import ResponseData
 sys.path.append('..')
 from netbase import comproxy
 # from twisted_client import be_factory
