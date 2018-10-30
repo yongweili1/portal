@@ -5,7 +5,6 @@ import { SecurityService } from '../../../../services/security.service';
 import { Observable } from 'rxjs/Observable';
 import { StorageService } from './storage.service';
 import {HttpParams} from "@angular/common/http";
-import {LoadSeriesServiceMock} from '../../../../mocks/load-series-service.mock'
 import { ajax } from "rxjs/ajax";
 import { AjaxService } from "../../../../services/ajax.service";
 import { AppConfigService } from '../../../../app.config';
@@ -17,7 +16,6 @@ export class SeriesHttpService {
         private aj:AjaxService,
         private http: HttpClient,
         private appConfig: AppConfigService,
-        private loadSeriesServiceMock:LoadSeriesServiceMock
     ) {
         const headers: HttpHeaders = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' })
     }
@@ -111,6 +109,13 @@ GetWindowPic(focus:any,ww_factor:any,wl_factor:any):Observable<any>{
     .set('ww_factor',ww_factor)
     .set('wl_factor',wl_factor);
     return this.http.get<any>(`${this.appConfig.apiUrl}/image/windows/`,{params : getParams})
+}
+
+GetWindowPic2(ww:any,wl:any):Observable<any>{
+    const getParams = new HttpParams()
+    .set('ww', ww)
+    .set('wl', wl)
+    return this.http.get<any>(`${this.appConfig.apiUrl}/image/windows2/`,{params : getParams})
 }
 
 GetCenterPic():Observable<any>{

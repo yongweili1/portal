@@ -581,6 +581,40 @@ class ChangeWindow(APIView):
         return Response(rst.kwargs)
 
 
+class ChangeWindowTwo(APIView):
+
+    def get(self, request):
+        """
+        Change window center and window width
+        :param ww:
+        :param wl:
+        :return: rgb image data
+        """
+        ww = request.GET.get('ww', None)
+        wl = request.GET.get('wl', None)
+        user_ip = request.META.get('REMOTE_ADDR', None)
+        if ww is None or wl is None:
+            return Response('请输入完整的请求数据')
+
+        params = {
+            'ww': ww,
+            'wl': wl,
+            'user_ip': user_ip,
+            'server_name': 'image',
+            'command': 'wwwl',
+        }
+
+        try:
+            rst = get_image(**params)
+        except Exception as e:
+            return Response('服务间数据传输失败')
+
+        if rst.success is False:
+            return Response(rst.comment)
+
+        return Response(rst.kwargs)
+
+
 class CrossLineLocation(APIView):
 
     def get(self, request):
