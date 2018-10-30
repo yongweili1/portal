@@ -18,15 +18,15 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from rest_framework.schemas import get_schema_view
 
-from rest_framework_swagger.renderers import OpenAPIRenderer, SwaggerUIRenderer
+# from rest_framework_swagger.renderers import OpenAPIRenderer, SwaggerUIRenderer
 
-schema_view = get_schema_view(title='我的API',
-                              renderer_classes=[OpenAPIRenderer, SwaggerUIRenderer])
+# schema_view = get_schema_view(title='我的API',
+#                               renderer_classes=[OpenAPIRenderer, SwaggerUIRenderer])
 
 urlpatterns = [
     url(r'^image/', include('connect_image.urls')),
     url(r'^admin/', admin.site.urls),
-    url(r'^docs/', schema_view),
+    # url(r'^docs/', schema_view),
     url(r'^patientinformations/', include('patientinformations.urls')),
     url(r'^dicom/', include('upload_dcm.urls')),
     url(r'^algproxy/', include('alg_proxy.urls')),
