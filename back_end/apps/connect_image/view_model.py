@@ -12,6 +12,30 @@ from netbase import comproxy
 
 proxy = comproxy.PyCommProxy("web_be", "127.0.0.1:10000")
 
+
+class ResponseData(object):
+    def __init__(self, response_data):
+        self.success = True
+        self.comment = ''
+        self.kwargs = ''
+
+        data = msg.ResponseMsg()
+        data.ParseFromString(response_data)
+        self.success = data.success
+        self.comment = data.comment
+
+        if data.content:
+            self.kwargs = data.content
+
+    def arg(self, key=None):
+        if key is None:
+            return self.kwargs
+        if key in self.kwargs:
+            return self.kwargs[key]
+        else:
+            return None
+
+
 @Macro()
 def load_volume(*args, **kwargs):
     try:
