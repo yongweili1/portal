@@ -18,6 +18,7 @@ import {
   DialogModule
 } from 'primeng/primeng';
 
+import { ToastModule } from 'primeng/toast';
 import { SharedModule } from '../../../shared/shared.module';
 import { EasyUIModule } from 'ng-easyui/components/easyui/easyui.module';
 
@@ -60,6 +61,7 @@ import { SeriesListComponent } from './series-list/series-list.component';
     EasyUIModule,
     TreeModule,
     ColorPickerModule,
+    ToastModule
     //ElChildModules
     //RouterModule.forChild(routes)
   ],

@@ -60,7 +60,7 @@ export class PicTransverseComponent implements OnChanges {
     curAction: any;
     focus: any; display: any;
     lazyExcuteHandler: LazyExcuteHandler;
-
+    name: string;
 
     constructor(
         public http: HttpClient,
@@ -77,6 +77,7 @@ export class PicTransverseComponent implements OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges) {
+        this.name = this.tag
         this.wlold = this.wl;//窗位
         this.wwold = this.ww;// 窗宽
         this.pageindexit = this.pageindex * 2;
@@ -355,13 +356,11 @@ export class PicTransverseComponent implements OnChanges {
 
     onClickwl(inval) {
         this.wl = inval;
-        $(this).parent().find(".wl").val(this.wl);
-        this.drawScene(this.gl, this.programInfo, this.buffers, this.texture);
+        //$(this).parent().find(".wl").val(this.wl);
     }
     onClickww(inval) {
         this.ww = inval;
-        $(this).parent().find(".ww").val(this.ww);
-        this.drawScene(this.gl, this.programInfo, this.buffers, this.texture);
+        //$(this).parent().find(".ww").val(this.ww);
     }
 
     clearmouse() {
@@ -701,14 +700,22 @@ export class PicTransverseComponent implements OnChanges {
         return shader;
     }
 
-    cellUpdate(imageData, crossPoint) {
-        this.drawCanvasPic(imageData);
-        this.cross(crossPoint[0], crossPoint[1], 1);
+    cellUpdate(imageData, crossPoint, graphics=null) {
+        if (imageData != null)
+            this.drawCanvasPic(imageData);
+        if (crossPoint != null)
+            this.cross(crossPoint[0], crossPoint[1], 1);
+        this.updateGraphics(graphics);
+    }
+
+    updateGraphics(graphics) {
+        let g = [this.tag, graphics]
+        this.conMessage.setGraphics(g);
     }
 
     drawCanvasPic(imageData) {
         let img1 = new Image();
-        let base64Header = "data:image/png;base64,";
+        let base64Header = "data:image/jpeg;base64,";
         let imgData1 = base64Header + imageData;
         img1.src = imgData1;
         let that = this;

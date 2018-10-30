@@ -118,7 +118,9 @@ class SliceScene(SceneBase):
         self.__color_mode = ColorMode.Gray
         self.__color_map = None
         self.__default_v = -1024
+        self.__contours_list = []
         self.__voi_list = []
+        self._page_spacing = 1
 
     def render(self):
         print 'render start'
@@ -141,6 +143,7 @@ class SliceScene(SceneBase):
             color_data = bytes_to_colors(raw_data, self.__color_mode.value, self.__color_map)
 
         voi_color = [(255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 0), (255, 0, 255), (0, 255, 255)]
+        self.__contours_list = []
         for i, voi in enumerate(self.__voi_list):
             voi.from_numpy(voi.to_numpy(), np.uint8)
             voi_slice = slice_nn(voi, self._camera.look_at,
@@ -149,8 +152,11 @@ class SliceScene(SceneBase):
                                  [self._width, self._height], self.__default_v)
             import cv2
             _, thresh = cv2.threshold(voi_slice, 0, 255, cv2.THRESH_BINARY)
-            _, contours, _ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-            cv2.drawContours(color_data, contours, -1, voi_color[i], 2)
+            _, contour, _ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+            # cv2.drawContours(color_data, contour, -1, voi_color[i], 2)
+            if contour is not None and len(contour) > 0:
+                contour = [item.tolist() for item in contour]
+            self.__contours_list.append(contour)
 
         end = datetime.now()
         print 'render slice time: {}'.format(end - begin)
@@ -169,10 +175,18 @@ class SliceScene(SceneBase):
             self.__color_map[index * 3 + 1] = value[1]
             self.__color_map[index * 3 + 2] = value[2]
 
+    def get_contours(self):
+        return self.__contours_list
+
     def add_voi(self, *voi):
         for v in voi:
             self.__voi_list.append(v)
 
+    def set_page_spacing(self, page_spacing):
+        self._page_spacing = page_spacing
+
+    def get_page_spacing(self):
+        return self._page_spacing
 
 class FusionScene(SliceScene):
     def __init__(self):

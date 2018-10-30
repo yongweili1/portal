@@ -71,12 +71,17 @@ class ImageEntity(RouterEntity):
         volume_model.default_cursor3d = np.array(volume.center())
 
         num_cells = len(self._cellviews)
+        #TODO temp fixed fov
+        spacing = volume.spacing()
+        size = volume.size()
+        print('==== size : {} ===='.format(size))
+        fov_3d = np.multiply(np.array(size), np.array(spacing))
         if num_cells > 0:
-            self._cellviews[0].init_scene(volume, CameraPos.Transverse, [350, 350], 2000, 0, SceneType.Slice)
+            self._cellviews[0].init_scene(volume, CameraPos.Transverse, [fov_3d[0], fov_3d[1]], 2000, 0, SceneType.Slice)
         if num_cells > 1:
-            self._cellviews[1].init_scene(volume, CameraPos.Coronal, [350, 350], 2000, 0, SceneType.Slice)
+            self._cellviews[1].init_scene(volume, CameraPos.Coronal, [fov_3d[1], fov_3d[2]], 2000, 0, SceneType.Slice)
         if num_cells > 2:
-            self._cellviews[2].init_scene(volume, CameraPos.Sagittal, [350, 350], 2000, 0, SceneType.Slice)
+            self._cellviews[2].init_scene(volume, CameraPos.Sagittal, [fov_3d[0], fov_3d[2]], 2000, 0, SceneType.Slice)
 
     def get_children_views(self):
         return self._cellviews
@@ -149,7 +154,10 @@ class ImageEntity(RouterEntity):
         if self._cellviews is not None and len(self._cellviews) > index:
             cell_operate = self._cellviews[index]
             scene_operate = cell_operate.get_scene()
-            spacing_operate = scene_operate.get_spacing()
+            if index == 0:
+                spacing_operate = scene_operate.get_page_spacing()
+            else:
+                spacing_operate = scene_operate.get_spacing()
             step = delta * spacing_operate
             camera_operate = scene_operate.camera
             normal_operate = np.cross(camera_operate.up, camera_operate.right)

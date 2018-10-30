@@ -31,6 +31,7 @@ class GraphicType(object):
     Line = 'line'
     ProLines = 'prolines'
     Circle = 'circle'
+    Contours = 'contours'
 
 
 class GraphicState(Enum):

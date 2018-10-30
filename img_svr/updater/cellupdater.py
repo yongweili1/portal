@@ -13,7 +13,7 @@ class CellUpdater(BaseUpdater):
         self._result = {'image': None,
                         'crosshair': (),
                         'wwwl': (),
-                        'graphic': {'prolines': {}, 'circle': {}}
+                        'graphic': {'prolines': {}, 'circle': {}, 'contours': []}
                         }
 
     def get_result(self):
@@ -39,7 +39,7 @@ class CellUpdater(BaseUpdater):
 
     def update_image(self, scene, workflow):
         rgba_data = scene.render()
-        self._result[RefreshType.Image] = convert_rgba_to_base64(rgba_data, 'PNG')
+        self._result[RefreshType.Image] = convert_rgba_to_base64(rgba_data, 'jpeg')
 
     def update_crosshair(self, scene, workflow):
         model_vol = workflow.get_model(GET_CLASS_NAME(VolumeInfo))
@@ -49,6 +49,7 @@ class CellUpdater(BaseUpdater):
     def update_graphic(self, scene, workflow):
         model_graphic = workflow.get_model(GET_CLASS_NAME(GraphicModel))
         graphics_dict = self._result.get(RefreshType.Graphic)
+        graphics_dict[GraphicType.Contours] = scene.get_contours()
         graphics_dict[GraphicType.ProLines] = {}
         for uid, line in model_graphic.lines.items():
             pt2d_pre = translate_from_world_to_screen(scene, line[0])
