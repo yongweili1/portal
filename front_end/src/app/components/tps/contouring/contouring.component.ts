@@ -280,17 +280,22 @@ export class ContouringComponent implements OnInit {
     }
 
     mainWWWLPro2(evt){
-        console.log(evt);
-        let ww = evt[0];
-        let wl = evt[1];
-        let that = this;
-        if (this.hasLoadVolume == true) {
-            this.seriesHttpService.GetWindowPic2(ww, wl).subscribe(result => {
-                result = JSON.parse(result);
-                that.picLeft1.cellUpdate(result['0']['image'], result['0']['crosshair'], result['0']['graphic']['contours']);
-                that.picLeft2.cellUpdate(result['1']['image'], result['1']['crosshair'], result['1']['graphic']['contours']);
-                that.picLeft3.cellUpdate(result['2']['image'], result['2']['crosshair'], result['2']['graphic']['contours']);
-            })
+        let validFlag = evt[2];
+        if(validFlag == 'true'){
+            let ww = evt[0];
+            let wl = evt[1];
+            let that = this;
+            if (this.hasLoadVolume == true) {
+                this.seriesHttpService.GetWindowPic2(ww, wl).subscribe(result => {
+                    result = JSON.parse(result);
+                    that.picLeft1.cellUpdate(result['0']['image'], result['0']['crosshair'], result['0']['graphic']['contours']);
+                    that.picLeft2.cellUpdate(result['1']['image'], result['1']['crosshair'], result['1']['graphic']['contours']);
+                    that.picLeft3.cellUpdate(result['2']['image'], result['2']['crosshair'], result['2']['graphic']['contours']);
+                })
+            }
+        }
+        else{
+            this.priMessageService.add({severity:'error', detail:'ww wl illegal.'});
         }
     }
 

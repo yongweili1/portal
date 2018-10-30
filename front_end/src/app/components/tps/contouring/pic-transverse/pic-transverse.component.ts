@@ -30,7 +30,7 @@ export class PicTransverseComponent implements OnChanges {
     scale = 1.0; transX = 0.0; transY = 0.0;
     canvas: any; canbas: any; crosscan: any; nugevas: any; primitivecan: any; primitivedrawcan: any
     @Input() tag: any; @Input() imageWidth; @Input() imageHeight; @Input() pageindex;
-    @Input() wl; @Input() ww;// 窗宽
+    @Input() wl:any = 0; @Input() ww:any = 2000;// 窗宽
     @Input() spacingX; @Input() spacingY; @Input() gap; @Input() sliceAll;
     @Input() pixelRepresentation; @Input() rescaleSlope; @Input() rescaleIntercept;
     @Input() firstImagePosition; @Input() lastImagePosition; @Input() hasLoadVolume;
@@ -61,6 +61,8 @@ export class PicTransverseComponent implements OnChanges {
     focus: any; display: any;
     lazyExcuteHandler: LazyExcuteHandler;
     name: string;
+    viewWL:any;
+    viewWW:any;
 
     constructor(
         public http: HttpClient,
@@ -121,6 +123,8 @@ export class PicTransverseComponent implements OnChanges {
         this.conMessage.curAction$.subscribe(
             curAction => this.curAction = curAction
         )
+        this.viewWW = 2000;
+        this.viewWL = 0;
     }
 
     //设置和区分canvas窗口大小
@@ -353,19 +357,38 @@ export class PicTransverseComponent implements OnChanges {
         //   this.cross(this.scrCrossPt[0], this.scrCrossPt[1], this.canbas.get(0));
     }
 
-    onClickwl(inval) {
-        this.wl = inval;
-        this.wwwlReq2.emit([this.ww,this.wl]);
-    }
-    onClickww(inval) {
-        this.ww = inval;
-        this.wwwlReq2.emit([this.ww,this.wl]);
+    onChangewlww(inval) {
+        console.log(inval)
+        let wwwlStrArray = inval.split(',')
+        let wwwlIntArray = []
+        let flag = 'true'
+        wwwlStrArray.forEach(element => {''
+            try{
+                wwwlIntArray.push(Number(element));
+            }
+            catch(err){
+                console.log('cant convert to number');
+                flag = 'false'
+            }
+        });        
+        if(typeof(wwwlIntArray[0])=='number' && wwwlIntArray[0] > 0){
+            this.ww = wwwlIntArray[0]
+        }
+        else{
+            flag = 'false'
+        }
+        if(typeof(wwwlIntArray[1])=='number'){
+            this.wl = wwwlIntArray[1]
+        }
+        else{
+            flag = 'false'
+        }
+        this.wwwlReq2.emit([this.ww, this.wl, flag]);
     }
 
     clearmouse() {
         $('#threebmp').removeClass();
         this.canbas.get(0).onmousedown = null;
-        // this.canbas.get(0).onmouseup = null;
     }
 
     addPanEvent() {
@@ -724,6 +747,5 @@ export class PicTransverseComponent implements OnChanges {
             ctx1.drawImage(img1, 0, 0, that.canvas.width, that.canvas.height);
         }
     }
-
 
 }
