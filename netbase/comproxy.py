@@ -1,5 +1,38 @@
-import McsfNetBase
+import sys
 import time
+import os
+
+if sys.platform == 'win32':
+    import McsfNetBase
+else:
+    path = os.path.dirname(os.path.abspath(__file__)) + '/linux/'
+    """
+    Remember to export LD_LIBRARY_PATH environment path must contains this #path 
+    """
+    sys.path.append(path)
+    from linux import McsfNetBase
+
+
+class PyBaseCmdHandlerEx(McsfNetBase.ICLRCommandHandlerEx):
+    def __init__(self):
+        McsfNetBase.ICLRCommandHandlerEx.__init__(self)
+
+    def handle_command(self, p_context):
+        pass
+
+    def HandleCommandCLR(self, pContext):
+        return self.handle_command(pContext)
+
+
+class PyBaseEventHandler(McsfNetBase.IEventHandler):
+    def __init__(self):
+        McsfNetBase.IEventHandler.__init__(self)
+
+    def handle_event(self, sender, channel_id, event_id, s_event):
+        pass
+
+    def HandleEvent(self, sSender, iChannelId, iEventId, sEvent):
+        return self.handle_event(sSender, iChannelId, iEventId, sEvent)
 
 
 class PyASyncCmdCallbackHandler(McsfNetBase.ICommandCallbackHandler):
@@ -66,11 +99,14 @@ class PyCommProxy:
         return self.proxy.AsyncSendCommand(cx)
 
 
-class MyCommandHandler(McsfNetBase.ICLRCommandHandlerEx):
-    def HandleCommandCLR(self, pContext):
-        equation = pContext.GetSerializeObject()
+
+#below as test code
+
+class MyCommandHandler(PyBaseCmdHandlerEx):
+    def handle_command(self, p_context):
+        equation = p_context.GetSerializeObject()
         print equation
-        pContext.Reply(str(sum(map(int, equation.split('+')))))
+        p_context.Reply(str(sum(map(int, equation.split('+')))))
 
 
 def func_cb(result):
@@ -78,8 +114,8 @@ def func_cb(result):
 
 
 if __name__ == '__main__':
-    fe = PyCommProxy("proxy_fe", "127.0.0.1:10000")
-    be = PyCommProxy("proxy_be", "127.0.0.1:10000")
+    fe = PyCommProxy("proxy_fe", "10.9.19.153:10000")
+    be = PyCommProxy("proxy_be", "10.9.19.153:10000")
     be.register_cmd_handler_ex(10, MyCommandHandler())
 
     print 'Sync result:', fe.sync_send_command('1+2+3', 10, 'proxy_be')
