@@ -7,14 +7,15 @@
         <div class="containe">
             <div class="cleft">
                 <span class="mpr"></span><br>
+                <span *ngIf="tag == 'transverse'">Size: <span class="sizeinfo"></span></span>
             </div>
-            <div class="cright">
+            <div *ngIf="tag == 'transverse'" class="cright">
                 <span>WL:</span> <input class="wl" type="number" #wl (keyup)="onClickwl(wl.value)"> <br>
                 <span>WW:</span> <input class="ww" type="number" #ww (keyup)="onClickww(ww.value)"> 
             </div>
             <div class="cleftdown">
-                Location: <span class="position"></span>mm<br>
-                Slice: <span class="pageindex"> </span><br>
+                <span *ngIf="tag == 'transverse'">Slice: <span class="pageindex"></span></span><br>
+                Location: <span class="position"></span>
             </div>
             <div class="crightdown">
                 <div id="canvas-frame"></div>

@@ -5,7 +5,6 @@ import { StorageService } from '../../shared/service/storage.service';
 import { ConMessageService } from '../../shared/service/conMessage.service';
 import { SeriesHttpService } from '../../shared/service/seriesHttp.service';
 import { glsource } from './glsource.modal';
-import { LoadSeriesServiceMock } from '../../../../mocks/load-series-service.mock'
 import { AppConfigService } from '../../../../app.config';
 import { LazyExcuteHandler } from '../lazy_excute_handler';
 import { Hitbar } from '../../shared/overlay/hitbar';
@@ -56,6 +55,7 @@ export class PicTransverseComponent implements OnChanges {
     @Output() panReq: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
     @Output() rotateReq: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
     @Output() wwwlReq: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
+    @Output() wwwlReq2: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
     glsource = new glsource();
     curAction: any;
     focus: any; display: any;
@@ -68,7 +68,6 @@ export class PicTransverseComponent implements OnChanges {
         private storageService: StorageService,
         private actionService: actionService,
         private element: ElementRef,
-        private loadSeriesServiceMock: LoadSeriesServiceMock,
         private seriesHttpService: SeriesHttpService,
         private appConfig: AppConfigService
     ) {
@@ -356,11 +355,11 @@ export class PicTransverseComponent implements OnChanges {
 
     onClickwl(inval) {
         this.wl = inval;
-        //$(this).parent().find(".wl").val(this.wl);
+        this.wwwlReq2.emit([this.ww,this.wl]);
     }
     onClickww(inval) {
         this.ww = inval;
-        //$(this).parent().find(".ww").val(this.ww);
+        this.wwwlReq2.emit([this.ww,this.wl]);
     }
 
     clearmouse() {
