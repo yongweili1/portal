@@ -38,22 +38,11 @@ export class SideBarComponent implements OnInit {
       resName: 'base.patient-template'
     },
     {
-      name: 'system-management',
-      icon: 'fa fa-fw fa-lg fa-cog',
-      title: 'united-imaging.system-management.title',
-      items: [  {
         link: '/base/contouring',
+        icon: 'fa fa-fw fa-lg fa-image',
         title: 'base.users-mgnt.title',
-        resName: 'base.users.query'
-      }
-      ]
+        resName:'base.users.query'
     },
-    // {
-    //   name: 'Setting',
-    //   icon: 'fa fa-fw fa-lg fa-tasks',
-    //   link: '/base/setting',
-    //   title: 'Setting',
-    // }
     {
       name: 'Setting',
       icon: 'fa fa-fw fa-lg fa-tasks',

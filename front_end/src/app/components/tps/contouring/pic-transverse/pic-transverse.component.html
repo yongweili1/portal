@@ -10,8 +10,8 @@
                 <span *ngIf="tag == 'transverse'">Size: <span class="sizeinfo"></span></span>
             </div>
             <div *ngIf="tag == 'transverse'" class="cright">
-                <span>WL:</span> <input class="wl" type="number" #wl (keyup)="onClickwl(wl.value)"> <br>
-                <span>WW:</span> <input class="ww" type="number" #ww (keyup)="onClickww(ww.value)"> 
+                <span>WL:</span> <input class="wl" type="number" #wl (change)="onChangewlww(ww.value + ',' + wl.value)" value= "{{ viewWL }}"> <br>
+                <span>WW:</span> <input class="ww" type="number" #ww (change)="onChangewlww(ww.value + ',' + wl.value)" value= "{{ viewWW }}"> 
             </div>
             <div class="cleftdown">
                 <span *ngIf="tag == 'transverse'">Slice: <span class="pageindex"></span></span><br>
