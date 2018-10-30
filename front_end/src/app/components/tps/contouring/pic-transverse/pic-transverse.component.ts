@@ -8,6 +8,7 @@ import { glsource } from './glsource.modal';
 import { AppConfigService } from '../../../../app.config';
 import { LazyExcuteHandler } from '../lazy_excute_handler';
 import { Hitbar } from '../../shared/overlay/hitbar';
+import { KeyValuePair } from '../../../../shared/common/keyvaluepair';
 declare var $: any;
 declare var createjs: any;
 declare var THREE: any;
@@ -18,7 +19,7 @@ declare var vec3: any;
 declare var mat3: any;
 declare var vec2: any;
 declare var vec4: any;
-
+declare var actions: any;
 
 @Component({
     selector: 'mpt-pic-transverse',
@@ -118,9 +119,6 @@ export class PicTransverseComponent implements OnChanges {
             that.calcviewportsize();
             console.log("=== resize ===")
         });
-        this.conMessage.curAction$.subscribe(
-            curAction => this.curAction = curAction
-        )
     }
 
     //设置和区分canvas窗口大小
@@ -205,8 +203,7 @@ export class PicTransverseComponent implements OnChanges {
      * 清除所有图元
      */
     clearPri() {
-        this.primitivedrawcan.getContext("2d").clearRect(0, 0, this.primitivedrawcan.width, this.primitivedrawcan.height);
-        this.conMessage.SetCurAction("clearAllShape");
+        this.conMessage.setActionInfo(new KeyValuePair(actions.clear))
     }
 
     /**
@@ -274,7 +271,7 @@ export class PicTransverseComponent implements OnChanges {
     }
 
     handleMouseDown(evt) {
-        if (this.curAction != 'croselect' 
+        if (this.curAction != 'croselect'
             || evt.currentTarget == this.verticalLine
             || evt.currentTarget == this.horizontalLine
             || evt.currentTarget == this.crossPoint) return;
@@ -699,7 +696,7 @@ export class PicTransverseComponent implements OnChanges {
         return shader;
     }
 
-    cellUpdate(imageData, crossPoint, graphics=null) {
+    cellUpdate(imageData, crossPoint, graphics = null) {
         if (imageData != null)
             this.drawCanvasPic(imageData);
         if (crossPoint != null)
