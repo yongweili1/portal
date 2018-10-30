@@ -4,9 +4,9 @@ from __future__ import unicode_literals
 # Create your views here.
 import json
 import math
-
+import threadpool
 from rest_framework.response import Response
-from md.dicom.python.dicom_service import DicomService
+
 from rest_framework.views import APIView
 from infoFromPacs import pacsinfo
 from infoFromPacs import ConnectPacsERROR
@@ -87,5 +87,42 @@ class SavePacsImage(APIView):
         #
         # upload_dcm = UploadDcm()
         # upload_dcm.upload_dcm(datasetlist=datasetlist)
+
+        return Response('OK')
+
+
+class SavePacsImageByPatient(APIView):
+    """
+    input: a patient id list
+    save images to database
+    """
+
+    def get(self, request):
+        try:
+            patient_id_str = str(request.GET.get('patient_id_list'))
+            patient_id_list = []
+            if ',' not in patient_id_str:
+                patient_id_list.append(patient_id_str)
+            else:
+                patient_id_all = patient_id_str.split(',')
+                patient_id_list = map(str, patient_id_all)
+        except Exception as e:
+            return Response('patient id is not valid')
+
+        try:
+            access_dicom = pacsinfo.connectpacs()
+            for patient_id in patient_id_list:
+                patient_studies = access_dicom.find_studies_by_patient_id(patient_id)
+                for patient_study in patient_studies:
+                    patient_series = access_dicom.find_series_by_study_uid(patient_study)
+                    for series_uid in patient_series:
+                        dataset_list = access_dicom.get_images_by_series_uid(series_uid)
+                        upload_dcm = UploadDcm()
+                        # upload_dcm.upload_dcm(datasetlist=dataset_list)
+                        pool = threadpool.ThreadPool(10)
+                        requests = threadpool.makeRequests(upload_dcm.upload_dcm, dataset_list)
+                        [pool.putRequest(req) for req in requests]
+        except Exception as e:
+            return Response('download failed')
 
         return Response('OK')
