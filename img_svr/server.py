@@ -6,7 +6,6 @@ import struct
 from twisted.python import log
 
 from netbase import comproxy
-from netbase import McsfNetBase
 import sys
 import ctypes
 import platform
@@ -85,20 +84,18 @@ class ServerFactory(Factory):
         return Server()
 
 
-class MyCommandHandler(McsfNetBase.ICLRCommandHandlerEx):
+class MyCommandHandler(comproxy.PyBaseCmdHandlerEx):
     def __init__(self):
-        McsfNetBase.ICLRCommandHandlerEx.__init__(self)
+        comproxy.PyBaseCmdHandlerEx.__init__(self)
 
-    def HandleCommandCLR(self, pContext):
-        a = time.time()
-        current_package_data = pContext.GetSerializeObject()
+    def handle_command(self, p_context):
+        current_package_data = p_context.GetSerializeObject()
         data = RequestData(current_package_data)
         b = time.time()
 
         rsp = cmd.commands[data.command](**data.kwargs)
         c = time.time()
-        pContext.Reply(rsp)
-        d = time.time()
+        p_context.Reply(rsp)
         print('handler use{} ms'.format(str((c - b) * 1000)))
 
 
