@@ -1,7 +1,6 @@
 # -*-coding:utf-8-*-
 from setPacs import pacsconf
 from md.dicom.python.dicom_service import DicomService
-# from back_end.util.dicom_service import DicomService
 
 
 class ConnectPacsERROR(Exception):

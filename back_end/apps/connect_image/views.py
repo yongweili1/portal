@@ -137,7 +137,7 @@ class WindowSize(APIView):
         try:
             rst = get_image(**params)
         except Exception as e:
-            return Response('服务间数据传输失败')
+            return Response(e.message)
 
         if rst.success is False:
             return Response(rst.comment)
@@ -173,7 +173,7 @@ class LoadVolume(APIView):
         try:
             rst = load_volume(**params)
         except Exception as e:
-            return Response('服务间数据传输失败')
+            return Response(e.message)
 
         if rst.success is False:
             return Response(rst.comment)
@@ -200,7 +200,7 @@ class LoadVolume(APIView):
         try:
             rst = get_image(**params)
         except Exception as e:
-            return Response('服务间数据传输失败')
+            return Response(e.message)
 
         if rst.success is False:
             return Response(rst.comment)
@@ -246,7 +246,7 @@ class GetImage(APIView):
         try:
             rst = get_image(**params)
         except Exception as e:
-            return Response('服务间数据传输失败')
+            return Response(e.message)
 
         if rst.success is False:
             return Response(rst.comment)
@@ -290,7 +290,7 @@ class ChangeColor(APIView):
         try:
             rst = get_image(**params)
         except Exception as e:
-            return Response('服务间数据传输失败')
+            return Response(e.message)
 
         if rst.success is False:
             return Response(rst.comment)
@@ -335,7 +335,7 @@ class TurnPage(APIView):
         try:
             rst = get_image(**params)
         except Exception as e:
-            return Response('服务间数据传输失败')
+            return Response(e.message)
 
         if rst.success is False:
             return Response(rst.comment)
@@ -376,7 +376,7 @@ class Pan(APIView):
         try:
             rst = get_image(**params)
         except Exception as e:
-            return Response('服务间数据传输失败')
+            return Response(e.message)
 
         if rst.success is False:
             return Response(rst.comment)
@@ -420,7 +420,7 @@ class Roll(APIView):
         try:
             rst = get_image(**params)
         except Exception as e:
-            return Response('服务间数据传输失败')
+            return Response(e.message)
 
         if rst.success is False:
             return Response(rst.comment)
@@ -461,7 +461,7 @@ class Rotate(APIView):
         try:
             rst = get_image(**params)
         except Exception as e:
-            return Response('服务间数据传输失败')
+            return Response(e.message)
 
         if rst.success is False:
             return Response(rst.comment)
@@ -500,7 +500,7 @@ class Zoom(APIView):
         try:
             rst = get_image(**params)
         except Exception as e:
-            return Response('服务间数据传输失败')
+            return Response(e.message)
 
         if rst.success is False:
             return Response(rst.comment)
@@ -532,7 +532,7 @@ class ReSetVolume(APIView):
         try:
             rst = get_image(**params)
         except Exception as e:
-            return Response('服务间数据传输失败')
+            return Response(e.message)
 
         if rst.success is False:
             return Response(rst.comment)
@@ -573,7 +573,7 @@ class ChangeWindow(APIView):
         try:
             rst = get_image(**params)
         except Exception as e:
-            return Response('服务间数据传输失败')
+            return Response(e.message)
 
         if rst.success is False:
             return Response(rst.comment)
@@ -604,7 +604,7 @@ class CrossLineLocation(APIView):
         try:
             rst = get_image(**params)
         except Exception as e:
-            return Response('服务间数据传输失败')
+            return Response(e.message)
 
         if rst.success is False:
             return Response(rst.comment)
@@ -649,7 +649,7 @@ class SetCenter(APIView):
         try:
             rst = get_image(**params)
         except Exception as e:
-            return Response('服务间数据传输失败')
+            return Response(e.message)
 
         if rst.success is False:
             return Response(rst.comment)
