@@ -19,8 +19,6 @@ class Macro(object):
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "back_end.settings")\r\n
     django.setup()\r\n
     sys.path.insert(0, r'E:\\research_ly\portal\\back_end\\apps')\r\n
-    reactor.connectTCP('127.0.0.1', 8001, be_factory)\r\n
-    thread.start_new_thread(reactor.run, (0,))\r\n
     seriesuid = sys.argv[1]
     volumepath = sys.argv[2]\r\n
     """.replace('    ', '')
@@ -63,3 +61,7 @@ class Macro(object):
             return func(*args, **kwargs)
 
         return wrapper
+
+
+# reactor.connectTCP('127.0.0.1', 8001, be_factory)\r\n
+# thread.start_new_thread(reactor.run, (0,))\r\n

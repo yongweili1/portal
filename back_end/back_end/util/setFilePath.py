@@ -4,16 +4,18 @@ from django.core.files.storage import FileSystemStorage
 
 
 class LinuxFilePath(FileSystemStorage):
-    basePath = '../../'
+    basePath = '../'
     dicomPath = basePath + 'dicoms'
     splitDicomPath = basePath + 'split_dicom'
     volumePath = basePath + 'volume'
+    dicomFromPacs = basePath + 'pacs_dicom'
 
 
 class SaveDicomFilePath(FileSystemStorage):
     location_1 = 'D:\\temp\\'
     location_2 = 'D:\\dicoms\\'
     location_3 = 'D:\\split_dicom\\'
+    location_4 = 'D:\\pacs_dicom\\'
 
 
 class SaveVolumeFilePath(FileSystemStorage):

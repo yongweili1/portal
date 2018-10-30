@@ -8,7 +8,6 @@ from macro_recording import Macro
 import sys
 sys.path.append('..')
 from netbase import comproxy
-# from twisted_client import be_factory
 
 proxy = comproxy.PyCommProxy("web_be", "127.0.0.1:10000")
 
