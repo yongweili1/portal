@@ -1,5 +1,16 @@
-import McsfNetBase
+import sys
 import time
+import os
+
+if sys.platform == 'win32':
+    import McsfNetBase
+else:
+    path = os.path.dirname(os.path.abspath(__file__)) + '/linux/'
+    """
+    Remember to export LD_LIBRARY_PATH environment path contains this #path 
+    """
+    sys.path.append(path)
+    from linux import McsfNetBase
 
 
 class PyASyncCmdCallbackHandler(McsfNetBase.ICommandCallbackHandler):
@@ -78,8 +89,8 @@ def func_cb(result):
 
 
 if __name__ == '__main__':
-    fe = PyCommProxy("proxy_fe", "127.0.0.1:10000")
-    be = PyCommProxy("proxy_be", "127.0.0.1:10000")
+    fe = PyCommProxy("proxy_fe", "10.9.19.153:10000")
+    be = PyCommProxy("proxy_be", "10.9.19.153:10000")
     be.register_cmd_handler_ex(10, MyCommandHandler())
 
     print 'Sync result:', fe.sync_send_command('1+2+3', 10, 'proxy_be')
