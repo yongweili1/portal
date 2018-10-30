@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import os
+import platform
 import time
 
 import pydicom
@@ -48,6 +49,7 @@ class Patinfo(APIView):
 
         print('上传完成，正在执行DCM数据入库...')
         for file_name in file_name_list:
+            # if platform.system() == 'Windows':
             file_path = os.path.join(SaveDicomFilePath.location_2, file_name)
             dataset = pydicom.dcmread(file_path, force=True)
             splitdicoms = SplitDicoms()
