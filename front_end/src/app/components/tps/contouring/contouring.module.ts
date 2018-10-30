@@ -62,7 +62,6 @@ import { SeriesListComponent } from './series-list/series-list.component';
     TreeModule,
     ColorPickerModule,
     ToastModule
-    //ElChildModules
     //RouterModule.forChild(routes)
   ],
   declarations: [

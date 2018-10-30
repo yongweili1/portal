@@ -20,7 +20,6 @@ import { ElModule } from 'element-angular'
 import { FullLayoutComponent } from './layouts/full-layout.component';
 import { SimpleLayoutComponent } from './layouts/simple-layout.component';
 
-import { MockModule } from './mocks/mock.module';
 import { ForgotPasswordModule } from './base/forgot-password/forgot-password.module';
 import { RenewPasswordModule } from './base/renew-password/renew-password.module';
 import { ContouringModule} from './components/tps/contouring/contouring.module';
@@ -61,7 +60,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     }),
     EasyUIModule,
     ElModule.forRoot(),
-    MockModule,
     CoreModule,
     SharedModule,
     LoginModule,
