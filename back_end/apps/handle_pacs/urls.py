@@ -7,5 +7,6 @@ from . import views
 urlpatterns = [
     url(r'^pacspatient/$', views.GetPatient.as_view(), name='pacspatient'),
     url(r'^pacsseries/$', csrf_exempt(views.GetPacsSeries.as_view()), name='pacsseries'),
-    url(r'^pacsimage/$', csrf_exempt(views.SavePacsImage.as_view()), name='pacsimage')
+    url(r'^pacsimage/$', csrf_exempt(views.SavePacsImage.as_view()), name='pacsimage'),
+    url(r'^pacsimagebypatient/$', csrf_exempt(views.SavePacsImageByPatient.as_view()), name='pacsimagebypatient')
 ]
