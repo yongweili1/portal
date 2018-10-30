@@ -4,9 +4,9 @@ import os
 import platform
 import sys
 import thread
-import win32file
 
 from back_end.util.setFilePath import SaveDicomFilePath, SaveVolumeFilePath, LinuxFilePath
+
 
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "back_end.settings")
@@ -27,6 +27,7 @@ if __name__ == "__main__":
         raise
 
     if platform.system() == 'Windows':
+        import win32file
         win32file._setmaxstdio(2048)
 
         if os.path.exists(SaveDicomFilePath.location_1):

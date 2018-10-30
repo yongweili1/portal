@@ -6,14 +6,18 @@ import { RectangleFactory } from '../tools/factory/rectangle-factory'
 import { FreepenFactory } from '../tools/factory/freepen-factory'
 import { Point } from '../tools/point'
 import { FreepenContainer } from '../container/freepen_container';
+import { KeyValuePair } from '../../../../shared/common/keyvaluepair';
 
 declare var createjs: any;
+declare var actions: any;
+declare var shapes: any;
 
 @Directive({
     selector: '[myContour]'
 })
 export class ContourDirective implements OnInit {
     curAction: string;
+    actionInfo: KeyValuePair;
     canvasLeft: number;
     canvasTop: number;
     clickXs: Array<number> = Array<number>();
@@ -31,7 +35,7 @@ export class ContourDirective implements OnInit {
     myStage: any;
     backStage: any;
     labelTxt: string;
-    sharp: any;
+    shape: any;
     curTarget: any;
     @Input() backCanvas;
     @Input() name;
@@ -41,8 +45,7 @@ export class ContourDirective implements OnInit {
     ngOnInit() {
         this.myContext = this.el.nativeElement.getContext("2d");
         this.myStage = new createjs.Stage(this.el.nativeElement);
-        this.curAction = 'croselect'
-        
+        this.actionInfo = new KeyValuePair(actions.locate, null);
         createjs.Touch.enable(this.myStage);
         this.myStage.enableMouseOver();
         this.myStage.mouseMoveOutside = true;
@@ -50,13 +53,18 @@ export class ContourDirective implements OnInit {
 
         this.myContext.strokeStyle = this.contourColor;
         this.myContext.lineWidth = this.contourLineWidth;
-        
-        this.contouringService.curAction$.subscribe(curAction => {
-            if (curAction == 'clearAllShape') {
-                this.myStage.removeAllChildren()
-            } else {
-                this.curAction = curAction
+
+        this.contouringService.actionInfo$.subscribe(actionInfo => {
+            if (actionInfo == null) {
+                console.log('ActionInfo is wrong.')
+                return;
             }
+            console.log('Current action is ' + actionInfo.key());
+            if (actionInfo.key() == actions.clear) {
+                this.myStage.removeAllChildren()
+                this.myStage.clear()
+            }
+            this.actionInfo = actionInfo;
         })
 
         this.contouringService.graphics$.subscribe(data => {
@@ -87,64 +95,49 @@ export class ContourDirective implements OnInit {
     }
     
     @HostListener('mousedown', ['$event']) onMouseDown(event: MouseEvent) {
-        let info = 'MouseDown info: '
-        info += 'xy: (' + event.x + ', ' + event.y + ')'
-        info += ' client: (' + event.clientX + ', ' + event.clientY + ')'
-        info += ' offset: (' + event.offsetX + ', ' + event.offsetY + ')'
-        info += ' screen: (' + event.screenX + ', ' + event.screenY + ')'
-        info += ' layer: (' + event.layerX + ', ' + event.layerY + ')'
-        info += ' movement: (' + event.movementX + ', ' + event.movementY + ')'
-        document.getElementById('clickInfo').innerText = info
         this.myStage.children.forEach(shape => {
-            if (shape.type == 'freepen') {
-                shape.editable = this.curAction == 'freepen2' ? true : false;
+            if (shape.type == shapes.freepen) {
+                shape.editable = this.actionInfo.value() == shapes.freepen_edit ? true : false;
             }
         });
-        this.sharp = this.getShapeContainerInstance(this.curAction, this.myStage);
-        if (this.sharp != null)
-            this.sharp.handleMouseDown(event)
+        this.shape = this.getShapeContainerInstance();
+        if (this.shape != null)
+            this.shape.handleMouseDown(event)
     }
 
     @HostListener('mousemove', ['$event']) onMouseMove(event: MouseEvent) {
-        let info = 'MouseMove info: '
-        info += 'xy: (' + event.x + ', ' + event.y + ')'
-        info += ' client: (' + event.clientX + ', ' + event.clientY + ')'
-        info += ' offset: (' + event.offsetX + ', ' + event.offsetY + ')'
-        info += ' screen: (' + event.screenX + ', ' + event.screenY + ')'
-        info += ' layer: (' + event.layerX + ', ' + event.layerY + ')'
-        info += ' movement: (' + event.movementX + ', ' + event.movementY + ')'
-        document.getElementById('moveInfo').innerText = info
-        if (this.sharp != null){
-            this.sharp.handleMouseMove(event)
+        if (this.shape != null) {
+            this.shape.handleMouseMove(event)
         }
     }
 
     @HostListener('mouseup', ['$event']) onMouseUp(event: MouseEvent) {
-        if (this.sharp != null)
-            this.sharp.handleMouseUp(event)   
+        if (this.shape != null)
+            this.shape.handleMouseUp(event)   
     }
 
     @HostListener('mouseleave', ['$event']) onMouseLeave(event: MouseEvent) {
         this.onMouseUp(event);
     }
 
-    @HostListener('dblclick', ['$event']) onDbClick(event: MouseEvent) {
-        this.curAction = "";
-        this.contouringService.SetCurAction("quitDrawPri");
-    }
+    @HostListener('dblclick', ['$event']) onDbClick(event: MouseEvent) { }
     
-    getShapeContainerInstance(curAction:any, stage:any){
-        switch(curAction){
-            case 'measure':
-                return LineFactory.getInstance().createSharpContainer(stage);
-            case 'rectangle':
-                return RectangleFactory.getInstance().createSharpContainer(stage);
-            case 'circle':
-                return CircleFactory.getInstance().createSharpContainer(stage);
-            case 'freepen':
-                return FreepenFactory.getInstance().createSharpContainer(stage);
+    getShapeContainerInstance() {
+        if (this.actionInfo.key() != actions.shape) {
+            console.log('Can not create shape on this action')
+            return null;
+        }
+        switch(this.actionInfo.value()) {
+            case shapes.line:
+                return LineFactory.getInstance().createSharpContainer(this.myStage);
+            case shapes.rectangle:
+                return RectangleFactory.getInstance().createSharpContainer(this.myStage);
+            case shapes.circle:
+                return CircleFactory.getInstance().createSharpContainer(this.myStage);
+            case shapes.freepen:
+                return FreepenFactory.getInstance().createSharpContainer(this.myStage);
             default:
-                return
+                return null;
         }
     }
 }

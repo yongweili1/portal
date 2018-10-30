@@ -3,7 +3,10 @@ import { ConMessageService } from '../../shared/service/conMessage.service';
 //import { PatientHttpService } from 'TpsShared/TpsService/patientHttp.service';
 import { MenuItem } from '../../../patient-template/shared/patient-template.model'
 import { ContouringService } from '../../shared/service/contouring.service'
+import { KeyValuePair } from '../../../../shared/common/keyvaluepair';
 
+declare var actions: any;
+declare var shapes: any;
 
 @Component({
     selector: 'mpt-contouring-top-bar',
@@ -24,7 +27,7 @@ export class ContouringTopBarComponent implements OnInit {
     @Output() measure: EventEmitter<any> = new EventEmitter<any>();
     @Output() clear: EventEmitter<any> = new EventEmitter<any>();
     @Output() hideList: EventEmitter<any> = new EventEmitter<any>();
-    @Output() setcenter:EventEmitter<any> = new EventEmitter<any>();
+    @Output() setcenter: EventEmitter<any> = new EventEmitter<any>();
     @Input() seriesList: string[];
 
     constructor(
@@ -46,16 +49,16 @@ export class ContouringTopBarComponent implements OnInit {
     addPlanDisplay: boolean = false;
 
     onImgZoom() {
-        this.conMessage.SetCurAction("zoom");
+        this.conMessage.setActionInfo(new KeyValuePair(actions.zoom))
         this.zoom.emit();
     }
 
     onImgPan() {
-        this.conMessage.SetCurAction("pan");
+        this.conMessage.setActionInfo(new KeyValuePair(actions.pan))
         this.pan.emit();
     }
     onImgRotate() {
-        this.conMessage.SetCurAction("rotate");
+        this.conMessage.setActionInfo(new KeyValuePair(actions.rotate))
         this.rotate.emit();
     }
     onImgReset() {
@@ -63,12 +66,12 @@ export class ContouringTopBarComponent implements OnInit {
     }
 
     onImgWindow() {
-        this.conMessage.SetCurAction("wwwl");
+        this.conMessage.setActionInfo(new KeyValuePair(actions.window))
         this.wlww.emit();
     }
 
-    onImgCenter(){
-        this.conMessage.SetCurAction("croselect")
+    onImgCenter() {
+        this.conMessage.setActionInfo(new KeyValuePair(actions.locate))
         this.setcenter.emit();
     }
 
@@ -165,26 +168,21 @@ export class ContouringTopBarComponent implements OnInit {
     loadMPR() {
         this.loadSeries.emit(this.seriesId);
     }
+
     OnClearAllClick() {
         this.clear.emit();
-    }
-
-    OnDefaultMouseClick() {
-        this.conMessage.SetCurAction("default");
-    }
-    OnBrushClick() {
-        this.conMessage.SetCurAction("combo");
     }
 
     OnHideList() {
         this.hideList.emit();
     }
+
     OnSelect() {
-        this.conMessage.SetCurAction("select");
+        this.conMessage.setActionInfo(new KeyValuePair(actions.select));
     }
 
     OnCrossSelect() {
-        this.conMessage.SetCurAction("croselect");
+        this.conMessage.setActionInfo(new KeyValuePair(actions.locate));
     }
 
     OnStartMacro() {
@@ -194,9 +192,7 @@ export class ContouringTopBarComponent implements OnInit {
             }
         }, (error) => {
             console.log("start macro transcribe failed")
-        }
-
-        );
+        });
     }
     OnEndMacro() {
         this.conService.Macro("finish").subscribe();
@@ -209,36 +205,31 @@ export class ContouringTopBarComponent implements OnInit {
     * 测量，直线
     */
     FuncMeasure() {
-        console.log("butt-measure");
-        this.conMessage.SetCurAction("measure");
+        this.conMessage.setActionInfo(new KeyValuePair(actions.shape, shapes.line));
     }
 
     /**
     * 圆
     */
     FuncCircle() {
-        console.log("butt-circle");
-        this.conMessage.SetCurAction("circle");
+        this.conMessage.setActionInfo(new KeyValuePair(actions.shape, shapes.circle));
     }
 
     /**
     * 矩形
     */
     FuncRectangle() {
-        console.log("butt-rectangle");
-        this.conMessage.SetCurAction("rectangle");
+        this.conMessage.setActionInfo(new KeyValuePair(actions.shape, shapes.rectangle));
     }
 
     /**
     * 自由笔
     */
     FuncFreepen() {
-        console.log("butt-freepen");
-        this.conMessage.SetCurAction("freepen");
+        this.conMessage.setActionInfo(new KeyValuePair(actions.shape, shapes.freepen));
     }
     FuncFreepenModify() {
-        console.log("butt-freepen");
-        this.conMessage.SetCurAction("freepen2");
+        this.conMessage.setActionInfo(new KeyValuePair(actions.shape, shapes.freepen_edit));
     }
 }
 
