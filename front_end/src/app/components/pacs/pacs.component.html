@@ -9,22 +9,22 @@
                 <th>
                     <label>PATIENT ID</label>
                     <br>
-                    <input type="text">
+                    <input type="text" [(ngModel)]="patientParam.patientId">
                 </th>
                 <th>
                     <label>PATIENT NAME</label>
                     <br>
-                    <input type="text">
+                    <input type="text" [(ngModel)]="patientParam.patientName">
                 </th>
                 <th>
                     <label>Gender</label>
                     <br>
-                    <p-dropdown id="gender" [options]="gender" placeholder="Select Gender" optionLabel="label"></p-dropdown>
+                    <p-dropdown id="gender" [options]="gender" placeholder="Select Gender"  [(ngModel)]="patientParam.gender" optionLabel="label"></p-dropdown>
                 </th>
                 <th>
                     <label>MODALITY</label>
                     <br>
-                    <p-dropdown id="modality" [options]="modality" placeholder="Select Modality" optionLabel="label"></p-dropdown>
+                    <p-dropdown id="modality" [options]="modality" placeholder="Select Modality" [(ngModel)]="patientParam.modality" optionLabel="label"></p-dropdown>
                 </th>
                 <th>
                     <button style="margin-top:20px;" pButton type="button" class="my-button search" [label]="'btn.search' | translate" (click)="search()"></button>
@@ -55,7 +55,7 @@
             <span class="paginator-text pull-left">{{ 'text.pagination-records' | translate: {size: pageModel?.numberOfElements, total: pageModel?.totalElements} }}</span>
             <span class="paginator-buttons pull-right">
                 <p-paginator *ngIf="pageModel?.totalPages>0"  [(rows)]="tablePageRows[1]" [pageLinkSize]="5" [rowsPerPageOptions]="tablePageRows"
-                [totalRecords]="pageModel?.totalElements" (onPageChange)="loadPatientTemplate($event)"></p-paginator>
+                [totalRecords]="pageModel?.totalElements" (onPageChange)="loadPacs($event)"></p-paginator>
             </span>
         </div>
     </p-footer>

@@ -20,12 +20,13 @@ import { ElModule } from 'element-angular'
 import { FullLayoutComponent } from './layouts/full-layout.component';
 import { SimpleLayoutComponent } from './layouts/simple-layout.component';
 
-import { MockModule } from './mocks/mock.module';
 import { ForgotPasswordModule } from './base/forgot-password/forgot-password.module';
 import { RenewPasswordModule } from './base/renew-password/renew-password.module';
 import { ContouringModule} from './components/tps/contouring/contouring.module';
-import { HomeComponent } from './components/home/home.component'
-import {PacsModule} from './components/pacs/pacs.module'
+import { HomeComponent } from './components/home/home.component';
+
+import { PacsService } from './services/pacs.service';
+import { from } from 'rxjs';
 
 export function HttpLoaderFactory(http: HttpClient) {
   const appConfig = window['appConfig'] || {};
@@ -59,7 +60,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     }),
     EasyUIModule,
     ElModule.forRoot(),
-    MockModule,
     CoreModule,
     SharedModule,
     LoginModule,
@@ -70,7 +70,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     ContouringModule,
   ],
   providers: [
-    AppConfigService
+    AppConfigService,
+    PacsService,
   ]
 })
 export class AppModule { }

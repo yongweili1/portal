@@ -8,7 +8,6 @@ import { AjaxService } from "../services/ajax.service";
 import { AppConfigService } from '../app.config';
 import { AuthHttp } from '../core/auth-http';
 import { Page, PageRequest } from '../shared/models/pagination';
-import { PatientTemplateServiceMock } from '../mocks/patient-template-service.mock'
 import {
   PatientPageRequest,
   PatientTemplateInfoRequest,
@@ -22,7 +21,6 @@ export class PatientTemplateService {
     private http: HttpClient,
     private appConfig: AppConfigService,
     private messageService: ToastService,
-    private patientService: PatientTemplateServiceMock,
     private aj :AjaxService
 ) { 
     this.headers = new HttpHeaders({
@@ -42,7 +40,7 @@ export class PatientTemplateService {
     .set('studyDate', pageRequest.studyDate.toString());
     console.log(this.headers);
     return this.http
-      .get<Page<PatientPageRequest>>(`${this.appConfig.apiUrl}/patientinformations/patinfolist/`,{headers:this.headers});
+      .get<Page<PatientPageRequest>>(`${this.appConfig.apiUrl}/patientinformations/patinfolist/`,{headers:this.headers, params:searchParams});
   }
 }
 const httpOptions = {

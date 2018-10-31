@@ -5,7 +5,6 @@ import { Http, Response, URLSearchParams } from '@angular/http';
 import { AppConfigService } from '../app.config'; 
 import { AuthHttp, tokenNotExpired, saveToken, removeToken } from './auth-http';
 
-import { AuthServiceMock } from '../mocks/auth-service.mock'
 @Injectable()
 export class AuthService {
 
@@ -15,7 +14,6 @@ export class AuthService {
 
   constructor(
     private http: Http,
-    private authService: AuthServiceMock,
     private authHttp: AuthHttp,
     private appConfig: AppConfigService) {
     this.authEvents = new Subject<AuthEvent>();
@@ -27,7 +25,7 @@ export class AuthService {
       password,
     };
 
-    return this.http.post(`${this.authService}/api/auth`, body).do((resp: Response) => {
+    return this.http.post(`/api/auth`, body).do((resp: Response) => {
       saveToken(resp.json().token);
       this.authEvents.next(new DidLogin());
     });

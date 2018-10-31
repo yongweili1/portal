@@ -8,7 +8,8 @@ from models import NewDjangoSession, DjangoSession
 class MySessionMiddleware(MiddlewareMixin):
 
     def process_request(self, request):
-        pass
+        requestIP = request.META.get('REMOTE_ADDR', None)
+        print(requestIP)
 
     def process_response(self, request, response):
 
@@ -45,7 +46,7 @@ class MySessionMiddleware(MiddlewareMixin):
             session_v = 'back_end'
 
             request.session[session_k] = session_v
-            response.set_cookie('besessionid', session_v)
+            # response.set_cookie('besessionid', session_v)
         # response['Access-Control-Allow-Credentials'] = 'true'
         # print(request.GET.get('Origin'))
         # response['Access-Control-Allow-Origin'] = request.META.get('Origin')

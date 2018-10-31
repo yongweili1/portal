@@ -18,6 +18,7 @@ import { LazyExcuteHandler } from './lazy_excute_handler';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 declare var $: any;
+declare var actions: any;
 
 @Component({
     selector: 'mpt-contouring',
@@ -41,7 +42,7 @@ export class ContouringComponent implements OnInit {
     firstImagePosition: any;
     lastImagePosition: any;
     seriList: any;
-    action: any;
+    actionInfo: any;
     display: boolean = false;
     seriesList: any;
     hasLoadVolume: boolean = false;
@@ -74,7 +75,7 @@ export class ContouringComponent implements OnInit {
 
     transverseChange(event: any) {
         let displayView = 'coronal,saggital'
-        if(this.hasLoadVolume == true){
+        if (this.hasLoadVolume == true) {
             this.seriesHttpService.GetLocatePic('transverse', displayView, event).subscribe((value) => {
                 let data = JSON.parse(value);
                 this.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair'], data['1']['graphic']['contours']);
@@ -85,7 +86,7 @@ export class ContouringComponent implements OnInit {
 
     coronalChange(event: any) {
         let displayView = 'transverse,saggital'
-        if(this.hasLoadVolume == true){
+        if (this.hasLoadVolume == true) {
             this.seriesHttpService.GetLocatePic('coronal', displayView, event).subscribe((value) => {
                 let data = JSON.parse(value);
                 this.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair'], data['0']['graphic']['contours']);
@@ -95,7 +96,7 @@ export class ContouringComponent implements OnInit {
     }
     saggitalChange(event: any) {
         let displayView = 'transverse,coronal'
-        if(this.hasLoadVolume == true){
+        if (this.hasLoadVolume == true) {
             this.seriesHttpService.GetLocatePic('saggital', displayView, event).subscribe((value) => {
                 let data = JSON.parse(value);
                 this.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair'], data['0']['graphic']['contours']);
@@ -173,17 +174,16 @@ export class ContouringComponent implements OnInit {
         this.conMessage.seriList$.subscribe(value => {
             this.seriList = value;
         });
-        this.conMessage.curAction$.subscribe(value => {
-            this.action = value;
-            if (this.action == "croselect") {
+        this.conMessage.actionInfo$.subscribe(value => {
+            this.actionInfo = value;
+            if (this.actionInfo.key() == actions.locate) {
                 this.picLeft1.SetCanvasIndex("#crossCanvas", 10);
                 this.picLeft2.SetCanvasIndex("#crossCanvas", 10);
                 this.picLeft3.SetCanvasIndex("#crossCanvas", 10);
                 this.picLeft1.SetCanvasIndex("#primitiveDrawCanvas", 9);
                 this.picLeft2.SetCanvasIndex("#primitiveDrawCanvas", 9);
                 this.picLeft3.SetCanvasIndex("#primitiveDrawCanvas", 9);
-            }
-            else {
+            } else {
                 this.picLeft1.SetCanvasIndex("#crossCanvas", 9);
                 this.picLeft2.SetCanvasIndex("#crossCanvas", 9);
                 this.picLeft3.SetCanvasIndex("#crossCanvas", 9);
@@ -216,9 +216,9 @@ export class ContouringComponent implements OnInit {
         });
     }
 
-    ngAfterViewInit(){
+    ngAfterViewInit() {
         if (this.patientId == "" || this.patientId == undefined || this.patientId == null) {
-            this.priMessageService.add({severity:'error', detail:'Please select the patient first.'});
+            this.priMessageService.add({ severity: 'error', detail: 'Please select the patient first.' });
         }
         else {
             this.getSeriesList(this.patientId);
@@ -257,13 +257,13 @@ export class ContouringComponent implements OnInit {
             })
         }
     }
-    mainWLWW(){
+    mainWLWW() {
         this.picLeft1.addChangeWlEvent();
         this.picLeft2.addChangeWlEvent();
         this.picLeft3.addChangeWlEvent();
     }
 
-    mainWWWLPro(evt){
+    mainWWWLPro(evt) {
         console.log(evt);
         let focus_view = evt[0];
         let ww_factor = evt[1];
@@ -271,6 +271,21 @@ export class ContouringComponent implements OnInit {
         let that = this;
         if (this.hasLoadVolume == true) {
             this.seriesHttpService.GetWindowPic(focus_view, ww_factor, wl_factor).subscribe(result => {
+                result = JSON.parse(result);
+                that.picLeft1.cellUpdate(result['0']['image'], result['0']['crosshair'], result['0']['graphic']['contours']);
+                that.picLeft2.cellUpdate(result['1']['image'], result['1']['crosshair'], result['1']['graphic']['contours']);
+                that.picLeft3.cellUpdate(result['2']['image'], result['2']['crosshair'], result['2']['graphic']['contours']);
+            })
+        }
+    }
+
+    mainWWWLPro2(evt){
+        console.log(evt);
+        let ww = evt[0];
+        let wl = evt[1];
+        let that = this;
+        if (this.hasLoadVolume == true) {
+            this.seriesHttpService.GetWindowPic2(ww, wl).subscribe(result => {
                 result = JSON.parse(result);
                 that.picLeft1.cellUpdate(result['0']['image'], result['0']['crosshair'], result['0']['graphic']['contours']);
                 that.picLeft2.cellUpdate(result['1']['image'], result['1']['crosshair'], result['1']['graphic']['contours']);
@@ -319,7 +334,7 @@ export class ContouringComponent implements OnInit {
             })
         }
     }
-    mainSetCenterPro(){
+    mainSetCenterPro() {
         let that = this;
         if (this.hasLoadVolume == true) {
             this.seriesHttpService.GetCenterPic().subscribe(result => {
@@ -363,11 +378,11 @@ export class ContouringComponent implements OnInit {
         canvasSize['view_size'] = this.getCanvasSize();
         console.log(canvasSize)
         let that = this;
-        if(seriesId == "" || seriesId == null ||seriesId == undefined){
-            this.priMessageService.add({severity:'error', detail:'No series selected.'});
+        if (seriesId == "" || seriesId == null || seriesId == undefined) {
+            this.priMessageService.add({ severity: 'error', detail: 'No series selected.' });
             return;
         }
-        this.priMessageService.add({severity:'info', detail:'Loading now, please wait.'});
+        this.priMessageService.add({ severity: 'info', detail: 'Loading now, please wait.' });
         this.seriesHttpService.LoadVolume(seriesId).subscribe(value => {
             if (value == "success") {
                 this.conService.noticeSize(canvasSize).subscribe(result => {
@@ -377,20 +392,17 @@ export class ContouringComponent implements OnInit {
                             that.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair'], data['0']['graphic']['contours']);
                             that.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair'], data['1']['graphic']['contours']);
                             that.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair'], data['2']['graphic']['contours']);
-                            this.priMessageService.add({severity:'success', detail:'Load succeed.'});
+                            this.priMessageService.add({ severity: 'success', detail: 'Load succeed.' });
                         }, (error) => {
-                            this.priMessageService.add({severity:'error', detail:'Load failed.'});
+                            this.priMessageService.add({ severity: 'error', detail: 'Load failed.' });
                             console.log(error);
                         })
                         this.hasLoadVolume = true;
                         this.seriesId = seriesId;
                     }
-                }
-
-                );
-            }
-            else{
-                this.priMessageService.add({severity:'error', detail:'Load failed.'});
+                });
+            } else {
+                this.priMessageService.add({ severity: 'error', detail: 'Load failed.' });
             }
         })
     }

@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
-    # 'rest_framework_swagger',
+    'rest_framework_swagger',
+    # 'devserver',
 
     'connect_image.apps.ConnectImageConfig',
     'patientinformations.apps.PatientinformationsConfig',

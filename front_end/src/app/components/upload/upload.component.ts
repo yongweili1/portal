@@ -71,7 +71,6 @@ export class UploadComponent {
         });
         this.UploadService.progress$.subscribe(result => {
             this.uploadPercent = result
-            console.log(result)
             if(this.uploadPercent == 100){
                 this.priMessageService.add({severity:'success', detail:'Upload finished, building volume now.', life:5000});
             }
