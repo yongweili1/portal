@@ -1,5 +1,6 @@
 import json
 from msg import image_msg_pb2 as msg
+import os
 
 
 class RequestData(object):
@@ -18,7 +19,9 @@ class RequestData(object):
         if data.content and data.content.params:
             self.kwargs = json.loads(data.content.params)
         if data.content and data.content.volume:
-            volume_path = r'D:\volume\{}.nii.gz'.format(self.kwargs['seriesuid'])
+            if os.path.exists(r'D:\svr\volume') is False:
+                os.makedirs(r'D:\svr\volume')
+            volume_path = r'D:\svr\volume\{}.nii.gz'.format(self.kwargs['seriesuid'])
             f = open(volume_path, 'wb')
             f.write(data.content.volume)
             f.close()
