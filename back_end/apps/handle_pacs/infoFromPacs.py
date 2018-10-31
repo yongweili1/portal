@@ -1,8 +1,10 @@
 # -*-coding:utf-8-*-
+import os
+
 from setPacs import pacsconf
-# from md.dicom.python.dicom_service import DicomService
-from pku.dicom.dicom_service import DicomService
-# from back_end.util.dicom_service import DicomService
+from back_end.util.setFilePath import SaveDicomFilePath
+# from pku.dicom.dicom_service import DicomService
+from back_end.dicoms.dicom_service import DicomService
 
 
 class ConnectPacsERROR(Exception):
@@ -36,6 +38,35 @@ class GetInfoFromPacs(object):
                 patient_dict['patientId'] = patient.id
                 self.patients_list.append(patient_dict)
         return self.patients_list
+
+    def getimage(self, patients_list):
+
+        datasets_list = []
+        patient_series_dict = {}
+
+        access_dicom = self.connectpacs()
+        access_dicom.set_need_save_file(1)
+        series_path = SaveDicomFilePath.location_3
+        access_dicom.set_dcm_file_path(series_path)
+
+        for patientid in patients_list:
+            studyuid_list = access_dicom.find_studies_by_patient_id(patientid)
+
+            for studyuid in studyuid_list:
+                seriesuid_tuple = access_dicom.find_series_by_study_uid(studyuid)
+                seriespath_length_dict = {}
+
+                for seriesuid in seriesuid_tuple[0]:
+                    dataset_list = access_dicom.get_series_by_uid(seriesuid)
+                    datasets_list.append(dataset_list)
+                    series_path = os.path.join(access_dicom.dcm_file_path, str(seriesuid))
+                    seriespath_length_dict[len(os.listdir(series_path))] = series_path
+
+                max_series_length = max(seriespath_length_dict.keys())
+                seriespath = seriespath_length_dict[max_series_length]
+                patient_series_dict[patientid] = seriespath
+
+        return datasets_list, patient_series_dict
 
 
 pacsinfo = GetInfoFromPacs()

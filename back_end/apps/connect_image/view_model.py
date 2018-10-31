@@ -43,7 +43,7 @@ def load_volume(*args, **kwargs):
         f.close()
     except Exception as e:
         print('请检查volume路径或文件格式是否正确:{}'.format(kwargs['volumepath']))
-        raise
+        raise IOError
 
     data = msg.RequestMsg()
     data.session = kwargs['user_ip']

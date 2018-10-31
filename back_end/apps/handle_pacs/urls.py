@@ -9,6 +9,5 @@ urlpatterns = [
     # url(r'^pacsseries/$', csrf_exempt(views.GetPacsSeries.as_view()), name='pacsseries'),
     # url(r'^pacsimage/$', csrf_exempt(views.SavePacsImage.as_view()), name='pacsimage'),
     # url(r'^pacsimagebypatient/$', csrf_exempt(views.SavePacsImageByPatient.as_view()), name='pacsimagebypatient'),
-    url(r'^pacsseries/$', views.GetPacsSeries.as_view(), name='pacsseries'),
     url(r'^pacsimages/$', views.DownloadImage.as_view(), name='pacsimages'),
 ]

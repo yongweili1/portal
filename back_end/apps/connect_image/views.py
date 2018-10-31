@@ -15,9 +15,6 @@ from rest_framework.views import APIView
 import image_msg_pb2 as msg
 from connect_image.macro_script_to_db import script
 from connect_image.models import Series
-
-# from twisted_client import be_factory
-
 # conf = ConfigParser.ConfigParser()
 # conf.read('back_end/util/serverApi.ini')
 # load_url = conf.get("imageApi", "load_url")
@@ -36,6 +33,9 @@ from connect_image.view_model import load_volume, get_image
 from macro_recording import Macro
 from back_end.settings import STATIC_ROOT
 from patientinformations.models import Study
+from get_seriespath import getpath
+from back_end.util.buildVolume import DicomToVolume
+from back_end.util.upload_vol_to_db import UploadVolume
 
 
 class Home(APIView):
@@ -163,6 +163,9 @@ class LoadVolume(APIView):
             return Response('数据库无此seriesuid')
         volumepath = series_query[0].seriespixeldatafilepath
 
+        if not volumepath:
+            return Response('rebuild')
+
         params = {
             'seriesuid': seriesuid,
             'user_ip': user_ip,
@@ -172,8 +175,52 @@ class LoadVolume(APIView):
         }
         try:
             rst = load_volume(**params)
+        except IOError:
+            return Response('rebuild')
+
+        if rst.success is False:
+            return Response(rst.comment)
+
+        return Response('success')
+
+    def put(self, request):
+
+        request_data = request.data
+        user_ip = request.META.get('REMOTE_ADDR', None)
+
+        if request_data is None:
+            return Response('请携带有效的seriesuid')
+        seriesuid = request_data['params']['updates'][0]['value']
+        seriespath = getpath.getseriespath(seriesuid)
+
+        # if not os.path.exists(seriespath):
+        #     return Response('请确认series路径是否存在')
+
+        if len(os.listdir(seriespath)) <= 1:
+            return Response('series下的dicom文件单一，无法build volume')
+
+        try:
+            buildvol = DicomToVolume()
+            volfilepath, seriesuid = buildvol.dicom_to_volume(seriespath)
         except Exception as e:
-            return Response(e.message)
+            return Response('dicom文件不符合规范,创建volume失败')
+
+        try:
+            UploadVolume(volfilepath, seriesuid)
+        except Exception as e:
+            return Response('Volume入库失败')
+
+        params = {
+            'seriesuid': seriesuid,
+            'user_ip': user_ip,
+            'volumepath': volfilepath,
+            'command': 'load',
+            'server_name': 'image',
+        }
+        try:
+            rst = load_volume(**params)
+        except IOError:
+            return Response('fail')
 
         if rst.success is False:
             return Response(rst.comment)
