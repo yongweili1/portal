@@ -36,7 +36,8 @@
         "print": "Print",
         "back": "Back",
         "next": "Next",
-        "install": "Install"
+        "install": "Install",
+        "delete": "Delete"
     },
     "text": {
         "name": "Name",

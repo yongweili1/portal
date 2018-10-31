@@ -448,7 +448,7 @@ export class ContouringComponent implements OnInit {
                         });
                     }
                     else{
-                        this.priMessageService.add({ severity: 'error', detail: 'Rebuild failed.' });
+                        this.priMessageService.add({ severity: 'error', detail: `Rebuild failed. ${value}` });
                     }
                 })
             }

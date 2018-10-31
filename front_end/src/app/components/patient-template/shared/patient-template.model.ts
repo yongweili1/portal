@@ -8,6 +8,10 @@ export interface PatientPageRequest extends PageRequest {
   studyDate: Date[];
 }
 
+export interface PatientPageDeleteRequest extends PageRequest {
+    patientId: string; 
+  }
+
 export interface MenuItem {
     label?: string;
 }
