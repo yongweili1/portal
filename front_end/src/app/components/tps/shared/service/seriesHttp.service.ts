@@ -39,6 +39,13 @@ LoadVolume(seriesId:any):Observable<any>{
         
 }
 
+ReLoadVolume(seriesId:any):Observable<any>{
+    const getParams = new HttpParams()
+    .set('seriesuid', seriesId);
+    return this.http.put(`${this.appConfig.apiUrl}/image/volumes/`,{params : getParams});
+        
+}
+
 UnLoadVolume(seriesId:any):Observable<any>{
     const getParams = new HttpParams()
     .set('seriesuid', seriesId);

@@ -176,20 +176,40 @@ export class ContouringComponent implements OnInit {
         });
         this.conMessage.actionInfo$.subscribe(value => {
             this.actionInfo = value;
-            if (this.actionInfo.key() == actions.locate) {
+            let toolsActionArray = ['zoom', 'pan','rotate','window']
+            let priActionArray = ['shape', 'clear','select']
+            if (this.actionInfo.key() == actions.locate ) {
                 this.picLeft1.SetCanvasIndex("#crossCanvas", 10);
                 this.picLeft2.SetCanvasIndex("#crossCanvas", 10);
                 this.picLeft3.SetCanvasIndex("#crossCanvas", 10);
                 this.picLeft1.SetCanvasIndex("#primitiveDrawCanvas", 9);
                 this.picLeft2.SetCanvasIndex("#primitiveDrawCanvas", 9);
                 this.picLeft3.SetCanvasIndex("#primitiveDrawCanvas", 9);
-            } else {
+                this.picLeft1.SetCanvasIndex("#toolsCanvas", 8);
+                this.picLeft2.SetCanvasIndex("#toolsCanvas", 8);
+                this.picLeft3.SetCanvasIndex("#toolsCanvas", 8);
+            } 
+            else if(priActionArray.indexOf(this.actionInfo.key())>-1){
                 this.picLeft1.SetCanvasIndex("#crossCanvas", 9);
                 this.picLeft2.SetCanvasIndex("#crossCanvas", 9);
                 this.picLeft3.SetCanvasIndex("#crossCanvas", 9);
                 this.picLeft1.SetCanvasIndex("#primitiveDrawCanvas", 10);
                 this.picLeft2.SetCanvasIndex("#primitiveDrawCanvas", 10);
                 this.picLeft3.SetCanvasIndex("#primitiveDrawCanvas", 10);
+                this.picLeft1.SetCanvasIndex("#toolsCanvas", 8);
+                this.picLeft2.SetCanvasIndex("#toolsCanvas", 8);
+                this.picLeft3.SetCanvasIndex("#toolsCanvas", 8);
+            }
+            else{
+                this.picLeft1.SetCanvasIndex("#crossCanvas", 9);
+                this.picLeft2.SetCanvasIndex("#crossCanvas", 9);
+                this.picLeft3.SetCanvasIndex("#crossCanvas", 9);
+                this.picLeft1.SetCanvasIndex("#primitiveDrawCanvas", 8);
+                this.picLeft2.SetCanvasIndex("#primitiveDrawCanvas", 8);
+                this.picLeft3.SetCanvasIndex("#primitiveDrawCanvas", 8);
+                this.picLeft1.SetCanvasIndex("#toolsCanvas", 10);
+                this.picLeft2.SetCanvasIndex("#toolsCanvas", 10);
+                this.picLeft3.SetCanvasIndex("#toolsCanvas", 10);
             }
         });
         this.activeRoute.queryParams.subscribe(params => {
@@ -280,17 +300,22 @@ export class ContouringComponent implements OnInit {
     }
 
     mainWWWLPro2(evt){
-        console.log(evt);
-        let ww = evt[0];
-        let wl = evt[1];
-        let that = this;
-        if (this.hasLoadVolume == true) {
-            this.seriesHttpService.GetWindowPic2(ww, wl).subscribe(result => {
-                result = JSON.parse(result);
-                that.picLeft1.cellUpdate(result['0']['image'], result['0']['crosshair'], result['0']['graphic']['contours']);
-                that.picLeft2.cellUpdate(result['1']['image'], result['1']['crosshair'], result['1']['graphic']['contours']);
-                that.picLeft3.cellUpdate(result['2']['image'], result['2']['crosshair'], result['2']['graphic']['contours']);
-            })
+        let validFlag = evt[2];
+        if(validFlag == 'true'){
+            let ww = evt[0];
+            let wl = evt[1];
+            let that = this;
+            if (this.hasLoadVolume == true) {
+                this.seriesHttpService.GetWindowPic2(ww, wl).subscribe(result => {
+                    result = JSON.parse(result);
+                    that.picLeft1.cellUpdate(result['0']['image'], result['0']['crosshair'], result['0']['graphic']['contours']);
+                    that.picLeft2.cellUpdate(result['1']['image'], result['1']['crosshair'], result['1']['graphic']['contours']);
+                    that.picLeft3.cellUpdate(result['2']['image'], result['2']['crosshair'], result['2']['graphic']['contours']);
+                })
+            }
+        }
+        else{
+            this.priMessageService.add({severity:'error', detail:'ww wl illegal.'});
         }
     }
 
@@ -401,7 +426,33 @@ export class ContouringComponent implements OnInit {
                         this.seriesId = seriesId;
                     }
                 });
-            } else {
+            } else if(value == "rebuild"){
+                this.priMessageService.add({ severity: 'error', detail: 'Load failed, rebuiding now, please wait' });
+                this.seriesHttpService.ReLoadVolume(seriesId).subscribe(value=>{
+                    if (value == "success") {
+                        this.conService.noticeSize(canvasSize).subscribe(result => {
+                            if (result.body == "success") {
+                                this.seriesHttpService.GetSeries(seriesId, "", "all", transverseCanvas.width, transverseCanvas.height).subscribe((value) => {
+                                    let data = JSON.parse(value);
+                                    that.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair'], data['0']['graphic']['contours']);
+                                    that.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair'], data['1']['graphic']['contours']);
+                                    that.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair'], data['2']['graphic']['contours']);
+                                    this.priMessageService.add({ severity: 'success', detail: 'Load succeed.' });
+                                }, (error) => {
+                                    this.priMessageService.add({ severity: 'error', detail: 'Load failed.' });
+                                    console.log(error);
+                                })
+                                this.hasLoadVolume = true;
+                                this.seriesId = seriesId;
+                            }
+                        });
+                    }
+                    else{
+                        this.priMessageService.add({ severity: 'error', detail: 'Rebuild failed.' });
+                    }
+                })
+            }
+            else{
                 this.priMessageService.add({ severity: 'error', detail: 'Load failed.' });
             }
         })
