@@ -24,7 +24,7 @@ from rest_framework.schemas import get_schema_view
 #                               renderer_classes=[OpenAPIRenderer, SwaggerUIRenderer])
 
 urlpatterns = [
-    url(r'^image/', include('connect_image.urls')),
+    # url(r'^image/', include('connect_image.urls')),
     url(r'^admin/', admin.site.urls),
     # url(r'^docs/', schema_view),
     url(r'^patientinformations/', include('patientinformations.urls')),
