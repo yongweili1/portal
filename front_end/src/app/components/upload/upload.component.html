@@ -15,7 +15,7 @@
             <div class="col-md-9" style="margin-bottom: 40px">
                 <h3>Upload queue</h3>
                 <p>Queue length: {{ uploader?.queue?.length }}</p>
-                <table>
+                <table style="height: 160px;display: inline-block; overflow:auto">
                     <!-- <thead>
                         <tr>
                             <th width="50%">Name</th>
@@ -43,9 +43,9 @@
                                 <!-- <button type="button" class="btn btn-success btn-xs" (click)="item.upload()" [disabled]="item.isReady || item.isUploading || item.isSuccess">
                                     <span class="glyphicon glyphicon-upload">Upload</span> 
                                 </button> -->
-                                <button type="button" class="btn btn-warning btn-xs" (click)="item.cancel()" [disabled]="!item.isUploading">
+                                <!-- <button type="button" class="btn btn-warning btn-xs" (click)="item.cancel()" [disabled]="!item.isUploading">
                                     <span class="glyphicon glyphicon-ban-circle">Cancel</span> 
-                                </button>
+                                </button> -->
                                 <button type="button" class="btn btn-danger btn-xs" (click)="item.remove()">
                                     <span class="glyphicon glyphicon-trash">Remove</span> 
                                 </button>
@@ -63,9 +63,9 @@
                     <button type="button" class="btn btn-success btn-s" (click)="uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">
                         <span class="glyphicon glyphicon-upload">Upload all</span>
                     </button>
-                    <button type="button" class="btn btn-warning btn-s" (click)="uploader.cancelAll()" [disabled]="!uploader.isUploading">
+                    <!-- <button type="button" class="btn btn-warning btn-s" (click)="uploader.cancelAll()" [disabled]="!uploader.isUploading">
                         <span class="glyphicon glyphicon-ban-circle">Cancel all</span> 
-                    </button>
+                    </button> -->
                     <button type="button" class="btn btn-danger btn-s" (click)="uploader.clearQueue()" [disabled]="!uploader.queue.length">
                         <span class="glyphicon glyphicon-trash">Remove all</span>
                     </button>
