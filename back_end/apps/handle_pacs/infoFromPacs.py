@@ -1,6 +1,7 @@
 # -*-coding:utf-8-*-
 from setPacs import pacsconf
-from md.dicom.python.dicom_service import DicomService
+# from md.dicom.python.dicom_service import DicomService
+from pku.dicom.dicom_service import DicomService
 # from back_end.util.dicom_service import DicomService
 
 
@@ -17,7 +18,8 @@ class GetInfoFromPacs(object):
         try:
             access_dicom = DicomService(pacs_ae_title=pacsconf.pacs_ae_title, pacs_ip=pacsconf.pacs_ip,
                                         pacs_port=pacsconf.pacs_port,
-                                        client_ae_title=pacsconf.client_ae_title, client_port=pacsconf.client_port)
+                                        client_ae_title=pacsconf.client_ae_title, client_port=pacsconf.client_port,
+                                        dcm_file_path='d:/dcm')
             access_dicom.connect()
         except:
             raise ConnectPacsERROR('PACS连接失败')

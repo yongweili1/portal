@@ -7,7 +7,6 @@ import math
 import threadpool
 from rest_framework.response import Response
 
-from md.dicom.python.dicom_service import DicomService
 from rest_framework.views import APIView
 from infoFromPacs import pacsinfo
 from infoFromPacs import ConnectPacsERROR
@@ -112,17 +111,19 @@ class SavePacsImageByPatient(APIView):
 
         try:
             access_dicom = pacsinfo.connectpacs()
+            access_dicom.set_need_save_file(1)
             for patient_id in patient_id_list:
                 patient_studies = access_dicom.find_studies_by_patient_id(patient_id)
                 for patient_study in patient_studies:
-                    patient_series = access_dicom.find_series_by_study_uid(patient_study)
+                    patient_series, _ = access_dicom.find_series_by_study_uid(patient_study)
+                    # patient_series = access_dicom.find_series_by_study_uid(patient_study)
                     for series_uid in patient_series:
-                        dataset_list = access_dicom.get_images_by_series_uid(series_uid)
+                        dataset_list = access_dicom.get_series_by_uid(series_uid)
                         upload_dcm = UploadDcm()
-                        # upload_dcm.upload_dcm(datasetlist=dataset_list)
-                        pool = threadpool.ThreadPool(10)
-                        requests = threadpool.makeRequests(upload_dcm.upload_dcm, dataset_list)
-                        [pool.putRequest(req) for req in requests]
+                        upload_dcm.upload_dcm(datasetlist=dataset_list)
+                        # pool = threadpool.ThreadPool(10)
+                        # requests = threadpool.makeRequests(upload_dcm.upload_dcm, dataset_list)
+                        # [pool.putRequest(req) for req in requests]
         except Exception as e:
             return Response('download failed')
 
