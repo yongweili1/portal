@@ -185,16 +185,26 @@ class LoadVolume(APIView):
 
     def put(self, request):
 
-        seriesuid = request.GET.get('seriesuid', None)
+        request_data = request.data
         user_ip = request.META.get('REMOTE_ADDR', None)
-        seriespath = getpath(seriesuid)
+
+        if request_data is None:
+            return Response('请携带有效的seriesuid')
+        seriesuid = request_data['params']['updates'][0]['value']
+        seriespath = getpath.getseriespath(seriesuid)
+
+        # if not os.path.exists(seriespath):
+        #     return Response('请确认series路径是否存在')
+
         if len(os.listdir(seriespath)) <= 1:
             return Response('series下的dicom文件单一，无法build volume')
+
         try:
             buildvol = DicomToVolume()
             volfilepath, seriesuid = buildvol.dicom_to_volume(seriespath)
         except Exception as e:
             return Response('dicom文件不符合规范,创建volume失败')
+
         try:
             UploadVolume(volfilepath, seriesuid)
         except Exception as e:

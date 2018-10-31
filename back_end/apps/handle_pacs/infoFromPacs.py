@@ -2,10 +2,10 @@
 import os
 
 from setPacs import pacsconf
-# from md.dicom.python.dicom_service import DicomService
 from back_end.util.setFilePath import SaveDicomFilePath
-from pydicom.dataset import Dataset
-from pku.dicom.dicom_service import DicomService
+# from pku.dicom.dicom_service import DicomService
+from back_end.dicoms.dicom_service import DicomService
+
 
 class ConnectPacsERROR(Exception):
     pass
@@ -20,8 +20,8 @@ class GetInfoFromPacs(object):
         try:
             access_dicom = DicomService(pacs_ae_title=pacsconf.pacs_ae_title, pacs_ip=pacsconf.pacs_ip,
                                         pacs_port=pacsconf.pacs_port,
-                                        client_ae_title=pacsconf.client_ae_title, client_port=pacsconf.client_port)
-
+                                        client_ae_title=pacsconf.client_ae_title, client_port=pacsconf.client_port,
+                                        dcm_file_path='d:/dcm')
             access_dicom.connect()
         except:
             raise ConnectPacsERROR('PACS连接失败')
@@ -53,10 +53,10 @@ class GetInfoFromPacs(object):
             studyuid_list = access_dicom.find_studies_by_patient_id(patientid)
 
             for studyuid in studyuid_list:
-                seriesuid_list = access_dicom.find_series_by_study_uid(studyuid)
+                seriesuid_tuple = access_dicom.find_series_by_study_uid(studyuid)
                 seriespath_length_dict = {}
 
-                for seriesuid in seriesuid_list:
+                for seriesuid in seriesuid_tuple[0]:
                     dataset_list = access_dicom.get_series_by_uid(seriesuid)
                     datasets_list.append(dataset_list)
                     series_path = os.path.join(access_dicom.dcm_file_path, str(seriesuid))

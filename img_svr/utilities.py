@@ -171,4 +171,7 @@ def cal_angle(size, pre_pos, cur_pos):
     cur_vec = np.array([cur_pos[0] - cent_x, cur_pos[1] - cent_y])
     cos_angle = pre_vec.dot(cur_vec) / np.linalg.norm(pre_vec) / np.linalg.norm(cur_vec)
     angle = np.arccos(cos_angle)
+    if pre_vec[0] * cur_vec[1] - pre_vec[1] * cur_vec[0] < 0:
+        angle = -angle
+    print("=== angel: {}===".format(angle))
     return angle

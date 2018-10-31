@@ -4,19 +4,19 @@ from __future__ import unicode_literals
 # Create your views here.
 import json
 import math
+import os
+
 import threadpool
 from rest_framework.response import Response
 
-from md.dicom.python.dicom_service import DicomService
-import os
-
-from rest_framework.response import Response
 from rest_framework.views import APIView
 from infoFromPacs import pacsinfo
 from infoFromPacs import ConnectPacsERROR
+
 from back_end.util.upload_dcm_to_db import UploadDcm
 from back_end.util.buildVolume import DicomToVolume
 from back_end.util.upload_vol_to_db import UploadVolume
+from back_end.util.setFilePath import SaveDicomFilePath
 
 
 class GetPatient(APIView):
@@ -58,10 +58,10 @@ class DownloadImage(APIView):
         if not patients_str:
             return Response('请传入有效的patientID')
         patients_list = patients_str.split(',')
-        try:
-            datasets_list, patient_series_dict = pacsinfo.getimage(patients_list)
-        except Exception as e:
-            return Response('从PACS获取数据过程出错，请重试')
+        # try:
+        datasets_list, patient_series_dict = pacsinfo.getimage(patients_list)
+        # except Exception as e:
+        #     return Response('从PACS获取数据过程出错，请重试')
 
         for dataset_list in datasets_list:
             try:
@@ -106,66 +106,22 @@ class DownloadImage(APIView):
 #
 #         try:
 #             access_dicom = pacsinfo.connectpacs()
+#             access_dicom.set_need_save_file(1)
+#
+#             series_path = SaveDicomFilePath.location_3
+#             access_dicom.set_dcm_file_path(series_path)
 #             for patient_id in patient_id_list:
 #                 patient_studies = access_dicom.find_studies_by_patient_id(patient_id)
 #                 for patient_study in patient_studies:
-#                     patient_series = access_dicom.find_series_by_study_uid(patient_study)
+#                     patient_series, _ = access_dicom.find_series_by_study_uid(patient_study)
+#                     # patient_series = access_dicom.find_series_by_study_uid(patient_study)
 #                     for series_uid in patient_series:
-#                         dataset_list = access_dicom.get_images_by_series_uid(series_uid)
+#                         dataset_list = access_dicom.get_series_by_uid(series_uid)
 #                         upload_dcm = UploadDcm()
-#                         # upload_dcm.upload_dcm(datasetlist=dataset_list)
-#                         pool = threadpool.ThreadPool(10)
-#                         requests = threadpool.makeRequests(upload_dcm.upload_dcm, dataset_list)
-#                         [pool.putRequest(req) for req in requests]
-#         except Exception as e:
-#             return Response('download failed')
-#
-#         return Response('OK')
-#         seriesuid = str(request.GET.get('series_uid'))
-
-        # pacs = PacsConf()
-        # access_dicom = DicomService(pacs_ae_title=pacs.pacs_ae_title, pacs_ip=pacs.pacs_ip, pacs_port=pacs.pacs_port,
-        #                             client_ae_title=pacs.client_ae_title, client_port=pacs.client_port)
-        # access_dicom.connect()
-        # datasetlist = access_dicom.get_images_by_series_uid(seriesuid)
-        #
-        # upload_dcm = UploadDcm()
-        # upload_dcm.upload_dcm(datasetlist=datasetlist)
-
-        # return Response('OK')
-
-
-# class SavePacsImageByPatient(APIView):
-#     """
-#     input: a patient id list
-#     save images to database
-#     """
-#
-#     def get(self, request):
-#         try:
-#             patient_id_str = str(request.GET.get('patient_id_list'))
-#             patient_id_list = []
-#             if ',' not in patient_id_str:
-#                 patient_id_list.append(patient_id_str)
-#             else:
-#                 patient_id_all = patient_id_str.split(',')
-#                 patient_id_list = map(str, patient_id_all)
-#         except Exception as e:
-#             return Response('patient id is not valid')
-#
-#         try:
-#             access_dicom = pacsinfo.connectpacs()
-#             for patient_id in patient_id_list:
-#                 patient_studies = access_dicom.find_studies_by_patient_id(patient_id)
-#                 for patient_study in patient_studies:
-#                     patient_series = access_dicom.find_series_by_study_uid(patient_study)
-#                     for series_uid in patient_series:
-#                         dataset_list = access_dicom.get_images_by_series_uid(series_uid)
-#                         upload_dcm = UploadDcm()
-#                         # upload_dcm.upload_dcm(datasetlist=dataset_list)
-#                         pool = threadpool.ThreadPool(10)
-#                         requests = threadpool.makeRequests(upload_dcm.upload_dcm, dataset_list)
-#                         [pool.putRequest(req) for req in requests]
+#                         upload_dcm.upload_dcm(datasetlist=dataset_list)
+#                         # pool = threadpool.ThreadPool(10)
+#                         # requests = threadpool.makeRequests(upload_dcm.upload_dcm, dataset_list)
+#                         # [pool.putRequest(req) for req in requests]
 #         except Exception as e:
 #             return Response('download failed')
 #

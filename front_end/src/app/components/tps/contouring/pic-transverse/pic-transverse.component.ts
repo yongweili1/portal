@@ -8,6 +8,7 @@ import { glsource } from './glsource.modal';
 import { AppConfigService } from '../../../../app.config';
 import { LazyExcuteHandler } from '../lazy_excute_handler';
 import { Hitbar } from '../../shared/overlay/hitbar';
+import { KeyValuePair } from '../../../../shared/common/keyvaluepair';
 declare var $: any;
 declare var createjs: any;
 declare var THREE: any;
@@ -18,7 +19,7 @@ declare var vec3: any;
 declare var mat3: any;
 declare var vec2: any;
 declare var vec4: any;
-
+declare var actions: any;
 
 @Component({
     selector: 'mpt-pic-transverse',
@@ -28,9 +29,9 @@ declare var vec4: any;
 export class PicTransverseComponent implements OnChanges {
 
     scale = 1.0; transX = 0.0; transY = 0.0;
-    canvas: any; canbas: any; crosscan: any; nugevas: any; primitivecan: any; primitivedrawcan: any
+    canvas: any; canbas: any; crosscan: any; toolsvas: any; primitivecan: any; primitivedrawcan: any
     @Input() tag: any; @Input() imageWidth; @Input() imageHeight; @Input() pageindex;
-    @Input() wl; @Input() ww;// 窗宽
+    @Input() wl:any = 0; @Input() ww:any = 2000;// 窗宽
     @Input() spacingX; @Input() spacingY; @Input() gap; @Input() sliceAll;
     @Input() pixelRepresentation; @Input() rescaleSlope; @Input() rescaleIntercept;
     @Input() firstImagePosition; @Input() lastImagePosition; @Input() hasLoadVolume;
@@ -61,6 +62,8 @@ export class PicTransverseComponent implements OnChanges {
     focus: any; display: any;
     lazyExcuteHandler: LazyExcuteHandler;
     name: string;
+    viewWL:any;
+    viewWW:any;
 
     constructor(
         public http: HttpClient,
@@ -85,7 +88,7 @@ export class PicTransverseComponent implements OnChanges {
             this.canbas = $(".a_class");
             this.crosscan = $(".a_class .crosscan").get(0);
             this.primitivedrawcan = $(".a_class .primitivedrawcan").get(0);
-            this.nugevas = $(".a_class #nugeCanvas").get(0);
+            this.toolsvas = $(".a_class #toolsCanvas").get(0);
             this.canbas.find(".mpr").text('Transverse');
         }
         if (this.tag == "coronal") {
@@ -93,7 +96,7 @@ export class PicTransverseComponent implements OnChanges {
             this.canbas = $(".b_class");
             this.crosscan = $(".b_class .crosscan").get(0);
             this.primitivedrawcan = $(".b_class .primitivedrawcan").get(0);
-            this.nugevas = $(".b_class #nugeCanvas").get(0);
+            this.toolsvas = $(".b_class #toolsCanvas").get(0);
             this.canbas.find(".mpr").text('Coronal');
             var myCanvas = $('.b_class #canvas-frame').get(0);
             var lightPoint = new Array(0, 0, 100);
@@ -103,7 +106,7 @@ export class PicTransverseComponent implements OnChanges {
             this.canbas = $(".c_class");
             this.crosscan = $(".c_class .crosscan").get(0);
             this.primitivedrawcan = $(".c_class .primitivedrawcan").get(0);
-            this.nugevas = $(".c_class #nugeCanvas").get(0);
+            this.toolsvas = $(".c_class #toolsCanvas").get(0);
             this.canbas.find(".mpr").text('Sagittal');
             var myCanvas = $('.c_class #canvas-frame').get(0);
             var lightPoint = new Array(100, 0, 0)
@@ -118,9 +121,8 @@ export class PicTransverseComponent implements OnChanges {
             that.calcviewportsize();
             console.log("=== resize ===")
         });
-        this.conMessage.curAction$.subscribe(
-            curAction => this.curAction = curAction
-        )
+        this.viewWW = 2000;
+        this.viewWL = 0;
     }
 
     //设置和区分canvas窗口大小
@@ -145,8 +147,8 @@ export class PicTransverseComponent implements OnChanges {
         this.crosscan.setAttribute('height', this.viewportHeight);
         this.primitivedrawcan.setAttribute('width', this.viewportWidth); //图元操作绘画层的canvas
         this.primitivedrawcan.setAttribute('height', this.viewportHeight);
-        this.nugevas.setAttribute('width', this.viewportWidth);//nuge的canvas
-        this.nugevas.setAttribute('height', this.viewportHeight);
+        this.toolsvas.setAttribute('width', this.viewportWidth);//nuge的canvas
+        this.toolsvas.setAttribute('height', this.viewportHeight);
         this.drawCross(this.nix, this.niy, this.canbas.get(0));
     }
 
@@ -205,8 +207,7 @@ export class PicTransverseComponent implements OnChanges {
      * 清除所有图元
      */
     clearPri() {
-        this.primitivedrawcan.getContext("2d").clearRect(0, 0, this.primitivedrawcan.width, this.primitivedrawcan.height);
-        this.conMessage.SetCurAction("clearAllShape");
+        this.conMessage.setActionInfo(new KeyValuePair(actions.clear))
     }
 
     /**
@@ -274,7 +275,7 @@ export class PicTransverseComponent implements OnChanges {
     }
 
     handleMouseDown(evt) {
-        if (this.curAction != 'croselect' 
+        if (this.curAction != 'croselect'
             || evt.currentTarget == this.verticalLine
             || evt.currentTarget == this.horizontalLine
             || evt.currentTarget == this.crossPoint) return;
@@ -353,35 +354,55 @@ export class PicTransverseComponent implements OnChanges {
         //   this.cross(this.scrCrossPt[0], this.scrCrossPt[1], this.canbas.get(0));
     }
 
-    onClickwl(inval) {
-        this.wl = inval;
-        this.wwwlReq2.emit([this.ww,this.wl]);
-    }
-    onClickww(inval) {
-        this.ww = inval;
-        this.wwwlReq2.emit([this.ww,this.wl]);
+    onChangewlww(inval) {
+        console.log(inval)
+        let wwwlStrArray = inval.split(',')
+        let wwwlIntArray = []
+        let flag = 'true'
+        wwwlStrArray.forEach(element => {''
+            try{
+                wwwlIntArray.push(Number(element));
+            }
+            catch(err){
+                console.log('cant convert to number');
+                flag = 'false'
+            }
+        });        
+        if(typeof(wwwlIntArray[0])=='number' && wwwlIntArray[0] > 0){
+            this.ww = wwwlIntArray[0]
+        }
+        else{
+            flag = 'false'
+        }
+        if(typeof(wwwlIntArray[1])=='number'){
+            this.wl = wwwlIntArray[1]
+        }
+        else{
+            flag = 'false'
+        }
+        this.wwwlReq2.emit([this.ww, this.wl, flag]);
     }
 
     clearmouse() {
         $('#threebmp').removeClass();
         this.canbas.get(0).onmousedown = null;
-        // this.canbas.get(0).onmouseup = null;
     }
 
     addPanEvent() {
         let that = this;
         $('#threebmp').removeClass().addClass("MoveCursor");
-        that.canbas.get(0).onmousedown = function (e) {
+        that.toolsvas.onmousedown = function (e) {
             let prePos = [e.clientX, e.clientY];
-            that.canbas.get(0).onmousemove = function (e) {
+            console.log('enter pan mouse down');
+            that.toolsvas.onmousemove = function (e) {
                 if (!that.lazyExcuteHandler.canExcuteByCount()) return;
                 let curPos = [e.clientX, e.clientY];
                 that.panReq.emit([that.tag, prePos, curPos]);
                 prePos = curPos;
             };
-            that.canbas.get(0).onmouseup = function () {
-                that.canbas.get(0).onmousemove = null;
-                that.canbas.get(0).onmouseup = null;
+            that.toolsvas.onmouseup = function () {
+                that.toolsvas.onmousemove = null;
+                that.toolsvas.onmouseup = null;
             };
         }
     }
@@ -389,10 +410,10 @@ export class PicTransverseComponent implements OnChanges {
     addZoomEvent() {
         let that = this;
         $('#threebmp').removeClass().addClass("ZoomCursor");
-        that.canbas.get(0).onmousedown = function (e) {
+        that.toolsvas.onmousedown = function (e) {
             let zoom_factor = 0;
             let preY = e.clientY;
-            that.canbas.get(0).onmousemove = function (e) {
+            that.toolsvas.onmousemove = function (e) {
                 if (!that.lazyExcuteHandler.canExcuteByCount()) return;
                 let curY = e.clientY;
                 let shiftY = curY - preY;
@@ -405,37 +426,37 @@ export class PicTransverseComponent implements OnChanges {
 
                 that.zoomReq.emit([that.tag, zoom_factor]);
             }
-            that.canbas.get(0).onmouseup = function (e) {
-                that.canbas.get(0).onmousemove = null;
-                that.canbas.get(0).onmouseup = null;
+            that.toolsvas.onmouseup = function (e) {
+                that.toolsvas.onmousemove = null;
+                that.toolsvas.onmouseup = null;
             }
         }
     }
 
     addRotateEvent() {
         let that = this;
-        that.canbas.get(0).onmousedown = function (e) {
+        that.toolsvas.onmousedown = function (e) {
             let prePos = [e.clientX, e.clientY];
-            that.canbas.get(0).onmousemove = function (e) {
+            that.toolsvas.onmousemove = function (e) {
                 if (!that.lazyExcuteHandler.canExcuteByCount()) return;
                 let curPos = [e.clientX, e.clientY];
                 that.rotateReq.emit([that.tag, prePos, curPos]);
                 prePos = curPos;
             };
-            that.canbas.get(0).onmouseup = function () {
-                that.canbas.get(0).onmousemove = null;
-                that.canbas.get(0).onmouseup = null;
+            that.toolsvas.onmouseup = function () {
+                that.toolsvas.onmousemove = null;
+                that.toolsvas.onmouseup = null;
             };
         }
     }
     addChangeWlEvent() {
         let that = this;
-        that.canbas.get(0).onmousedown = function (e) {
+        that.toolsvas.onmousedown = function (e) {
             let ww_factor = 0;
             let wl_factor = 0;
             let preX = e.clientX
             let preY = e.clientY;
-            that.canbas.get(0).onmousemove = function (e) {
+            that.toolsvas.onmousemove = function (e) {
                 if (!that.lazyExcuteHandler.canExcuteByCount()) return;
                 let curX = e.clientX;
                 let curY = e.clientY;
@@ -450,9 +471,9 @@ export class PicTransverseComponent implements OnChanges {
                 preY = curY;
                 that.wwwlReq.emit([that.tag, ww_factor, wl_factor]);
             }
-            that.canbas.get(0).onmouseup = function (e) {
-                that.canbas.get(0).onmousemove = null;
-                that.canbas.get(0).onmouseup = null;
+            that.toolsvas.onmouseup = function (e) {
+                that.toolsvas.onmousemove = null;
+                that.toolsvas.onmouseup = null;
             }
         }
     }
@@ -699,7 +720,7 @@ export class PicTransverseComponent implements OnChanges {
         return shader;
     }
 
-    cellUpdate(imageData, crossPoint, graphics=null) {
+    cellUpdate(imageData, crossPoint, graphics = null) {
         if (imageData != null)
             this.drawCanvasPic(imageData);
         if (crossPoint != null)
@@ -724,6 +745,5 @@ export class PicTransverseComponent implements OnChanges {
             ctx1.drawImage(img1, 0, 0, that.canvas.width, that.canvas.height);
         }
     }
-
 
 }
