@@ -2,11 +2,10 @@
 import os
 
 from setPacs import pacsconf
-from md.dicom.python.dicom_service import DicomService
-from md.dicom.python.c_get_scu import CGetScu
+# from md.dicom.python.dicom_service import DicomService
 from back_end.util.setFilePath import SaveDicomFilePath
 from pydicom.dataset import Dataset
-
+from pku.dicom.dicom_service import DicomService
 
 class ConnectPacsERROR(Exception):
     pass
@@ -47,6 +46,8 @@ class GetInfoFromPacs(object):
 
         access_dicom = self.connectpacs()
         access_dicom.set_need_save_file(1)
+        series_path = SaveDicomFilePath.location_3
+        access_dicom.set_dcm_file_path(series_path)
 
         for patientid in patients_list:
             studyuid_list = access_dicom.find_studies_by_patient_id(patientid)
@@ -56,7 +57,7 @@ class GetInfoFromPacs(object):
                 seriespath_length_dict = {}
 
                 for seriesuid in seriesuid_list:
-                    dataset_list = access_dicom.get_images_by_series_uid(seriesuid)
+                    dataset_list = access_dicom.get_series_by_uid(seriesuid)
                     datasets_list.append(dataset_list)
                     series_path = os.path.join(access_dicom.dcm_file_path, str(seriesuid))
                     seriespath_length_dict[len(os.listdir(series_path))] = series_path
