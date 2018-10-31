@@ -176,20 +176,40 @@ export class ContouringComponent implements OnInit {
         });
         this.conMessage.actionInfo$.subscribe(value => {
             this.actionInfo = value;
-            if (this.actionInfo.key() == actions.locate) {
+            let toolsActionArray = ['zoom', 'pan','rotate','window']
+            let priActionArray = ['shape', 'clear','select']
+            if (this.actionInfo.key() == actions.locate ) {
                 this.picLeft1.SetCanvasIndex("#crossCanvas", 10);
                 this.picLeft2.SetCanvasIndex("#crossCanvas", 10);
                 this.picLeft3.SetCanvasIndex("#crossCanvas", 10);
                 this.picLeft1.SetCanvasIndex("#primitiveDrawCanvas", 9);
                 this.picLeft2.SetCanvasIndex("#primitiveDrawCanvas", 9);
                 this.picLeft3.SetCanvasIndex("#primitiveDrawCanvas", 9);
-            } else {
+                this.picLeft1.SetCanvasIndex("#toolsCanvas", 8);
+                this.picLeft2.SetCanvasIndex("#toolsCanvas", 8);
+                this.picLeft3.SetCanvasIndex("#toolsCanvas", 8);
+            } 
+            else if(priActionArray.indexOf(this.actionInfo.key())>-1){
                 this.picLeft1.SetCanvasIndex("#crossCanvas", 9);
                 this.picLeft2.SetCanvasIndex("#crossCanvas", 9);
                 this.picLeft3.SetCanvasIndex("#crossCanvas", 9);
                 this.picLeft1.SetCanvasIndex("#primitiveDrawCanvas", 10);
                 this.picLeft2.SetCanvasIndex("#primitiveDrawCanvas", 10);
                 this.picLeft3.SetCanvasIndex("#primitiveDrawCanvas", 10);
+                this.picLeft1.SetCanvasIndex("#toolsCanvas", 8);
+                this.picLeft2.SetCanvasIndex("#toolsCanvas", 8);
+                this.picLeft3.SetCanvasIndex("#toolsCanvas", 8);
+            }
+            else{
+                this.picLeft1.SetCanvasIndex("#crossCanvas", 9);
+                this.picLeft2.SetCanvasIndex("#crossCanvas", 9);
+                this.picLeft3.SetCanvasIndex("#crossCanvas", 9);
+                this.picLeft1.SetCanvasIndex("#primitiveDrawCanvas", 8);
+                this.picLeft2.SetCanvasIndex("#primitiveDrawCanvas", 8);
+                this.picLeft3.SetCanvasIndex("#primitiveDrawCanvas", 8);
+                this.picLeft1.SetCanvasIndex("#toolsCanvas", 10);
+                this.picLeft2.SetCanvasIndex("#toolsCanvas", 10);
+                this.picLeft3.SetCanvasIndex("#toolsCanvas", 10);
             }
         });
         this.activeRoute.queryParams.subscribe(params => {
