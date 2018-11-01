@@ -243,7 +243,7 @@ body {
     body .ui-inputswitch.ui-inputswitch-checked.ui-inputswitch-focus .ui-inputswitch-slider {
       background: #005b9f; }
   body .ui-autocomplete .ui-autocomplete-dropdown .ui-button-icon-left:before {
-    content: ""; }
+    content: "▽"; }
   body .ui-autocomplete .ui-autocomplete-input {
     padding: 0.429em; }
   body .ui-autocomplete.ui-autocomplete-multiple .ui-autocomplete-multiple-container {
@@ -358,7 +358,7 @@ body {
       padding: 0;
       color: #737373; }
       body .ui-dropdown .ui-dropdown-trigger .ui-dropdown-trigger-icon:before {
-        content: ""; }
+        content: "▽"; }
     body .ui-dropdown .ui-dropdown-clear-icon {
       color: #737373; }
     body .ui-dropdown:not(.ui-state-disabled).ui-state-focus {
@@ -432,7 +432,7 @@ body {
       padding: 0;
       color: #737373; }
       body .ui-multiselect .ui-multiselect-trigger .ui-multiselect-trigger-icon:before {
-        content: ""; }
+        content: "▽"; }
   body .ui-multiselect-panel {
     padding: 0;
     border: 1px solid #c8c8c8;
@@ -1077,7 +1077,7 @@ body .ui-splitbutton.ui-buttonset .ui-button {
 body .ui-splitbutton.ui-buttonset .ui-menu {
   min-width: 100%; }
 body .ui-splitbutton.ui-buttonset .ui-splitbutton-menubutton .ui-button-icon-left:before {
-  content: ""; }
+  content: "▽"; }
 body .ui-button.ui-state-default.ui-button-secondary, body .ui-buttonset.ui-button-secondary > .ui-button.ui-state-default {
   color: #333333;
   background-color: #f4f4f4;
@@ -1251,7 +1251,7 @@ body .ui-accordion .ui-accordion-header {
       body .ui-accordion .ui-accordion-header a .ui-accordion-toggle-icon.pi-caret-right:before {
         content: ""; }
       body .ui-accordion .ui-accordion-header a .ui-accordion-toggle-icon.pi-caret-down:before {
-        content: ""; }
+        content: "▽"; }
   body .ui-accordion .ui-accordion-header:not(.ui-state-active):not(.ui-state-disabled):hover a {
     background-color: #494949;
     border: 1px solid #494949;
@@ -2572,9 +2572,9 @@ body .ui-panelmenu .ui-panelmenu-header {
     body .ui-panelmenu .ui-panelmenu-header > a .ui-panelmenu-icon {
       color: #ffffff; }
       body .ui-panelmenu .ui-panelmenu-header > a .ui-panelmenu-icon.pi-caret-right:before {
-        content: ""; }
+        content: "▽"; }
       body .ui-panelmenu .ui-panelmenu-header > a .ui-panelmenu-icon.pi-caret-down:before {
-        content: ""; }
+        content: "▽"; }
   body .ui-panelmenu .ui-panelmenu-header:not(.ui-state-active) > a:hover {
     outline: 0 none;
     border: 1px solid #494949;

@@ -32,8 +32,10 @@ class CellUpdater(BaseUpdater):
                     self.update_graphic(scene, workflow)
                 elif t == RefreshType.Text:
                     pass
+                elif t == RefreshType.Wwwl:
+                    self.update_wwwl(scene)
                 elif t == RefreshType.All:
-                    self.update(RefreshType.Image, RefreshType.Crosshair, RefreshType.Graphic)
+                    self.update(RefreshType.Image, RefreshType.Crosshair, RefreshType.Graphic, RefreshType.Wwwl)
         except Exception, e:
             print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! CellUpdater update() ---> {}'.format(e)
 
@@ -61,3 +63,6 @@ class CellUpdater(BaseUpdater):
         #     shift = (pt2d_cur[0] - pt2d_pre[0], pt2d_cur[1] - pt2d_pre[1])
         #     graphics_dict[GraphicType.Circle].append((pt2d_pre[0], pt2d_pre[1]), np.linalg.norm(shift))
 
+    def update_wwwl(self, scene):
+        wwwl = scene.get_window_level()
+        self._result[RefreshType.Wwwl] = wwwl
