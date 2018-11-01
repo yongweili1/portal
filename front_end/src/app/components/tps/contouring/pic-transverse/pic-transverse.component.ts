@@ -720,12 +720,13 @@ export class PicTransverseComponent implements OnChanges {
         return shader;
     }
 
-    cellUpdate(imageData, crossPoint, graphics = null) {
+    cellUpdate(imageData, crossPoint, graphics = null, wwwl = null) {
         if (imageData != null)
             this.drawCanvasPic(imageData);
         if (crossPoint != null)
             this.cross(crossPoint[0], crossPoint[1], 1);
         this.updateGraphics(graphics);
+        this.updateWWWL(wwwl);
     }
 
     updateGraphics(graphics) {
@@ -743,6 +744,12 @@ export class PicTransverseComponent implements OnChanges {
             let ctx1 = that.canvas.getContext("2d");
             ctx1.clearRect(0, 0, that.canvas.width, that.canvas.height);
             ctx1.drawImage(img1, 0, 0, that.canvas.width, that.canvas.height);
+        }
+    }
+    updateWWWL(wwwl){
+        if(wwwl != null && wwwl != undefined && Array.isArray(wwwl) == true){
+            this.viewWW = Math.round(wwwl[0])
+            this.viewWL = Math.round(wwwl[1])
         }
     }
 

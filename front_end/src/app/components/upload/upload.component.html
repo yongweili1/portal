@@ -10,7 +10,7 @@
                 <div style="height:100px;display:flex;justify-content:center;align-items:center;margin-bottom:30px;" ng2FileDrop [ngClass]="{'another-file-over-class': hasAnotherDropZoneOver}" (fileOver)="fileOverAnother($event)" [uploader]="uploader" class="well my-drop-zone">
                     Drop zone
                 </div>
-                <span>Warning: Up to 2000 files.</span>
+                <span>Warning: 2000 files at most.</span>
                 <br>
                 <input type="file" ng2FileSelect [uploader]="uploader" (change)="selectedFileOnChanged($event)" multiple/>
                 <!-- <input type="file" ng2FileSelect [uploader]="uploader" (change)="selectedFileOnChanged($event)" multiple webkitdirectory/> -->
