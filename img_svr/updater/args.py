@@ -5,4 +5,5 @@ class RefreshType(object):
     Crosshair = 'crosshair'
     Text = 'text'
     Mask = 'mask'
+    Wwwl = 'wwwl'
     All = 'all'
