@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { WebSocketService } from '../../../services/web-socket.service'
 
 @Component({
   selector: 'mpt-user-setting',
@@ -7,9 +8,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UserSettingComponent implements OnInit {
 
-  constructor() { }
+  constructor(private webSocket: WebSocketService) { }
 
   ngOnInit() {
+      this.webSocket.createObservableSocket().subscribe(result=>{
+          console.log(result)
+      })
   }
 
 }

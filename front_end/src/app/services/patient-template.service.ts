@@ -3,7 +3,6 @@ import { URLSearchParams } from '@angular/http';
 import { Observable, of } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { HttpParams } from "@angular/common/http";
-import { AjaxService } from "../services/ajax.service";
 
 import { AppConfigService } from '../app.config';
 import { AuthHttp } from '../core/auth-http';
@@ -14,15 +13,17 @@ import {
     PatientPageDeleteRequest
 } from '../components/patient-template/shared/patient-template.model';
 import { ToastService } from '../core/toast.service';
+import { PacsModule } from '../components/pacs/pacs.module'
 
-@Injectable()
+@Injectable({
+    providedIn:PacsModule
+})
 export class PatientTemplateService {
     headers: HttpHeaders;
     constructor(
         private http: HttpClient,
         private appConfig: AppConfigService,
         private messageService: ToastService,
-        private aj: AjaxService
     ) {
         this.headers = new HttpHeaders({
             'Content-Type': 'application/json',

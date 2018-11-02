@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
+
 @Component({
   selector: 'mpt-sys-setting',
   templateUrl: './sys-setting.component.html',

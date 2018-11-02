@@ -19,7 +19,6 @@ declare var $: any;
     selector: 'mpt-upload',
     templateUrl: './upload.component.html',
     styleUrls: ['./upload.component.less'],
-    providers: [MessageService]
 })
 export class UploadComponent {
 
