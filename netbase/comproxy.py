@@ -28,11 +28,11 @@ class PyBaseEventHandler(McsfNetBase.IEventHandler):
     def __init__(self):
         McsfNetBase.IEventHandler.__init__(self)
 
-    def handle_event(self, sender, channel_id, event_id, s_event):
+    def handle_event(self, sender,  event_id, s_event):
         pass
 
     def HandleEvent(self, sSender, iChannelId, iEventId, sEvent):
-        return self.handle_event(sSender, iChannelId, iEventId, sEvent)
+        return self.handle_event(sSender, iEventId, sEvent)
 
 
 class PyASyncCmdCallbackHandler(McsfNetBase.ICommandCallbackHandler):
