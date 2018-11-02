@@ -4,7 +4,7 @@ import os
 # from md.image3d.python.image3d_io import BuildVolume
 from md.image3d.python.image3d_io import write_image, read_dicom_series
 
-from back_end.util.setFilePath import SaveVolumeFilePath
+from serve.static_parameters.setFilePath import SaveVolumeFilePath
 
 
 class DicomToVolume(object):

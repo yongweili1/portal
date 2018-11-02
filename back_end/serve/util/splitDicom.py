@@ -1,32 +1,11 @@
 # -*-coding:utf-8-*-
 import os
 
-from back_end.util.setFilePath import SaveDicomFilePath
-from back_end.util.readDcm import DcmSeries, DcmPatient
+from serve.static_parameters.setFilePath import SaveDicomFilePath
+from serve.util.readDcm import DcmSeries
 
 
 class SplitDicoms(object):
-
-    # def split_patient(self, file_name, dataset):
-    #     """
-    #     Make patient folder according to patientid
-    #     :param file_name: dcm filename
-    #     :param dataset:dicom filedataset
-    #     :return:a series path of this upload
-    #     """
-    #
-    #     dcmpatient = DcmPatient()
-    #     patientid = dcmpatient.get_dicom_patient(dataset)['patientid']
-    #
-    #     patientpath = SaveDicomFilePath.location_3 + str(patientid)
-    #     if os.path.exists(patientpath):
-    #         pass
-    #     else:
-    #         os.mkdir(patientpath)
-    #
-    #     seriespath = self.split_series(patientpath, file_name, dataset)
-    #
-    #     return seriespath
 
     def split_series(self, file_name, dataset):
         """

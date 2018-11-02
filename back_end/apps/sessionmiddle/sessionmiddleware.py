@@ -2,14 +2,15 @@
 import time
 
 from django.utils.deprecation import MiddlewareMixin
-from models import NewDjangoSession, DjangoSession
+from serve.util.models import NewDjangoSession, DjangoSession
 
 
 class MySessionMiddleware(MiddlewareMixin):
 
     def process_request(self, request):
-        requestIP = request.META.get('REMOTE_ADDR', None)
-        print(requestIP)
+        # requestIP = request.META.get('REMOTE_ADDR', None)
+        # print(requestIP)
+        pass
 
     def process_response(self, request, response):
 

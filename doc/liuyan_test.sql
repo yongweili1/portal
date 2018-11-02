@@ -1,16 +1,17 @@
 use ai_portal;
-drop table if exists graph_element; 
-create table graph_element
+drop table if exists contours; 
+create table contours
 (
-   graphelementuid      int auto_increment,
+   uid      			int auto_increment,
    imageuid 		    varchar(64) not null,
-   overlaytype          varchar(64),
-   dotproductpath       varchar(255),
+   dotsetpath	        varchar(255),
+   organ				varchar(255),
+   instance_no          int,
    importdatatime		datetime,
    updatetime           timestamp not null default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-   primary key (graphelementuid),
-   unique key (graphelementuid),
+   primary key (uid),
+   unique key (uid),
    foreign key (imageuid) references image(imageuid) on delete cascade
 )
 ENGINE = InnoDB

@@ -112,7 +112,7 @@ ROOT_URLCONF = 'back_end.urls'  # 总路由
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'back_end/templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'serve/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -144,7 +144,7 @@ DATABASES = {
         # 数据库登陆密码
         'PASSWORD': '111111',
         # 主机名
-        'HOST': '10.9.19.139',
+        'HOST': 'localhost',
         # 端口号
         'PORT': '3306',
         # 编码格式
@@ -214,9 +214,9 @@ REST_FRAMEWORK = {
 # session
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # 引擎（默认）
 
-SESSION_COOKIE_NAME = "besessionid"         # Session的cookie保存在浏览器上时的key，即：besessionid＝随机字符串（默认）
+SESSION_COOKIE_NAME = "besessionid"       # Session的cookie保存在浏览器上时的key，即：besessionid＝随机字符串（默认）
 SESSION_COOKIE_PATH = "/"                 # Session的cookie保存的路径（默认）
-SESSION_COOKIE_DOMAIN = None             # Session的cookie保存的域名（默认）
+SESSION_COOKIE_DOMAIN = None              # Session的cookie保存的域名（默认）
 SESSION_COOKIE_SECURE = False             # 是否Https传输cookie（默认）
 SESSION_COOKIE_HTTPONLY = True            # 是否Session的cookie只支持http传输（默认）
 SESSION_COOKIE_AGE = 600                  # Session的cookie失效日期（2周）（默认）

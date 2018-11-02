@@ -2,8 +2,7 @@ from pydicom.dataset import Dataset
 from pynetdicom3 import AE, QueryRetrievePresentationContexts
 import logging
 
-# from patient import Patient
-from md.dicom.python.patient import Patient
+from patient import Patient
 
 logger = logging.getLogger(__name__)
 logger.setLevel(level=logging.INFO)

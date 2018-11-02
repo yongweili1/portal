@@ -1,8 +1,5 @@
 # # -*- coding: utf-8 -*-
 # from __future__ import unicode_literals
-#
-
-#
 # # Create your models here.
 
 from django.db import models
@@ -33,8 +30,8 @@ class Image(models.Model):
     lossyimagecompression = models.CharField(max_length=16, blank=True, null=True)
     lossyimagecompressionratio = models.CharField(max_length=271, blank=True, null=True)
     pixelspacing = models.CharField(max_length=64, blank=True, null=True)
-    imageorientationpatient = models.CharField(max_length=255, blank=True, null=True)
-    imagepositionpatient = models.CharField(max_length=255, blank=True, null=True)
+    imageorientationpatient = models.CharField(max_length=101, blank=True, null=True)
+    imagepositionpatient = models.CharField(max_length=50, blank=True, null=True)
     slicethickness = models.CharField(max_length=16, blank=True, null=True)
     slicelocation = models.CharField(max_length=16, blank=True, null=True)
     samplesperpixel = models.IntegerField(blank=True, null=True)
@@ -70,7 +67,7 @@ class Patient(models.Model):
 class Series(models.Model):
 
     WHETHER_BUILD = (
-        (0, 'not_build'),
+        (0, 'need_build'),
         (1, 'builded')
     )
     pid = models.AutoField(primary_key=True)
@@ -109,3 +106,71 @@ class Study(models.Model):
     class Meta:
         managed = False
         db_table = 'study'
+
+
+class Script(models.Model):
+    pid = models.AutoField(primary_key=True)
+    scriptname = models.CharField(unique=True, max_length=64)
+    # userid = models.ForeignKey('User', on_delete=models.CASCADE, db_column='userid', to_field='userid')
+    userid = models.CharField(max_length=64)
+    scriptpath = models.CharField(max_length=255, blank=True, null=True)
+    importdatatime = models.DateTimeField(auto_now_add=True)
+    updatetime = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        managed = False
+        db_table = 'script'
+
+
+class NewDjangoSession(models.Model):
+    client_ip = models.CharField(max_length=64)
+    session_key = models.CharField(primary_key=True, max_length=40)
+    session_data = models.CharField(max_length=255)
+    expire_date = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'new_django_session'
+
+
+class Contours(models.Model):
+    uid = models.AutoField(primary_key=True)
+    imageuid = models.ForeignKey('Image', models.DO_NOTHING, db_column='imageuid')
+    dotsetpath = models.CharField(max_length=255, blank=True, null=True)
+    organ = models.CharField(max_length=255, blank=True, null=True)
+    instance_no = models.IntegerField(blank=True, null=True)
+    importdatatime = models.DateTimeField(blank=True, null=True)
+    updatetime = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'contours'
+
+
+class AlgCsv(models.Model):
+    pid = models.AutoField(primary_key=True)
+    image_path = models.CharField(unique=True, max_length=64)
+    x = models.FloatField()
+    y = models.FloatField()
+    z = models.IntegerField()
+    width = models.FloatField()
+    height = models.FloatField()
+    depth = models.IntegerField()
+    probability = models.IntegerField()
+    classname = models.CharField(max_length=64)
+    location = models.CharField(max_length=64)
+
+    class Meta:
+        managed = False
+        db_table = 'alg_csv'
+
+
+class DjangoSession(models.Model):
+    session_key = models.CharField(primary_key=True, max_length=40)
+    session_data = models.TextField()
+    expire_date = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'django_session'
+

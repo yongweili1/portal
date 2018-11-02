@@ -8,9 +8,7 @@ import urllib2
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from patientinformations.models import Series
-from md.image3d.python.image3d_io import read_image
-# from back_end.util.alg_server_API import LOAD_ALG_URL, GET_ALGRESULT_URL
+from serve.util.models import Series
 import ConfigParser
 
 

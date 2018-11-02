@@ -1,6 +1,6 @@
 # -*-coding:utf-8-*-
 import copy
-from patientinformations.models import Study, Series, Patient
+from serve.util.models import Study, Series, Patient
 
 
 class InfoList(object):

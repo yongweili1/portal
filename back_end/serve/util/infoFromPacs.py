@@ -1,10 +1,9 @@
 # -*-coding:utf-8-*-
 import os
 
-from setPacs import pacsconf
-from back_end.util.setFilePath import SaveDicomFilePath
-# from pku.dicom.dicom_service import DicomService
-from back_end.dicoms.dicom_service import DicomService
+from serve.static_parameters.setPacs import pacsconf
+from serve.static_parameters.setFilePath import SaveDicomFilePath
+from serve.mdDicoms.dicom_service import DicomService
 
 
 class ConnectPacsERROR(Exception):
@@ -21,10 +20,10 @@ class GetInfoFromPacs(object):
             access_dicom = DicomService(pacs_ae_title=pacsconf.pacs_ae_title, pacs_ip=pacsconf.pacs_ip,
                                         pacs_port=pacsconf.pacs_port,
                                         client_ae_title=pacsconf.client_ae_title, client_port=pacsconf.client_port,
-                                        dcm_file_path='d:/dcm')
+                                        dcm_file_path=pacsconf.dcm_file_path)
             access_dicom.connect()
         except:
-            raise ConnectPacsERROR('PACS连接失败')
+            raise ConnectPacsERROR
         return access_dicom
 
     def getinformations(self):

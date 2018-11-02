@@ -2,22 +2,17 @@
 from __future__ import unicode_literals
 import os
 import platform
-import time
-
 import pydicom
+
 # Create your views here.
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from back_end.util.setFilePath import SaveDicomFilePath
-
-import platform
-
-from upload_dcm.split_dicoms import SplitDicoms
-from back_end.util.upload_dcm_to_db import UploadDcm
-
-from back_end.util.buildVolume import DicomToVolume
-from back_end.util.upload_vol_to_db import UploadVolume
+from serve.static_parameters.setFilePath import SaveDicomFilePath
+from serve.util.splitDicom import SplitDicoms
+from serve.DBrelated.upload_dcm_to_db import UploadDcm
+from serve.util.buildVolume import DicomToVolume
+from serve.DBrelated.upload_vol_to_db import UploadVolume
 
 if platform.system() == 'Windows':
     import win32file
@@ -38,6 +33,7 @@ class Patinfo(APIView):
         files = request.FILES.getlist('a')
         if len(files) == 0:
             return Response('请选择上传文件')
+        print(len(files))
 
         for f in files:
             destination = open(SaveDicomFilePath.location_2 + f.name, 'wb+')
@@ -62,11 +58,11 @@ class Patinfo(APIView):
                 print('分离DCM失败')
             dataset_list.append(dataset)
 
-        try:
-            uploaddcm = UploadDcm()
-            uploaddcm.upload_dcm(dataset_list)
-        except Exception as e:
-            return Response('DCM数据入库失败，请检查DCM数据是否符合DB字段约束')
+        # try:
+        uploaddcm = UploadDcm()
+        uploaddcm.upload_dcm(dataset_list)
+        # except Exception as e:
+        #     return Response('DCM数据入库失败，请检查DCM数据是否符合DB字段约束')
 
         print('数据入库成功，重新build_volume（此操作比较耗时，请稍等）...')
         for seriespath in set(series_path_list):
