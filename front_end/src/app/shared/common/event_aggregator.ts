@@ -1,11 +1,11 @@
 import { Subject } from 'rxjs/Subject';
 
-export class MsgAggregator {
-    private static _aggregator:MsgAggregator;
+export class EventAggregator {
+    private static _aggregator:EventAggregator;
 
     public static Instance() {
         if (this._aggregator == null)
-            this._aggregator = new MsgAggregator()
+            this._aggregator = new EventAggregator()
         return this._aggregator;
     }
 
