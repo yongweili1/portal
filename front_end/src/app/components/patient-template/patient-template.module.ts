@@ -14,6 +14,7 @@ import {
   PanelModule
 } from 'primeng/primeng';
 import { ToastModule } from 'primeng/toast';
+import { AccordionModule } from 'primeng/accordion';
 import { SharedModule } from '../../shared/shared.module';
 
 import { PaListComponent } from './patient-template.component';
@@ -40,7 +41,8 @@ const routes: Routes = [
     CalendarModule,
     PanelModule,
     RouterModule.forChild(routes),
-    ToastModule
+    ToastModule,
+    AccordionModule
   ],
   declarations: [
     PaListComponent,
