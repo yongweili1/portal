@@ -1,4 +1,4 @@
-import { LazyExcuteHandler } from "../../contouring/lazy_excute_handler";
+import { LazyExcuteHandler } from "../../../contouring/lazy_excute_handler";
 
 export class BaseAction {
     lazyExcuteHandler: LazyExcuteHandler;

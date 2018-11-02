@@ -22,7 +22,7 @@ import { SimpleLayoutComponent } from './layouts/simple-layout.component';
 
 import { ForgotPasswordModule } from './base/forgot-password/forgot-password.module';
 import { RenewPasswordModule } from './base/renew-password/renew-password.module';
-import { ContouringModule} from './components/tps/contouring/contouring.module';
+import { ContouringModule} from './components/contouring/contouring.module';
 import { HomeComponent } from './components/home/home.component';
 
 import { PacsService } from './services/pacs.service';
