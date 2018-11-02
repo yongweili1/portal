@@ -764,7 +764,8 @@ body {
             background-color: #d0d0d0; }
         body .ui-datepicker table td.ui-datepicker-today a {
           background-color: #d0d0d0;
-          color: #ccc; }
+          color: #356577;
+          }
     body .ui-datepicker .ui-datepicker-buttonbar {
       border-top: 1px solid #d8dae2; }
     body .ui-datepicker .ui-timepicker {
@@ -805,7 +806,9 @@ body {
     -moz-border-radius-bottomright: 0;
     -webkit-border-bottom-right-radius: 0;
     border-bottom-right-radius: 0;
-    border-right: 0 none; }
+    border-right: 0 none;
+    width: 220px !important;
+    }
     body .ui-calendar.ui-calendar-w-btn .ui-inputtext:enabled:hover:not(.ui-state-error), body .ui-calendar.ui-calendar-w-btn .ui-inputtext:enabled:focus:not(.ui-state-error) {
       border-right: 0 none; }
   body .ui-calendar.ui-calendar-w-btn .ui-datepicker-trigger.ui-button {

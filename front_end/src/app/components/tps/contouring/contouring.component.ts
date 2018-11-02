@@ -292,9 +292,9 @@ export class ContouringComponent implements OnInit {
         if (this.hasLoadVolume == true) {
             this.seriesHttpService.GetWindowPic(focus_view, ww_factor, wl_factor).subscribe(result => {
                 result = JSON.parse(result);
-                that.picLeft1.cellUpdate(result['0']['image'], result['0']['crosshair'], result['0']['graphic']['contours']);
-                that.picLeft2.cellUpdate(result['1']['image'], result['1']['crosshair'], result['1']['graphic']['contours']);
-                that.picLeft3.cellUpdate(result['2']['image'], result['2']['crosshair'], result['2']['graphic']['contours']);
+                that.picLeft1.cellUpdate(result['0']['image'], result['0']['crosshair'], result['0']['graphic']['contours'], result['0']['wwwl']);
+                that.picLeft2.cellUpdate(result['1']['image'], result['1']['crosshair'], result['1']['graphic']['contours'], result['1']['wwwl']);
+                that.picLeft3.cellUpdate(result['2']['image'], result['2']['crosshair'], result['2']['graphic']['contours'], result['2']['wwwl']);
             })
         }
     }
@@ -414,9 +414,9 @@ export class ContouringComponent implements OnInit {
                     if (result.body == "success") {
                         this.seriesHttpService.GetSeries(seriesId, "", "all", transverseCanvas.width, transverseCanvas.height).subscribe((value) => {
                             let data = JSON.parse(value);
-                            that.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair'], data['0']['graphic']['contours']);
-                            that.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair'], data['1']['graphic']['contours']);
-                            that.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair'], data['2']['graphic']['contours']);
+                            that.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair'], data['0']['graphic']['contours'], data['0']['wwwl']);
+                            that.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair'], data['1']['graphic']['contours'], data['1']['wwwl']);
+                            that.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair'], data['2']['graphic']['contours'], data['2']['wwwl']);
                             this.priMessageService.add({ severity: 'success', detail: 'Load succeed.' });
                         }, (error) => {
                             this.priMessageService.add({ severity: 'error', detail: 'Load failed.' });
@@ -434,9 +434,9 @@ export class ContouringComponent implements OnInit {
                             if (result.body == "success") {
                                 this.seriesHttpService.GetSeries(seriesId, "", "all", transverseCanvas.width, transverseCanvas.height).subscribe((value) => {
                                     let data = JSON.parse(value);
-                                    that.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair'], data['0']['graphic']['contours']);
-                                    that.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair'], data['1']['graphic']['contours']);
-                                    that.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair'], data['2']['graphic']['contours']);
+                                    that.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair'], data['0']['graphic']['contours'], data['0']['wwwl']);
+                                    that.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair'], data['1']['graphic']['contours'], data['1']['wwwl']);
+                                    that.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair'], data['2']['graphic']['contours'], data['2']['wwwl']);
                                     this.priMessageService.add({ severity: 'success', detail: 'Load succeed.' });
                                 }, (error) => {
                                     this.priMessageService.add({ severity: 'error', detail: 'Load failed.' });

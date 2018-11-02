@@ -53,7 +53,7 @@
         <p-column *ngFor="let col of cols" [header]="col.header | translate" [style]="{'width':'120px'}">
             <ng-template pTemplate="body" let-row="rowData">
                 <tr (click)="toContouring(row.patientId)">
-                    <td style="text-align:center">
+                    <td style="text-align:center;cursor: pointer">
                         {{row[col.field]}}
                     </td>
                 </tr>
