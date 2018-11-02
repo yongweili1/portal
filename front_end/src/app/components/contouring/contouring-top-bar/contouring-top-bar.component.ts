@@ -1,9 +1,9 @@
 import { Component, ViewChild, OnInit, Input, Output, EventEmitter, SimpleChanges, OnChanges, } from '@angular/core';
-import { ConMessageService } from '../../shared/service/conMessage.service';
+import { ConMessageService } from '../shared/service/conMessage.service';
 //import { PatientHttpService } from 'TpsShared/TpsService/patientHttp.service';
-import { MenuItem } from '../../../patient-template/shared/patient-template.model'
-import { ContouringService } from '../../shared/service/contouring.service'
-import { KeyValuePair } from '../../../../shared/common/keyvaluepair';
+import { MenuItem } from '../../patient-template/shared/patient-template.model'
+import { ContouringService } from '../shared/service/contouring.service'
+import { KeyValuePair } from '../../../shared/common/keyvaluepair';
 
 declare var actions: any;
 declare var shapes: any;

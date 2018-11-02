@@ -19,20 +19,20 @@ import {
 } from 'primeng/primeng';
 
 import { ToastModule } from 'primeng/toast';
-import { SharedModule } from '../../../shared/shared.module';
+import { SharedModule } from '../../shared/shared.module';
 import { EasyUIModule } from 'ng-easyui/components/easyui/easyui.module';
 
 import { ContouringComponent } from './contouring.component';
-import { ContouringService } from '../shared/service/contouring.service';
+import { ContouringService } from './shared/service/contouring.service';
 import { PicTransverseComponent } from './pic-transverse/pic-transverse.component';
 import { ContouringTopBarComponent } from './contouring-top-bar/contouring-top-bar.component';
-import { ConMessageService } from '../shared/service/conMessage.service';
-import { PatientHttpService } from '../shared/service/patientHttp.service';
-import { RoiHttpService } from '../shared/service/roiHttp.service';
-import { SeriesHttpService } from '../shared/service/seriesHttp.service';
-import { StorageService } from '../shared/service/storage.service';
+import { ConMessageService } from './shared/service/conMessage.service';
+import { PatientHttpService } from './shared/service/patientHttp.service';
+import { RoiHttpService } from './shared/service/roiHttp.service';
+import { SeriesHttpService } from './shared/service/seriesHttp.service';
+import { StorageService } from './shared/service/storage.service';
 import { actionService } from './pic-transverse/action.service';
-import { ContourDirective } from '../shared/directives/contour.directive';
+import { ContourDirective } from './shared/directives/contour.directive';
 import { SeriesListComponent } from './series-list/series-list.component';
 
 
