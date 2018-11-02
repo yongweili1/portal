@@ -7,10 +7,14 @@
         <div class="row" style="height:550px;">
             <div class="col-md-9">
                 <h3>Select files</h3>
-                <div style="height:100px;display:flex;justify-content:center;align-items:center;margin-bottom:50px;" ng2FileDrop [ngClass]="{'another-file-over-class': hasAnotherDropZoneOver}" (fileOver)="fileOverAnother($event)" [uploader]="uploader" class="well my-drop-zone">
+                <div style="height:100px;display:flex;justify-content:center;align-items:center;margin-bottom:30px;" ng2FileDrop [ngClass]="{'another-file-over-class': hasAnotherDropZoneOver}" (fileOver)="fileOverAnother($event)" [uploader]="uploader" class="well my-drop-zone">
                     Drop zone
-                </div>
-                <input type="file" ng2FileSelect [uploader]="uploader" (change)="selectedFileOnChanged($event)" multiple />
+                </div>                
+                <label for="fileupload" id="label-fileupload" class="upload-label">File Upload</label>
+                <input type="file" id="fileupload" ng2FileSelect [uploader]="uploader" (change)="selectedFileOnChanged($event)" multiple/>
+                <label for="dirupload" id="label-dirupload" class="upload-label">Folder Upload</label>
+                <input type="file" id='dirupload' ng2FileSelect [uploader]="uploader" (change)="selectedFileOnChanged($event)" multiple webkitdirectory/>
+                <span style="display:block;margin-top: 3px">Warning: 2000 files at most.</span>
             </div>
             <div class="col-md-9" style="margin-bottom: 40px">
                 <h3>Upload queue</h3>
@@ -60,13 +64,13 @@
                             <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': uploader.progress + '%' }"></div>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-success btn-s" (click)="uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">
+                    <button type="button" class="upload-label" (click)="uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">
                         <span class="glyphicon glyphicon-upload">Upload all</span>
                     </button>
                     <!-- <button type="button" class="btn btn-warning btn-s" (click)="uploader.cancelAll()" [disabled]="!uploader.isUploading">
                         <span class="glyphicon glyphicon-ban-circle">Cancel all</span> 
                     </button> -->
-                    <button type="button" class="btn btn-danger btn-s" (click)="uploader.clearQueue()" [disabled]="!uploader.queue.length">
+                    <button type="button" class="upload-label" (click)="uploader.clearQueue()" [disabled]="!uploader.queue.length">
                         <span class="glyphicon glyphicon-trash">Remove all</span>
                     </button>
                 </div>

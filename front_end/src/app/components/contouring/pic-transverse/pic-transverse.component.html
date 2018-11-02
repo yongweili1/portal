@@ -1,0 +1,31 @@
+<div >
+  <!--   <div class="head">
+        <p class="title">轴状图</p>
+    </div> -->
+    <div class="body" >
+        <!-- <div class="containe" euiResizable (resizing)="rediv()"> -->
+        <div class="containe">
+            <div class="cleft">
+                <span class="mpr"></span><br>
+                <span *ngIf="tag == 'transverse'">Size: <span class="sizeinfo"></span></span>
+            </div>
+            <div *ngIf="tag == 'transverse'" class="cright">
+                <span>WL:</span> <input class="wl" type="number" #wl (change)="onChangewlww(ww.value + ',' + wl.value)" value= "{{ viewWL }}"> <br>
+                <span>WW:</span> <input class="ww" type="number" #ww (change)="onChangewlww(ww.value + ',' + wl.value)" value= "{{ viewWW }}"> 
+            </div>
+            <div class="cleftdown">
+                <span *ngIf="tag == 'transverse'">Slice: <span class="pageindex"></span></span><br>
+                Location: <span class="position"></span>
+            </div>
+            <div class="crightdown">
+                <div id="canvas-frame"></div>
+            </div>
+            <img class="img" [src]="imgurl">
+            <canvas id="demoCanvas" class="icanvas"></canvas>
+            <canvas id="crossCanvas" class="crosscan"></canvas>
+            <canvas id="primitiveDrawCanvas" class="primitivedrawcan" myContour [name]='name'></canvas>
+            <canvas id="toolsCanvas" class="toolscan"></canvas>
+            <div id="isobands" ></div>
+        </div>
+    </div>
+</div>

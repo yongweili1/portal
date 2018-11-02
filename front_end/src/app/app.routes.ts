@@ -10,7 +10,7 @@ import { NoContentComponent } from './base/no-content/no-content.component';
 import { FullLayoutComponent } from './layouts/full-layout.component';
 import { SimpleLayoutComponent } from './layouts/simple-layout.component';
 import { RenewPasswordComponent } from './base/renew-password/renew-password.component';
-import {ContouringComponent } from './components/tps/contouring/contouring.component'
+import {ContouringComponent } from './components/contouring/contouring.component'
 import {HomeComponent} from './components/home/home.component'
 
 /* tslint:disable:max-line-length */

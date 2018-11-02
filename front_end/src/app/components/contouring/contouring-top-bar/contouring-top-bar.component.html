@@ -1,0 +1,67 @@
+<div id="commonTools_1" class="btn-toolbar">
+    <div class="upfloor">
+        <button type="button" class="btn activeToolButton" id="btn_load" title="加载序列" (click)="loadMPR()"><img src="/assets/img/sendImagefilm.svg"></button>
+        <button type="button" class="btn activeToolButton" id="btn_series" title="显示/隐藏序列" (click)="OnHideList()"><img
+                src="" class="fa fa-fw fa-lg fa-list-ul"></button>
+    </div>
+    <div class="downfloor">
+        <span>LOAD FILE</span>
+    </div>
+</div>
+
+<div id="commonTools_2" class="btn-toolbar">
+    <div class="upfloor">
+        <select id="seriesSelect">
+            <option *ngFor="let series of seriesList" value="{{series}}">"{{series}}"</option>
+        </select>
+    </div>
+    <div class="downfloor">
+        <span>SERIES</span>
+    </div>
+</div>
+
+<div id="commonTools_3" class="btn-toolbar">
+    <div class="upfloor">
+        <button type="button" class="btn activeToolButton" id="btn_circle" title="选择图元" (click)="OnSelect()"><img src="/assets/img/butt-arrow.svg"></button>
+        <button type="button" class="btn activeToolButton" id="btn_measure" title="测量" (click)="FuncMeasure()"><img src="/assets/img/butt-measure.svg"></button>
+        <button type="button" class="btn activeToolButton" id="btn_rect" title="矩形" (click)="FuncRectangle()"><img src="/assets/img/butt-rectangle.svg"></button>
+        <button type="button" class="btn activeToolButton" id="btn_circle" title="圆形" (click)="FuncCircle()"><img src="/assets/img/butt-circle.svg"></button>
+        <button type="button" class="btn activeToolButton" id="btn_freepen" title="自由笔" (click)="FuncFreepen()"><img
+                src="/assets/img/butt-freepen.svg"></button>
+        <button type="button" class="btn activeToolButton" id="btn_freepen2" title="自由笔2" (click)="FuncFreepenModify()"><img
+                src="/assets/img/butt-freepen.svg"></button>
+        <button type="button" class="btn activeToolButton" id="btn_removeAll" title="清除所有图元" (click)="OnClearAllClick()"><img
+                src="/assets/img/butt-clear.svg"></button>
+    </div>
+    <div class="downfloor">
+        <span>GRAPHICS</span>
+    </div>
+</div>
+
+<div id="commonTools_4" class="btn-toolbar">
+    <div class="upfloor">
+        <button type="button" class="btn activeToolButton" id="btn_cross" title="十字线" (click)="OnCrossSelect()"><img
+                src="/assets/img/butt-point.svg"></button>
+        <button type="button" class="btn activeToolButton" id="btn_zoom" title="图像缩放" (click)="onImgZoom()"><img src="/assets/img/butt-zooming.svg"></button>
+        <button type="button" class="btn activeToolButton" id="btn_translate" title="图像平移" (click)="onImgPan()"><img
+                src="/assets/img/butt-leftmouse-pan.svg"></button>
+        <button type="button" class="btn activeToolButton fa fa-repeat" id="btn_rotate" title="图像旋转" (click)="onImgRotate()"></button>
+        <button type="button" class="btn activeToolButton fa fa-windows" id="btn_window" title="窗宽窗位" (click)="onImgWindow()"></button>
+        <button type="button" class="btn activeToolButton fa fa-crosshairs" id="btn_center" title="设为中心点" (click)="onImgCenter()"></button>
+        <button type="button" class="btn activeToolButton" id="btn_reset" title="重置" (click)="onImgReset()"><img src="/assets/img/butt-reset-window.svg"></button>
+    </div>
+    <div class="downfloor">
+        <span>TOOLS</span>
+    </div>
+</div>
+
+<div id="commonTools_5" class="btn-toolbar">
+    <div class="upfloor">
+        <button type="button" class="btn activeToolButton fa fa-video-camera" id="btn_macro_start" title="开始录制" (click)="OnStartMacro()" disabled="true"></button>
+        <button type="button" class="btn activeToolButton fa fa-stop" id="btn_macro_end" title="停止录制" (click)="OnEndMacro()" disabled="true"></button>
+        <button type="button" class="btn activeToolButton fa fa-play" id="btn_macro_run" title="运行" (click)="OnRunMacro()" disabled="true"></button>
+    </div>
+    <div class="downfloor">
+        <span>MACRO</span>
+    </div>
+</div>
