@@ -3,6 +3,7 @@ import { Freepen } from '../overlay/freepen'
 import { ControlPoint } from '../overlay/controlpoint'
 import { Point } from '../tools/point';
 import { Text } from '../overlay/text';
+import { MsgAggregator } from '../../../../shared/common/msg_aggregator';
 
 export class FreepenContainer extends BaseContainer {
     shape: Freepen;
@@ -184,6 +185,8 @@ export class FreepenContainer extends BaseContainer {
                 this.cps.push(this.cps[0].copy());
                 this.update();
             }
+
+            MsgAggregator.Instance().publishContourCps(this.cps)
         }
         this.isMousedown = false;
         this.isPaint = false;

@@ -5,17 +5,18 @@ import { switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 
-import { ConMessageService } from '../shared/service/conMessage.service';
-import { SeriesHttpService } from '../shared/service/seriesHttp.service';
-import { RoiHttpService } from '../shared/service/roiHttp.service';
-import { StorageService } from '../shared/service/storage.service';
-import { ContouringService } from '../shared/service/contouring.service';
+import { ConMessageService } from './shared/service/conMessage.service';
+import { SeriesHttpService } from './shared/service/seriesHttp.service';
+import { RoiHttpService } from './shared/service/roiHttp.service';
+import { StorageService } from './shared/service/storage.service';
+import { ContouringService } from './shared/service/contouring.service';
 
 
-import { ToastService } from '../../../core/toast.service';
-import { Page, PageRequest } from '../../../shared/models';
+import { ToastService } from '../../core/toast.service';
+import { Page, PageRequest } from '../../shared/models';
 import { LazyExcuteHandler } from './lazy_excute_handler';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { MsgAggregator } from '../../shared/common/msg_aggregator';
 
 declare var $: any;
 declare var actions: any;
@@ -71,6 +72,7 @@ export class ContouringComponent implements OnInit {
         private priMessageService: MessageService
     ) {
         this.lazyExcuteHandler = new LazyExcuteHandler()
+        MsgAggregator.Instance().contourCps$.subscribe(this.saveContour)
     }
 
     transverseChange(event: any) {
@@ -468,6 +470,10 @@ export class ContouringComponent implements OnInit {
     ngOnDestroy() {
         this.hasLoadVolume = false;
         this.seriesHttpService.UnLoadVolume(this.seriesId).subscribe();
+    }
+
+    saveContour(cps) {
+        console.log('i got it')
     }
 }
 

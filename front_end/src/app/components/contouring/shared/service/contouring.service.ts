@@ -41,7 +41,7 @@ export class ContouringService {
   }
 
   postContour(dto: ContourDto) {
-    let url = `${this.appConfig.apiUrl}/image/contour/`;
+    let url = `${this.appConfig.apiUrl}/contour/contour/`;
 
     return this.http.post<any>(url, dto).map((response: HttpResponse<any>) => {
       if (response.status == 200) {
