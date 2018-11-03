@@ -1,15 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import urllib
-import urllib2
-
 # Create your views here.
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
 from serve.util.models import Series
-import ConfigParser
 
 
 class LoadAlg(APIView):

@@ -1,7 +1,6 @@
 # -*-coding:utf-8-*-
-from django.db import transaction
 
-from serve.util.models import Series, Image
+from serve.util.models import Series
 
 
 class DBError(Exception):

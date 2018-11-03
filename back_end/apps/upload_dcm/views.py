@@ -11,8 +11,8 @@ from rest_framework.views import APIView
 from serve.static_parameters.setFilePath import SaveDicomFilePath
 from serve.util.splitDicom import SplitDicoms
 from serve.DBrelated.upload_dcm_to_db import UploadDcm
-from serve.util.buildVolume import DicomToVolume
 from serve.DBrelated.upload_vol_to_db import UploadVolume
+from serve.util.buildVolume import DicomToVolume
 
 if platform.system() == 'Windows':
     import win32file
