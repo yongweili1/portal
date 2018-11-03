@@ -15,6 +15,7 @@ from patientinformations.models import Patient, Image
 from patientinformations.serializers import PerInfooneSerializer
 from django.forms.models import model_to_dict
 from back_end.util.setPage import SetPaginationInit
+from dwebsocket import require_websocket, accept_websocket
 
 #
 # class PerInfoViewSet(ModelViewSet):
@@ -58,6 +59,21 @@ class Patinfolist(APIView):
         }
 
         return Response(data)
+
+
+@require_websocket
+def websocket(request):
+    if not request.is_websocket():
+        try:
+            message = request.GET['message']
+            return HttpResponse(message)
+        except Exception as e:
+            return HttpResponse('fail')
+    else:
+        for message in request.websocket:
+            print(message)
+        request.websocket.send(message)
+
 
 
 # class GetView(APIView):
