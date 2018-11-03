@@ -7,12 +7,12 @@ import { LazyLoadEvent } from 'primeng/primeng';
 import { SelectItem } from 'primeng/api';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { ToastService } from '../../core/toast.service'
 
 @Component({
     selector: 'mpt-palist',
     templateUrl: './patient-template.component.html',
     styleUrls: ['./patient-template.component.less'],
-    providers: [MessageService]
 })
 export class PaListComponent implements OnInit {
     patientId: string;
@@ -37,7 +37,7 @@ export class PaListComponent implements OnInit {
     constructor(
         private patientTemplateService: PatientTemplateService,
         private router: Router,
-        private priMessageService: MessageService
+        private priMessageService: MessageService,
     ) {
         this.cols = [
             { field: 'patientId', header: 'PATIENT ID' },
@@ -50,7 +50,7 @@ export class PaListComponent implements OnInit {
 
     public ngOnInit(): void {
         this.loadPatientTemplate();
-        this.selectedPageModel = {}
+        this.selectedPageModel = {};
     }
 
     public search() {
@@ -77,15 +77,6 @@ export class PaListComponent implements OnInit {
             studyDate: this.rangeDate
         }).subscribe((data) => {
             this.pageModel = data;
-            ///测试代码
-            // this.pageModel.totalElements = 1;
-            // this.pageModel.totalPages = 1;
-            // this.pageModel.number = 1;
-            // this.pageModel.size = 10;
-            //  this.pageModel.content[0].patientId = '1';
-            //  this.pageModel.content[0].patientName = 'cc';
-            //  this.pageModel.content[0].studyDescription = 'cccc';
-            ///
             for (let i = 0; i < this.pageModel.numberOfElements; i++) {
                 this.pageModel.content[i].no = i + 1;
                 this.patientId = this.pageModel.content[i].patientId;

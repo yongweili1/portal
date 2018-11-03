@@ -10,6 +10,8 @@ import {
   DropdownModule, InputTextareaModule, InputTextModule, PaginatorModule, PanelModule, RadioButtonModule, SelectButtonModule
 } from 'primeng/primeng';
 import { SharedModule } from '../../shared/shared.module';
+import { ToastModule } from 'primeng/toast';
+
 import { SettingComponent } from './setting.component';
 import { UserSettingComponent } from './user-setting/user-setting.component';
 import { SysSettingComponent } from './sys-setting/sys-setting.component';
@@ -36,7 +38,8 @@ const routes: Routes = [
   imports: [
     ...primengModule,
     SharedModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    ToastModule
   ],
   declarations: [
     SettingComponent,

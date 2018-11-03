@@ -26,7 +26,6 @@ declare var actions: any;
     selector: 'mpt-contouring',
     templateUrl: './contouring.component.html',
     styleUrls: ['./contouring.component.less'],
-    providers: [MessageService]
 })
 export class ContouringComponent implements OnInit {
     patientId: any = "";

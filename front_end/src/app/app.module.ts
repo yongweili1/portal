@@ -16,6 +16,8 @@ import { HeaderModule } from './components/header/header.module';
 import { SideBarModule } from './components/sidebar/sidebar.module';
 import { EasyUIModule } from 'ng-easyui/components/easyui/easyui.module';
 import { ElModule } from 'element-angular'
+import { ToastModule } from 'primeng/toast';
+
 
 import { FullLayoutComponent } from './layouts/full-layout.component';
 import { SimpleLayoutComponent } from './layouts/simple-layout.component';
@@ -25,7 +27,9 @@ import { RenewPasswordModule } from './base/renew-password/renew-password.module
 import { ContouringModule} from './components/contouring/contouring.module';
 import { HomeComponent } from './components/home/home.component';
 
-import { PacsService } from './services/pacs.service';
+import { MessageService } from 'primeng/api';
+
+
 import { from } from 'rxjs';
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -68,10 +72,11 @@ export function HttpLoaderFactory(http: HttpClient) {
     ForgotPasswordModule,
     RenewPasswordModule,
     ContouringModule,
+    ToastModule
   ],
   providers: [
     AppConfigService,
-    PacsService,
+    MessageService
   ]
 })
 export class AppModule { }
