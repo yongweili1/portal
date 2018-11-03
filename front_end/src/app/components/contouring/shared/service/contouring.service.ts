@@ -40,16 +40,7 @@ export class ContouringService {
     return this.http.post<any>(`${this.appConfig.apiUrl}/image/size/`, canvasSize, this.options);
   }
 
-  postContour(dto: ContourDto) {
-    let url = `${this.appConfig.apiUrl}/contour/contour/`;
-
-    return this.http.post<any>(url, dto).map((response: HttpResponse<any>) => {
-      if (response.status == 200) {
-        const _responseText = response.body.result;
-        return _responseText;
-      } else {
-        return false;
-      }
-    });
+  saveContour(dto: ContourDto): Observable<any> {
+    return this.http.post<ContourDto>(`${this.appConfig.apiUrl}/contour/contour/`, dto, this.options);
   }
 }

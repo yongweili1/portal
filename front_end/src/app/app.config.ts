@@ -5,6 +5,7 @@ import { Injectable } from '@angular/core';
 export class AppConfigService {
   /** Api服务的基础地址 */
   public apiUrl: string;
+  public wsApiUrl: string;
 
   /** 推送服务的基础地址 */
   public messagingUrl: string;
@@ -24,7 +25,7 @@ export class AppConfigService {
   constructor() {
     const appConfig = window['appConfig'] || {};
     this.apiUrl = appConfig.apiUrl || (location.protocol + '//' + location.host);
-    //this.apiUrl = appConfig.apiUrl;
+    this.wsApiUrl = appConfig.wsApiUrl;
     this.messagingUrl = appConfig.messagingUrl || (location.protocol + '//' + location.host);
     this.lang = appConfig.locale || 'zh_CN';
     this.theme = appConfig.theme || 'lightness';
