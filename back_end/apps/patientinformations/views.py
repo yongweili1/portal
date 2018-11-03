@@ -3,17 +3,14 @@ from __future__ import unicode_literals
 
 import math
 
+from django.http import HttpResponse
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from serve.util.PAInformation import InfoList
-from InformationList import InfoList
-from patientinformations.models import Patient, Image
-from patientinformations.serializers import PerInfooneSerializer
 from django.forms.models import model_to_dict
 from back_end.util.setPage import SetPaginationInit
 from dwebsocket import require_websocket, accept_websocket
-
 
 
 class Patinfolist(APIView):
@@ -52,7 +49,6 @@ class Patinfolist(APIView):
         return Response(data)
 
 
-
 @require_websocket
 def websocket(request):
     if not request.is_websocket():
@@ -65,7 +61,6 @@ def websocket(request):
         for message in request.websocket:
             print(message)
         request.websocket.send(message)
-
 
 
 # class GetView(APIView):
