@@ -1,6 +1,6 @@
 # -*-coding:utf-8-*-
 import copy
-from patientinformations.models import Study, Series, Patient
+from serve.util.models import Study, Series, Patient
 
 
 class InfoList(object):
@@ -33,7 +33,7 @@ class InfoList(object):
                 pat_dict['gender'] = pat.patientsex
 
                 # 获取study信息的查询集，查询集为对象列表
-                stu = Study.objects.filter(patientid=pat.pid)
+                stu = Study.objects.filter(patientid=pat.patientid)
 
                 if len(stu) != 0:
                     for st in stu:
@@ -42,7 +42,7 @@ class InfoList(object):
                         pat_dict['studyDescription'] = st.studydescription
                         pat_dict['studyDate'] = st.studydate
 
-                        ser = Series.objects.filter(studyuid=st.pid)
+                        ser = Series.objects.filter(studyuid=st.studyuid)
 
                         if len(ser) != 0:
                             for se in ser:

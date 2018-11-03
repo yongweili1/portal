@@ -2,7 +2,7 @@
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
-from patientinformations.models import Patient, Image, Study, Series
+from serve.util.models import Patient, Image, Study, Series
 
 
 # 序列化

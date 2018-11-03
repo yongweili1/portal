@@ -3,8 +3,8 @@
 import json
 import time
 
-import image_msg_pb2 as msg
-from macro_recording import Macro
+from serve.util import imageMsgPb2 as msg
+from serve.util.macroRecording import Macro
 import sys
 sys.path.append('..')
 from netbase import comproxy

@@ -3,13 +3,11 @@ from __future__ import unicode_literals
 
 import time
 
-from django.shortcuts import render
-
 # Create your views here.
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from back_end.settings import STATIC_ROOT
-from upload_dot_to_db import overlay
+from serve.DBrelated.upload_dot_to_db import overlay
 
 
 class GraphElement(APIView):

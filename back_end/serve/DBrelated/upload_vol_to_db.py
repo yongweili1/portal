@@ -1,8 +1,6 @@
 # -*-coding:utf-8-*-
-from django.db import transaction
 
-from back_end.util.readDcm import DcmSeries, DcmImage
-from patientinformations.models import Series, Image
+from serve.util.models import Series
 
 
 class DBError(Exception):

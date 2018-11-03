@@ -119,8 +119,8 @@ create table image
    lossyimagecompression varchar(16) default '' comment '(0028,2110)',
    lossyimagecompressionratio varchar(271) default '' comment '(0028,2112)',
    pixelspacing         varchar(64) default '' comment '(0028,0030) ',
-   imageorientationpatient varchar(101) default '' comment '(0020,0037)',
-   imagepositionpatient varchar(50) default '' comment '(0020,0032)',
+   imageorientationpatient varchar(255) default '' comment '(0020,0037)',
+   imagepositionpatient varchar(255) default '' comment '(0020,0032)',
    slicethickness       varchar(16) default '' comment '(0018,0050) ',
    slicelocation        varchar(16) default '' comment '(0020,1041) ',
    samplesperpixel      int default 0 comment '(0028,0002) ',
@@ -138,16 +138,17 @@ create table image
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-create table graph_element
+create table contours
 (
-   graphelementuid      int auto_increment,
+   uid      			int auto_increment,
    imageuid 		    varchar(64) not null,
-   dotproductpath       varchar(255),
+   dotsetpath	        varchar(255),
+   organ				varchar(255),
    importdatatime		datetime,
    updatetime           timestamp not null default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-   primary key (graphelementuid),
-   unique key (graphelementuid),
+   primary key (uid),
+   unique key (uid),
    foreign key (imageuid) references image(imageuid) on delete cascade
 )
 ENGINE = InnoDB
