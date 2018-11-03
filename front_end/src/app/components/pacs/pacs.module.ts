@@ -17,7 +17,7 @@ import {
   PanelModule
 } from 'primeng/primeng';
 import { SharedModule } from '../../shared/shared.module';
-
+import { PacsService } from '../../services/pacs.service'
 
 
 const routes: Routes = [
@@ -39,6 +39,7 @@ const routes: Routes = [
     PanelModule,
     AccordionModule
   ],
-  declarations: [PacsComponent]
+  declarations: [PacsComponent],
+  providers:[PacsService]
 })
 export class PacsModule { }
