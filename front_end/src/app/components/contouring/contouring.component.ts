@@ -16,7 +16,8 @@ import { ToastService } from '../../core/toast.service';
 import { Page, PageRequest } from '../../shared/models';
 import { LazyExcuteHandler } from './lazy_excute_handler';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { MsgAggregator } from '../../shared/common/msg_aggregator';
+import { EventAggregator } from '../../shared/common/event_aggregator';
+import { ContourDto } from './shared/dtos/contour_dto';
 
 declare var $: any;
 declare var actions: any;
@@ -72,7 +73,8 @@ export class ContouringComponent implements OnInit {
         private priMessageService: MessageService
     ) {
         this.lazyExcuteHandler = new LazyExcuteHandler()
-        MsgAggregator.Instance().contourCps$.subscribe(this.saveContour)
+
+        EventAggregator.Instance().contourCps.subscribe(cps => { this.saveContour(cps); });
     }
 
     transverseChange(event: any) {
@@ -472,8 +474,14 @@ export class ContouringComponent implements OnInit {
         this.seriesHttpService.UnLoadVolume(this.seriesId).subscribe();
     }
 
-    saveContour(cps) {
-        console.log('i got it')
+    saveContour(cps:any) {
+        console.log('saveContour');
+        let dto = new ContourDto();
+        dto.series_uid = $("#seriesSelect").val();
+        dto.cps = cps;
+        this.conService.saveContour(dto).subscribe(response=>{
+            console.log('aaa')
+        });
     }
 }
 

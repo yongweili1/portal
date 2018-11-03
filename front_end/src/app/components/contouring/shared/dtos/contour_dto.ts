@@ -1,6 +1,6 @@
 export class ContourDto {
-    image_uid: string;
+    series_uid: string;
     instance_no: number;
-    dotset: Array<any>;
+    cps: Array<any>;
     organ: string;
 }
