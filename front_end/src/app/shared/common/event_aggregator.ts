@@ -9,20 +9,20 @@ export class EventAggregator {
         return this._aggregator;
     }
 
-    //#region Msg
-    private contourCpsSource = new Subject<Array<any>>();
-    //#endregion
-
     //#region observable msg
-    contourCps$ = this.contourCpsSource.asObservable();
+    contourCps = new ObservableObject();
     //#endregion
     
     private constructor() { }
+}
 
-    //#region publish msg
-    publishContourCps(cps) {
-        this.contourCpsSource.next(cps);
+export class ObservableObject extends Subject<any> {
+    constructor() {
+        super()
+        this.asObservable();
     }
 
-    //#endregion
+    publish(data) {
+        this.next(data)
+    }
 }

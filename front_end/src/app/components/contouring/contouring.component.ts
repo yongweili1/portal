@@ -74,7 +74,7 @@ export class ContouringComponent implements OnInit {
     ) {
         this.lazyExcuteHandler = new LazyExcuteHandler()
 
-        EventAggregator.Instance().contourCps$.subscribe(cps => { this.saveContour(cps); });
+        EventAggregator.Instance().contourCps.subscribe(cps => { this.saveContour(cps); });
     }
 
     transverseChange(event: any) {

@@ -186,7 +186,7 @@ export class FreepenContainer extends BaseContainer {
                 this.update();
             }
 
-            EventAggregator.Instance().publishContourCps(this.cps)
+            EventAggregator.Instance().contourCps.publish(this.cps)
         }
         this.isMousedown = false;
         this.isPaint = false;
