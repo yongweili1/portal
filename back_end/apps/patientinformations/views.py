@@ -8,8 +8,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from serve.util.PAInformation import InfoList
-from django.forms.models import model_to_dict
-from back_end.util.setPage import SetPaginationInit
 from dwebsocket import require_websocket, accept_websocket
 
 
@@ -58,9 +56,10 @@ def websocket(request):
         except Exception as e:
             return HttpResponse('fail')
     else:
+        Websocket = request.websocket
         for message in request.websocket:
             print(message)
-        request.websocket.send(message)
+            Websocket.send(message)
 
 
 # class GetView(APIView):
