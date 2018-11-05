@@ -9,7 +9,7 @@ export class WebSocketService {
     ws: WebSocket;
     constructor(private appConfig: AppConfigService) { }
     createObservableSocket(): Observable<any> {
-        this.ws = new WebSocket(`${this.appConfig.wsApiUrl}/patientinformations/websocket`);
+        this.ws = new WebSocket(`${this.appConfig.wsApiUrl}/back_end`);
         return Observable.create(
             observer => {
                 this.ws.onopen = () => observer.next('Websocket open');

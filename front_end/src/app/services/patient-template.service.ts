@@ -48,6 +48,8 @@ export class PatientTemplateService {
             .set('size', deleteRequest.size.toString())
             .set('page', deleteRequest.page.toString())
             .set('patientId', deleteRequest.patientId)
+            .set('studyId', deleteRequest.studyId)
+            .set('seriesId', deleteRequest.seriesId);
         return this.http
             .delete<any>(`${this.appConfig.apiUrl}/patientinformations/patinfolist/`, { headers: this.headers, params: searchParams });
     }

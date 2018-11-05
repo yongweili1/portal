@@ -46,6 +46,52 @@ class Patinfolist(APIView):
 
         return Response(data)
 
+    def delete(self, request):
+        """
+        provide patients information list
+        :param size:the number of data on the current page
+        :param page:current page
+        :return: information list
+        """
+        size = int(request.GET.get('size', 15))
+        page = int(request.GET.get('page', 0))
+        seriesIdArray = request.GET.get('seriesId').split(',')
+        studyIdArray = request.GET.get('studyId').split(',')
+        patientIdArray = request.GET.get('patientId').split(',')
+
+
+        # 调用自定义类，创建对象，获取信息列表
+        infolist = InfoList()
+        infolist.delete_info(patientIdArray, studyIdArray, seriesIdArray)
+        pats_list = infolist.get_infolist()
+        totalelements = len(pats_list)
+
+        if totalelements == 0:
+            response = {
+                'code': '201',
+                'message': '数据库无数据',
+                'data': ''
+            }
+            return Response(response)
+
+        totalpages = int(math.ceil(float(totalelements)/float(size)))
+        totalpatients = pats_list[size*page:size*(page+1)]
+        numberofelements = len(totalpatients)
+
+        response = {
+            'code': '200',
+            'message': 'success',
+            'data': {
+                'content': totalpatients,
+                'totalPages': totalpages,
+                'totalElements': totalelements,
+                'size': size,
+                'number': page,
+                'numberOfElements': numberofelements
+            }
+        }
+        return Response(response)
+
 
 @require_websocket
 def websocket(request):

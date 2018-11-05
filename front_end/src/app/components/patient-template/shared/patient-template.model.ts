@@ -10,6 +10,8 @@ export interface PatientPageRequest extends PageRequest {
 
 export interface PatientPageDeleteRequest extends PageRequest {
     patientId: string;
+    studyId: string;
+    seriesId: string;
 }
 
 export interface MenuItem {
