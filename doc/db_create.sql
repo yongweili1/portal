@@ -141,15 +141,16 @@ DEFAULT CHARACTER SET = utf8;
 create table contours
 (
    uid      			int auto_increment,
-   imageuid 		    varchar(64) not null,
-   dotsetpath	        varchar(255),
+   seriesuid 		    varchar(64) not null,
+   cpspath	            varchar(255),
    organ				varchar(255),
+   patientposition_z    float,
    importdatatime		datetime,
    updatetime           timestamp not null default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
    primary key (uid),
    unique key (uid),
-   foreign key (imageuid) references image(imageuid) on delete cascade
+   foreign key (seriesuid) references series(seriesuid) on delete cascade
 )
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
