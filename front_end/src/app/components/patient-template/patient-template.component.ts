@@ -28,6 +28,8 @@ export class PaListComponent implements OnInit {
         { label: 'DX' }
     ];
     cols: any[] = [];
+    studycols: any[] = [];
+    seriescols: any[] = [];
     rangeDate = [];
     pageModel: Page<PatientTemplateInfo>;
     selectedPageModel: any;
@@ -44,7 +46,18 @@ export class PaListComponent implements OnInit {
             { field: 'patientName', header: 'PATIENT NAME' },
             { field: 'gender', header: 'GENDER' },
             { field: 'modality', header: 'MODALITY' },
-            { field: 'studyDescription', header: 'STUDYDESCRIPTION' }
+            { field: 'studyDescription', header: 'STUDYDESCRIPTION'}
+        ];
+
+        this.studycols=[
+            { field: 'studyid', header: 'STUDY ID' },
+            { field: 'studyuid', header: 'STUDY UID' },
+            { field: 'studydescription', header: 'STUDYDESCRIPTION'},
+        ];
+
+        this.seriescols=[
+            { field: 'seriesuid', header: 'SERIES ID' },
+            { field: 'seriesdescription', header: 'SERIESSCRIPTION'},
         ];
     }
 

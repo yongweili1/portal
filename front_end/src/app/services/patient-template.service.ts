@@ -10,14 +10,12 @@ import { Page, PageRequest } from '../shared/models/pagination';
 import {
     PatientPageRequest,
     PatientTemplateInfoRequest,
-    PatientPageDeleteRequest
+    PatientPageDeleteRequest,
+    PatientTemplateInfo
 } from '../components/patient-template/shared/patient-template.model';
 import { ToastService } from '../core/toast.service';
-import { PacsModule } from '../components/pacs/pacs.module'
 
-@Injectable({
-    providedIn:PacsModule
-})
+@Injectable()
 export class PatientTemplateService {
     headers: HttpHeaders;
     constructor(
@@ -31,7 +29,7 @@ export class PatientTemplateService {
         })
     }
 
-    public getPatientTemplate(pageRequest: PatientPageRequest): Observable<Page<PatientPageRequest>> {
+    public getPatientTemplate(pageRequest: PatientPageRequest): Observable<Page<PatientTemplateInfo>> {
         const searchParams = new HttpParams()
             .set('size', pageRequest.size.toString())
             .set('page', pageRequest.page.toString())
@@ -42,7 +40,7 @@ export class PatientTemplateService {
             .set('studyDate', pageRequest.studyDate.toString());
         console.log(this.headers);
         return this.http
-            .get<Page<PatientPageRequest>>(`${this.appConfig.apiUrl}/patientinformations/patinfolist/`, { headers: this.headers, params: searchParams });
+            .get<Page<PatientTemplateInfo>>(`${this.appConfig.apiUrl}/patientinformations/patinfolist/`, { headers: this.headers, params: searchParams });
     }
 
     public deletePatientTemplate(deleteRequest: PatientPageDeleteRequest): Observable<any> {
