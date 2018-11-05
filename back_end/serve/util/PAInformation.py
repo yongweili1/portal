@@ -58,3 +58,24 @@ class InfoList(object):
                     self.patinfos_list.append(pat_dict)
 
         return self.patinfos_list
+
+    def delete_info(self, patientIdArray, studyIdArray, seriesIdArray):
+        """
+        Provide patients information list
+        :return:patinfos_list:information list
+        """
+        if isinstance(seriesIdArray, list):
+            for seriesId in seriesIdArray:
+                Series.objects.filter(seriesuid=seriesId).delete()
+        else:
+            Series.objects.filter(seriesuid=seriesIdArray).delete()
+        if isinstance(seriesIdArray, list):
+            for studyId in studyIdArray:
+                Study.objects.filter(studyuid=studyId).delete()
+        else:
+            Study.objects.filter(studyuid=studyIdArray).delete()
+        if isinstance(seriesIdArray, list):
+            for patientId in patientIdArray:
+                Patient.objects.filter(patientid=patientId).delete()
+        else:
+            Patient.objects.filter(patientid=patientIdArray).delete()
