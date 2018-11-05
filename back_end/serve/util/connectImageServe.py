@@ -74,3 +74,15 @@ def get_image(*args, **kwargs):
 
     print('req&resp use {} ms'.format(str((c - b) * 1000)))
     return rst
+
+
+def screen2world(*args, **kwargs):
+    data = msg.RequestMsg()
+    data.session = kwargs['user_ip']
+    data.server_name = kwargs['server_name']
+    data.command = kwargs['command']
+    data.content.params = json.dumps(kwargs)
+    data = data.SerializeToString()
+
+    rst = proxy.sync_send_command(data, 100, 'img_srv')
+    return ResponseData(rst)

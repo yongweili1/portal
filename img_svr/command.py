@@ -5,6 +5,7 @@ import time
 import os
 from entity.cellentity import CellEntity
 from image_server import ImageServer
+from scene.coord import translate_from_screen_to_world
 from message import response
 from updater.args import RefreshType
 from utilities import get_view_index, get_orthogonal_spacing, ViewEnum, get_view_index, get_page_filter_view, \
@@ -380,7 +381,7 @@ def center(**kwargs):
         result = imageentity.updater().get_result()
         return response(json.dumps(result))
     except Exception as e:
-        return response(success=False, message='set center failed')
+        return response(success=False, message=e.message)
 
 
 @command.register('wwwl')
@@ -400,4 +401,20 @@ def wwwl(**kwargs):
         result = imageentity.updater().get_result()
         return response(json.dumps(result))
     except Exception as e:
-        return response(success=False, message='set ww wl failed')
+        return response(success=False, message=e.message)
+
+
+@command.register('word_coord')
+def get_word_coord(**kwargs):
+    try:
+        views = imageentity.get_children_views()
+        index = get_view_index(kwargs['focus_view'])
+        view = views[index]
+        scene = view.get_scene()
+        print('translate_from_screen_to_world')
+        pt3d = translate_from_screen_to_world(scene, kwargs['point_2d'])
+        return response(json.dumps(pt3d.tolist()))
+    except Exception as e:
+        print('---------------->', e.message)
+        return response(success=False, message=e.message)
+
