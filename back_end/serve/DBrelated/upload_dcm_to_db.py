@@ -4,9 +4,9 @@ import sys
 
 from django.db import transaction
 from rest_framework import serializers
-from patientinformations.models import Patient, Study, Series, Image
+from serve.util.models import Patient, Study, Series, Image
 from patientinformations.serializers import PerInfoSerializer, StudySerializer, SeriesSerializer, ImageSerializer
-from back_end.util.readDcm import DcmPatient, DcmStudy, DcmSeries, DcmImage
+from serve.util.readDcm import DcmPatient, DcmStudy, DcmSeries, DcmImage
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -30,7 +30,6 @@ class UploadDcm(object):
                 save_id = transaction.savepoint()
 
                 try:
-                    # 创建自定义类的对象，提取dicom文件中的patient信息
                     a = DcmPatient()
                     patient_dic = a.get_dicom_patient(dataset)
                     # print(patient_dic)
@@ -47,7 +46,6 @@ class UploadDcm(object):
                             raise serializers.ValidationError('patient表数据有误验证失败')
                         ser.save()
 
-                    # 创建自定义类的对象，提取dicom文件中的study信息
                     b = DcmStudy()
                     study_dic = b.get_dicom_study(dataset)
                     # print(study_dic)
@@ -60,7 +58,6 @@ class UploadDcm(object):
                             raise serializers.ValidationError('study表数据有误验证失败')
                         serstudy.save()
 
-                    # 创建自定义类的对象，提取dicom文件中的series信息
                     c = DcmSeries()
                     series_dic = c.get_dicom_series(dataset)
                     # print(series_dic)
@@ -74,17 +71,8 @@ class UploadDcm(object):
                             raise serializers.ValidationError('series表数据有误验证失败')
                         serseries.save()
 
-                        # if sign and filepath is not None:
-                        #     # volume文件的本地路径保存到数据库
-                        #     Series.objects.filter(seriesuid=series_dic['seriesuid']).update\
-                        #         (seriespixeldatafilepath=filepath)
-                        #     sign = False
-
-                    # 创建自定义类的对象，提取dicom文件中的image信息
                     d = DcmImage()
                     image_dic = d.get_dicom_image(dataset)
-                    # image_dic['updatesign'] = int(1)
-                    # image_dic['updatetime'] = datetime.datetime.now()
                     # print(image_dic)
                     if len(Image.objects.filter(imageuid=image_dic['imageuid'])) != 0:
                         Image.objects.filter(imageuid=image_dic['imageuid']).update(updatesign=int(1),
@@ -96,11 +84,9 @@ class UploadDcm(object):
                             raise serializers.ValidationError('image表数据有误验证失败')
                         serimage.save()
 
-                # 捕捉到异常，回滚到保存点
                 except Exception as e:
                     transaction.savepoint_rollback(save_id)
                     raise
 
-                # 无异常，提交保存点到此为止的事务
                 else:
                     transaction.savepoint_commit(save_id)

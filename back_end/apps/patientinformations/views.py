@@ -1,28 +1,16 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import json
 import math
 
 from django.http import HttpResponse
-from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet
 
-from InformationList import InfoList
-from patientinformations.models import Patient, Image
-from patientinformations.serializers import PerInfooneSerializer
+from serve.util.PAInformation import InfoList
 from django.forms.models import model_to_dict
 from back_end.util.setPage import SetPaginationInit
 from dwebsocket import require_websocket, accept_websocket
-
-#
-# class PerInfoViewSet(ModelViewSet):
-#     # 仅提供序列化器和查询集，具体实现方法见底层封装
-#     queryset = Patient.objects.all()
-#     serializer_class = PerInfooneSerializer
-#     pagination_class = SetPaginationInit
 
 
 class Patinfolist(APIView):
@@ -73,7 +61,6 @@ def websocket(request):
         for message in request.websocket:
             print(message)
         request.websocket.send(message)
-
 
 
 # class GetView(APIView):

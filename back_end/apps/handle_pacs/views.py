@@ -2,21 +2,17 @@
 from __future__ import unicode_literals
 
 # Create your views here.
-import json
 import math
 import os
 
-import threadpool
 from rest_framework.response import Response
-
 from rest_framework.views import APIView
-from infoFromPacs import pacsinfo
-from infoFromPacs import ConnectPacsERROR
+from serve.util.infoFromPacs import pacsinfo
+from serve.util.infoFromPacs import ConnectPacsERROR
 
-from back_end.util.upload_dcm_to_db import UploadDcm
-from back_end.util.buildVolume import DicomToVolume
-from back_end.util.upload_vol_to_db import UploadVolume
-from back_end.util.setFilePath import SaveDicomFilePath
+from serve.DBrelated.upload_dcm_to_db import UploadDcm
+from serve.DBrelated.upload_vol_to_db import UploadVolume
+from serve.util.buildVolume import DicomToVolume
 
 
 class GetPatient(APIView):
@@ -29,7 +25,7 @@ class GetPatient(APIView):
         try:
             patients_list = pacsinfo.getinformations()
         except ConnectPacsERROR as e:
-            return Response(e)
+            return Response('PACS连接失败')
         totalelements = len(patients_list)
         if totalelements == 0:
             return Response('PACS服务器无数据,请检查PACS')

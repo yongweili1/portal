@@ -2,40 +2,21 @@
 from __future__ import unicode_literals
 
 import os
-import struct
-import sys
 import time
 
 from django.shortcuts import render
-import json
 # Create your views here.
 from rest_framework.response import Response
 from rest_framework.views import APIView
-# from connect_image.user_ip_to_port import ip_port
-import image_msg_pb2 as msg
-from connect_image.macro_script_to_db import script
-from connect_image.models import Series
-# conf = ConfigParser.ConfigParser()
-# conf.read('back_end/util/serverApi.ini')
-# load_url = conf.get("imageApi", "load_url")
-# provide_image_url = conf.get("imageApi", "provide_image_url")
-# change_color_url = conf.get("imageApi", "change_color_url")
-# turn_page_url = conf.get("imageApi", "turn_page_url")
-# pan_url = conf.get("imageApi", "pan_url")
-# roll_url = conf.get("imageApi", "roll_url")
-# rotate_url = conf.get("imageApi", "rotate_url")
-# zoom_url = conf.get("imageApi", "zoom_url")
-# unload_url = conf.get("imageApi", "unload_url")
-# reset_url = conf.get("imageApi", "reset_url")
-# change_window_url = conf.get("imageApi", "change_window_url")
-
-from connect_image.view_model import load_volume, get_image
-from macro_recording import Macro
+from serve.DBrelated.upload_script_to_db import script
+from serve.util.models import Series
+from serve.util.connectImageServe import load_volume, get_image
+from serve.util.macroRecording import Macro
 from back_end.settings import STATIC_ROOT
-from patientinformations.models import Study
-from get_seriespath import getpath
-from back_end.util.buildVolume import DicomToVolume
-from back_end.util.upload_vol_to_db import UploadVolume
+from serve.util.models import Study
+from serve.util.buildVolume import DicomToVolume
+from serve.DBrelated.upload_vol_to_db import UploadVolume
+from serve.static_parameters.setFilePath import SaveDicomFilePath
 
 
 class Home(APIView):
@@ -86,7 +67,7 @@ class MacroRecording(APIView):
         elif macro_status == 'finish':
             macro_name = str(user_name) + str(time.time())
             scriptname = '{}.py'.format(macro_name)
-            scriptpath = STATIC_ROOT + '\\macro\\' + scriptname
+            scriptpath = STATIC_ROOT + '\\serve\\macro\\' + scriptname
 
             try:
                 with open(scriptpath, 'a+') as f:
@@ -155,8 +136,6 @@ class LoadVolume(APIView):
         """
         seriesuid = request.GET.get('seriesuid', None)
         user_ip = request.META.get('REMOTE_ADDR', None)
-        # request_server = request.path
-        # request_server = request_server.split("/")[-2]
 
         series_query = Series.objects.filter(seriesuid=seriesuid)
         if len(series_query) == 0:
@@ -191,10 +170,10 @@ class LoadVolume(APIView):
         if request_data is None:
             return Response('请携带有效的seriesuid')
         seriesuid = request_data['params']['updates'][0]['value']
-        seriespath = getpath.getseriespath(seriesuid)
+        seriespath = SaveDicomFilePath.location_3 + str(seriesuid)
 
-        # if not os.path.exists(seriespath):
-        #     return Response('请确认series路径是否存在')
+        if not os.path.exists(seriespath):
+            return Response('请确认series数据是否存在')
 
         if len(os.listdir(seriespath)) <= 1:
             return Response('series下的dicom文件单一，无法build volume')

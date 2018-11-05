@@ -3,9 +3,8 @@
 import os
 import platform
 import sys
-import thread
 
-from back_end.util.setFilePath import SaveDicomFilePath, SaveVolumeFilePath, LinuxFilePath
+from serve.static_parameters.setFilePath import SaveDicomFilePath, SaveVolumeFilePath, LinuxFilePath
 
 
 if __name__ == "__main__":
