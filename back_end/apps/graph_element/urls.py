@@ -5,5 +5,5 @@ from . import views
 from . import views
 
 urlpatterns = [
-   url(r'^dot/$', views.GraphElement.as_view(), name='dot'),
+   url(r'^contour/$', views.GraphElement.as_view(), name='contour'),
 ]

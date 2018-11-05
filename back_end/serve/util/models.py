@@ -44,7 +44,6 @@ class Study(models.Model):
 
 
 class Series(models.Model):
-
     WHETHER_BUILD = (
         (0, 'need_build'),
         (1, 'builded')
