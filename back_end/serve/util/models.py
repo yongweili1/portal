@@ -146,8 +146,8 @@ class Contours(models.Model):
     cpspath = models.CharField(max_length=255, blank=True, null=True)
     organ = models.CharField(max_length=255, blank=True, null=True)
     patientposition_z = models.FloatField(blank=True, null=True)
-    importdatatime = models.DateTimeField(blank=True, null=True)
-    updatetime = models.DateTimeField(auto_now=True)
+    importdatatime = models.DateTimeField(auto_now=True)
+    updatetime = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         app_label = 'Contours'
