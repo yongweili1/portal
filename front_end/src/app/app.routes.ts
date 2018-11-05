@@ -56,11 +56,14 @@ export const ROUTES: Routes = [
           {
             path: 'pacs',
             loadChildren: './components/pacs/pacs.module#PacsModule',
-          },
-          
+          },          
           {
             path: 'patient-template',
             loadChildren: './components/patient-template/patient-template.module#PaListModule',
+          },
+          {
+            path: 'training-status',
+            loadChildren: './components/training-status/training-status.module#TrainingStatusModule',
           },
           {
             path: 'setting',

@@ -11,7 +11,8 @@ import {
   PaginatorModule,
   DropdownModule,
   CalendarModule,
-  PanelModule
+  PanelModule,
+  TreeTableModule
 } from 'primeng/primeng';
 import { ToastModule } from 'primeng/toast';
 import { AccordionModule } from 'primeng/accordion';
@@ -42,7 +43,8 @@ const routes: Routes = [
     PanelModule,
     RouterModule.forChild(routes),
     ToastModule,
-    AccordionModule
+    AccordionModule,
+    TreeTableModule
   ],
   declarations: [
     PaListComponent,
