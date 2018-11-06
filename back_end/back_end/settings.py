@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'upload_dcm.apps.UploadDcmConfig',
     'graph_element.apps.GraphElementConfig',
     'sessionmiddle.apps.MiddleConfig',
+    'roi.apps.RoiConfig',
 ]
 
 MIDDLEWARE = [

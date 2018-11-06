@@ -1,7 +1,7 @@
 # -*-coding:utf-8-*-
 import os
 
-from serve.static_parameters.setFilePath import SaveDicomFilePath
+from serve.static_parameters.setFilePath import filepath
 from serve.util.readDcm import DcmSeries
 
 
@@ -19,7 +19,7 @@ class SplitDicoms(object):
         dcmseries = DcmSeries()
         seriesuid = dcmseries.get_dicom_series(dataset)['seriesuid']
 
-        seriespath = SaveDicomFilePath.location_3 + str(seriesuid)
+        seriespath = filepath.splitDicomPath + str(seriesuid)
         if os.path.exists(seriespath):
             pass
         else:
@@ -37,7 +37,7 @@ class SplitDicoms(object):
         :return:
         """
         # file_name = [k for k, v in filename_dataset_dic.items() if v == dataset][0]
-        file_path = os.path.join(SaveDicomFilePath.location_2, file_name)
+        file_path = os.path.join(filepath.dicomPath, file_name)
         with open(file_path, 'rb') as f:
             filedata = f.read()
         with open(seriespath + '\\' + file_name, 'wb+') as r:

@@ -55,14 +55,13 @@ class Patinfolist(APIView):
         """
         size = int(request.GET.get('size', 15))
         page = int(request.GET.get('page', 0))
-        seriesIdArray = request.GET.get('seriesId').split(',')
-        studyIdArray = request.GET.get('studyId').split(',')
-        patientIdArray = request.GET.get('patientId').split(',')
-
+        seriesidarray = request.GET.get('seriesId').split(',')
+        studyidarray = request.GET.get('studyId').split(',')
+        patientidarray = request.GET.get('patientId').split(',')
 
         # 调用自定义类，创建对象，获取信息列表
         infolist = InfoList()
-        infolist.delete_info(patientIdArray, studyIdArray, seriesIdArray)
+        infolist.delete_info(patientidarray, studyidarray, seriesidarray)
         pats_list = infolist.get_infolist()
         totalelements = len(pats_list)
 
@@ -78,9 +77,9 @@ class Patinfolist(APIView):
         totalpatients = pats_list[size*page:size*(page+1)]
         numberofelements = len(totalpatients)
 
-        response = {
+        rsp = {
             'code': '200',
-            'message': 'success',
+            'msg': 'success',
             'data': {
                 'content': totalpatients,
                 'totalPages': totalpages,
@@ -90,7 +89,7 @@ class Patinfolist(APIView):
                 'numberOfElements': numberofelements
             }
         }
-        return Response(response)
+        return Response(rsp)
 
 # @require_websocket
 # def websocket(request):

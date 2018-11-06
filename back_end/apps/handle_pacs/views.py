@@ -7,9 +7,9 @@ import os
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
 from serve.util.infoFromPacs import pacsinfo
 from serve.util.infoFromPacs import ConnectPacsERROR
-
 from serve.DBrelated.upload_dcm_to_db import UploadDcm
 from serve.DBrelated.upload_vol_to_db import UploadVolume
 from serve.util.buildVolume import DicomToVolume
@@ -27,7 +27,12 @@ class SavePatient():
 class GetPatient(APIView):
 
     def get(self, request):
-
+        """
+        provide patients information from PACS
+        :param size:the number of data on the current page
+        :param page:current page
+        :return: information list
+        """
         size = int(request.GET.get('size', 15))
         page = int(request.GET.get('page', 0))
         patient_id = request.GET.get('patientId', "")
@@ -90,7 +95,7 @@ class GetPatient(APIView):
         return Response(data)
 
 
-class DownloadImage(APIView):
+class DownloadSeries(APIView):
 
     def get(self, request):
         patients_unicode = request.GET.get('patients', None)
@@ -98,10 +103,10 @@ class DownloadImage(APIView):
         if not patients_str:
             return Response('请传入有效的patientID')
         patients_list = patients_str.split(',')
-        # try:
-        datasets_list, patient_series_dict = pacsinfo.getimage(patients_list)
-        # except Exception as e:
-        #     return Response('从PACS获取数据过程出错，请重试')
+        try:
+            datasets_list, patient_series_dict = pacsinfo.getimage(patients_list)
+        except Exception as e:
+            return Response('从PACS获取数据过程出错，请重试')
 
         for dataset_list in datasets_list:
             try:

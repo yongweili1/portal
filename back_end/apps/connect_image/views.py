@@ -16,7 +16,7 @@ from back_end.settings import STATIC_ROOT
 from serve.util.models import Study
 from serve.util.buildVolume import DicomToVolume
 from serve.DBrelated.upload_vol_to_db import UploadVolume
-from serve.static_parameters.setFilePath import SaveDicomFilePath
+from serve.static_parameters.setFilePath import filepath
 
 
 class Home(APIView):
@@ -170,7 +170,7 @@ class LoadVolume(APIView):
         if request_data is None:
             return Response('请携带有效的seriesuid')
         seriesuid = request_data['params']['updates'][0]['value']
-        seriespath = SaveDicomFilePath.location_3 + str(seriesuid)
+        seriespath = filepath.splitDicomPath + str(seriesuid)
 
         if not os.path.exists(seriespath):
             return Response('请确认series数据是否存在')
