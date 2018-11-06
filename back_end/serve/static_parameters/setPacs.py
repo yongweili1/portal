@@ -1,5 +1,5 @@
 # -*-coding:utf-8-*-
-from serve.static_parameters.setFilePath import SaveDicomFilePath
+from serve.static_parameters.setFilePath import filepath
 
 
 class PacsConf(object):
@@ -11,7 +11,7 @@ class PacsConf(object):
 
         self.client_ae_title = 'LY'
         self.client_port = 3333
-        self.dcm_file_path = SaveDicomFilePath.location_3
+        self.dcm_file_path = filepath.splitDicomPath
 
     def set_pacs_ae_title(self, pacs_ae_title):
         self.pacs_ae_title = pacs_ae_title

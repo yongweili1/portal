@@ -4,7 +4,7 @@ import os
 import platform
 import sys
 
-from serve.static_parameters.setFilePath import SaveDicomFilePath, SaveVolumeFilePath, LinuxFilePath
+from serve.static_parameters.setFilePath import SaveDicomFilePath, LinuxFilePath, WindowsFilePath, filepath
 
 
 if __name__ == "__main__":
@@ -28,42 +28,37 @@ if __name__ == "__main__":
     if platform.system() == 'Windows':
         import win32file
         win32file._setmaxstdio(2048)
-
-        if os.path.exists(SaveDicomFilePath.location_1):
-            pass
-        else:
-            os.mkdir(SaveDicomFilePath.location_1)
-
-        if os.path.exists(SaveDicomFilePath.location_2):
-            pass
-        else:
-            os.mkdir(SaveDicomFilePath.location_2)
-
-        if os.path.exists(SaveDicomFilePath.location_3):
-            pass
-        else:
-            os.mkdir(SaveDicomFilePath.location_3)
-
-        if os.path.exists(SaveVolumeFilePath.volumePath):
-            pass
-        else:
-            os.mkdir(SaveVolumeFilePath.volumePath)
+        filepath.set_dcmpath(WindowsFilePath.dicomPath)
+        filepath.set_splitdcmpath(WindowsFilePath.splitDicomPath)
+        filepath.set_volumepath(WindowsFilePath.volumePath)
+        filepath.set_cpspath(WindowsFilePath.cpsPath)
     elif platform.system() == 'Linux':
-        if os.path.exists(LinuxFilePath.dicomPath):
-            pass
-        else:
-            os.mkdir(LinuxFilePath.dicomPath)
+        filepath.set_dcmpath(LinuxFilePath.dicomPath)
+        filepath.set_splitdcmpath(LinuxFilePath.splitDicomPath)
+        filepath.set_volumepath(LinuxFilePath.volumePath)
+        filepath.set_cpspath(LinuxFilePath.cpsPath)
 
-        if os.path.exists(LinuxFilePath.splitDicomPath):
-            pass
-        else:
-            os.mkdir(LinuxFilePath.splitDicomPath)
-
-        if os.path.exists(LinuxFilePath.volumePath):
-            pass
-        else:
-            os.mkdir(LinuxFilePath.volumePath)
     else:
         pass
+
+    if os.path.exists(filepath.dicomPath):
+        pass
+    else:
+        os.mkdir(filepath.dicomPath)
+
+    if os.path.exists(filepath.splitDicomPath):
+        pass
+    else:
+        os.mkdir(filepath.splitDicomPath)
+
+    if os.path.exists(filepath.volumePath):
+        pass
+    else:
+        os.mkdir(filepath.volumePath)
+
+    if os.path.exists(filepath.cpsPath):
+        pass
+    else:
+        os.mkdir(filepath.cpsPath)
 
     execute_from_command_line(sys.argv)
