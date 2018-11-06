@@ -182,3 +182,17 @@ class DjangoSession(models.Model):
         app_label = 'DjangoSession'
         managed = False
         db_table = 'django_session'
+
+
+class Roi(models.Model):
+    pid = models.AutoField(primary_key=True)
+    roiname = models.CharField(max_length=64)
+    seriesuid = models.ForeignKey(Series, on_delete=models.CASCADE, db_column='seriesuid', to_field='seriesuid')
+    roicolor = models.CharField(max_length=64)
+    importdatatime = models.DateTimeField(auto_now_add=True)
+    updatetime = models.DateTimeField()
+
+    class Meta:
+        app_label = 'Roi'
+        managed = False
+        db_table = 'roi'
