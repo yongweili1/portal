@@ -32,4 +32,5 @@ urlpatterns = [
     url(r'^algproxy/', include('alg_proxy.urls')),
     url(r'^pacs/', include('handle_pacs.urls')),
     url(r'^contour/', include('graph_element.urls')),
+    url(r'^roi/', include('roi.urls')),
 ]

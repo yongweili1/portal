@@ -1,18 +1,17 @@
 use ai_portal;
-drop table if exists contours; 
-create table contours
+drop table if exists roi; 
+create table roi
 (
-   uid      			int auto_increment,
-   imageuid 		    varchar(64) not null,
-   dotsetpath	        varchar(255),
-   organ				varchar(255),
-   instance_no          int,
-   importdatatime		datetime,
-   updatetime           timestamp not null default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	pid                 int auto_increment,
+	roiname             varchar(64) not null,
+    seriesuid           varchar(64) not null,
+	roicolor            varchar(64) not null,
+    importdatatime		datetime,
+    updatetime          timestamp not null default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-   primary key (uid),
-   unique key (uid),
-   foreign key (imageuid) references image(imageuid) on delete cascade
+	primary key (pid),
+    unique key (pid),
+    foreign key (seriesuid) references series(seriesuid) on delete cascade
 )
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;

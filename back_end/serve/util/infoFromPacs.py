@@ -2,7 +2,7 @@
 import os
 
 from serve.static_parameters.setPacs import pacsconf
-from serve.static_parameters.setFilePath import SaveDicomFilePath
+from serve.static_parameters.setFilePath import filepath
 from serve.mdDicoms.dicom_service import DicomService
 
 
@@ -46,7 +46,7 @@ class GetInfoFromPacs(object):
 
         access_dicom = self.connectpacs()
         access_dicom.set_need_save_file(1)
-        series_path = SaveDicomFilePath.location_3
+        series_path = filepath.splitDicomPath
         access_dicom.set_dcm_file_path(series_path)
 
         for patientid in patients_list:
