@@ -17,10 +17,15 @@
                     <input type="text" [(ngModel)]="patientParam.patientName">
                 </th>
                 <th>
-                    <label>Gender</label>
+                    <label>AGE</label>
+                    <br>
+                    <input type="text" [(ngModel)]="patientParam.patientAge">
+                </th>
+                <th>
+                    <label>GENDER</label>
                     <br>
                     <p-dropdown id="gender" [options]="gender" placeholder="Select Gender"  [(ngModel)]="patientParam.gender" optionLabel="label"></p-dropdown>
-                </th>
+                </th>               
                 <th>
                     <label>MODALITY</label>
                     <br>

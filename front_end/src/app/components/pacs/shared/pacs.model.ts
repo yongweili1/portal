@@ -2,6 +2,7 @@ import { PageRequest } from '../../../shared/models/pagination';
 export interface PacsPageRequest extends PageRequest {
   patientId: string; 
   patientName: string;
+  patientAge: string;
   gender: string;
   modality?: string;
 //  studyDescription: string;
@@ -24,6 +25,7 @@ export interface PacsInfo {
     templateName?;
     patientId: string; 
     patientName: string;
+    patientAge: string;
     gender: string;
     modality?: string;
   }
@@ -32,6 +34,7 @@ export interface PacsInfo {
     templateName?;
     patientId: string; 
     patientName: string;
+    patientAge: string;
     gender: string;
     modality?: string;
  //   studyDescription: string;

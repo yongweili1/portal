@@ -37,6 +37,7 @@ export class PacsService {
     .set('page', pageRequest.page.toString())
     .set('patientId', pageRequest.patientId)
     .set('patientName', pageRequest.patientName)
+    .set('patientAge', pageRequest.patientAge)
     .set('gender', pageRequest.gender)
     .set('modality', pageRequest.modality);
     console.log(this.headers);
