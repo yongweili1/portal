@@ -44,7 +44,9 @@ export class PacsComponent implements OnInit {
   this.cols = [
       {field: 'patientId', header: 'PATIENT ID'},
       {field: 'patientName', header: 'PATIENT NAME'},
+      {field: 'patientAge', header: 'AGE'},
       {field: 'gender', header: 'GENDER'},
+      // {field: 'modality', header: 'MODALITY'}
   ];
   }
 
@@ -70,6 +72,7 @@ export class PacsComponent implements OnInit {
       size,
       patientId:this.patientParam.patientId,
       patientName:this.patientParam.patientName,
+      patientAge:this.patientParam.patientAge,
       gender:this.patientParam.gender,
       modality:this.patientParam.modality,
     }).subscribe((data) => {
@@ -81,13 +84,6 @@ export class PacsComponent implements OnInit {
     });
     return;
   }
-
-  public selectPacs( event: LazyLoadEvent = { first: 0, rows: this.tablePageRows[1] } ){
-    let page = Math.floor(event.first / (event.rows || this.tablePageRows[1]))
-    let size = event.rows || this.tablePageRows[1]
-    
-  }
-
 
   private download(){
     let patientIdArray = []

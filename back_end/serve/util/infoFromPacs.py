@@ -26,15 +26,16 @@ class GetInfoFromPacs(object):
             raise ConnectPacsERROR
         return access_dicom
 
-    def getinformations(self):
+    def getinformations(self, patientName, patientSex, modality):
         access_dicom = self.connectpacs()
-        patients = access_dicom.find_patients(patient_name="", modality="", date_range="", patient_sex="")
+        patients = access_dicom.find_patients(patient_name=patientName, modality=modality, date_range="", patient_sex=patientSex)
         length = len(patients)
         if length != 0:
             for patient in patients:
                 patient_dict = {}
                 patient_dict['patientName'] = patient.name
                 patient_dict['patientId'] = patient.id
+                patient_dict['patientAge'] = patient.age
                 patient_dict['gender'] = patient.sex
                 self.patients_list.append(patient_dict)
         return self.patients_list
