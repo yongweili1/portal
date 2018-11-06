@@ -15,24 +15,33 @@ from serve.DBrelated.upload_vol_to_db import UploadVolume
 from serve.util.buildVolume import DicomToVolume
 
 
+class SavePatient():
+    patients_list = []
+
+
 class GetPatient(APIView):
 
     def get(self, request):
 
         size = int(request.GET.get('size', 15))
         page = int(request.GET.get('page', 0))
+        patient_id = request.GET.get('patientId', "")
+        patient_name = request.GET.get('patientName', "")
+        patient_sex = request.GET.get('gender', "")
 
-        try:
-            patients_list = pacsinfo.getinformations()
+        if len(SavePatient.patients_list) == 0:
+            try:
+                SavePatient.patients_list = pacsinfo.getinformations()
 
-        except ConnectPacsERROR as e:
-            return Response('PACS连接失败')
-        totalelements = len(patients_list)
+            except ConnectPacsERROR as e:
+                return Response('PACS连接失败')
+
+        totalelements = len(SavePatient.patients_list)
         if totalelements == 0:
             return Response('PACS服务器无数据,请检查PACS')
 
         totalpages = int(math.ceil(float(totalelements) / float(size)))
-        totalpatients = patients_list[size * page:size * (page + 1)]
+        totalpatients = SavePatient.patients_list[size * page:size * (page + 1)]
         numberofelements = len(totalpatients)
 
         data = {

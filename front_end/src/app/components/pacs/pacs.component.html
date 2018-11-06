@@ -33,7 +33,7 @@
         </ng-template>
     </p-table>
   </p-panel>
-  <p-dataTable #dt expandableRows="true" [value]="pageModel?.content" selectionMode="multiple" [resizableColumns]="true" styleClass="my-table text-center" [emptyMessage]="'text.empty-data' | translate">
+  <p-dataTable #dt expandableRows="true" [value]="pageModel?.content" selectionMode="multiple"  [(selection)]="selectedPageModel.content" [resizableColumns]="true" styleClass="my-table text-center" [emptyMessage]="'text.empty-data' | translate">
     <p-header class="ui-helper-clearfix">
         <div class="pull-left">
             <mpt-icon-button class="pull-right margin-right-10" [label]="'btn.down' | translate" icon="fa fa-download fa-lg" style="cursor:pointer" (click)="download()"></mpt-icon-button>

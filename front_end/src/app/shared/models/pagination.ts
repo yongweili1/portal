@@ -19,7 +19,3 @@ export interface PageRequest {
   text?: string;
 }
 
-export interface Pages<T>{
-  content: T[];
-  totalElements: number;
-}

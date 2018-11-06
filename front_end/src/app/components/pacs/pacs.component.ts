@@ -82,13 +82,6 @@ export class PacsComponent implements OnInit {
     return;
   }
 
-  public selectPacs( event: LazyLoadEvent = { first: 0, rows: this.tablePageRows[1] } ){
-    let page = Math.floor(event.first / (event.rows || this.tablePageRows[1]))
-    let size = event.rows || this.tablePageRows[1]
-    
-  }
-
-
   private download(){
     let patientIdArray = []
     let patientIdString = ""
