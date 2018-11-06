@@ -6,6 +6,9 @@ import { LazyLoadEvent } from 'primeng/primeng';
 import {SelectItem} from 'primeng/api';
 import { Router} from '@angular/router';
 import { PacsService } from '../../services/pacs.service';
+import { MessageService } from 'primeng/api';
+import { forEach } from '@angular/router/src/utils/collection';
+import { element } from 'protractor';
 
 @Component({
   selector: 'mpt-pacs',
@@ -28,10 +31,15 @@ export class PacsComponent implements OnInit {
   ];
   cols:any[]= [];
   pageModel: Page<PacsInfo>; 
+  selectedPageModel: any;
   tablePageRows: number[] = [10, 15, 20, 50, 100];
   patientParam: PacsPageRequest = {} as PacsPageRequest;
  
-  constructor(private pacsService: PacsService,private router:Router){
+  constructor(
+    private pacsService: PacsService,
+    private router:Router,
+    private priMessageService: MessageService
+  ){
 
   this.cols = [
       {field: 'patientId', header: 'PATIENT ID'},
@@ -42,6 +50,7 @@ export class PacsComponent implements OnInit {
 
   public ngOnInit(): void {
     this.loadPacs();
+    this.selectedPageModel = {};
   }
 
   public search (){
@@ -73,26 +82,33 @@ export class PacsComponent implements OnInit {
     return;
   }
 
-
-  // public  download(){
-  //   this.setDateParams();
-  //   this.patientTemplateService.downloadExcel({
-  //     patientId:this.patientParam.patientId,
-  //     patientName:this.patientParam.patientName,
-  //     gender:this.patientParam.gender,
-  //     modality:this.patientParam.modality,
-  //     studyDescription:this.patientParam.studyDescription,
-  //     studyDate:this.rangeDate
-  //   });
-  // }
-
-  public toContouring(id:string) {
-    this.router.navigate(['/base/contouring'], {
-      queryParams: {
-          patientId: id,
-      }
-  });
-
+  public selectPacs( event: LazyLoadEvent = { first: 0, rows: this.tablePageRows[1] } ){
+    let page = Math.floor(event.first / (event.rows || this.tablePageRows[1]))
+    let size = event.rows || this.tablePageRows[1]
+    
   }
- 
+
+
+  private download(){
+    let patientIdArray = []
+    let patientIdString = ""
+    this.selectedPageModel.content.forEach(element =>{
+      patientIdArray.push(element.patientId);
+    });
+    patientIdString = patientIdArray.join(',');
+    this.pacsService.getDownloadPacs({
+      patientId: patientIdString
+    }).subscribe(result =>{
+      if(result == "success"){
+        this.priMessageService.add({ severity: 'success', detail: 'download succeed' });
+      }
+      else{
+        console.log("==== download failed ===")
+        this.priMessageService.add({ severity: 'error', detail: 'download failed' });
+      }
+    },(error)=>{
+      this.priMessageService.add({ severity: 'error', detail: 'download failed' });
+    })
+  }
+
 }
