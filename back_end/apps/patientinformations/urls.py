@@ -11,7 +11,7 @@ urlpatterns = [
     # url(r'^perinfos/(?P<pk>\d+)/$', views.PerInfoViewSet.as_view({"get": "retrieve"}), name='perinfos'),
     url(r'^patinfolist/$', csrf_exempt(views.Patinfolist.as_view()), name='patinfolist'),
     # url(r'^getview/$', views.GetView.as_view(), name='getview'),
-    url(r'^websocket', views.websocket, name='websocket'),
+    # url(r'^websocket', views.websocket, name='websocket'),
 ]
 
 

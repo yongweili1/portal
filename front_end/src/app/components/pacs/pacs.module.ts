@@ -18,6 +18,7 @@ import {
 } from 'primeng/primeng';
 import { SharedModule } from '../../shared/shared.module';
 import { PacsService } from '../../services/pacs.service'
+import { ToastModule } from 'primeng/toast';
 
 
 const routes: Routes = [
@@ -37,7 +38,8 @@ const routes: Routes = [
     DropdownModule,
     CalendarModule,
     PanelModule,
-    AccordionModule
+    AccordionModule,
+    ToastModule
   ],
   declarations: [PacsComponent],
   providers:[PacsService]

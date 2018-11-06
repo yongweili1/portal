@@ -35,6 +35,7 @@ class GetInfoFromPacs(object):
                 patient_dict = {}
                 patient_dict['patientName'] = patient.name
                 patient_dict['patientId'] = patient.id
+                patient_dict['gender'] = patient.sex
                 self.patients_list.append(patient_dict)
         return self.patients_list
 

@@ -143,7 +143,7 @@ DATABASES = {
         # 数据库登陆密码
         'PASSWORD': '111111',
         # 主机名
-        'HOST': 'localhost',
+        'HOST': '10.9.19.139',
         # 端口号
         'PORT': '3306',
         # 编码格式
