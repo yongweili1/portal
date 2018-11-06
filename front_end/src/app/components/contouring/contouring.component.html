@@ -1,7 +1,7 @@
 <div class="my-page">
     <div class="top_Button">
         <!-- <mpt-contouring-top-bar (zoom)="mainzoom()" (wlww)="mainwlww()" (move)="mainmove()" (sfile)="sfile()" (plan)="addPlan()" (loadSeries)="loadSeries()" (auto)="auto($event)" (remouse)="remouse($event)"></mpt-contouring-top-bar> -->
-        <mpt-contouring-top-bar (loadSeries)="loadSeries()" (clear)="mainClearPri()" (hideList)="mainHideList()" (zoom)="mainzoom()" (pan)="mainpan()" (rotate)="mainrotate()" (reset)="mainreset()" (wlww)="mainWLWW()"  (setcenter)="mainSetCenterPro()" [seriesList]="seriesList"></mpt-contouring-top-bar>
+        <mpt-contouring-top-bar (loadSeries)="loadSeries()" (clear)="mainClearPri()" (hideList)="mainHideList()" (newroi)="mainNewROI()" (manageroi)="mainManageROI()" (zoom)="mainzoom()" (pan)="mainpan()" (rotate)="mainrotate()" (reset)="mainreset()" (wlww)="mainWLWW()"  (setcenter)="mainSetCenterPro()" [seriesList]="seriesList"></mpt-contouring-top-bar>
     </div>
     <div id="threebmp" class="three three_inactive">
         <mpt-pic-transverse #picLeft1 class="a_class" 
@@ -87,7 +87,22 @@
     <!-- <div id="series_list" class="series_inactive" >
         <mpt-series-list [seriesList]="seriesList"></mpt-series-list>
     </div> -->
-    <!-- <div>
-        <load-bar #load></load-bar>
-    </div> -->
+    <p-dialog header="Create New ROI" [modal]="true" [(visible)]="newROIDisplay" [width]="300" [style]="{'border':'none'}" [contentStyle]="{'border':'none','overflow':'visible'}" (onHide)="hideNewROIDia()">
+        <div class="roi-name roi-input-group">
+            <label for="" >Name:</label>         
+            <input type="text" pInputText [(ngModel)]="ROIName">         
+        </div>
+        <div class="roi-color roi-input-group">
+            <label for="">Color:</label>
+            <p-colorPicker [(ngModel)]="ROIColor"></p-colorPicker>
+            <input type='text' pInputText style="padding-left:10px;border:none;" spellcheck=false [(ngModel)]="ROIColor">
+        </div>
+        <p-footer [style]="{'border':'none'}">
+            <p-button label="Save" icon="fa fa-check" iconPos="left" (onClick)="saveROI()"></p-button>
+            <p-button label="Cancel" icon="fa fa-times" iconPos="left" (onClick)="newROIDisplay=false"></p-button>
+        </p-footer>
+    </p-dialog>
+    <p-dialog header="Manage ROI" [(visible)]="manageROIDisplay" [width]="100" [style]="{'border':'none'}" [contentStyle]="{'border':'none','overflow':'visible'}" (onHide)="hideManageROIDia()">
+
+    </p-dialog>
 </div>

@@ -51,6 +51,10 @@ export class ContouringComponent implements OnInit {
     transverseCanvas: any;
     saggitalCanvas: any;
     coronalCanvas: any;
+    ROIName:any = '';
+    ROIColor:any = '#FFFF00';
+    newROIDisplay: any =false;
+    manageROIDisplay: any = false;
     lazyExcuteHandler: LazyExcuteHandler;
 
     @ViewChild('picLeft1') picLeft1;
@@ -76,6 +80,54 @@ export class ContouringComponent implements OnInit {
         EventAggregator.Instance().contourCps.subscribe(cps => { this.saveContour(cps); });
     }
 
+    mainNewROI(){
+        // if(this.hasLoadVolume==true){
+        if(1){
+            this.newROIDisplay = true;
+        }
+        else{
+            this.priMessageService.add({ severity: 'error', detail: 'Please load first.' });
+        }
+    }
+
+    mainManageROI(){
+        if(1){
+            this.manageROIDisplay = true;
+        }
+        else{
+            this.priMessageService.add({ severity: 'error', detail: 'Please load first.' });
+        }
+    }
+
+    hideNewROIDia(){
+        this.ROIColor = '#FFFF00';
+        this.ROIName = '';
+    }
+    saveROI(){
+        let colorReg = new RegExp('^\#\w{0,6}$','i')
+        //TODO true这个地方color的正则有问题
+        if( false || this.ROIName==''){
+            this.priMessageService.add({ severity: 'error', detail: `Illegal input.` });
+            return;
+        }
+        let ROIData = {
+            seriesuid: $("#seriesSelect").val(),
+            ROIName: this.ROIName,
+            ROIColor: this.ROIColor
+        }
+        this.roiHttp.PostCreateNewROI(ROIData).subscribe(result=>{
+            if(result.code == '200'){
+                this.priMessageService.add({ severity: 'success', detail: `Save succeed.` });
+                this.newROIDisplay = false
+            }
+            else{
+                this.priMessageService.add({ severity: 'error', detail: `${result.msg}` });
+            }
+        })
+    }
+    hideManageROIDia(){
+
+    }
     transverseChange(event: any) {
         let displayView = 'coronal,saggital'
         if (this.hasLoadVolume == true) {

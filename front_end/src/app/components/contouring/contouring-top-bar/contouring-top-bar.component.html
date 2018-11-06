@@ -1,8 +1,8 @@
 <div id="commonTools_1" class="btn-toolbar">
     <div class="upfloor">
         <button type="button" class="btn activeToolButton" id="btn_load" title="加载序列" (click)="loadMPR()"><img src="/assets/img/sendImagefilm.svg"></button>
-        <button type="button" class="btn activeToolButton" id="btn_series" title="显示/隐藏序列" (click)="OnHideList()"><img
-                src="" class="fa fa-fw fa-lg fa-list-ul"></button>
+        <!-- <button type="button" class="btn activeToolButton" id="btn_series" title="显示/隐藏序列" (click)="OnHideList()"><img
+                src="" class="fa fa-fw fa-lg fa-list-ul"></button> -->
     </div>
     <div class="downfloor">
         <span>LOAD FILE</span>
@@ -17,6 +17,16 @@
     </div>
     <div class="downfloor">
         <span>SERIES</span>
+    </div>
+</div>
+
+<div id="commonTools_6" class="btn-toolbar">
+    <div class="upfloor">
+        <button type="button" class="btn activeToolButton fa fa-plus-circle fa-lg" id="btn_new_roi" title="新建ROI" (click)="OnNewROI()"></button>
+        <button type="button" class="btn activeToolButton fa fa-fw fa-lg fa-list-ul" id="btn_manage_roi" title="管理ROI" (click)="OnManageROI()"></button>
+    </div>
+    <div class="downfloor">
+        <span>ROI</span>
     </div>
 </div>
 
@@ -65,3 +75,12 @@
         <span>MACRO</span>
     </div>
 </div>
+
+<!-- <div id="commonTools_7" class="btn-toolbar">
+        <div class="upfloor">
+            <p-splitButton label="Creat ROI" icon="pi pi-plus"  [model]="ROIItems" [style]="{'overflow':'visible'}"></p-splitButton>
+        </div>
+        <div class="downfloor">
+            <span>ROI</span>
+        </div>
+</div> -->

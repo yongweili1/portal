@@ -15,7 +15,8 @@ import {
   TreeTableModule,
   TreeModule,
   ColorPickerModule,
-  DialogModule
+  DialogModule,
+  SplitButtonModule
 } from 'primeng/primeng';
 
 import { ToastModule } from 'primeng/toast';
@@ -61,7 +62,8 @@ import { SeriesListComponent } from './series-list/series-list.component';
     EasyUIModule,
     TreeModule,
     ColorPickerModule,
-    ToastModule
+    ToastModule,
+    SplitButtonModule
     //RouterModule.forChild(routes)
   ],
   declarations: [
