@@ -73,7 +73,7 @@ export class ContouringComponent implements OnInit {
     ) {
         this.lazyExcuteHandler = new LazyExcuteHandler()
 
-        EventAggregator.Instance().contourCps.subscribe(cps => { this.saveContour(cps); });
+        EventAggregator.Instance().contourCps.subscribe(data => { this.saveContour(data); });
     }
 
     transverseChange(event: any) {
@@ -473,14 +473,15 @@ export class ContouringComponent implements OnInit {
         this.seriesHttpService.UnLoadVolume(this.seriesId).subscribe();
     }
 
-    saveContour(cps:any) {
-        console.log('saveContour');
+    saveContour(data:any) {
+        console.log('save contour');
         let dto = new ContourDto();
-        dto.series_uid = $("#seriesSelect").val();
-        dto.cps = cps;
-        this.conService.saveContour(dto).subscribe(response=>{
+        // if uid is null, add a new record, otherwise, update it
+        dto.uid = data[0];
+        dto.roi_uid = $("#seriesSelect").val(); // need to replace
+        dto.cps = data[1];
+        this.conService.saveContour(dto).subscribe(response => {
             console.log('aaa')
         });
     }
 }
-

@@ -142,9 +142,8 @@ class NewDjangoSession(models.Model):
 
 class Contours(models.Model):
     uid = models.AutoField(primary_key=True)
-    seriesuid = models.ForeignKey(Series, on_delete=models.CASCADE, db_column='seriesuid', to_field='seriesuid')
+    roi_uid = models.CharField(max_length=255, blank=True, null=False)
     cpspath = models.CharField(max_length=255, blank=True, null=True)
-    organ = models.CharField(max_length=255, blank=True, null=True)
     patientposition_z = models.FloatField(blank=True, null=True)
     importdatatime = models.DateTimeField(auto_now_add=True)
     updatetime = models.DateTimeField(auto_now=True)

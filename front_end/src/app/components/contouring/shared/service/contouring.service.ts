@@ -43,4 +43,11 @@ export class ContouringService {
   saveContour(dto: ContourDto): Observable<any> {
     return this.http.post<ContourDto>(`${this.appConfig.apiUrl}/contour/contour/`, dto, this.options);
   }
+
+  getContour(series_uid, cross_point): Observable<any> {
+    const getParams = new HttpParams()
+      .set('series_uid', series_uid)
+      .set('cross_point', cross_point);
+    return this.http.get(`${this.appConfig.apiUrl}/contour/contour/`, {params: getParams })
+  }
 }

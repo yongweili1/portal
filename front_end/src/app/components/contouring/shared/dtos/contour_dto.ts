@@ -1,6 +1,5 @@
 export class ContourDto {
-    series_uid: string;
-    instance_no: number;
+    uid: string;
+    roi_uid: string;
     cps: Array<any>;
-    organ: string;
 }
