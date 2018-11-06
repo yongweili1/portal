@@ -91,7 +91,6 @@ class Patinfolist(APIView):
         }
         return Response(rsp)
 
-
 @require_websocket
 def websocket(request):
     if not request.is_websocket():

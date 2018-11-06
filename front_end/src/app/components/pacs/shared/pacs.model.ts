@@ -8,6 +8,10 @@ export interface PacsPageRequest extends PageRequest {
 //  studyDate: Date[];
 }
 
+export interface PacsDownloadRequest{
+  patientId: string;
+}
+
 export interface MenuItem {
     label?: string;
 }

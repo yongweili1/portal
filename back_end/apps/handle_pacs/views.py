@@ -29,6 +29,7 @@ class GetPatient(APIView):
 
         try:
             patients_list = pacsinfo.getinformations()
+
         except ConnectPacsERROR as e:
             return Response('PACS连接失败')
         totalelements = len(patients_list)

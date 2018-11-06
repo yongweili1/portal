@@ -18,3 +18,8 @@ export interface PageRequest {
   size: number;
   text?: string;
 }
+
+export interface Pages<T>{
+  content: T[];
+  totalElements: number;
+}
