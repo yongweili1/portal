@@ -28,9 +28,13 @@ export class PaListComponent implements OnInit {
         { label: 'DX' }
     ];
     cols: any[] = [];
+    studycols: any[] = [];
+    seriescols: any[] = [];
     rangeDate = [];
     pageModel: Page<PatientTemplateInfo>;
     selectedPageModel: any;
+    selectedStudyModel: any;
+    selectedSeriesModel: any;
     tablePageRows: number[] = [10, 15, 20, 50, 100];
     patientParam: PatientPageRequest = {} as PatientPageRequest;
 
@@ -44,13 +48,26 @@ export class PaListComponent implements OnInit {
             { field: 'patientName', header: 'PATIENT NAME' },
             { field: 'gender', header: 'GENDER' },
             { field: 'modality', header: 'MODALITY' },
-            { field: 'studyDescription', header: 'STUDYDESCRIPTION' }
+            { field: 'studyDescription', header: 'STUDYDESCRIPTION'}
+        ];
+
+        this.studycols=[
+            { field: 'studyid', header: 'STUDY ID' },
+            { field: 'studyuid', header: 'STUDY UID' },
+            { field: 'studydescription', header: 'STUDYDESCRIPTION'},
+        ];
+
+        this.seriescols=[
+            { field: 'seriesuid', header: 'SERIES ID' },
+            { field: 'seriesdescription', header: 'SERIESSCRIPTION'},
         ];
     }
 
     public ngOnInit(): void {
         this.loadPatientTemplate();
         this.selectedPageModel = {};
+        this.selectedStudyModel = {};
+        this.selectedSeriesModel = {};
     }
 
     public search() {
@@ -98,16 +115,38 @@ export class PaListComponent implements OnInit {
     onDelete(page: number = 0, size: number = this.tablePageRows[1]) {
         let patientIdArray = []
         let patientIdString = "";
-        this.selectedPageModel.content.forEach(element => {
-            patientIdArray.push(element.patientId);
-        });
-        patientIdString = patientIdArray.join(',');
+        if(this.selectedPageModel.content != undefined){
+            this.selectedPageModel.content.forEach(element => {
+                patientIdArray.push(element.patientId);
+            });
+            patientIdString = patientIdArray.join(',');
+        }
+        let studyIdArray = []
+        let studyIdString = "";
+        if(this.selectedStudyModel.content != undefined){
+            this.selectedStudyModel.content.forEach(element => {
+                studyIdArray.push(element.studyid);
+            });
+            studyIdString = studyIdArray.join(',');
+        }
+
+        let seriesIdArray = []
+        let seriesIdString = "";
+        if(this.selectedSeriesModel.content != undefined){
+            this.selectedSeriesModel.content.forEach(element => {
+                seriesIdArray.push(element.seriesuid);
+            });
+            seriesIdString = seriesIdArray.join(',');
+        }
         this.patientTemplateService.deletePatientTemplate({
             page,
             size,
-            patientId: patientIdString
+            patientId: patientIdString,
+            studyId: studyIdString,
+            seriesId: seriesIdString
         }).subscribe(result => {
-            if (result == 'success') {
+            if (result.code == '200') {
+                this.pageModel = result.data;
                 this.priMessageService.add({ severity: 'success', detail: 'del succeed.' });
             }
             else{

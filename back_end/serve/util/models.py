@@ -44,7 +44,6 @@ class Study(models.Model):
 
 
 class Series(models.Model):
-
     WHETHER_BUILD = (
         (0, 'need_build'),
         (1, 'builded')
@@ -143,12 +142,12 @@ class NewDjangoSession(models.Model):
 
 class Contours(models.Model):
     uid = models.AutoField(primary_key=True)
-    imageuid = models.ForeignKey(Image, models.DO_NOTHING, db_column='imageuid')
-    dotsetpath = models.CharField(max_length=255, blank=True, null=True)
+    seriesuid = models.ForeignKey(Series, on_delete=models.CASCADE, db_column='seriesuid', to_field='seriesuid')
+    cpspath = models.CharField(max_length=255, blank=True, null=True)
     organ = models.CharField(max_length=255, blank=True, null=True)
-    instance_no = models.IntegerField(blank=True, null=True)
-    importdatatime = models.DateTimeField(blank=True, null=True)
-    updatetime = models.DateTimeField()
+    patientposition_z = models.FloatField(blank=True, null=True)
+    importdatatime = models.DateTimeField(auto_now=True)
+    updatetime = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         app_label = 'Contours'

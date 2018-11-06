@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'rest_framework_swagger',
+    'channels',
+    'back_end',
 
     'connect_image.apps.ConnectImageConfig',
     'patientinformations.apps.PatientinformationsConfig',
@@ -227,3 +229,16 @@ SESSION_FILE_PATH = None
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
 DJANGO_SESSION_MODEL = 'sessionmiddle.DjangoSession'
+# =========================================================================================
+# channels
+ASGI_APPLICATION = "back_end.routing.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "asgi_redis.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+        },
+        "ROUTING": "back_end.routing.channel_routing",
+    },
+}

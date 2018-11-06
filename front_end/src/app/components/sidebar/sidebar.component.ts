@@ -44,6 +44,12 @@ export class SideBarComponent implements OnInit {
         resName:'base.users.query'
     },
     {
+        link: '/base/training-status',
+        icon: 'fa fa-fw fa-lg fa-check-circle-o',
+        title: 'base.training-status.title',
+        resName:'base.users.query'
+    },
+    {
       name: 'Setting',
       icon: 'fa fa-fw fa-lg fa-tasks',
       title: 'Setting',

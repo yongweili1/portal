@@ -214,6 +214,9 @@
         "data": {
             "title": "DATA"
         },
+        "training-status": {
+            "title": "Status"
+        },
         "datetime-range-picker": {
             "title": "Select date time range"
         }

@@ -1,0 +1,7 @@
+<div class="my-page-title">
+    <span>{{ 'Summary' | translate }}</span>
+</div>
+<div class="my-page-container">
+    <p-tree [value]="statusTree" layout="horizontal" [style]="{'border':'none'}"></p-tree>
+    <a (click)="goTest()">Go detail</a>
+</div>
