@@ -2,6 +2,7 @@ import { Point } from '../tools/point'
 declare var createjs: any;
 
 export class BaseContainer extends createjs.Container {
+    uid: string = null;
     isPaint: boolean = false;
     isMousedown: boolean = true;
     type: string;

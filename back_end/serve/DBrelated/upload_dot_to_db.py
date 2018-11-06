@@ -8,8 +8,8 @@ class Contour(object):
             Contours.objects.create(**kwargs)
         except Exception as e:
             print(e.message)
-            return 'fail'
-        return 'success'
+            return False
+        return True
 
 
 contour = Contour()
