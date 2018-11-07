@@ -96,8 +96,8 @@ class Image(models.Model):
     lossyimagecompression = models.CharField(max_length=16, blank=True, null=True)
     lossyimagecompressionratio = models.CharField(max_length=271, blank=True, null=True)
     pixelspacing = models.CharField(max_length=64, blank=True, null=True)
-    imageorientationpatient = models.CharField(max_length=101, blank=True, null=True)
-    imagepositionpatient = models.CharField(max_length=50, blank=True, null=True)
+    imageorientationpatient = models.CharField(max_length=255, blank=True, null=True)
+    imagepositionpatient = models.CharField(max_length=255, blank=True, null=True)
     slicethickness = models.CharField(max_length=16, blank=True, null=True)
     slicelocation = models.CharField(max_length=16, blank=True, null=True)
     samplesperpixel = models.IntegerField(blank=True, null=True)
@@ -146,8 +146,8 @@ class Contours(models.Model):
     cpspath = models.CharField(max_length=255, blank=True, null=True)
     organ = models.CharField(max_length=255, blank=True, null=True)
     patientposition_z = models.FloatField(blank=True, null=True)
-    importdatatime = models.DateTimeField(auto_now=True)
-    updatetime = models.DateTimeField(auto_now_add=True)
+    importdatatime = models.DateTimeField(auto_now_add=True)
+    updatetime = models.DateTimeField(auto_now=True)
 
     class Meta:
         app_label = 'Contours'
@@ -191,7 +191,7 @@ class Roi(models.Model):
     seriesuid = models.ForeignKey(Series, on_delete=models.CASCADE, db_column='seriesuid', to_field='seriesuid')
     roicolor = models.CharField(max_length=64)
     importdatatime = models.DateTimeField(auto_now_add=True)
-    updatetime = models.DateTimeField()
+    updatetime = models.DateTimeField(auto_now=True)
 
     class Meta:
         app_label = 'Roi'

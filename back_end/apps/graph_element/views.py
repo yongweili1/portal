@@ -8,6 +8,7 @@ import json
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from back_end.settings import STATIC_ROOT
+from serve.DBAccess.models import Series
 from serve.DBAccess.upload_dot_to_db import contour
 from serve.util.connectImageServe import screen2world
 
@@ -51,8 +52,13 @@ class GraphElement(APIView):
         with open(cpspath, 'wb') as f:
             f.write(json.dumps(cps_world))
 
+        try:
+            seriesobj = Series.objects.get(seriesuid=series_uid)
+        except Exception as e:
+            return Response('外键seriesuid无对应的数据对象')
+
         data = {
-            'seriesuid': series_uid,
+            'seriesuid': seriesobj,
             'patientposition_z': patientposition_z,
             'cpspath': cpspath
         }

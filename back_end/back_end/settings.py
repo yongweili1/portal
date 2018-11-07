@@ -154,7 +154,7 @@ DATABASES = {
         'OPTIONS': {
          "init_command": "SET foreign_key_checks = 0;",
         },
-        'isolation_level': 'read committed'
+        # 'isolation_level': 'read committed'
     }
 }
 # ---------------------------------------------------------------------------------------
