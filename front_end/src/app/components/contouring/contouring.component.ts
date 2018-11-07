@@ -180,7 +180,7 @@ export class ContouringComponent implements OnInit {
         this.conMessage.actionInfo$.subscribe(value => {
             this.actionInfo = value;
             let toolsActionArray = ['zoom', 'pan','rotate','window']
-            let priActionArray = ['shape', 'clear','select']
+            let priActionArray = ['shape', 'clear','select', 'nudge']
             if (this.actionInfo.key() == actions.locate ) {
                 this.picLeft1.SetCanvasIndex("#crossCanvas", 10);
                 this.picLeft2.SetCanvasIndex("#crossCanvas", 10);

@@ -9,6 +9,7 @@ export class BaseContainer extends createjs.Container {
     overlayStage: any;
     protected _tempPoint: Point;
     cps: Array<Point>;
+    currentMouseButton: number;
 
     constructor(stage, type) {
         super();
