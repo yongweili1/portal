@@ -31,5 +31,6 @@ urlpatterns = [
     url(r'^dicom/', include('upload_dcm.urls')),
     url(r'^algproxy/', include('alg_proxy.urls')),
     url(r'^pacs/', include('handle_pacs.urls')),
-    url(r'^overlay/', include('graph_element.urls')),
+    url(r'^contour/', include('graph_element.urls')),
+    url(r'^roi/', include('roi.urls')),
 ]

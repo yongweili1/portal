@@ -17,7 +17,7 @@
                         <input type="text" [(ngModel)]="patientParam.patientName">
                     </th>
                     <th>
-                        <label>Gender</label>
+                        <label>GENDER</label>
                         <br>
                         <p-dropdown id="gender" [options]="gender" placeholder="Select Gender" [(ngModel)]="patientParam.gender" optionLabel="label"></p-dropdown>
                     </th>
@@ -41,7 +41,8 @@
     <p-dataTable #dt expandableRows="true" [value]="pageModel?.content" selectionMode="multiple"  [(selection)]="selectedPageModel.content"  [resizableColumns]="true" styleClass="my-table text-center" [emptyMessage]="'text.empty-data' | translate">
         <p-header class="ui-helper-clearfix">
             <div class="pull-left">
-                <mpt-icon-button class="pull-right margin-right-10 table-button" [label]="'btn.delete' | translate" icon="fa fa-trash fa-lg" (click)="onDelete()"></mpt-icon-button>
+                <!-- <mpt-icon-button class="pull-right margin-right-10 table-button" [label]="'btn.delete' | translate" icon="fa fa-trash fa-lg" (click)="onDelete()"></mpt-icon-button> -->
+                <mpt-icon-button class="pull-right margin-right-10 table-button" [label]="'btn.delete' | translate"  style="cursor:pointer" icon="fa fa-trash fa-lg"></mpt-icon-button>
             </div>
         </p-header>
         <p-column [style]="{'width':'10px','padding-left':'10px'}" selectionMode="multiple"></p-column>

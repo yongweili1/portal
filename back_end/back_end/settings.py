@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'rest_framework_swagger',
+    'channels',
+    'back_end',
 
     'connect_image.apps.ConnectImageConfig',
     'patientinformations.apps.PatientinformationsConfig',
@@ -51,6 +53,7 @@ INSTALLED_APPS = [
     'upload_dcm.apps.UploadDcmConfig',
     'graph_element.apps.GraphElementConfig',
     'sessionmiddle.apps.MiddleConfig',
+    'roi.apps.RoiConfig',
 ]
 
 MIDDLEWARE = [
@@ -143,7 +146,7 @@ DATABASES = {
         # 数据库登陆密码
         'PASSWORD': '111111',
         # 主机名
-        'HOST': 'localhost',
+        'HOST': '10.9.19.139',
         # 端口号
         'PORT': '3306',
         # 编码格式
@@ -151,7 +154,7 @@ DATABASES = {
         'OPTIONS': {
          "init_command": "SET foreign_key_checks = 0;",
         },
-        'isolation_level': 'read committed'
+        # 'isolation_level': 'read committed'
     }
 }
 # ---------------------------------------------------------------------------------------
@@ -227,3 +230,18 @@ SESSION_FILE_PATH = None
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
 DJANGO_SESSION_MODEL = 'sessionmiddle.DjangoSession'
+# =========================================================================================
+# channels
+ASGI_APPLICATION = "back_end.routing.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "asgi_redis.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+        },
+        "ROUTING": "back_end.routing.channel_routing",
+    },
+}
+
+

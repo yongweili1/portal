@@ -1,22 +1,23 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 import os
 import platform
 import pydicom
 
-# Create your views here.
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from serve.static_parameters.setFilePath import SaveDicomFilePath
+from serve.static_parameters.setFilePath import filepath
 from serve.util.splitDicom import SplitDicoms
-from serve.DBrelated.upload_dcm_to_db import UploadDcm
-from serve.DBrelated.upload_vol_to_db import UploadVolume
+from serve.DBAccess.upload_dcm_to_db import UploadDcm
+from serve.DBAccess.upload_vol_to_db import UploadVolume
 from serve.util.buildVolume import DicomToVolume
 
 if platform.system() == 'Windows':
     import win32file
-    win32file._setmaxstdio(2048)  # 如果要部署到linux，则需要更改linux /etc/security/limitd.conf的配置文件，修改最大打开文件数量
+
+    win32file._setmaxstdio(2048)  # 如果要部署到linux，更改linux /etc/security/limitd.conf的配置文件，修改最大打开文件数量
 
 
 class Patinfo(APIView):
@@ -36,7 +37,7 @@ class Patinfo(APIView):
         print(len(files))
 
         for f in files:
-            destination = open(SaveDicomFilePath.location_2 + f.name, 'wb+')
+            destination = open(filepath.dicomPath + f.name, 'wb+')
             for chunk in f.chunks():
                 destination.write(chunk)
             destination.close()
@@ -48,7 +49,7 @@ class Patinfo(APIView):
         print('上传完成，正在执行DCM数据入库...')
         for file_name in file_name_list:
             # if platform.system() == 'Windows':
-            file_path = os.path.join(SaveDicomFilePath.location_2, file_name)
+            file_path = os.path.join(filepath.dicomPath, file_name)
             dataset = pydicom.dcmread(file_path, force=True)
             splitdicoms = SplitDicoms()
             try:

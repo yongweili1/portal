@@ -69,12 +69,26 @@ class CFindScu(object):
             response = assoc.send_c_find(ds, query_model='S')
             for (status, identifier) in response:  # type: (object, object)
                 if status.get(0x00000900).value == 65280:
-                    pid = ''
-                    if identifier.get_item(0x00100020):
-                        if identifier.get_item(0x00100020).value:
-                            pid = identifier.get_item(0x00100020).value
-                    patient = Patient(name=identifier.get_item(0x00100010).value,
-                                      id=pid)
+                    if 'PatientName' in identifier:
+                        p_name = identifier.get_item(0x00100010).value
+                    else:
+                        p_name = None
+                    if 'PatientID' in identifier:
+                        p_id = identifier.get_item(0x00100020).value
+                    else:
+                        p_id = None
+                    if 'PatientAge' in identifier:
+                        p_age = identifier.get_item(0x00101010).value
+                    elif 'PatientBirthDate' in identifier:               # birthdate to age
+                        p_age = identifier.get_item(0x00100030).value
+                    else:
+                        p_age = None
+                    if 'PatientSex' in identifier:
+                        p_sex = identifier.get_item(0x00100040).value
+                    else:
+                        p_sex = None
+
+                    patient = Patient(name=p_name, id=p_id, age=p_age, sex=p_sex)
                     patients.append(patient)
 
             assoc.release()

@@ -11,6 +11,7 @@ import { Page, PageRequest } from '../shared/models/pagination';
 import {
   PacsPageRequest,
   PacsInfoRequest,
+  PacsDownloadRequest
 } from '../components/pacs/shared/pacs.model';
 import {ToastService} from '../core/toast.service';
 
@@ -36,14 +37,23 @@ export class PacsService {
     .set('page', pageRequest.page.toString())
     .set('patientId', pageRequest.patientId)
     .set('patientName', pageRequest.patientName)
+    .set('patientAge', pageRequest.patientAge)
     .set('gender', pageRequest.gender)
     .set('modality', pageRequest.modality);
     console.log(this.headers);
     return this.http
       .get<Page<PacsPageRequest>>(`${this.appConfig.apiUrl}/pacs/pacspatient/`,{headers:this.headers, params:searchParams});  
   }
+
+  public getDownloadPacs(downloadRequest: PacsDownloadRequest): Observable<any>{
+    const searchParams = new HttpParams()
+    .set('patientId', downloadRequest.patientId);
+    console.log(this.headers);
+    return this.http
+      .get<Page<PacsPageRequest>>(`${this.appConfig.apiUrl}/pacs/pacsimages/`,{headers:this.headers, params:searchParams});  
+  }
 }
 
 const httpOptions = {
-  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+  headers: new HttpHeaders({ 'Content-Type': 'application/json' })  
 };

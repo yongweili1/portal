@@ -32,6 +32,10 @@ drop table if exists alg_csv;
 drop table if exists script;
 /* session related */
 drop table if exists new_django_session;
+/* roi related */
+drop table if exists roi;
+/* contours related */
+drop table if exists contours;
 
 create table patient
 (
@@ -141,15 +145,16 @@ DEFAULT CHARACTER SET = utf8;
 create table contours
 (
    uid      			int auto_increment,
-   imageuid 		    varchar(64) not null,
-   dotsetpath	        varchar(255),
+   seriesuid 		    varchar(64) not null,
+   cpspath	            varchar(255),
    organ				varchar(255),
+   patientposition_z    float,
    importdatatime		datetime,
    updatetime           timestamp not null default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
    primary key (uid),
    unique key (uid),
-   foreign key (imageuid) references image(imageuid) on delete cascade
+   foreign key (seriesuid) references series(seriesuid) on delete cascade
 )
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
@@ -178,6 +183,22 @@ create table new_django_session
 
    primary key (session_key),
    unique key (session_key)
+)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+create table roi
+(
+	pid                 int auto_increment,
+	roiname             varchar(64) not null,
+    seriesuid           varchar(64) not null,
+	roicolor            varchar(64) not null,
+    importdatatime		datetime,
+    updatetime          timestamp not null default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+	primary key (pid),
+    unique key (pid),
+    foreign key (seriesuid) references series(seriesuid) on delete cascade
 )
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;

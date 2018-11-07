@@ -17,10 +17,15 @@
                     <input type="text" [(ngModel)]="patientParam.patientName">
                 </th>
                 <th>
-                    <label>Gender</label>
+                    <label>AGE</label>
+                    <br>
+                    <input type="text" [(ngModel)]="patientParam.patientAge">
+                </th>
+                <th>
+                    <label>GENDER</label>
                     <br>
                     <p-dropdown id="gender" [options]="gender" placeholder="Select Gender"  [(ngModel)]="patientParam.gender" optionLabel="label"></p-dropdown>
-                </th>
+                </th>               
                 <th>
                     <label>MODALITY</label>
                     <br>
@@ -33,17 +38,17 @@
         </ng-template>
     </p-table>
   </p-panel>
-  <p-dataTable #dt expandableRows="true" [value]="pageModel?.content" selectionMode="multiple" [resizableColumns]="true" styleClass="my-table text-center" [emptyMessage]="'text.empty-data' | translate">
+  <p-dataTable #dt expandableRows="true" [value]="pageModel?.content" selectionMode="multiple"  [(selection)]="selectedPageModel.content" [resizableColumns]="true" styleClass="my-table text-center" [emptyMessage]="'text.empty-data' | translate">
     <p-header class="ui-helper-clearfix">
         <div class="pull-left">
-            <mpt-icon-button class="pull-right margin-right-10" [label]="'btn.down' | translate" icon="fa fa-download fa-lg" (click)="download()"></mpt-icon-button>
+            <mpt-icon-button class="pull-right margin-right-10" [label]="'btn.down' | translate" icon="fa fa-download fa-lg" style="cursor:pointer" (click)="download()"></mpt-icon-button>
         </div>
     </p-header>
     <p-column [style]="{'width':'30px','padding-left':'10px'}" selectionMode="multiple"></p-column>
     <p-column [header]="'No' | translate" field="no" [style]="{'width':'30px','text-align':'center'}"></p-column>
     <p-column *ngFor="let col of cols" [header]="col.header | translate" [style]="{'width':'120px'}">
         <ng-template pTemplate="body" let-row="rowData">
-            <tr (click)="toContouring(row.patientId)">
+            <tr>
                 <td style="text-align:center">
                     {{row[col.field]}}
                 </td>
@@ -61,3 +66,5 @@
     </p-footer>
   </p-dataTable>
 </div>
+
+<p-toast position="bottom-right"></p-toast>

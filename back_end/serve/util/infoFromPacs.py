@@ -2,7 +2,7 @@
 import os
 
 from serve.static_parameters.setPacs import pacsconf
-from serve.static_parameters.setFilePath import SaveDicomFilePath
+from serve.static_parameters.setFilePath import filepath
 from serve.mdDicoms.dicom_service import DicomService
 
 
@@ -26,15 +26,17 @@ class GetInfoFromPacs(object):
             raise ConnectPacsERROR
         return access_dicom
 
-    def getinformations(self):
+    def getinformations(self, patientName, patientSex, modality):
         access_dicom = self.connectpacs()
-        patients = access_dicom.find_patients(patient_name="", modality="", date_range="", patient_sex="")
+        patients = access_dicom.find_patients(patient_name=patientName, modality=modality, date_range="", patient_sex=patientSex)
         length = len(patients)
         if length != 0:
             for patient in patients:
                 patient_dict = {}
                 patient_dict['patientName'] = patient.name
                 patient_dict['patientId'] = patient.id
+                patient_dict['patientAge'] = patient.age
+                patient_dict['gender'] = patient.sex
                 self.patients_list.append(patient_dict)
         return self.patients_list
 
@@ -45,7 +47,7 @@ class GetInfoFromPacs(object):
 
         access_dicom = self.connectpacs()
         access_dicom.set_need_save_file(1)
-        series_path = SaveDicomFilePath.location_3
+        series_path = filepath.splitDicomPath
         access_dicom.set_dcm_file_path(series_path)
 
         for patientid in patients_list:

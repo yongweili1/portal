@@ -18,3 +18,4 @@ export interface PageRequest {
   size: number;
   text?: string;
 }
+

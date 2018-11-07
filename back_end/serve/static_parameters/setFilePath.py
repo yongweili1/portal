@@ -8,19 +8,35 @@ class LinuxFilePath(FileSystemStorage):
     dicomPath = basePath + 'dicoms'
     splitDicomPath = basePath + 'split_dicom'
     volumePath = basePath + 'volume'
-    dicomFromPacs = basePath + 'pacs_dicom'
+    cpsPath = basePath + 'cps'
 
 
-class SaveDicomFilePath(FileSystemStorage):
-    location_1 = 'D:\\temp\\'
-    location_2 = 'D:\\dicoms\\'
-    location_3 = 'D:\\split_dicom\\'
-    location_4 = 'D:\\pacs_dicom\\'
-
-
-class SaveVolumeFilePath(FileSystemStorage):
+class WindowsFilePath(FileSystemStorage):
+    dicomPath = 'D:\\dicoms\\'
+    splitDicomPath = 'D:\\split_dicom\\'
     volumePath = 'D:\\volume\\'
+    cpsPath = 'D:\\cps\\'
 
 
-class DotPositionFilePath(FileSystemStorage):
-    dotPosPath = 'D:\\dotpostion\\'
+class SaveDicomFilePath(object):
+
+    def __init__(self):
+        self.dicomPath = ''
+        self.splitDicomPath = ''
+        self.volumePath = ''
+        self.cpsPath = ''
+
+    def set_dcmpath(self, dcmfilepath):
+        self.dicomPath = dcmfilepath
+
+    def set_splitdcmpath(self, splitfilepath):
+        self.splitDicomPath = splitfilepath
+
+    def set_volumepath(self, volumepath):
+        self.volumePath = volumepath
+
+    def set_cpspath(self, cpspath):
+        self.cpsPath = cpspath
+
+
+filepath = SaveDicomFilePath()

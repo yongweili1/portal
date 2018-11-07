@@ -2,10 +2,15 @@ import { PageRequest } from '../../../shared/models/pagination';
 export interface PacsPageRequest extends PageRequest {
   patientId: string; 
   patientName: string;
+  patientAge: string;
   gender: string;
   modality?: string;
 //  studyDescription: string;
 //  studyDate: Date[];
+}
+
+export interface PacsDownloadRequest{
+  patientId: string;
 }
 
 export interface MenuItem {
@@ -20,6 +25,7 @@ export interface PacsInfo {
     templateName?;
     patientId: string; 
     patientName: string;
+    patientAge: string;
     gender: string;
     modality?: string;
   }
@@ -28,6 +34,7 @@ export interface PacsInfo {
     templateName?;
     patientId: string; 
     patientName: string;
+    patientAge: string;
     gender: string;
     modality?: string;
  //   studyDescription: string;

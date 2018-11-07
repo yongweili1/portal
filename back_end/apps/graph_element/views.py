@@ -2,12 +2,15 @@
 from __future__ import unicode_literals
 
 import time
+import json
 
 # Create your views here.
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from back_end.settings import STATIC_ROOT
-from serve.DBrelated.upload_dot_to_db import overlay
+from serve.DBAccess.models import Series
+from serve.DBAccess.upload_dot_to_db import contour
+from serve.util.connectImageServe import screen2world
 
 
 class GraphElement(APIView):
@@ -20,25 +23,49 @@ class GraphElement(APIView):
         :param dotpositon: point coordinate
         :return:
         """
-        seriesuid = request.POST.get('seriesuid', None)
-        overlaytype = request.POST.get('overlaytype', None)
-        dotposition = request.POST.get('dotposition', None)
-        user_name = request.user
-        if seriesuid is None or type is None or dotposition is None:
-            return Response('参数不完整')
-        file_name = user_name + str(time.time())
-        dotpositionpath = STATIC_ROOT + '\\dot_element\\' + file_name + '.txt'
+        series_uid = request.data.get('series_uid', None)
+        cps = request.data.get('cps', None)
+        user_ip = request.META.get('REMOTE_ADDR', None)
+        params = {
+            'trans_direct_flag': 'screen2world',
+            'focus_view': 'transverse',
+            'point_2d': [cps[0]['x'], cps[0]['y']],
+            'user_ip': user_ip,
+            'server_name': 'image',
+            'command': 'word_coord'
+        }
+        rst = screen2world(**params)
+        point3d = json.loads(rst.kwargs)
+        print(point3d)
+        patientposition_z = float(point3d[2])
 
-        with open(dotpositionpath, 'wb') as f:
-            f.write(dotposition)
+        cps_world = []
+        for cp in cps:
+            params['point_2d'] = [cp['x'], cp['y']]
+            rst = screen2world(**params)
+            point3d = json.loads(rst.kwargs)
+            cps_world.append(point3d)
+
+        file_name = user_ip + '-' + str(time.time())
+        cpspath = r'D:\svr\volume' + '\\' + file_name + '.txt'
+
+        with open(cpspath, 'wb') as f:
+            f.write(json.dumps(cps_world))
+
+        try:
+            seriesobj = Series.objects.get(seriesuid=series_uid)
+        except Exception as e:
+            return Response('外键seriesuid无对应的数据对象')
 
         data = {
-            'seriesuid': seriesuid,
-            'overlaytype': overlaytype,
-            'dotpositionpath': dotpositionpath
+            'seriesuid': seriesobj,
+            'patientposition_z': patientposition_z,
+            'cpspath': cpspath
         }
-
-        result = overlay.upload_to_db(**data)
+        try:
+            result = contour.upload_to_db(**data)
+        except Exception as e:
+            print(e.message)
 
         if result is 'fail':
             return Response('upload overlay fail ！')
