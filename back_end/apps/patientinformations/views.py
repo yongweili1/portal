@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from serve.util.PAInformation import InfoList
-from dwebsocket import require_websocket, accept_websocket
+# from dwebsocket import require_websocket, accept_websocket
 
 
 class Patinfolist(APIView):
@@ -91,19 +91,19 @@ class Patinfolist(APIView):
         }
         return Response(rsp)
 
-@require_websocket
-def websocket(request):
-    if not request.is_websocket():
-        try:
-            message = request.GET['message']
-            return HttpResponse(message)
-        except Exception as e:
-            return HttpResponse('fail')
-    else:
-        Websocket = request.websocket
-        for message in request.websocket:
-            print(message)
-            Websocket.send(message)
+# @require_websocket
+# def websocket(request):
+#     if not request.is_websocket():
+#         try:
+#             message = request.GET['message']
+#             return HttpResponse(message)
+#         except Exception as e:
+#             return HttpResponse('fail')
+#     else:
+#         Websocket = request.websocket
+#         for message in request.websocket:
+#             print(message)
+#             Websocket.send(message)
 
 
 # class GetView(APIView):

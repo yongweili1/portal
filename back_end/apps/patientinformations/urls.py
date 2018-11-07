@@ -8,7 +8,7 @@ from . import views
 
 urlpatterns = [
     url(r'^patinfolist/$', csrf_exempt(views.Patinfolist.as_view()), name='patinfolist'),
-    url(r'^websocket', views.websocket, name='websocket'),
+    # url(r'^websocket', views.websocket, name='websocket'),
 ]
 
 
