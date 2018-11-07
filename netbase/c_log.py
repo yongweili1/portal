@@ -4,13 +4,15 @@ import ctypes
 import sys
 import threading
 import time
+import xml.etree.ElementTree as XmlEt
 
 
 class PyLogInstance(object):
     _instance_lock = threading.Lock()
 
     def __init__(self):
-        self._source_name = 'default_module'
+        self._source_name = ''
+        self._frame_switch = 0
         path = os.path.dirname(os.path.abspath(__file__))
         if platform.system == 'linux':
             path = os.path.join(path, "linux/libMcsfLogger.so")
@@ -29,10 +31,17 @@ class PyLogInstance(object):
                     PyLogInstance._instance = object.__new__(cls)
         return PyLogInstance._instance
 
-    def create_log(self, xml=''):
-        if len(xml) == 0:
-            xml = 'log_config.xml'
-        self._lib.GLogLoadConfig(xml)
+    def create_log(self, xml_path=''):
+        if '' == xml_path:
+            xml_path = os.path.abspath('log_config.xml')
+        self._lib.GLogLoadConfig(xml_path)
+
+        root = XmlEt.parse(xml_path).getroot()
+        client_name = root.find('LOG_CLIENT_NAME').text
+        if '' != client_name:
+            self._source_name = client_name
+        if root.find('LOG_TRACE_SOURCE_CODE_INFO').text.lower() == 'on':
+            self._frame_switch = 1
 
     def erase_log(self):
         self._lib.GLogUnloadConfig()
@@ -49,30 +58,27 @@ class PyLogInstance(object):
     def _build_log(self, log_type, code_info, log_uid, desc, source):
         if '' == source:
             source = self._source_name
-        log = [log_type, '\x0002', long(time.time() * 1000), '\x0002', source,
+        log = [log_type, '\x02', long(time.time() * 1000), '\x02', source,
                "({0}:{1})".format(os.getpid(), threading.currentThread().ident)]
         if code_info == '':
-            log.append(os.path.basename(sys._getframe().f_code.co_filename))
-            log.append('\x0002')
-            log.append(sys._getframe().f_code.co_name)
-            log.append('\x0002')
-            log.append(sys._getframe().f_lineno)
-            log.append('\x0002')
+            log.append(os.path.basename(sys._getframe(2).f_code.co_filename) if self._frame_switch else 'unknown')
+            log.append('\x02')
+            log.append(sys._getframe(2).f_code.co_name if self._frame_switch else 'unknown')
+            log.append('\x02')
+            log.append(sys._getframe(2).f_lineno if self._frame_switch else 'unknown')
+            log.append('\x02')
 
         log.append(hex(log_uid))
-        log.append("\x0002")
+        log.append("\x02")
 
-        if len(desc) > 512:
-            log.append(desc[:512])
-        else:
-            log.append(desc)
-        log.append('\x0001\n')
+        log.append(desc[:512] if len(desc) > 512 else desc)
+
+        log.append('\x01\n')
         log_content = ''.join(list(map(bytes, log)))
-        print log_content
         self._lib.GLogWriteToBuffer(log_content)
 
 
-if __name__ == '__main__':
+def test():
     log_inst = PyLogInstance()
     log_inst.create_log()
     for i in range(100):
@@ -80,3 +86,7 @@ if __name__ == '__main__':
         time.sleep(1)
 
     time.sleep(1000)
+
+
+if __name__ == '__main__':
+    test()
