@@ -38,7 +38,7 @@
         [contentStyle]="{'border':'none','overflow':'visible'}" (onHide)="hideNewROIDia()">
         <div class="roi-name roi-input-group">
             <label for="">Name:</label>
-            <input type="text" pInputText [(ngModel)]="ROIName">
+            <input type="text" pInputText spellcheck=false [(ngModel)]="ROIName">
         </div>
         <div class="roi-color roi-input-group">
             <label for="">Color:</label>
@@ -50,10 +50,13 @@
             <p-button label="Cancel" icon="fa fa-times" iconPos="left" (onClick)="newROIDisplay=false"></p-button>
         </p-footer>
     </p-dialog>
-    <p-dialog header="Manage ROI" [(visible)]="manageROIDisplay" [width]="220" [style]="{'border':'none'}"
+    <p-dialog header="Manage ROI" [(visible)]="manageROIDisplay" [width]="250" [style]="{'border':'none'}"
         [contentStyle]="{'border':'none','overflow':'visible'}" (onHide)="hideManageROIDia()">
             <table class="roi-table" style="border-collapse:collapse" cellspacing="5">
                 <tbody>
+                    <div *ngIf="ROIListLength == 0">
+                        <span>Empty</span>
+                    </div>
                     <tr *ngFor="let item of ROIList">
                         <td>
                             <button (click)="changeROIVisible($event)" class="fa fa-eye fa-lg" style="background: none;border: none">
@@ -61,10 +64,14 @@
                         </td>
                         <td hidden='true'>{{item.ROIId}}</td>
                         <td>
-                            <div class="roi-color-div" style="width:20px;height:20px;"></div>
+                            <div class="roi-color-div" [ngStyle]="{'width':'20px','height':'20px','background-color':item.ROIColor}"></div>
                         </td>
                         <td class="select-td" (click)="onClickROIItem($event)">
                             <span>{{item.ROIName}}</span>
+                        </td>
+                        <td class="delete-td">
+                            <button  (click)="deleteROI($event)" class="fa fa-trash fa-lg" style="background: none;border: none">
+                            </button>
                         </td>
                         <td class="edit-td">
                             <button  (click)="editROI($event)" class="fa fa-edit fa-lg" style="background: none;border: none">
@@ -73,7 +80,7 @@
                     </tr>
                 </tbody>
             </table>
-            <p-footer [style]="{'border':'none'}">
+            <p-footer [style]="{'border':'none'}" *ngIf="ROIListLength > 2" >
                 <p-button label="Del All" icon="fa fa-trash" iconPos="left" (onClick)="deleteAllROI()"></p-button>
             </p-footer>
     </p-dialog>
@@ -81,7 +88,7 @@
         [contentStyle]="{'border':'none','overflow':'visible'}">
         <div class="roi-name roi-input-group">
             <label for="">Name:</label>
-            <input type="text" pInputText [(ngModel)]="editROIConfig.ROIName">
+            <input type="text" pInputText spellcheck=false [(ngModel)]="editROIConfig.ROIName">
         </div>
         <div class="roi-color roi-input-group">
             <label for="">Color:</label>
@@ -89,7 +96,6 @@
             <input type='text' pInputText style="padding-left:10px;border:none;" spellcheck=false [(ngModel)]="editROIConfig.ROIColor">
         </div>
         <p-footer [style]="{'border':'none'}">
-            <p-button label="Delete" icon="fa fa-trash" iconPos="left" (onClick)="deleteROI()"></p-button>
             <p-button label="Save" icon="fa fa-check" iconPos="left" (onClick)="updateROI()"></p-button>
             <p-button label="Cancel" icon="fa fa-times" iconPos="left" (onClick)="editROIDisplay=false"></p-button>
         </p-footer>

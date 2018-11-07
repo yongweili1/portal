@@ -57,10 +57,11 @@ export class ContouringComponent implements OnInit {
     ROIName:any = '';
     ROIColor:any = '#FFFF00';
     ROIList:Array<any>;
+    ROIListLength:number=0;
     newROIDisplay: any =false;
     manageROIDisplay: any = false;
     editROIDisplay: any =false;
-    editROIConfig:any={};
+    editROIConfig:ROIConfig;
     lazyExcuteHandler: LazyExcuteHandler;
 
     @ViewChild('picLeft1') picLeft1;
@@ -69,8 +70,6 @@ export class ContouringComponent implements OnInit {
     @ViewChild('load') load;
 
     constructor(
-        private injector: Injector,
-        private http: HttpClient,
         public activeRoute: ActivatedRoute,
         //private seriesHttp: SeriesHttpService, 
         private conMessage: ConMessageService,
@@ -82,7 +81,11 @@ export class ContouringComponent implements OnInit {
         private priMessageService: MessageService
     ) {
         this.lazyExcuteHandler = new LazyExcuteHandler()
-
+        this.editROIConfig={
+            ROIId:'',
+            ROIName:'',
+            ROIColor:'',
+        }
         EventAggregator.Instance().contourCps.subscribe(cps => { this.saveContour(cps); });
     }
 
@@ -101,9 +104,9 @@ export class ContouringComponent implements OnInit {
         if(seriesuid!='' && seriesuid!=null && seriesuid!=undefined){
             this.manageROIDisplay = true;
             this.roiHttp.GetROIConfig(seriesuid).subscribe(result=>{
-                result = JSON.parse(result);
                 if(result.code='200'){
                     this.ROIList = result['data'];
+                    this.ROIListLength = this.ROIList.length;
                 }
             })
         }
@@ -116,6 +119,7 @@ export class ContouringComponent implements OnInit {
         this.ROIColor = '#FFFF00';
         this.ROIName = '';
     }
+    
     saveROI(){
         let colorReg = new RegExp('^\#\w{0,6}$','i')
         //TODO true这个地方color的正则有问题
@@ -129,10 +133,11 @@ export class ContouringComponent implements OnInit {
             ROIColor: this.ROIColor
         }
         this.roiHttp.PostCreateNewROI(ROIData).subscribe(result=>{
-            if(result.code == '200'){
+            if(result.body.code == '200'){
                 this.priMessageService.add({ severity: 'success', detail: `Save succeed.` });
-                //this.ROIList = result.data;
-                this.newROIDisplay = false
+                this.ROIList = result.body.data;
+                this.ROIListLength = this.ROIList.length;
+                this.newROIDisplay = false;
             }
             else{
                 this.priMessageService.add({ severity: 'error', detail: `${result.msg}` });
@@ -146,16 +151,12 @@ export class ContouringComponent implements OnInit {
             this.priMessageService.add({ severity: 'error', detail: `Illegal input.` });
             return;
         }
-        let ROIData = {
-            ROIId: this.editROIConfig.ROIId,
-            ROIName: this.editROIConfig.ROIName,
-            ROIColor: this.editROIConfig.ROIColor
-        }
-        this.roiHttp.UpdateROIConfig(ROIData).subscribe(result=>{
-            if(result.code == '200'){
+        this.roiHttp.UpdateROIConfig(this.editROIConfig).subscribe(result=>{
+            if(result.body.code == '200'){
                 this.priMessageService.add({ severity: 'success', detail: `Save succeed.` });
-                //this.ROIList = result.data;
-                this.newROIDisplay = false
+                this.ROIList = result.body.data;
+                this.ROIListLength = this.ROIList.length;
+                this.editROIDisplay = false;
             }
             else{
                 this.priMessageService.add({ severity: 'error', detail: `${result.msg}` });
@@ -163,12 +164,13 @@ export class ContouringComponent implements OnInit {
         })
     }
 
-    deleteROI(){
-        this.roiHttp.DeleteROIConfig(this.editROIConfig.ROIId).subscribe(result=>{
+    deleteROI(evt){
+        this.roiHttp.DeleteROIConfig(evt.target.parentElement.parentElement.children[1].innerText).subscribe(result=>{
             if(result.code == '200'){
                 this.priMessageService.add({ severity: 'success', detail: `Delete succeed.` });
-                //this.ROIList = result.data;
-                this.newROIDisplay = false
+                this.ROIList = result.data;
+                this.ROIListLength = this.ROIList.length;
+                this.editROIDisplay = false;
             }
             else{
                 this.priMessageService.add({ severity: 'error', detail: `${result.msg}` });
@@ -185,8 +187,8 @@ export class ContouringComponent implements OnInit {
         this.roiHttp.DeleteROIConfig(ROIIdArray).subscribe(result=>{
             if(result.code == '200'){
                 this.priMessageService.add({ severity: 'success', detail: `Delete succeed.` });
-                //this.ROIList = result.data;
-                this.newROIDisplay = false
+                this.ROIList = result.data;
+                this.ROIListLength = 0;
             }
             else{
                 this.priMessageService.add({ severity: 'error', detail: `${result.msg}` });
@@ -310,13 +312,13 @@ export class ContouringComponent implements OnInit {
 
     }
 
-    ngAfterContentChecked(){
-        if(this.manageROIDisplay==true){
-            for(let i=0;i<$(".roi-color-div").length;i++){
-                $(".roi-color-div").get(i).style.backgroundColor =this.ROIList[i].ROIColor;
-            }
-        }
-    }
+    // ngAfterContentChecked(){
+    //     if(this.manageROIDisplay==true){
+    //         for(let i=0;i<this.ROIList.length;i++){
+    //             $(".roi-color-div").get(i).style.backgroundColor =this.ROIList[i].ROIColor;
+    //         }
+    //     }
+    // }
 
     ngOnInit() {
         this.transverseCanvas = $(".a_class .icanvas").get(0);
@@ -388,19 +390,6 @@ export class ContouringComponent implements OnInit {
                 }
             }, 300);
         });
-
-        // this.ROIList = [
-        //     {
-        //         ROIId:'1',
-        //         ROIName:'lung',
-        //         ROIColor :'#666666'
-        //     },
-        //     {
-        //         ROIId:'2',
-        //         ROIName:'bone',
-        //         ROIColor :'#cccccc'
-        //     },
-        // ];
     }
 
     ngAfterViewInit() {

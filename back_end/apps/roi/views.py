@@ -10,12 +10,10 @@ from serve.DBAccess.models import Roi, Series
 class RoiAPIView(APIView):
 
     def get(self, request):
-        seriesuid = request.GET.get('seriesUid', None)
+        seriesuid = request.GET.get('seriesuid', None)
         if not seriesuid:
             return Response('参数不全')
         roi_query = Roi.objects.filter(seriesuid=seriesuid)
-        if not roi_query:
-            return Response('该seriesuid下无对应的ROI')
         roi_list = []
         for roi in roi_query:
             roi_dict = {}
@@ -33,7 +31,7 @@ class RoiAPIView(APIView):
         return Response(rsp)
 
     def post(self, request):
-        seriesuid = request.data.get('seriesUid', None)
+        seriesuid = request.data.get('seriesuid', None)
         roiname = request.data.get('ROIName', None)
         roicolor = request.data.get('ROIColor', None)
 
@@ -57,8 +55,6 @@ class RoiAPIView(APIView):
             return Response('ROI 提交失败')
 
         roi_query = Roi.objects.filter(seriesuid=seriesuid)
-        if not roi_query:
-            return Response('该seriesuid下无对应的ROI')
         roi_list = []
         for roi in roi_query:
             roi_dict = {}
@@ -99,8 +95,6 @@ class RoiAPIView(APIView):
         seriesuid = rois[0].seriesuid
 
         roi_query = Roi.objects.filter(seriesuid=seriesuid)
-        if not roi_query:
-            return Response('该seriesuid下无对应的ROI')
         roi_list = []
         for roi in roi_query:
             roi_dict = {}
@@ -138,13 +132,6 @@ class RoiAPIView(APIView):
                 return Response('ROI 删除失败')
 
         roi_query = Roi.objects.filter(seriesuid=seruid)
-        if not roi_query:
-            rsp = {
-                'code': '20001',
-                'msg': 'success',
-                'data': '该seriesuid下仅有一个ROI已被删除',
-            }
-            return Response(rsp)
         for roi in roi_query:
             roi_dict = {}
             roi_dict['ROIId'] = roi.pid
