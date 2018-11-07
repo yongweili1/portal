@@ -1,6 +1,8 @@
 from pydicom.dataset import Dataset
 from pynetdicom3 import AE, QueryRetrievePresentationContexts
 import logging
+import datetime
+import string
 
 from patient import Patient
 
@@ -45,15 +47,20 @@ class CFindScu(object):
         return assoc
 
     @log_enter_and_exit()
-    def find_patients(self, patient_name, modality, date_range, patient_sex):
+    def find_patients(self, patient_id, patient_name, patient_age, patient_sex, modality, date_range):
         patients = []
         assoc = self._setup_c_find_assoc()
         if assoc.is_established:
             logger.info("find_patients association established")
             ds = Dataset()
-            ds.PatientID = ''
+            if len(patient_id):
+                ds.PatientID = patient_id
             if len(patient_name):
                 ds.PatientName = "*" + patient_name + "*"
+            if len(patient_age):
+                ds.PatientAge = patient_age
+            if len(patient_sex):
+                ds.PatientSex = patient_sex
             if len(modality):
                 ds.ModalitiesInStudy = modality
             if len(date_range):
@@ -62,9 +69,6 @@ class CFindScu(object):
             #     ds.StudyDescription = "*CHEST*"
             # if len(patient_birthdate_range):
             #     ds.PatientBirthDate = patient_birthdate_range
-            if len(patient_sex):
-                ds.PatientSex = patient_sex
-            # ds.PatientAge = "*"
             ds.QueryRetrieveLevel = "STUDY"
             response = assoc.send_c_find(ds, query_model='S')
             for (status, identifier) in response:  # type: (object, object)
@@ -79,16 +83,26 @@ class CFindScu(object):
                         p_id = None
                     if 'PatientAge' in identifier:
                         p_age = identifier.get_item(0x00101010).value
-                    elif 'PatientBirthDate' in identifier:               # birthdate to age
-                        p_age = identifier.get_item(0x00100030).value
+                    # elif 'PatientBirthDate' in identifier:               # birthdate to age
+                    #     p_birthdate = identifier.get_item(0x00100030).value
+                    #     p_birthyear = p_birthdate[:4]
+                    #     year_now = datetime.datetime.now().year
+                    #     p_age = str(int(year_now)-int(p_birthyear))
+                    #     print p_birthdate + "  " + p_age
                     else:
                         p_age = None
                     if 'PatientSex' in identifier:
                         p_sex = identifier.get_item(0x00100040).value
                     else:
                         p_sex = None
+                    if 'ModalitiesInStudy' in identifier:
+                        p_modality = identifier.get_item(0x00080061).value
+                        if p_modality == ['CT', 'FILM_CT']:
+                            p_modality = "CT & FILM_CT"
+                    else:
+                        p_modality = None
 
-                    patient = Patient(name=p_name, id=p_id, age=p_age, sex=p_sex)
+                    patient = Patient(name=p_name, id=p_id, age=p_age, sex=p_sex, modality=p_modality)
                     patients.append(patient)
 
             assoc.release()

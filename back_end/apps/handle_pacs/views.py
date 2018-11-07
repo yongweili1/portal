@@ -47,14 +47,31 @@ class GetPatient(APIView):
             patient_name = ""
         if patient_age == "undefined":
             patient_age = ""
-        if patient_sex == "Male":
-            patient_sex = "M"
-        elif patient_sex == "Female":
-            patient_sex = "F"
+
+        if patient_sex == "undefined":
+            patient_sex = ""
+        elif len(patient_sex) > 10:
+            patient_sex = patient_sex[10: len(patient_sex)-2]
+            if patient_sex == "Male":
+                patient_sex = "M"
+            elif patient_sex == "Female":
+                patient_sex = "F"
+            else:
+                patient_sex = ""
         else:
             patient_sex = ""
+
         if modality == "undefined":
             modality = ""
+        elif len(modality) > 10:
+            modality = modality[10: len(modality)-2]
+            if modality == "All":
+                modality = ""
+        else:
+            modality = ""
+
+        print "patient_sex:" + patient_sex, "modality:" + modality, \
+            "SavePatient.patient_sex:" + SavePatient.patient_sex, "SavePatient.modality:" + SavePatient.modality
 
         if (len(SavePatient.patients_list) == 0) or \
                 (patient_id != SavePatient.patient_id or
@@ -63,11 +80,14 @@ class GetPatient(APIView):
                  patient_sex != SavePatient.patient_sex or
                  modality != SavePatient.modality):
             try:
-                SavePatient.patients_list = pacsinfo.getinformations(patientName=patient_name, patientSex=patient_sex, modality=modality)
+                patients_list = pacsinfo.getinformations(patient_id=patient_id, patient_name=patient_name, patient_age=patient_age,
+                                                         patient_sex=patient_sex, modality=modality)
+                SavePatient.patients_list = patients_list
                 SavePatient.patient_id = patient_id
                 SavePatient.patient_name = patient_name
                 SavePatient.patient_age = patient_age
                 SavePatient.patient_sex = patient_sex
+                SavePatient.modality = modality
                 print("重新下载")
 
             except ConnectPacsERROR as e:
@@ -98,8 +118,9 @@ class GetPatient(APIView):
 class DownloadSeries(APIView):
 
     def get(self, request):
-        patients_unicode = request.GET.get('patients', None)
+        patients_unicode = request.GET.get('patientId', None)
         patients_str = patients_unicode.encode('utf-8')
+        print patients_str
         if not patients_str:
             return Response('请传入有效的patientID')
         patients_list = patients_str.split(',')

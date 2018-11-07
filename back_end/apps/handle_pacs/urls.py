@@ -6,5 +6,5 @@ from . import views
 
 urlpatterns = [
     url(r'^pacspatient/$', views.GetPatient.as_view(), name='pacspatient'),
-    url(r'^pacsseries/$', views.DownloadSeries.as_view(), name='pacsimages'),
+    url(r'^pacsseries/$', views.DownloadSeries.as_view(), name='pacsseries'),
 ]

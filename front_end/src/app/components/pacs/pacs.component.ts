@@ -21,13 +21,14 @@ export class PacsComponent implements OnInit {
   public gender: MenuItem[] = [
     {label: 'Male'},
     {label: 'Female'},
-    {label: 'Other'}
+    {label: 'All'}
 ];
   public modality:MenuItem[] = [
     {label: 'MR'},
     {label: 'CT'},
     {label: 'CR'},
-    {label: 'DX'}
+    {label: 'DX'},
+    {label: 'All'}
   ];
   cols:any[]= [];
   pageModel: Page<PacsInfo>; 
@@ -46,7 +47,7 @@ export class PacsComponent implements OnInit {
       {field: 'patientName', header: 'PATIENT NAME'},
       {field: 'patientAge', header: 'AGE'},
       {field: 'gender', header: 'GENDER'},
-      // {field: 'modality', header: 'MODALITY'}
+      {field: 'modality', header: 'MODALITY'}
   ];
   }
 
@@ -73,8 +74,8 @@ export class PacsComponent implements OnInit {
       patientId:this.patientParam.patientId,
       patientName:this.patientParam.patientName,
       patientAge:this.patientParam.patientAge,
-      gender:this.patientParam.gender,
-      modality:this.patientParam.modality,
+      gender:JSON.stringify(this.patientParam.gender),  //JSON.stringify(this.patientParam.gender)
+      modality:JSON.stringify(this.patientParam.modality),
     }).subscribe((data) => {
       this.pageModel = data;
       for (let i = 0; i < this.pageModel.numberOfElements; i++) {
@@ -82,6 +83,7 @@ export class PacsComponent implements OnInit {
         this.patientId = this.pageModel.content[i].patientId;
     }
     });
+    
     return;
   }
 
@@ -91,11 +93,11 @@ export class PacsComponent implements OnInit {
     this.selectedPageModel.content.forEach(element =>{
       patientIdArray.push(element.patientId);
     });
-    patientIdString = patientIdArray.join(',');
+     patientIdString = patientIdArray.toString();
     this.pacsService.getDownloadPacs({
       patientId: patientIdString
     }).subscribe(result =>{
-      if(result == "success"){
+      if(result == "Download Success"){
         this.priMessageService.add({ severity: 'success', detail: 'download succeed' });
       }
       else{

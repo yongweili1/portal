@@ -99,9 +99,9 @@ class DicomService(object):
 
     #   c-find
     @log_enter_and_exit()
-    def find_patients(self, patient_name, modality, date_range, patient_sex):
-        patients = self.c_find.find_patients(patient_name=patient_name, modality=modality, date_range=date_range,
-                                             patient_sex=patient_sex)
+    def find_patients(self, patient_id, patient_name, patient_age, patient_sex, modality, date_range):
+        patients = self.c_find.find_patients(patient_id=patient_id, patient_name=patient_name, patient_age=patient_age,
+                                             patient_sex=patient_sex, modality=modality, date_range=date_range)
         return patients
 
     @log_enter_and_exit()
