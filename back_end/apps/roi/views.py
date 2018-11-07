@@ -17,6 +17,7 @@ class RoiAPIView(APIView):
         roi_dict = {}
         roi_list = []
         for roi in roi_query:
+            roi_dict['ROIId'] = roi.pid
             roi_dict['ROIName'] = roi.roiname
             roi_dict['ROIColor'] = roi.roicolor
             roi_list.append(roi_dict)
@@ -44,6 +45,25 @@ class RoiAPIView(APIView):
         }
 
         Roi.objects.create(**params)
+
+        rsp = {
+            'code': '200',
+            'msg': 'success',
+            'data': ''
+        }
+
+        return Response(rsp)
+
+    def put(self, request):
+        pid = request.data.get('ROIId', None)
+        roiname = request.data.get('ROIName', None)
+        roicolor = request.data.get('ROIColor', None)
+        params = {
+            'roiname': roiname,
+            'roicolor': roicolor
+        }
+
+        Roi.objects.filter(pid=pid).update(**params)
 
         rsp = {
             'code': '200',
