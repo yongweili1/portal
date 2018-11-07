@@ -28,7 +28,7 @@ class PyBaseEventHandler(McsfNetBase.IEventHandler):
     def __init__(self):
         McsfNetBase.IEventHandler.__init__(self)
 
-    def handle_event(self, sender,  event_id, s_event):
+    def handle_event(self, sender, event_id, s_event):
         pass
 
     def HandleEvent(self, sSender, iChannelId, iEventId, sEvent):
@@ -98,15 +98,20 @@ class PyCommProxy:
         cx.pCommandCallback = callback
         return self.proxy.AsyncSendCommand(cx)
 
+    def send_event(self, data, event_id):
+        return self.proxy.SendEvent('', event_id, data)
 
-
-#below as test code
 
 class MyCommandHandler(PyBaseCmdHandlerEx):
     def handle_command(self, p_context):
         equation = p_context.GetSerializeObject()
         print equation
         p_context.Reply(str(sum(map(int, equation.split('+')))))
+
+
+class MyEventHandler(PyBaseEventHandler):
+    def handle_event(self, sender, event_id, s_event):
+        print 'handle_event, ' + s_event
 
 
 def func_cb(result):
@@ -117,10 +122,13 @@ if __name__ == '__main__':
     fe = PyCommProxy("proxy_fe", "10.9.19.153:10000")
     be = PyCommProxy("proxy_be", "10.9.19.153:10000")
     be.register_cmd_handler_ex(10, MyCommandHandler())
+    be.register_event_handler(11, MyEventHandler())
 
     print 'Sync result:', fe.sync_send_command('1+2+3', 10, 'proxy_be')
 
     print 'return ', fe.async_send_command('1+2+3', 10, 'proxy_be', func_cb)
+
+    fe.send_event('event broadcast!', 11)
 
     time.sleep(10000)
 

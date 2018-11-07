@@ -1,0 +1,38 @@
+
+package Mcsf;
+
+message McsfRpcMessage {
+    required int32 id = 1;
+    required int32 cmd_id = 2;
+    optional string sender = 3;
+    
+    optional Call call_msg = 4;
+    optional Result result_msg = 5;
+    optional Event event = 6;
+    
+    message Call {
+        optional string service = 1;
+        optional string method = 2;
+        optional Parameter parameter = 3;
+        required bool expects_result = 4;
+        required bool async_invoke = 5 [default = false];
+    }
+    
+    message Result {
+        optional bool is_failed = 1;
+        optional string error_message = 2;
+        optional Parameter call_result = 3;
+        optional int32 error_code = 4;
+    }
+
+    message Event {
+        required int32 channel_id = 1;
+        required int32 event_id = 2;
+        required string proto_param = 3;
+        required bool broadcast = 4;
+    }
+    
+    message Parameter {
+        required bytes proto_param = 1;
+    }       
+}

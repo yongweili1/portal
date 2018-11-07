@@ -1,0 +1,57 @@
+
+package Mcsf;
+
+message McsfRegisterContaineeRequest {
+    required string name = 1;
+    required string ip_addr = 2;
+}
+
+message McsfQueryContaineeRequest {
+    required string name = 1;
+}
+
+message McsfQueryContaineeResponse {
+    required string name = 1;
+    required string ip_addr = 2;
+}
+
+message McsfSubscribeEventRequest {
+    required string subscriber = 1;
+    repeated EventSource event_marks = 2;
+
+    message EventSource {
+        required int32 channel_id = 1;
+        repeated int32 event_ids = 2;
+    }
+}
+
+message McsfCheckCastToNameRequest {
+    required string name = 1;
+    required int32 timeout = 2;
+}
+
+message McsfCheckCastToNameResponse {
+    required int32 result = 1;
+    required string ip_addr = 2;
+}
+
+message McsfSendDataRequest {
+    enum SendType {
+        SHARE_MEMORY = 1;
+        SOCKET = 2;
+    }
+
+    required string name = 1;  
+    required SendType type = 2[default = SHARE_MEMORY]; 
+    required bytes content = 3;
+    required bool is_sync = 4[default = false];
+}
+
+message McsfSendDataResponse {
+    required bool is_success = 1;
+    optional bytes contents = 2;
+}
+
+message McsfUnRegisterContaineeRequest {
+    required string name = 1;
+}
