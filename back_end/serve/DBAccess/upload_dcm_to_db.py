@@ -4,7 +4,7 @@ import sys
 
 from django.db import transaction
 from rest_framework import serializers
-from serve.util.models import Patient, Study, Series, Image
+from serve.DBAccess.models import Patient, Study, Series, Image
 from patientinformations.serializers import PerInfoSerializer, StudySerializer, SeriesSerializer, ImageSerializer
 from serve.util.readDcm import DcmPatient, DcmStudy, DcmSeries, DcmImage
 

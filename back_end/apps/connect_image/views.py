@@ -8,14 +8,14 @@ from django.shortcuts import render
 # Create your views here.
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from serve.DBrelated.upload_script_to_db import script
-from serve.util.models import Series
+from serve.DBAccess.upload_script_to_db import script
+from serve.DBAccess.models import Series
 from serve.util.connectImageServe import load_volume, get_image
 from serve.util.macroRecording import Macro
 from back_end.settings import STATIC_ROOT
-from serve.util.models import Study
+from serve.DBAccess.models import Study
 from serve.util.buildVolume import DicomToVolume
-from serve.DBrelated.upload_vol_to_db import UploadVolume
+from serve.DBAccess.upload_vol_to_db import UploadVolume
 from serve.static_parameters.setFilePath import filepath
 
 
