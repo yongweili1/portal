@@ -32,6 +32,10 @@ drop table if exists alg_csv;
 drop table if exists script;
 /* session related */
 drop table if exists new_django_session;
+/* roi related */
+drop table if exists roi;
+/* contours related */
+drop table if exists contours;
 
 create table patient
 (

@@ -59,11 +59,11 @@ class Patinfo(APIView):
                 print('分离DCM失败')
             dataset_list.append(dataset)
 
-        try:
-            uploaddcm = UploadDcm()
-            uploaddcm.upload_dcm(dataset_list)
-        except Exception as e:
-            return Response('DCM数据入库失败，请检查DCM数据是否符合DB字段约束')
+        # try:
+        uploaddcm = UploadDcm()
+        uploaddcm.upload_dcm(dataset_list)
+        # except Exception as e:
+        #     return Response('DCM数据入库失败，请检查DCM数据是否符合DB字段约束')
 
         print('数据入库成功，重新build_volume（此操作比较耗时，请稍等）...')
         for seriespath in set(series_path_list):
