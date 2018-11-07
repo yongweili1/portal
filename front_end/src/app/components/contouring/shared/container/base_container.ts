@@ -2,12 +2,14 @@ import { Point } from '../tools/point'
 declare var createjs: any;
 
 export class BaseContainer extends createjs.Container {
+    uid: string = null;
     isPaint: boolean = false;
     isMousedown: boolean = true;
     type: string;
     overlayStage: any;
     protected _tempPoint: Point;
     cps: Array<Point>;
+    currentMouseButton: number;
 
     constructor(stage, type) {
         super();
