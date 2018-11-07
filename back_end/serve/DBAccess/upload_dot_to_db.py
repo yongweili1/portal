@@ -1,5 +1,5 @@
 # -*-coding:utf-8-*-
-from serve.util.models import Contours
+from serve.DBAccess.models import Contours
 
 
 class Contour(object):

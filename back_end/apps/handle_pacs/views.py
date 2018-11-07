@@ -10,8 +10,8 @@ from rest_framework.views import APIView
 
 from serve.util.infoFromPacs import pacsinfo
 from serve.util.infoFromPacs import ConnectPacsERROR
-from serve.DBrelated.upload_dcm_to_db import UploadDcm
-from serve.DBrelated.upload_vol_to_db import UploadVolume
+from serve.DBAccess.upload_dcm_to_db import UploadDcm
+from serve.DBAccess.upload_vol_to_db import UploadVolume
 from serve.util.buildVolume import DicomToVolume
 
 
