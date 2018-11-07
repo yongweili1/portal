@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpResponse, HttpRequest } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse, HttpRequest ,HttpParams} from '@angular/common/http';
 import { SecurityService } from '../../../../services/security.service';
 import { Observable } from 'rxjs/Observable';
 import { StorageService } from './storage.service';
@@ -43,8 +43,25 @@ export class RoiHttpService{
     // }
 
     PostCreateNewROI(roiData:any):Observable<any>{
-        return this.http.post<any>(`${this.appConfig.apiUrl}/image/size/`, roiData, this.options);
+        return this.http.post<any>(`${this.appConfig.apiUrl}/roi/roidata/`, roiData, this.options);
     }
+
+    GetROIConfig(seriesid:any):Observable<any>{
+        const getParams = new HttpParams()
+        .set('seriesuid', seriesid);
+        return this.http.get<any>(`${this.appConfig.apiUrl}/roi/roidata/`, { params: getParams });
+    }
+
+    UpdateROIConfig(roiData:any):Observable<any>{
+        return this.http.put<any>(`${this.appConfig.apiUrl}/roi/roidata/`, roiData, this.options);
+    }
+
+    DeleteROIConfig(roiId:any):Observable<any>{
+        const getParams = new HttpParams()
+        .set('ROIId', roiId);
+        return this.http.delete<any>(`${this.appConfig.apiUrl}/roi/roidata/`, { params: getParams });
+    }
+
 }
 
 // interface IRoiDto {

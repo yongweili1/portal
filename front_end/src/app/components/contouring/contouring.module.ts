@@ -16,8 +16,9 @@ import {
   TreeModule,
   ColorPickerModule,
   DialogModule,
-  SplitButtonModule
+  SplitButtonModule,
 } from 'primeng/primeng';
+
 
 import { ToastModule } from 'primeng/toast';
 import { SharedModule } from '../../shared/shared.module';
@@ -63,7 +64,7 @@ import { SeriesListComponent } from './series-list/series-list.component';
     TreeModule,
     ColorPickerModule,
     ToastModule,
-    SplitButtonModule
+    SplitButtonModule,
     //RouterModule.forChild(routes)
   ],
   declarations: [
