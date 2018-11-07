@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 # Create your views here.
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from serve.util.models import Series
+from serve.DBAccess.models import Series
 
 
 class LoadAlg(APIView):

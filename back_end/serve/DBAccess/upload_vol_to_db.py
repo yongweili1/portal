@@ -1,6 +1,6 @@
 # -*-coding:utf-8-*-
 
-from serve.util.models import Series
+from serve.DBAccess.models import Series
 
 
 class DBError(Exception):
