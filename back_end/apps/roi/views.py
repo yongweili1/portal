@@ -30,9 +30,9 @@ class RoiAPIView(APIView):
         return Response(rsp)
 
     def post(self, request):
-        seriesuid = request.GET.get('seriesUid', None)
-        roiname = request.GET.get('ROIName', None)
-        roicolor = request.GET.get('ROIColor', None)
+        seriesuid = request.data.get('seriesUid', None)
+        roiname = request.data.get('ROIName', None)
+        roicolor = request.data.get('ROIColor', None)
 
         if seriesuid is None or roiname is None or roicolor is None:
             return Response('请携带完整的有效参数')
