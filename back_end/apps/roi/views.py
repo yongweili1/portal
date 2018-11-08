@@ -42,6 +42,9 @@ class RoiAPIView(APIView):
         except Exception as e:
             return Response('外键seriesuid无对应的数据对象')
 
+        if Roi.objects.filter(seriesuid=seriesuid, roiname=roiname):
+            return Response('ROI命名重复')
+
         params = {
             'seriesuid': seriesobj,
             'roiname': roiname,
@@ -84,15 +87,18 @@ class RoiAPIView(APIView):
             'roicolor': roicolor
         }
 
-        try:
-            Roi.objects.filter(pid=pid).update(**params)
-        except Exception as e:
-            return Response('ROI 更新失败')
-
         rois = Roi.objects.filter(pid=pid)
         if len(rois) == 0:
             return Response('该pid无对应的ROI')
         seriesuid = rois[0].seriesuid
+
+        if Roi.objects.filter(seriesuid=seriesuid, roiname=roiname):
+            return Response('ROI命名重复')
+
+        try:
+            Roi.objects.filter(pid=pid).update(**params)
+        except Exception as e:
+            return Response('ROI 更新失败')
 
         roi_query = Roi.objects.filter(seriesuid=seriesuid)
         roi_list = []
