@@ -13,7 +13,7 @@ class ConnectPacsERROR(Exception):
 class GetInfoFromPacs(object):
 
     def __init__(self):
-        self.patients_list = []
+        pass
 
     def connectpacs(self):
         try:
@@ -26,9 +26,11 @@ class GetInfoFromPacs(object):
             raise ConnectPacsERROR
         return access_dicom
 
-    def getinformations(self, patientName, patientSex, modality):
+    def getinformations(self, patient_id, patient_name, patient_age, patient_sex, modality):
+        patients_list = []
         access_dicom = self.connectpacs()
-        patients = access_dicom.find_patients(patient_name=patientName, modality=modality, date_range="", patient_sex=patientSex)
+        patients = access_dicom.find_patients(patient_id=patient_id, patient_name=patient_name, patient_age=patient_age,
+                                              patient_sex=patient_sex, modality=modality, date_range="")
         length = len(patients)
         if length != 0:
             for patient in patients:
@@ -37,8 +39,9 @@ class GetInfoFromPacs(object):
                 patient_dict['patientId'] = patient.id
                 patient_dict['patientAge'] = patient.age
                 patient_dict['gender'] = patient.sex
-                self.patients_list.append(patient_dict)
-        return self.patients_list
+                patient_dict['modality'] = patient.modality
+                patients_list.append(patient_dict)
+        return patients_list
 
     def getimage(self, patients_list):
 
