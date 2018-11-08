@@ -8,7 +8,7 @@ import json
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from back_end.settings import STATIC_ROOT
-from serve.DBAccess.models import Series
+from serve.DBAccess.models import Series, Contours
 from serve.DBAccess.upload_dot_to_db import contour
 from serve.util.connectImageServe import request
 
