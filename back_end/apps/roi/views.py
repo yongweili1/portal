@@ -10,7 +10,7 @@ from serve.DBAccess.models import Roi, Series
 class RoiAPIView(APIView):
 
     def get(self, request):
-        seriesuid = request.GET.get('seriesUid', None)
+        seriesuid = request.GET.get('seriesuid', None)
         if not seriesuid:
             return Response('参数不全')
         roi_query = Roi.objects.filter(seriesuid=seriesuid)
@@ -31,7 +31,7 @@ class RoiAPIView(APIView):
         return Response(rsp)
 
     def post(self, request):
-        seriesuid = request.data.get('seriesUid', None)
+        seriesuid = request.data.get('seriesuid', None)
         roiname = request.data.get('ROIName', None)
         roicolor = request.data.get('ROIColor', None)
 
