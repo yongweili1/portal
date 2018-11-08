@@ -9,6 +9,11 @@ export interface PacsPageRequest extends PageRequest {
 //  studyDate: Date[];
 }
 
+export interface EachPageRequest {
+  page: number;
+  size: number;
+}
+
 export interface PacsDownloadRequest{
   patientId: string;
 }
