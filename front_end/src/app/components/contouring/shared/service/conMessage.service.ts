@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { KeyValuePair } from '../../../../shared/common/keyvaluepair';
+import { ROIConfig } from '../model/ROIConfig.model'
 declare var THREE: any;
 declare var MarchingSquaresJS: any;
 declare var d3: any;
@@ -16,6 +17,7 @@ export class ConMessageService {
     private seriesesSource = new Subject<Array<any>>();//事件发射器 向观察者广播值
     private seriListSource = new Subject<Array<any>>();
     private roisSource = new Subject<Array<any>>();
+    private activeRoiSource = new Subject<ROIConfig>();
     private contourSource = new Subject<Array<any>>();
     private graphicsSource = new Subject<Array<any>>();
     private actionInfoSource = new Subject<KeyValuePair>();
@@ -23,6 +25,7 @@ export class ConMessageService {
     serieses$ = this.seriesesSource.asObservable();// 作为可观察对象/订阅
     seriList$ = this.seriListSource.asObservable();
     rois$ = this.roisSource.asObservable();
+    activeRoi$ = this.activeRoiSource.asObservable();
     contour$ = this.contourSource.asObservable();
     graphics$ = this.graphicsSource.asObservable();
     actionInfo$ = this.actionInfoSource.asObservable();
@@ -40,6 +43,10 @@ export class ConMessageService {
     SetRois(rois: Array<any>) {
         this.roisSource.next(rois);
         this.currentRois = rois;
+    }
+
+    SetActiveRoi(acriveRoi: ROIConfig) {
+        this.activeRoiSource.next(acriveRoi);
     }
 
     Setcontour(contour){

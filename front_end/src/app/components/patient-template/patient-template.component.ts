@@ -47,8 +47,6 @@ export class PaListComponent implements OnInit {
             { field: 'patientId', header: 'PATIENT ID' },
             { field: 'patientName', header: 'PATIENT NAME' },
             { field: 'gender', header: 'GENDER' },
-            { field: 'modality', header: 'MODALITY' },
-            { field: 'studyDescription', header: 'STUDYDESCRIPTION'}
         ];
 
         this.studycols=[
@@ -59,6 +57,7 @@ export class PaListComponent implements OnInit {
 
         this.seriescols=[
             { field: 'seriesuid', header: 'SERIES ID' },
+            { field: 'imagequantity', header: 'IMAGE QUANTITY' },
             { field: 'seriesdescription', header: 'SERIESSCRIPTION'},
         ];
     }
@@ -90,7 +89,6 @@ export class PaListComponent implements OnInit {
             patientName: this.patientParam.patientName,
             gender: this.patientParam.gender,
             modality: this.patientParam.modality,
-            studyDescription: this.patientParam.studyDescription,
             studyDate: this.rangeDate
         }).subscribe((data) => {
             this.pageModel = data;
@@ -150,7 +148,6 @@ export class PaListComponent implements OnInit {
                 this.priMessageService.add({ severity: 'success', detail: 'del succeed.' });
             }
             else{
-                console.log("=== del failed ===")
                 this.priMessageService.add({ severity: 'error', detail: 'del failed.' });
             }
         },(error)=>{

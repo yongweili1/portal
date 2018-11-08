@@ -58,32 +58,17 @@
             </ng-template>
         </p-column>
         <ng-template let-patientrow pTemplate="rowexpansion">
-            <p-dataTable expandableRows="true" [value]="patientrow?.studyInfo" selectionMode="multiple"  [(selection)]="selectedStudyModel.content" [resizableColumns]="true" styleClass="my-table text-center" [emptyMessage]="'text.empty-data' | translate">
+            <p-dataTable expandableRows="true" [value]="patientrow?.seriesInfo" selectionMode="multiple"  [(selection)]="selectedSeriesModel.content" [resizableColumns]="true" styleClass="my-table text-center" [emptyMessage]="'text.empty-data' | translate">
                 <p-column [style]="{'width':'10px','padding-left':'10px'}" selectionMode="multiple"></p-column>
-                <p-column expander="true" [style]="{'width':'22px'}"></p-column>
-                <p-column *ngFor="let col of studycols" [header]="col.header | translate" [style]="{'width':'120px'}">
-                    <ng-template pTemplate="body" let-studyrow="rowData">
+                <p-column *ngFor="let col of seriescols" [header]="col.header | translate" [style]="{'width':'120px'}">
+                    <ng-template pTemplate="body" let-seriesrow="rowData">
                         <tr>
                             <td style="text-align:center;">
-                                {{studyrow[col.field]}}
+                                {{seriesrow[col.field]}}
                             </td>
                         </tr>
                     </ng-template>
                 </p-column>
-                <ng-template let-studyrow pTemplate="rowexpansion">
-                    <p-dataTable expandableRows="true" [value]="studyrow?.seriesInfo" selectionMode="multiple" [(selection)]="selectedSeriesModel.content"  [resizableColumns]="true" styleClass="my-table text-center" [emptyMessage]="'text.empty-data' | translate">
-                        <p-column [style]="{'width':'10px','padding-left':'10px'}" selectionMode="multiple"></p-column>
-                        <p-column *ngFor="let col of seriescols" [header]="col.header | translate" [style]="{'width':'120px'}">
-                            <ng-template pTemplate="body" let-seriesrow="rowData">
-                                <tr>
-                                    <td style="text-align:center;">
-                                        {{seriesrow[col.field]}}
-                                    </td>
-                                </tr>
-                            </ng-template>
-                        </p-column>
-                    </p-dataTable>
-                </ng-template>
             </p-dataTable>
         </ng-template>
         <p-footer>

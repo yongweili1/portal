@@ -4,7 +4,6 @@ export interface PatientPageRequest extends PageRequest {
     patientName: string;
     gender: string;
     modality: string;
-    studyDescription: string;
     studyDate: Date[];
 }
 
@@ -27,10 +26,8 @@ export interface PatientTemplateInfo {
     patientId: string;
     patientName: string;
     gender: string;
-    modality: string;
-    studyDescription: string;
-    studyDate: any[];
-    studyInfo?: StudyTemplateInfo[];
+    // studyInfo?: StudyTemplateInfo[];
+    seriesInfo?: SeriesTemplateInfo[];
 }
 
 export interface PatientTemplateInfoRequest {
@@ -52,5 +49,6 @@ export interface StudyTemplateInfo {
 
 export interface SeriesTemplateInfo{
     seriesuid: string; 
+    imagequantity: string;
     seriesdescription: string;
 }
