@@ -13,6 +13,7 @@ from serve.util.splitDicom import SplitDicoms
 from serve.DBAccess.upload_dcm_to_db import UploadDcm
 from serve.DBAccess.upload_vol_to_db import UploadVolume
 from serve.util.buildVolume import DicomToVolume
+from netbase import uAIDataLayer
 
 if platform.system() == 'Windows':
     import win32file
@@ -69,13 +70,17 @@ class Patinfo(APIView):
         for seriespath in set(series_path_list):
             if len(os.listdir(seriespath)) <= 1:
                 return Response('series下的dicom文件单一，无法build volume')
-            try:
-                buildvol = DicomToVolume()
-                volfilepath, seriesuid = buildvol.dicom_to_volume(seriespath)
-            except Exception as e:
+            series_uid = os.path.split(seriespath)[1]
+            builder = uAIDataLayer.VolumeBuilder()
+            if 0 != builder.build_volume(series_uid, seriespath, filepath.volumePath):
                 return Response('dicom文件不符合规范,创建volume失败')
+
+            vol_file_path = os.path.join(seriespath, series_uid+'.nii.gz')
+            if not os.path.isfile(vol_file_path):
+                return Response('The volume built was not found!')
+
             try:
-                UploadVolume(volfilepath, seriesuid)
+                UploadVolume(vol_file_path, series_uid)
             except Exception as e:
                 return Response('Volume入库失败')
 

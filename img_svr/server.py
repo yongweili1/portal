@@ -1,19 +1,16 @@
+import threading
+
 from command import command as cmd
 from message import RequestData
 
 from twisted.internet.protocol import Factory, Protocol
 import struct
-from twisted.python import log
 
 from netbase import comproxy
-import sys
-import ctypes
-import platform
+from netbase import c_log
+
 
 import time
-
-log.startLogging(sys.stdout)
-sys.path.append('..')
 
 
 class Server(Protocol):
@@ -100,16 +97,11 @@ class MyCommandHandler(comproxy.PyBaseCmdHandlerEx):
 
 
 if __name__ == '__main__':
-    so = ctypes.cdll.LoadLibrary
-    if platform.system == 'linux':
-        lib = so("../netbase/libMcsfLogger.so")
-    else:
-        lib = so("../netbase/McsfLogger.dll")
-    lib.GLogLoadConfig("../netbase/log_config.xml")
-
+    c_log.PyLogInstance().create_log()
     proxy = comproxy.PyCommProxy("img_srv", "127.0.0.1:10000")
     x = MyCommandHandler()
     proxy.register_cmd_handler_ex(100, x)
 
-    time.sleep(10000)
+    e = threading.Event()
+    e.wait()
 
