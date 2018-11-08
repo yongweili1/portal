@@ -18,6 +18,9 @@ import { LazyExcuteHandler } from './lazy_excute_handler';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { EventAggregator } from '../../shared/common/event_aggregator';
 import { ContourDto } from './shared/dtos/contour_dto';
+import { ROIConfig } from './shared/model/ROIConfig.model'
+import { NONE_TYPE } from '@angular/compiler/src/output/output_ast';
+import { element } from '@angular/core/src/render3/instructions';
 
 declare var $: any;
 declare var actions: any;
@@ -51,6 +54,14 @@ export class ContouringComponent implements OnInit {
     transverseCanvas: any;
     saggitalCanvas: any;
     coronalCanvas: any;
+    ROIName:any = '';
+    ROIColor:any = '#FFFF00';
+    ROIList:Array<any>;
+    ROIListLength:number=0;
+    newROIDisplay: any =false;
+    manageROIDisplay: any = false;
+    editROIDisplay: any =false;
+    editROIConfig:ROIConfig;
     lazyExcuteHandler: LazyExcuteHandler;
 
     @ViewChild('picLeft1') picLeft1;
@@ -59,8 +70,6 @@ export class ContouringComponent implements OnInit {
     @ViewChild('load') load;
 
     constructor(
-        private injector: Injector,
-        private http: HttpClient,
         public activeRoute: ActivatedRoute,
         //private seriesHttp: SeriesHttpService, 
         private conMessage: ConMessageService,
@@ -72,8 +81,144 @@ export class ContouringComponent implements OnInit {
         private priMessageService: MessageService
     ) {
         this.lazyExcuteHandler = new LazyExcuteHandler()
-
+        this.editROIConfig={
+            ROIId:'',
+            ROIName:'',
+            ROIColor:'',
+        }
         EventAggregator.Instance().contourCps.subscribe(data => { this.saveContour(data); });
+    }
+
+    mainNewROI(){
+        let seriesuid = $("#seriesSelect").val();
+        if(seriesuid!='' && seriesuid!=null && seriesuid!=undefined){
+            this.newROIDisplay = true;
+        }
+        else{
+            this.priMessageService.add({ severity: 'error', detail: 'Please select series first.' });
+        }
+    }
+
+    mainManageROI(){
+        let seriesuid = $("#seriesSelect").val();
+        if(seriesuid!='' && seriesuid!=null && seriesuid!=undefined){
+            this.manageROIDisplay = true;
+            this.roiHttp.GetROIConfig(seriesuid).subscribe(result=>{
+                if(result.code='200'){
+                    this.ROIList = result['data'];
+                    this.ROIListLength = this.ROIList.length;
+                }
+            })
+        }
+        else{
+            this.priMessageService.add({ severity: 'error', detail: 'Please select series first.' });
+        }
+    }
+
+    hideNewROIDia(){
+        this.ROIColor = '#FFFF00';
+        this.ROIName = '';
+    }
+    
+    saveROI(){
+        let colorReg = new RegExp('^\#\w{0,6}$','i')
+        //TODO true这个地方color的正则有问题
+        if( false || this.ROIName==''){
+            this.priMessageService.add({ severity: 'error', detail: `Illegal input.` });
+            return;
+        }
+        let ROIData = {
+            seriesuid: $("#seriesSelect").val(),
+            ROIName: this.ROIName,
+            ROIColor: this.ROIColor
+        }
+        this.roiHttp.PostCreateNewROI(ROIData).subscribe(result=>{
+            if(result.body.code == '200'){
+                this.priMessageService.add({ severity: 'success', detail: `Save succeed.` });
+                this.ROIList = result.body.data;
+                this.ROIListLength = this.ROIList.length;
+                this.newROIDisplay = false;
+            }
+            else{
+                this.priMessageService.add({ severity: 'error', detail: `${result.msg}` });
+            }
+        })
+    }
+
+    updateROI(){
+        //TODO true这个地方color的正则有问题
+        if( false || this.editROIConfig.ROIName==''){
+            this.priMessageService.add({ severity: 'error', detail: `Illegal input.` });
+            return;
+        }
+        this.roiHttp.UpdateROIConfig(this.editROIConfig).subscribe(result=>{
+            if(result.body.code == '200'){
+                this.priMessageService.add({ severity: 'success', detail: `Save succeed.` });
+                this.ROIList = result.body.data;
+                this.ROIListLength = this.ROIList.length;
+                this.editROIDisplay = false;
+            }
+            else{
+                this.priMessageService.add({ severity: 'error', detail: `${result.msg}` });
+            }
+        })
+    }
+
+    deleteROI(evt){
+        this.roiHttp.DeleteROIConfig(evt.target.parentElement.parentElement.children[1].innerText).subscribe(result=>{
+            if(result.code == '200'){
+                this.priMessageService.add({ severity: 'success', detail: `Delete succeed.` });
+                this.ROIList = result.data;
+                this.ROIListLength = this.ROIList.length;
+                this.editROIDisplay = false;
+            }
+            else{
+                this.priMessageService.add({ severity: 'error', detail: `${result.msg}` });
+            }
+        }
+        )
+    }
+
+    deleteAllROI(){
+        let ROIIdArray = []
+        this.ROIList.forEach(element=>{
+            ROIIdArray.push(element.ROIId);
+        })
+        this.roiHttp.DeleteROIConfig(ROIIdArray).subscribe(result=>{
+            if(result.code == '200'){
+                this.priMessageService.add({ severity: 'success', detail: `Delete succeed.` });
+                this.ROIList = result.data;
+                this.ROIListLength = 0;
+            }
+            else{
+                this.priMessageService.add({ severity: 'error', detail: `${result.msg}` });
+            }
+        }
+        )
+    }
+
+    hideManageROIDia(){
+
+    }
+
+    changeROIVisible(evt){
+        evt.target.classList.toggle("fa-eye-slash");
+    }
+
+    onClickROIItem(evt){
+        $(".roi-select-tr").removeClass('roi-select-tr');
+        $(evt.target.parentElement.parentElement).addClass('roi-select-tr');
+    }
+
+    editROI(evt){
+        this.editROIDisplay=true;
+        this.editROIConfig.ROIId = evt.target.parentElement.parentElement.children[1].innerText;
+        this.ROIList.forEach(element => {
+            if(this.editROIConfig.ROIId == element.ROIId){
+                this.editROIConfig.ROIName = element.ROIName;
+                this.editROIConfig.ROIColor = element.ROIColor;
+            }
+        });
     }
 
     transverseChange(event: any) {

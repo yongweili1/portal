@@ -1,7 +1,7 @@
 import { Component, ViewChild, OnInit, Input, Output, EventEmitter, SimpleChanges, OnChanges, } from '@angular/core';
 import { ConMessageService } from '../shared/service/conMessage.service';
 //import { PatientHttpService } from 'TpsShared/TpsService/patientHttp.service';
-import { MenuItem } from '../../patient-template/shared/patient-template.model'
+import { MenuItem } from 'primeng/api';
 import { ContouringService } from '../shared/service/contouring.service'
 import { KeyValuePair } from '../../../shared/common/keyvaluepair';
 
@@ -29,6 +29,8 @@ export class ContouringTopBarComponent implements OnInit {
     @Output() hideList: EventEmitter<any> = new EventEmitter<any>();
     @Output() setcenter: EventEmitter<any> = new EventEmitter<any>();
     @Input() seriesList: string[];
+    @Output() newroi: EventEmitter<any> = new EventEmitter<any>();
+    @Output() manageroi: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(
         private conMessage: ConMessageService,
@@ -38,8 +40,14 @@ export class ContouringTopBarComponent implements OnInit {
     seriesId: any;
     data: any[];
     atlasData: any = new Array();
+    ROIItems:MenuItem[];
 
     ngOnInit() {
+        this.ROIItems = [
+            {label: 'Manage',icon: 'pi pi-refresh',command: () => {
+                this.manageroi.emit();
+            }},
+        ];
     }
     ngOnChanges(changes: SimpleChanges) {
 
@@ -86,6 +94,14 @@ export class ContouringTopBarComponent implements OnInit {
 
     onItemClick(a) {
 
+    }
+
+    OnNewROI(){
+        this.newroi.emit();
+    }
+    
+    OnManageROI(){
+        this.manageroi.emit();
     }
 
     checkedNodes: any[] = null;
