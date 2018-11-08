@@ -118,6 +118,7 @@ export class ContourDirective implements OnInit {
 
         this.shape = this.getShapeContainerInstance();
         this.shape.roiConfig = this.activeROI;
+        this.shape.getChildAt(0).color = this.shape.roiConfig.ROIColor;
         if (this.shape != null)
             this.shape.handleMouseDown(event)
     }

@@ -40,7 +40,7 @@ export class BaseContainer extends createjs.Container {
         for (let index = 0; index < count; index++) {
             this.cps.push(new Point(0, 0))
         }
-    }
+    }    
 
     updateCp(index:number, x, y) {
         if (index < this.cps.length)
