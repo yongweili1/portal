@@ -32,7 +32,7 @@ export class BaseContainer extends createjs.Container {
 
     public set roiConfig(roiConfig:ROIConfig){
         this._roiConfig = roiConfig;
-        console.log('_roiConfig : '+this._roiConfig.ROIColor);
+        this.getChildAt(0).color = this._roiConfig.ROIColor;
     }
 
     initCps(count:number=-1) {
