@@ -10,6 +10,7 @@ import { AuthHttp } from '../core/auth-http';
 import { Page, PageRequest } from '../shared/models/pagination';
 import {
   PacsPageRequest,
+  EachPageRequest,
   PacsInfoRequest,
   PacsDownloadRequest
 } from '../components/pacs/shared/pacs.model';
@@ -41,9 +42,17 @@ export class PacsService {
     .set('gender', pageRequest.gender)
     .set('modality', pageRequest.modality);
     console.log(this.headers);
-    console.log(pageRequest.patientId, pageRequest.patientName, pageRequest.patientAge, pageRequest.gender,pageRequest.modality);
     return this.http
       .get<Page<PacsPageRequest>>(`${this.appConfig.apiUrl}/pacs/pacspatient/`,{headers:this.headers, params:searchParams});  
+  }
+
+  public getPage(pageRequest: EachPageRequest): Observable<Page<PacsPageRequest>> {
+    const searchParams = new HttpParams()
+    .set('size', pageRequest.size.toString())
+    .set('page', pageRequest.page.toString())
+    console.log(this.headers);
+    return this.http
+      .get<Page<PacsPageRequest>>(`${this.appConfig.apiUrl}/pacs/pacspage/`,{headers:this.headers, params:searchParams});  
   }
 
   public getDownloadPacs(downloadRequest: PacsDownloadRequest): Observable<any>{
