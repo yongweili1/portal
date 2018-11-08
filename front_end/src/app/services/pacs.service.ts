@@ -41,6 +41,7 @@ export class PacsService {
     .set('gender', pageRequest.gender)
     .set('modality', pageRequest.modality);
     console.log(this.headers);
+    console.log(pageRequest.patientId, pageRequest.patientName, pageRequest.patientAge, pageRequest.gender,pageRequest.modality);
     return this.http
       .get<Page<PacsPageRequest>>(`${this.appConfig.apiUrl}/pacs/pacspatient/`,{headers:this.headers, params:searchParams});  
   }
@@ -50,7 +51,7 @@ export class PacsService {
     .set('patientId', downloadRequest.patientId);
     console.log(this.headers);
     return this.http
-      .get<Page<PacsPageRequest>>(`${this.appConfig.apiUrl}/pacs/pacsimages/`,{headers:this.headers, params:searchParams});  
+      .get<Page<PacsPageRequest>>(`${this.appConfig.apiUrl}/pacs/pacsseries/`,{headers:this.headers, params:searchParams});  
   }
 }
 
