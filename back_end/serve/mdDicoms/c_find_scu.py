@@ -83,12 +83,6 @@ class CFindScu(object):
                         p_id = None
                     if 'PatientAge' in identifier:
                         p_age = identifier.get_item(0x00101010).value
-                    # elif 'PatientBirthDate' in identifier:               # birthdate to age
-                    #     p_birthdate = identifier.get_item(0x00100030).value
-                    #     p_birthyear = p_birthdate[:4]
-                    #     year_now = datetime.datetime.now().year
-                    #     p_age = str(int(year_now)-int(p_birthyear))
-                    #     print p_birthdate + "  " + p_age
                     else:
                         p_age = None
                     if 'PatientSex' in identifier:
