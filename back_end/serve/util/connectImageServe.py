@@ -76,7 +76,7 @@ def get_image(*args, **kwargs):
     return rst
 
 
-def screen2world(*args, **kwargs):
+def request(*args, **kwargs):
     data = msg.RequestMsg()
     data.session = kwargs['user_ip']
     data.server_name = kwargs['server_name']
