@@ -86,7 +86,7 @@ export class ContouringComponent implements OnInit {
             ROIName:'',
             ROIColor:'',
         }
-        EventAggregator.Instance().contourCps.subscribe(cps => { this.saveContour(cps); });
+        EventAggregator.Instance().contourCps.subscribe(data => { this.saveContour(data); });
     }
 
     mainNewROI(){
@@ -312,14 +312,6 @@ export class ContouringComponent implements OnInit {
 
     }
 
-    // ngAfterContentChecked(){
-    //     if(this.manageROIDisplay==true){
-    //         for(let i=0;i<this.ROIList.length;i++){
-    //             $(".roi-color-div").get(i).style.backgroundColor =this.ROIList[i].ROIColor;
-    //         }
-    //     }
-    // }
-
     ngOnInit() {
         this.transverseCanvas = $(".a_class .icanvas").get(0);
         this.saggitalCanvas = $(".c_class .icanvas").get(0);
@@ -333,7 +325,7 @@ export class ContouringComponent implements OnInit {
         this.conMessage.actionInfo$.subscribe(value => {
             this.actionInfo = value;
             let toolsActionArray = ['zoom', 'pan','rotate','window']
-            let priActionArray = ['shape', 'clear','select']
+            let priActionArray = ['shape', 'clear','select', 'nudge']
             if (this.actionInfo.key() == actions.locate ) {
                 this.picLeft1.SetCanvasIndex("#crossCanvas", 10);
                 this.picLeft2.SetCanvasIndex("#crossCanvas", 10);
@@ -626,14 +618,15 @@ export class ContouringComponent implements OnInit {
         this.seriesHttpService.UnLoadVolume(this.seriesId).subscribe();
     }
 
-    saveContour(cps:any) {
-        console.log('saveContour');
+    saveContour(data:any) {
+        console.log('save contour');
         let dto = new ContourDto();
-        dto.series_uid = $("#seriesSelect").val();
-        dto.cps = cps;
-        this.conService.saveContour(dto).subscribe(response=>{
+        // if uid is null, add a new record, otherwise, update it
+        dto.uid = data[0];
+        dto.roi_uid = $("#seriesSelect").val(); // need to replace
+        dto.cps = data[1];
+        this.conService.saveContour(dto).subscribe(response => {
             console.log('aaa')
         });
     }
 }
-

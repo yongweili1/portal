@@ -5,7 +5,7 @@ import time
 import os
 from entity.cellentity import CellEntity
 from image_server import ImageServer
-from scene.coord import translate_from_screen_to_world
+from scene.coord import translate_from_screen_to_world, translate_from_world_to_screen
 from message import response
 from updater.args import RefreshType
 from utilities import get_view_index, get_orthogonal_spacing, ViewEnum, get_view_index, get_page_filter_view, \
@@ -404,17 +404,27 @@ def wwwl(**kwargs):
         return response(success=False, message=e.message)
 
 
-@command.register('word_coord')
-def get_word_coord(**kwargs):
+@command.register('point3d')
+def get_point3d(**kwargs):
     try:
-        views = imageentity.get_children_views()
-        index = get_view_index(kwargs['focus_view'])
-        view = views[index]
+        index = get_view_index('transverse')
+        view = imageentity.get_children_views()[index]
         scene = view.get_scene()
-        print('translate_from_screen_to_world')
         pt3d = translate_from_screen_to_world(scene, kwargs['point_2d'])
         return response(json.dumps(pt3d.tolist()))
     except Exception as e:
         print('---------------->', e.message)
         return response(success=False, message=e.message)
 
+
+@command.register('point2d')
+def get_point2d(**kwargs):
+    try:
+        index = get_view_index('transverse')
+        view = imageentity.get_children_views()[index]
+        scene = view.get_scene()
+        pt3d = translate_from_world_to_screen(scene, kwargs['point_3d'])
+        return response(json.dumps(pt3d.tolist()))
+    except Exception as e:
+        print('---------------->', e.message)
+        return response(success=False, message=e.message)
