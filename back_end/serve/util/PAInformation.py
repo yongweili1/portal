@@ -1,19 +1,23 @@
 # -*-coding:utf-8-*-
 import copy
-from serve.DBAccess.models import Study, Series, Patient
+from serve.DBAccess.models import Study, Series, Patient, Image
 
 
 class InfoList(object):
 
     def __init__(self):
         self.patinfos_list = []
+        self.series_list = []
         self.patinfo_dict = {
             'patientId': '',
             'patientName': '',
             'gender': '',
-            'studyDescription': '',
-            'modality': '',
-            'studyDate': '',
+            'seriesInfo': [],
+        }
+        self.series_dict = {
+            'seriesuid': '',
+            'imagequantity': '',
+            'seriesdescription': ''
         }
 
     def get_infolist(self):
@@ -31,31 +35,32 @@ class InfoList(object):
                 pat_dict['patientId'] = pat.patientid
                 pat_dict['patientName'] = pat.patientname
                 pat_dict['gender'] = pat.patientsex
+
+                stu = Study.objects.filter(patientid=pat.patientid)
+
+                ser_list = copy.deepcopy(self.series_list)
+
+                if len(stu) != 0:
+                    for st in stu:
+                        ser = Series.objects.filter(studyuid=st.studyuid)
+
+                        if len(ser) != 0:
+                            for se in ser:
+                                series_dict = copy.deepcopy(self.series_dict)
+                                series_dict['seriesuid'] = se.seriesuid
+                                image_number = Image.objects.filter(seriesuid=se.seriesuid).count()
+                                series_dict['imagequantity'] = str(image_number)
+                                series_dict['seriesdescription'] = se.seriesdescription
+                                ser_list.append(series_dict)
+                            pat_dict['seriesInfo'] = ser_list
+
+                        else:
+                            pat_dict['seriesInfo'] = ser_list
+
+                else:
+                    pat_dict['seriesInfo'] = ser_list
+
                 self.patinfos_list.append(pat_dict)
-                # # 获取study信息的查询集，查询集为对象列表
-                # stu = Study.objects.filter(patientid=pat.patientid)
-                #
-                # if len(stu) != 0:
-                #     for st in stu:
-                #         # 深拷贝字典，因为字典创建在循环外部，要避免重复赋值时覆盖问题
-                #         pat_dict = copy.deepcopy(pat_dict)
-                #         pat_dict['studyDescription'] = st.studydescription
-                #         pat_dict['studyDate'] = st.studydate
-                #
-                #         ser = Series.objects.filter(studyuid=st.studyuid)
-                #
-                #         if len(ser) != 0:
-                #             for se in ser:
-                #                 pat_dict['modality'] = se.modality
-                #                 self.patinfos_list.append(pat_dict)
-                #
-                #         # 父表study无子表series，添加进列表
-                #         else:
-                #             self.patinfos_list.append(pat_dict)
-                #
-                # # 父表patient无子表study，添加进列表
-                # else:
-                #     self.patinfos_list.append(pat_dict)
 
         return self.patinfos_list
 

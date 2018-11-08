@@ -20,9 +20,7 @@ class SplitDicoms(object):
         seriesuid = dcmseries.get_dicom_series(dataset)['seriesuid']
 
         seriespath = filepath.splitDicomPath + str(seriesuid)
-        if os.path.exists(seriespath):
-            pass
-        else:
+        if not os.path.exists(seriespath):
             os.mkdir(seriespath)
 
         self.save_dicom(file_name, seriespath)
