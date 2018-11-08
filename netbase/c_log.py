@@ -33,7 +33,8 @@ class PyLogInstance(object):
 
     def create_log(self, xml_path=''):
         if '' == xml_path:
-            xml_path = os.path.abspath('log_config.xml')
+            path = os.path.dirname(os.path.abspath(__file__))
+            xml_path = os.path.join(path, 'log_config.xml')
         self._lib.GLogLoadConfig(xml_path)
 
         root = XmlEt.parse(xml_path).getroot()
@@ -48,6 +49,10 @@ class PyLogInstance(object):
 
     def dev_info(self, description, source='', uid=0):
         self._build_log('LOG_DEV_INFO', '', uid, description, source)
+
+    def set_source(self, source):
+        if '' != source:
+            self._source_name = source
 
     def dev_warning(self, description, source='', uid=0):
         self._build_log('LOG_DEV_WARNING', '', uid, description, source)
