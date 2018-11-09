@@ -75,7 +75,7 @@ def load(**kwargs):
 
     try:
         vol = cio.read_image(volume_path)
-        mask_path = volume_path.rstrip('.nii.gz') + '_Tumors.nii.gz'
+        mask_path = volume_path.rstrip('.nii.gz') + '_mask.nii.gz'
 
         mask = None
         if os.path.isfile(mask_path):

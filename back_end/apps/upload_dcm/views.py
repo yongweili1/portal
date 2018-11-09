@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import copy
 import os
 import platform
 import pydicom
@@ -78,8 +79,7 @@ class Patinfo(APIView):
             param3 = str(filepath.volumePath).encode('ascii')
             if 0 != builder.build_volume(param1, param2, param3):
                 return Response('dicom文件不符合规范,创建volume失败')
-
-            vol_file_path = os.path.join(filepath.volumePath, series_uid+'.nii.gz')
+            vol_file_path = os.path.join(filepath.volumePath, series_uid + '.nii.gz')
             if not os.path.isfile(vol_file_path):
                 return Response('The volume built was not found!')
 
