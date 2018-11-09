@@ -40,6 +40,7 @@ var actions = {
     reset: 'reset',
     
     shape: 'shape',
+    nudge: 'nudge',
     clear: 'clear',
     select: 'select'
 }
