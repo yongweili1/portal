@@ -134,6 +134,14 @@ export class ContouringComponent implements OnInit {
                 this.ROIList = result.body.data;
                 this.ROIListLength = this.ROIList.length;
                 this.newROIDisplay = false;
+                let new_roi_id = 0;
+                this.ROIList.forEach(element => {
+                    if(element.ROIId > new_roi_id){
+                        this.activeROIConfig = element;
+                    }
+                });
+
+                this.conMessage.SetActiveRoi(this.activeROIConfig);
             }
             else{
                 this.priMessageService.add({ severity: 'error', detail: `${result.msg}` });
