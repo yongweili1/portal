@@ -5,7 +5,7 @@ declare var createjs: any;
 export class BaseContainer extends createjs.Container {
     uid: string = null;
     isPaint: boolean = false;
-    isMousedown: boolean = true;
+    isMousedown: boolean = false;
     type: string;
     overlayStage: any;
     protected _tempPoint: Point;
@@ -54,6 +54,12 @@ export class BaseContainer extends createjs.Container {
     handleMouseDown(evt) {
         console.log('[base_container]handle MouseDown')
         this._tempPoint = new Point(evt.stageX, evt.stageY);
+        this.isMousedown = true;
+		this.currentMouseButton = evt.button;
+    }
+    handleMouseUp(e) {
+        this.isMousedown = false;
+		this.currentMouseButton = -1;
     }
     handlePressMove(evt) {
         console.log('[base_container]handle PressMove')

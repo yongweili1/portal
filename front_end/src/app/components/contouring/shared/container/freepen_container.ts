@@ -34,6 +34,10 @@ export class FreepenContainer extends BaseContainer {
         // });
         this.updateText()
     }
+
+    setCps(cps) {
+        this.cps = cps;
+    }
     
     clearPaint() {
         this.extendCps = new Array()
