@@ -38,7 +38,7 @@ export class FaderContainer extends BaseContainer {
 
         if (this.isMousedown) {
 			let curPos = new Point(e.offsetX, e.offsetY)
-			if (this.currentMouseButton == 1) {  // middle button
+			if (this.currentPressDownBtn == 1) {  // middle button
 				if (curPos.y - this.prePos.y < 0) {
 					if (this.fader.radius < 80)
 						this.fader.radius += 1;
