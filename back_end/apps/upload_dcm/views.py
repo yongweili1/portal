@@ -69,13 +69,17 @@ class Patinfo(APIView):
         print('数据入库成功，重新build_volume（此操作比较耗时，请稍等）...')
         for seriespath in set(series_path_list):
             if len(os.listdir(seriespath)) <= 1:
-                return Response('series下的dicom文件单一，无法build volume')
+                print('series下的dicom文件单一，无法build volume')
+                continue
             series_uid = os.path.split(seriespath)[1]
             builder = uAIDataLayer.VolumeBuilder()
-            if 0 != builder.build_volume(series_uid, seriespath, filepath.volumePath):
+            param1 = series_uid.encode('ascii')
+            param2 = str(seriespath).encode('ascii')
+            param3 = str(filepath.volumePath).encode('ascii')
+            if 0 != builder.build_volume(param1, param2, param3):
                 return Response('dicom文件不符合规范,创建volume失败')
 
-            vol_file_path = os.path.join(seriespath, series_uid+'.nii.gz')
+            vol_file_path = os.path.join(filepath.volumePath, series_uid+'.nii.gz')
             if not os.path.isfile(vol_file_path):
                 return Response('The volume built was not found!')
 
