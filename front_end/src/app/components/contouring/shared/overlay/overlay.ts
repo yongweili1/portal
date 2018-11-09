@@ -17,7 +17,7 @@ export class Overlay extends createjs.Shape {
         this._color = this._default_color;
         this.addEventListener("mouseover", this.handleMouseOver.bind(this));
         this.addEventListener("mouseout", this.handleMouseOut.bind(this));
-        this.overlayStage.addChild(this);
+        // this.overlayStage.addChild(this);
     }
 
     setStartPoint(p) {

@@ -5,7 +5,7 @@ declare var createjs: any;
 export class BaseContainer extends createjs.Container {
     uid: string = null;
     isPaint: boolean = false;
-    isMousedown: boolean = true;
+    isMousedown: boolean = false;
     type: string;
     overlayStage: any;
     protected _tempPoint: Point;
