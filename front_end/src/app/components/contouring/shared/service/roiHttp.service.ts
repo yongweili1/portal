@@ -62,6 +62,9 @@ export class RoiHttpService{
         return this.http.delete<any>(`${this.appConfig.apiUrl}/roi/roidata/`, { params: getParams });
     }
 
+    CreateNewSegROI(roiData:any):Observable<any>{
+        return this.http.post<any>(`${this.appConfig.apiUrl}/algproxy/results/`, roiData, this.options);
+    }
 }
 
 // interface IRoiDto {

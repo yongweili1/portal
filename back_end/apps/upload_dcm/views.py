@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import copy
 import os
 import platform
 import pydicom
@@ -67,13 +68,21 @@ class Patinfo(APIView):
         #     return Response('DCM数据入库失败，请检查DCM数据是否符合DB字段约束')
 
         print('数据入库成功，重新build_volume（此操作比较耗时，请稍等）...')
+
         for seriespath in set(series_path_list):
             if len(os.listdir(seriespath)) <= 1:
-                return Response('series下的dicom文件单一，无法build volume')
+                print('series下的dicom文件单一，无法build volume')
+                continue
+                # return Response('series下的dicom文件单一，无法build volume')
             series_uid = os.path.split(seriespath)[1]
             builder = uAIDataLayer.VolumeBuilder()
-            if 0 != builder.build_volume(series_uid, seriespath, filepath.volumePath):
-                return Response('dicom文件不符合规范,创建volume失败')
+            try:
+                targe_path = copy.deepcopy(seriespath)
+                if 0 != builder.build_volume(series_uid, targe_path, filepath.volumePath):
+                    return Response('dicom文件不符合规范,创建volume失败')
+            except Exception as ex:
+                print ex.message
+                raise ex
 
             vol_file_path = os.path.join(seriespath, series_uid+'.nii.gz')
             if not os.path.isfile(vol_file_path):

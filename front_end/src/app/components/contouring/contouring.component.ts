@@ -95,6 +95,33 @@ export class ContouringComponent implements OnInit {
         }
     }
 
+    mainautoroi(){
+        let ROIData = {
+            seriesuid: $("#seriesSelect").val(),
+            ROIName: 'heart',
+            ROIColor: '#FFFF00'
+        }
+        this.roiHttp.CreateNewSegROI(ROIData).subscribe(result=>{
+            if(result.body.code == '200'){
+                this.priMessageService.add({ severity: 'success', detail: `Save succeed.` });
+                this.ROIList = result.body.data;
+                this.ROIListLength = this.ROIList.length;
+                this.newROIDisplay = false;
+                let new_roi_id = 0;
+                this.ROIList.forEach(element => {
+                    if(element.ROIId > new_roi_id){
+                        this.activeROIConfig = element;
+                    }
+                });
+
+                this.conMessage.SetActiveRoi(this.activeROIConfig);
+            }
+            else{
+                this.priMessageService.add({ severity: 'error', detail: `${result.msg}` });
+            }
+        })        
+    }
+
     mainManageROI(){
         let seriesuid = $("#seriesSelect").val();
         if(seriesuid!='' && seriesuid!=null && seriesuid!=undefined){
