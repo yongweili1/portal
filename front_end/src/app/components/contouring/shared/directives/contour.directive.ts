@@ -108,12 +108,6 @@ export class ContourDirective implements OnInit {
     }
 
     @HostListener('mousedown', ['$event']) onMouseDown(event: MouseEvent) {
-        this.myStage.children.forEach(shape => {
-            if (shape.type == shapes.freepen) {
-                shape.editable = this.actionInfo.value() == shapes.freepen_edit ? true : false;
-            }
-        });
-        
         if (this.actionInfo.key() == actions.nudge) {
             if (this.fader == null)
                 this.fader = FaderFactory.getInstance().createSharpContainer(this.myStage);
@@ -123,7 +117,7 @@ export class ContourDirective implements OnInit {
         }
 
         this.shape = this.getShapeContainerInstance();
-        
+
         if (this.shape != null) {
             this.shape.roiConfig = this.activeROI;
             this.shape.handleMouseDown(event);
@@ -134,7 +128,7 @@ export class ContourDirective implements OnInit {
         if (this.shape != null) {
             this.shape.handleMouseMove(event)
         }
-        
+
         if (this.actionInfo.key() == actions.nudge) {
             if (this.fader == null)
                 this.fader = FaderFactory.getInstance().createSharpContainer(this.myStage);
@@ -148,7 +142,7 @@ export class ContourDirective implements OnInit {
     @HostListener('mouseup', ['$event']) onMouseUp(event: MouseEvent) {
         if (this.shape != null)
             this.shape.handleMouseUp(event)
-        
+
             if (this.actionInfo.key() == actions.nudge) {
             if (this.fader == null)
                 this.fader = FaderFactory.getInstance().createSharpContainer(this.myStage);
@@ -165,7 +159,7 @@ export class ContourDirective implements OnInit {
     }
 
     @HostListener('dblclick', ['$event']) onDbClick(event: MouseEvent) { }
-    
+
     getShapeContainerInstance() {
         if (this.actionInfo.key() != actions.shape) {
             console.log('Can not create shape on this action')

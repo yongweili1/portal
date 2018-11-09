@@ -10,8 +10,14 @@ export class BaseContainer extends createjs.Container {
     overlayStage: any;
     protected _tempPoint: Point;
     cps: Array<Point>;
-    currentMouseButton: number;
-    protected _roiConfig:ROIConfig;
+
+    // -1: no mouse button down
+    // 0: left mouse button down
+    // 1: middle mouse button down
+    // 2: right mouse button down
+    currentPressDownBtn: number;
+    
+    protected _roiConfig: ROIConfig;
 
     constructor(stage, type) {
         super();
@@ -49,17 +55,16 @@ export class BaseContainer extends createjs.Container {
 
     update(){
     }
-    
 
     handleMouseDown(evt) {
         console.log('[base_container]handle MouseDown')
         this._tempPoint = new Point(evt.stageX, evt.stageY);
         this.isMousedown = true;
-		this.currentMouseButton = evt.button;
+		this.currentPressDownBtn = evt.button;
     }
     handleMouseUp(e) {
         this.isMousedown = false;
-		this.currentMouseButton = -1;
+		this.currentPressDownBtn = -1;
     }
     handlePressMove(evt) {
         console.log('[base_container]handle PressMove')

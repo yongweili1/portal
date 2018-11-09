@@ -27,7 +27,6 @@ var shapes = {
     circle: 'circle',
     rectangle: 'rectangle',
     freepen: 'freepen',
-    freepen_edit: 'freepen_edit'
 }
 
 var actions = {
