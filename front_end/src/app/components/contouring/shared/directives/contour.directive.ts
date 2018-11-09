@@ -9,9 +9,9 @@ import { Point } from '../tools/point'
 import { FreepenContainer } from '../container/freepen_container';
 import { KeyValuePair } from '../../../../shared/common/keyvaluepair';
 import { FaderFactory } from '../tools/factory/fader-factory';
-import { ClipperHelper, ClipPoint } from '../tools/clipper_helper';
 import { EventAggregator } from '../../../../shared/common/event_aggregator';
 import { FaderContainer } from '../container/fader_container';
+import { NudgeHelper } from '../tools/nudge_helper';
 
 declare var createjs: any;
 declare var actions: any;
@@ -42,11 +42,11 @@ export class ContourDirective implements OnInit {
     labelTxt: string;
     shape: any;
     fader: FaderContainer;
+    nudgeHelper: NudgeHelper;
     curTarget: any;
     activeROI:ROIConfig;
     @Input() backCanvas;
     @Input() name;
-    _faderMode: string;
 
     constructor(private el: ElementRef, private contouringService: ConMessageService) { }
 
@@ -109,15 +109,12 @@ export class ContourDirective implements OnInit {
 
     @HostListener('mousedown', ['$event']) onMouseDown(event: MouseEvent) {
         if (this.actionInfo.key() == actions.nudge) {
-            if (this.fader == null)
-                this.fader = FaderFactory.getInstance().createSharpContainer(this.myStage);
+            this.fader = this.getFader();
             this.fader.handleMouseDown(event);
-            this._faderMode = this.FaderMode(this.fader.getCenter(), this.getAllFreepenCps());
-            console.log(this._faderMode);
+            this.nudgeHelper.SetMode(this.fader.getCenter(), this.getAllFreepenCps());
         }
 
         this.shape = this.getShapeContainerInstance();
-
         if (this.shape != null) {
             this.shape.roiConfig = this.activeROI;
             this.shape.handleMouseDown(event);
@@ -130,8 +127,7 @@ export class ContourDirective implements OnInit {
         }
 
         if (this.actionInfo.key() == actions.nudge) {
-            if (this.fader == null)
-                this.fader = FaderFactory.getInstance().createSharpContainer(this.myStage);
+            this.fader = this.getFader();
             this.fader.handleMouseMove(event);
             if (this.fader.isMousedown) {
                 this.clip();
@@ -143,9 +139,8 @@ export class ContourDirective implements OnInit {
         if (this.shape != null)
             this.shape.handleMouseUp(event)
 
-            if (this.actionInfo.key() == actions.nudge) {
-            if (this.fader == null)
-                this.fader = FaderFactory.getInstance().createSharpContainer(this.myStage);
+        if (this.actionInfo.key() == actions.nudge) {
+            this.fader = this.getFader();
             this.fader.handleMouseUp(event);
         }
     }
@@ -181,16 +176,16 @@ export class ContourDirective implements OnInit {
         }
     }
 
-    PointInPoly(pt, poly) {
-        for (var c = false, i = -1, l = poly.length, j = l - 1; ++i < l; j = i)
-            ((poly[i].y <= pt.y && pt.y < poly[j].y) || (poly[j].y <= pt.y && pt.y < poly[i].y))
-            && (pt.x < (poly[j].x - poly[i].x) * (pt.y - poly[i].y) / (poly[j].y - poly[i].y) + poly[i].x)
-            && (c = !c);
-        return c;
+    getFader() {
+        if (this.fader == null) {
+            this.fader = FaderFactory.getInstance().createSharpContainer(this.myStage);
+            this.nudgeHelper = new NudgeHelper(this.fader)
+        }
+        return this.fader;
     }
 
     clip() {
-        let result = this.Pusher()
+        let result = this.nudgeHelper.Push(this.getAllFreepenCps())
 
         this.removeAllFreepens()
 
@@ -205,16 +200,6 @@ export class ContourDirective implements OnInit {
             freepen.setCps(cps)
             freepen.update()
         });
-    }
-
-    getAllFreepens() {
-        let freepens = new Array();
-        this.myStage.children.forEach(contour => {
-            if (contour.type == shapes.freepen) {
-                freepens.push(contour)
-            }
-        });
-        return freepens;
     }
 
     getAllFreepenCps():Array<Array<Point>> {
@@ -233,111 +218,5 @@ export class ContourDirective implements OnInit {
                 this.myStage.removeChild(contour)
             }
         });
-    }
-
-    convertPoints(contours: Array<Array<Point>>) {
-        let rois = new Array();
-        contours.forEach(contour => {
-            if (contour == null) return;
-            let roi = new Array();
-            contour.forEach(cp => {
-                let p = new ClipPoint();
-                p.X = cp.x;
-                p.Y = cp.y;
-                roi.push(p)
-            });
-            rois.push(roi);
-        });
-        return rois;
-    }
-
-    private FaderMode(center: Point, voiPt: Array<Array<Point>>): string {
-        let voiPt_Clipper = this.convertPoints(voiPt);
-        let pointInContour: boolean = this.ContourContainsPoint(voiPt_Clipper, { X: center.x, Y: center.y });
-        let virtualFaderPt_Clipper = this.convertPoints([this.fader.getCps()])
-        if (pointInContour) {
-            let intersection = ClipperHelper.Clipper(voiPt_Clipper, virtualFaderPt_Clipper, 1, "intersection");
-            if (intersection[0].length == this.fader.getCps().length) {
-                return "CreateInFader";
-            } else {
-                return "InFader";
-            }
-        } else {
-            let intersection = ClipperHelper.Clipper(voiPt_Clipper, virtualFaderPt_Clipper, 1, "intersection");
-            if (intersection.length == 0) {
-                return "CreateOutFader";
-            } else {
-                return "OutFader";
-            }
-        }
-    } 
-
-    private ContourContainsPoint(contours: Array<Array<ClipPoint>>, point: ClipPoint): boolean {
-        let num: number = 0;
-        for (var contour in contours) {
-            let wn: number = 0, j: number = 0;
-            for (let i = 0; i < contours[contour].length; i++) {
-                if (i == contours[contour].length - 1) {
-                    j = 0;
-                } else {
-                    j = j + 1;
-                }
-
-                if (contours[contour][i].Y <= point.Y) {   // 如果多边形的点 小于等于 选定点的 Y 坐标  
-                    if (contours[contour][j].Y > point.Y) {  // 如果多边形的下一点 大于于 选定点的 Y 坐标  
-                        if (this.IsLeft(contours[contour][i], contours[contour][j], point) > 0) {
-                            wn++;
-                        }
-                    }
-                } else {
-                    if (contours[contour][j].Y <= point.Y) {
-                        if (this.IsLeft(contours[contour][i], contours[contour][j], point) < 0) {
-                            wn--;
-                        }
-                    }
-                }
-            }
-            if (wn != 0) { num++; }
-        }
-        if (num % 2 == 0) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    private IsLeft(P0: ClipPoint, P1: ClipPoint, P2: ClipPoint): number {
-        let abc: number = ((P1.X - P0.X) * (P2.Y - P0.Y) - (P2.X - P0.X) * (P1.Y - P0.Y));
-        return abc;
-    }
-
-    private Pusher() {
-        if (this.fader.getCps().length == 0 || this._faderMode == null) {
-            return null;
-        }
-
-        let voiPt_Clipper = this.convertPoints(this.getAllFreepenCps());
-        let pusherPt_Clipper = this.convertPoints([this.fader.getCps()]);
-        if (this._faderMode == "InFader") {
-            return this.InPusher(voiPt_Clipper, pusherPt_Clipper);
-        } else if (this._faderMode == "OutFader") {
-            return this.OutPusher(voiPt_Clipper, pusherPt_Clipper);
-        } else if (this._faderMode == "CreateOutFader") {
-            return this.OutPusher(voiPt_Clipper, pusherPt_Clipper);
-        } else if (this._faderMode == "CreateInFader") {
-            return this.InPusher(voiPt_Clipper, pusherPt_Clipper);
-        }
-    }
-
-    private OutPusher(voiPt_Clipper: Array<Array<ClipPoint>>, pusherPt_Clipper: Array<Array<ClipPoint>>): Array<Array<number>> {
-        let difference = [];
-        difference = ClipperHelper.Clipper(voiPt_Clipper, pusherPt_Clipper, 1, "difference");
-        return difference;
-    }
-
-    private InPusher(voiPt_Clipper: Array<Array<ClipPoint>>, pusherPt_Clipper: Array<Array<ClipPoint>>): Array<Array<number>> {
-        let union = [];
-        union = ClipperHelper.Clipper(voiPt_Clipper, pusherPt_Clipper, 1, "union");
-        return union;
     }
 }
