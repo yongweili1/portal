@@ -1,4 +1,5 @@
 import { Point } from '../tools/point'
+import { ROIConfig } from '../model/ROIConfig.model'
 declare var createjs: any;
 
 export class BaseContainer extends createjs.Container {
@@ -10,6 +11,7 @@ export class BaseContainer extends createjs.Container {
     protected _tempPoint: Point;
     cps: Array<Point>;
     currentMouseButton: number;
+    protected _roiConfig:ROIConfig;
 
     constructor(stage, type) {
         super();
@@ -24,12 +26,21 @@ export class BaseContainer extends createjs.Container {
         this.initCps()
     }
 
+    public get roiConfig(){
+        return this._roiConfig;
+    }
+
+    public set roiConfig(roiConfig:ROIConfig){
+        this._roiConfig = roiConfig;
+        this.getChildAt(0).color = this._roiConfig.ROIColor;
+    }
+
     initCps(count:number=-1) {
         this.cps = new Array()
         for (let index = 0; index < count; index++) {
             this.cps.push(new Point(0, 0))
         }
-    }
+    }    
 
     updateCp(index:number, x, y) {
         if (index < this.cps.length)

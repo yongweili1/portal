@@ -61,7 +61,8 @@ export class ContouringComponent implements OnInit {
     newROIDisplay: any =false;
     manageROIDisplay: any = false;
     editROIDisplay: any =false;
-    editROIConfig:ROIConfig;
+    editROIConfig:ROIConfig = {ROIId:'',ROIName:'',ROIColor:''};
+    activeROIConfig:ROIConfig= {ROIId:'',ROIName:'',ROIColor:''};
     lazyExcuteHandler: LazyExcuteHandler;
 
     @ViewChild('picLeft1') picLeft1;
@@ -81,11 +82,6 @@ export class ContouringComponent implements OnInit {
         private priMessageService: MessageService
     ) {
         this.lazyExcuteHandler = new LazyExcuteHandler()
-        this.editROIConfig={
-            ROIId:'',
-            ROIName:'',
-            ROIColor:'',
-        }
         EventAggregator.Instance().contourCps.subscribe(data => { this.saveContour(data); });
     }
 
@@ -122,7 +118,7 @@ export class ContouringComponent implements OnInit {
     
     saveROI(){
         let colorReg = new RegExp('^\#\w{0,6}$','i')
-        //TODO true这个地方color的正则有问题
+        //TODO false这个地方color的正则有问题
         if( false || this.ROIName==''){
             this.priMessageService.add({ severity: 'error', detail: `Illegal input.` });
             return;
@@ -146,7 +142,8 @@ export class ContouringComponent implements OnInit {
     }
 
     updateROI(){
-        //TODO true这个地方color的正则有问题
+        let colorReg = new RegExp('^\#\w{0,6}$','i')
+        //TODO false这个地方color的正则有问题
         if( false || this.editROIConfig.ROIName==''){
             this.priMessageService.add({ severity: 'error', detail: `Illegal input.` });
             return;
@@ -165,7 +162,8 @@ export class ContouringComponent implements OnInit {
     }
 
     deleteROI(evt){
-        this.roiHttp.DeleteROIConfig(evt.target.parentElement.parentElement.children[1].innerText).subscribe(result=>{
+        let ROIId = $(evt.target).parents('tr').find('.roi-id-td').text();
+        this.roiHttp.DeleteROIConfig(ROIId).subscribe(result=>{
             if(result.code == '200'){
                 this.priMessageService.add({ severity: 'success', detail: `Delete succeed.` });
                 this.ROIList = result.data;
@@ -207,12 +205,20 @@ export class ContouringComponent implements OnInit {
 
     onClickROIItem(evt){
         $(".roi-select-tr").removeClass('roi-select-tr');
-        $(evt.target.parentElement.parentElement).addClass('roi-select-tr');
+        $(evt.target).parents('tr').addClass('roi-select-tr');
+        this.activeROIConfig.ROIId = $(evt.target).parents('tr').find('.roi-id-td').text();
+        this.ROIList.forEach(element => {
+            if(this.activeROIConfig.ROIId == element.ROIId){
+                this.activeROIConfig.ROIName = element.ROIName;
+                this.activeROIConfig.ROIColor = element.ROIColor;
+            }
+        });
+        this.conMessage.SetActiveRoi(this.activeROIConfig);
     }
 
     editROI(evt){
+        this.editROIConfig.ROIId = $(evt.target).parents('tr').find('.roi-id-td').text();
         this.editROIDisplay=true;
-        this.editROIConfig.ROIId = evt.target.parentElement.parentElement.children[1].innerText;
         this.ROIList.forEach(element => {
             if(this.editROIConfig.ROIId == element.ROIId){
                 this.editROIConfig.ROIName = element.ROIName;

@@ -1,4 +1,5 @@
 import { Directive, ElementRef, Input, HostListener, OnInit, Output, EventEmitter } from '@angular/core';
+import { ROIConfig } from '../model/ROIConfig.model'
 import { ConMessageService } from '../service/conMessage.service';
 import { CircleFactory } from '../tools/factory/circle-factory'
 import { LineFactory } from '../tools/factory/line-factory'
@@ -39,6 +40,7 @@ export class ContourDirective implements OnInit {
     shape: any;
     fader: any;
     curTarget: any;
+    activeROI:ROIConfig;
     @Input() backCanvas;
     @Input() name;
 
@@ -94,6 +96,11 @@ export class ContourDirective implements OnInit {
                 freepen.update()
             });
         });
+        
+        this.contouringService.activeRoi$.subscribe(data=>{
+            this.activeROI = data;
+        }
+        )
     }
 
     @HostListener('mousedown', ['$event']) onMouseDown(event: MouseEvent) {
@@ -110,6 +117,7 @@ export class ContourDirective implements OnInit {
         }
 
         this.shape = this.getShapeContainerInstance();
+        this.shape.roiConfig = this.activeROI;
         if (this.shape != null)
             this.shape.handleMouseDown(event)
     }
