@@ -54,6 +54,12 @@ export class BaseContainer extends createjs.Container {
     handleMouseDown(evt) {
         console.log('[base_container]handle MouseDown')
         this._tempPoint = new Point(evt.stageX, evt.stageY);
+        this.isMousedown = true;
+		this.currentMouseButton = evt.button;
+    }
+    handleMouseUp(e) {
+        this.isMousedown = false;
+		this.currentMouseButton = -1;
     }
     handlePressMove(evt) {
         console.log('[base_container]handle PressMove')

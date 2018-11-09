@@ -1,7 +1,6 @@
 import { BaseContainer } from "./base_container";
 import { Fader } from "../overlay/fader";
 import { Point } from "../tools/point";
-import { EventAggregator } from '../../../../shared/common/event_aggregator';
 
 export class FaderContainer extends BaseContainer {
 	fader: Fader;
@@ -17,18 +16,25 @@ export class FaderContainer extends BaseContainer {
 		this.fader.update(this.fader.center);
 	}
 
+	getCenter() {
+		return this.fader.center;
+	}
+
+	getCps() {
+		return this.fader.cps;
+	}
+
 	handleMouseDown(evt) {
 		super.handleMouseDown(evt)
-		this.isMousedown = true;
-		this.currentMouseButton = evt.button;
 
 		this.prePos = new Point(evt.offsetX, evt.offsetY)
-		this.fader.center = this.prePos;
+		this.fader.setCenter(this.prePos);
 		this.update();
     }
+
     handleMouseMove(e) {
-		this.fader.center = new Point(e.offsetX, e.offsetY);
-		this.fader.update(this.fader.center)
+		this.fader.setCenter(new Point(e.offsetX, e.offsetY));
+        this.update();
 
         if (this.isMousedown) {
 			let curPos = new Point(e.offsetX, e.offsetY)
@@ -40,27 +46,18 @@ export class FaderContainer extends BaseContainer {
 					if (this.fader.radius > 5)
 						this.fader.radius -= 1;
 				}
-			} else if (this.currentMouseButton == 2) {  // right button
-
-			} else {  // left button
-				// check collision
-				// clipper
-				console.log('clipper', this.parent.name)
-				EventAggregator.Instance().clipInfo.publish([this.parent.name, this.fader.cps]);
 			}
 			this.prePos = curPos;
-
-            this.update();
         }
-    }
+	}
+
     handleMouseUp(e) {
-		this.isMousedown = false;
-		this.currentMouseButton = -1;
+		super.handleMouseUp(e);
         this.isPaint = false;
     }
 
     handlePressMove(e) {
-        this.fader.center = new Point(e.offsetX, e.offsetY);
+        this.fader.setCenter(new Point(e.offsetX, e.offsetY));
         this.update();
 	}
 

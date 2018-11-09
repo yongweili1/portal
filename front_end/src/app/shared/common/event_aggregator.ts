@@ -11,7 +11,6 @@ export class EventAggregator {
 
     //#region observable msg
     contourCps = new ObservableObject();
-    clipInfo = new ObservableObject();
     //#endregion
     
     private constructor() { }

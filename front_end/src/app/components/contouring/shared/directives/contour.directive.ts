@@ -46,6 +46,7 @@ export class ContourDirective implements OnInit {
     activeROI:ROIConfig;
     @Input() backCanvas;
     @Input() name;
+    _faderMode: string;
 
     constructor(private el: ElementRef, private contouringService: ConMessageService) { }
 
@@ -103,20 +104,6 @@ export class ContourDirective implements OnInit {
 
         this.contouringService.activeRoi$.subscribe(data=>{
             this.activeROI = data;
-        }
-        )
-
-        EventAggregator.Instance().clipInfo.subscribe(data => {
-            if (this.name != data[0]) return;
-            let contours = new Array();
-            console.log(this.myStage.children.length)
-            this.myStage.children.forEach(contour => {
-                if (contour.type == shapes.freepen) {
-                    contours.push(contour.cps)
-                }
-            });
-            let faders = new Array(data[1]);
-            this.clip(contours, faders);
         })
     }
 
@@ -130,14 +117,17 @@ export class ContourDirective implements OnInit {
         if (this.actionInfo.key() == actions.nudge) {
             if (this.fader == null)
                 this.fader = FaderFactory.getInstance().createSharpContainer(this.myStage);
-            this.fader.handleMouseDown(event)
-            let mode = this.FaderMode(this.fader.fader.center, [[]])
+            this.fader.handleMouseDown(event);
+            this._faderMode = this.FaderMode(this.fader.getCenter(), this.getAllFreepenCps());
+            console.log(this._faderMode);
         }
 
         this.shape = this.getShapeContainerInstance();
-        this.shape.roiConfig = this.activeROI;
-        if (this.shape != null)
-            this.shape.handleMouseDown(event)
+        
+        if (this.shape != null) {
+            this.shape.roiConfig = this.activeROI;
+            this.shape.handleMouseDown(event);
+        }
     }
 
     @HostListener('mousemove', ['$event']) onMouseMove(event: MouseEvent) {
@@ -149,6 +139,9 @@ export class ContourDirective implements OnInit {
             if (this.fader == null)
                 this.fader = FaderFactory.getInstance().createSharpContainer(this.myStage);
             this.fader.handleMouseMove(event);
+            if (this.fader.isMousedown) {
+                this.clip();
+            }
         }
     }
 
@@ -195,21 +188,15 @@ export class ContourDirective implements OnInit {
     }
 
     PointInPoly(pt, poly) {
-        for (var c = false, i = -1, l = poly.length, j = l - 1; ++i < l; j = i) 
-            ((poly[i].y <= pt.y && pt.y < poly[j].y) || (poly[j].y <= pt.y && pt.y < poly[i].y)) 
-            && (pt.x < (poly[j].x - poly[i].x) * (pt.y - poly[i].y) / (poly[j].y - poly[i].y) + poly[i].x) 
-            && (c = !c); 
-        return c; 
+        for (var c = false, i = -1, l = poly.length, j = l - 1; ++i < l; j = i)
+            ((poly[i].y <= pt.y && pt.y < poly[j].y) || (poly[j].y <= pt.y && pt.y < poly[i].y))
+            && (pt.x < (poly[j].x - poly[i].x) * (pt.y - poly[i].y) / (poly[j].y - poly[i].y) + poly[i].x)
+            && (c = !c);
+        return c;
     }
 
-    checkCollision() {
-
-    }
-
-    clip(contours: Array<Array<Point>>, fader: Array<Array<Point>>) {
-        let rois = this.convertPoints(contours);
-        let faders = this.convertPoints(fader);
-        let result = ClipperHelper.Clipper(rois, faders, 1, "union")
+    clip() {
+        let result = this.Pusher()
 
         this.removeAllFreepens()
 
@@ -234,6 +221,16 @@ export class ContourDirective implements OnInit {
             }
         });
         return freepens;
+    }
+
+    getAllFreepenCps():Array<Array<Point>> {
+        let cps = new Array();
+        this.myStage.children.forEach(contour => {
+            if (contour.type == shapes.freepen) {
+                cps.push(contour.cps)
+            }
+        });
+        return cps;
     }
 
     removeAllFreepens() {
@@ -263,10 +260,10 @@ export class ContourDirective implements OnInit {
     private FaderMode(center: Point, voiPt: Array<Array<Point>>): string {
         let voiPt_Clipper = this.convertPoints(voiPt);
         let pointInContour: boolean = this.ContourContainsPoint(voiPt_Clipper, { X: center.x, Y: center.y });
-        let virtualFaderPt_Clipper = this.convertPoints([this.fader.cps])
+        let virtualFaderPt_Clipper = this.convertPoints([this.fader.getCps()])
         if (pointInContour) {
             let intersection = ClipperHelper.Clipper(voiPt_Clipper, virtualFaderPt_Clipper, 1, "intersection");
-            if (intersection[0].length == this.fader.cps.length / 2) {
+            if (intersection[0].length == this.fader.getCps().length) {
                 return "CreateInFader";
             } else {
                 return "InFader";
@@ -318,5 +315,35 @@ export class ContourDirective implements OnInit {
     private IsLeft(P0: ClipPoint, P1: ClipPoint, P2: ClipPoint): number {
         let abc: number = ((P1.X - P0.X) * (P2.Y - P0.Y) - (P2.X - P0.X) * (P1.Y - P0.Y));
         return abc;
+    }
+
+    private Pusher() {
+        if (this.fader.getCps().length == 0 || this._faderMode == null) {
+            return null;
+        }
+
+        let voiPt_Clipper = this.convertPoints(this.getAllFreepenCps());
+        let pusherPt_Clipper = this.convertPoints([this.fader.getCps()]);
+        if (this._faderMode == "InFader") {
+            return this.InPusher(voiPt_Clipper, pusherPt_Clipper);
+        } else if (this._faderMode == "OutFader") {
+            return this.OutPusher(voiPt_Clipper, pusherPt_Clipper);
+        } else if (this._faderMode == "CreateOutFader") {
+            return this.OutPusher(voiPt_Clipper, pusherPt_Clipper);
+        } else if (this._faderMode == "CreateInFader") {
+            return this.InPusher(voiPt_Clipper, pusherPt_Clipper);
+        }
+    }
+
+    private OutPusher(voiPt_Clipper: Array<Array<ClipPoint>>, pusherPt_Clipper: Array<Array<ClipPoint>>): Array<Array<number>> {
+        let difference = [];
+        difference = ClipperHelper.Clipper(voiPt_Clipper, pusherPt_Clipper, 1, "difference");
+        return difference;
+    }
+
+    private InPusher(voiPt_Clipper: Array<Array<ClipPoint>>, pusherPt_Clipper: Array<Array<ClipPoint>>): Array<Array<number>> {
+        let union = [];
+        union = ClipperHelper.Clipper(voiPt_Clipper, pusherPt_Clipper, 1, "union");
+        return union;
     }
 }
