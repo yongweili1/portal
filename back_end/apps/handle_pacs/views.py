@@ -30,7 +30,7 @@ class GetPatient(APIView):
         """
         provide patients information from PACS
         :param size:the number of data on the current page
-        :param page:current page
+        :param page:current page--0
         :return: information list
         """
         size = int(request.GET.get('size', 15))
@@ -51,12 +51,8 @@ class GetPatient(APIView):
         if patient_sex == "undefined":
             patient_sex = ""
         elif len(patient_sex) > 10:
-            patient_sex = patient_sex[10: len(patient_sex)-2]
-            if patient_sex == "Male":
-                patient_sex = "M"
-            elif patient_sex == "Female":
-                patient_sex = "F"
-            else:
+            patient_sex = patient_sex[10]
+            if patient_sex != "M" and patient_sex != "F":
                 patient_sex = ""
         else:
             patient_sex = ""
@@ -70,35 +66,53 @@ class GetPatient(APIView):
         else:
             modality = ""
 
-        print "patient_sex:" + patient_sex, "modality:" + modality, \
-            "SavePatient.patient_sex:" + SavePatient.patient_sex, "SavePatient.modality:" + SavePatient.modality
+        try:
+            patients_list = pacsinfo.getinformations(patient_id=patient_id, patient_name=patient_name,
+                                                     patient_age=patient_age,
+                                                     patient_sex=patient_sex, modality=modality)
+            SavePatient.patients_list = patients_list
+            SavePatient.patient_id = patient_id
+            SavePatient.patient_name = patient_name
+            SavePatient.patient_age = patient_age
+            SavePatient.patient_sex = patient_sex
+            SavePatient.modality = modality
 
-        if (len(SavePatient.patients_list) == 0) or \
-                (patient_id != SavePatient.patient_id or
-                 patient_name != SavePatient.patient_name or
-                 patient_age != SavePatient.patient_age or
-                 patient_sex != SavePatient.patient_sex or
-                 modality != SavePatient.modality):
-            try:
-                patients_list = pacsinfo.getinformations(patient_id=patient_id, patient_name=patient_name, patient_age=patient_age,
-                                                         patient_sex=patient_sex, modality=modality)
-                SavePatient.patients_list = patients_list
-                SavePatient.patient_id = patient_id
-                SavePatient.patient_name = patient_name
-                SavePatient.patient_age = patient_age
-                SavePatient.patient_sex = patient_sex
-                SavePatient.modality = modality
-                print("重新下载")
-
-            except ConnectPacsERROR as e:
-                return Response('PACS连接失败')
-        else:
-            print("不下载")
+        except ConnectPacsERROR as e:
+            return Response('PACS连接失败')
 
         totalelements = len(SavePatient.patients_list)
         if totalelements == 0:
             return Response('PACS服务器无数据,请检查PACS')
 
+        totalpages = int(math.ceil(float(totalelements) / float(size)))
+        totalpatients = SavePatient.patients_list[size * page:size * (page + 1)]
+        numberofelements = len(totalpatients)
+
+        data = {
+            'content': totalpatients,
+            'totalPages': totalpages,
+            'totalElements': totalelements,
+            'size': size,
+            'number': page,
+            'numberOfElements': numberofelements
+        }
+
+        return Response(data)
+
+
+class GetPacsPage(APIView):
+
+    def get(self, request):
+        """
+        provide patients information from Local memory
+        :param size:the number of data on the current page
+        :param page:current page
+        :return: information list
+        """
+        size = int(request.GET.get('size', 15))
+        page = int(request.GET.get('page', 0))
+
+        totalelements = len(SavePatient.patients_list)
         totalpages = int(math.ceil(float(totalelements) / float(size)))
         totalpatients = SavePatient.patients_list[size * page:size * (page + 1)]
         numberofelements = len(totalpatients)
