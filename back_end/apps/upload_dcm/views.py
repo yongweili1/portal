@@ -14,7 +14,7 @@ from serve.util.splitDicom import SplitDicoms
 from serve.DBAccess.upload_dcm_to_db import UploadDcm
 from serve.DBAccess.upload_vol_to_db import UploadVolume
 from serve.util.buildVolume import DicomToVolume
-from netbase import uAIDataLayer
+from netbase import data_checker
 
 if platform.system() == 'Windows':
     import win32file
@@ -61,31 +61,30 @@ class Patinfo(APIView):
                 print('分离DCM失败')
             dataset_list.append(dataset)
 
-        # try:
         uploaddcm = UploadDcm()
         uploaddcm.upload_dcm(dataset_list)
-        # except Exception as e:
-        #     return Response('DCM数据入库失败，请检查DCM数据是否符合DB字段约束')
 
         print('数据入库成功，重新build_volume（此操作比较耗时，请稍等）...')
         for seriespath in set(series_path_list):
-            if len(os.listdir(seriespath)) <= 1:
-                print('series下的dicom文件单一，无法build volume')
-                continue
-            series_uid = os.path.split(seriespath)[1]
-            builder = uAIDataLayer.VolumeBuilder()
-            param1 = series_uid.encode('ascii')
-            param2 = str(seriespath).encode('ascii')
-            param3 = str(filepath.volumePath).encode('ascii')
-            if 0 != builder.build_volume(param1, param2, param3):
-                return Response('dicom文件不符合规范,创建volume失败')
-            vol_file_path = os.path.join(filepath.volumePath, series_uid + '.nii.gz')
-            if not os.path.isfile(vol_file_path):
-                return Response('The volume built was not found!')
+            try:
+                if len(os.listdir(seriespath)) <= 1:
+                    return Response('series下的dicom文件单一，无法build volume')
+
+                series_dir = str(seriespath).encode('GB2312')
+                reply = data_checker.DataChecker().data_checking(series_dir)
+                if '' != reply:
+                    print reply
+                    return Response('dicom文件不符合规范,创建volume失败')
+
+                buildvol = DicomToVolume()
+                volfilepath, seriesuid = buildvol.dicom_to_volume(seriespath)
+            except Exception as e:
+                return Response('创建volume异常')
 
             try:
-                UploadVolume(vol_file_path, series_uid)
+                UploadVolume(volfilepath, seriesuid)
             except Exception as e:
                 return Response('Volume入库失败')
 
         return Response('success')
+
