@@ -111,7 +111,7 @@ export class ContourDirective implements OnInit {
         if (this.actionInfo.key() == actions.nudge) {
             this.fader = this.getFader();
             this.fader.handleMouseDown(event);
-            this.nudgeHelper.SetMode(this.fader.getCenter(), this.getAllFreepenCps());
+            this.nudgeHelper.setMode(this.fader.getCenter(), this.getAllFreepenCps());
         }
 
         this.shape = this.getShapeContainerInstance();
@@ -196,6 +196,7 @@ export class ContourDirective implements OnInit {
             });
             cps.push(cps[0].copy())
             let freepen = FreepenFactory.getInstance().createSharpContainer(this.myStage);
+            freepen.roiConfig = this.activeROI;
             this.myStage.addChild(freepen)
             freepen.setCps(cps)
             freepen.update()
@@ -213,10 +214,16 @@ export class ContourDirective implements OnInit {
     }
 
     removeAllFreepens() {
+        let freepens = []
         this.myStage.children.forEach(contour => {
             if (contour.type == shapes.freepen) {
-                this.myStage.removeChild(contour)
+                freepens.push(contour)
             }
         });
+        freepens.forEach(freepen => {
+            this.myStage.removeChild(freepen)
+        });
+        this.myStage.clear()
+        this.myStage.update()
     }
 }

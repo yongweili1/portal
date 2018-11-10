@@ -9,11 +9,10 @@ export class Overlay extends createjs.Shape {
     protected _default_color: string;
     protected _color: string;
 
-    constructor(stage, default_color='white') {
+    constructor(stage) {
         super();
         this.overlayStage = stage;
         this._is_hover = false;
-        this._default_color = default_color;
         this._color = this._default_color;
         this.addEventListener("mouseover", this.handleMouseOver.bind(this));
         this.addEventListener("mouseout", this.handleMouseOut.bind(this));

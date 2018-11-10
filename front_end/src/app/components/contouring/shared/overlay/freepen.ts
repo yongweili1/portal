@@ -6,8 +6,8 @@ export class Freepen extends Overlay {
     type: string = 'freepen';
     protected _cps: Array<Point>;
 
-    constructor(stage, default_color='white') {
-        super(stage, default_color);
+    constructor(stage) {
+        super(stage);
         this._cps = new Array();
     }
 

@@ -8,6 +8,7 @@ export abstract class ClipperHelper {
         ClipperLib.JS.ScaleUpPaths(contours, scale);
         ClipperLib.JS.ScaleUpPaths(clipper, scale);
         let cpr = new ClipperLib.Clipper();
+        // var cleaning_paths = ClipperLib.Clipper.CleanPolygons(contours, 1.1);
         cpr.AddPaths(contours, ClipperLib.PolyType.ptSubject, true);
         cpr.AddPaths(clipper, ClipperLib.PolyType.ptClip, true);
         let subject_fillType = ClipperLib.PolyFillType.pftNonZero;
