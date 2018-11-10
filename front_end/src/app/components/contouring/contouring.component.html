@@ -2,7 +2,7 @@
     <div class="top_Button">
         <!-- <mpt-contouring-top-bar (zoom)="mainzoom()" (wlww)="mainwlww()" (move)="mainmove()" (sfile)="sfile()" (plan)="addPlan()" (loadSeries)="loadSeries()" (auto)="auto($event)" (remouse)="remouse($event)"></mpt-contouring-top-bar> -->
         <mpt-contouring-top-bar (loadSeries)="loadSeries()" (clear)="mainClearPri()" (hideList)="mainHideList()"
-            (newroi)="mainNewROI()" (manageroi)="mainManageROI()" (zoom)="mainzoom()" (pan)="mainpan()" (rotate)="mainrotate()"
+            (newroi)="mainNewROI()" (manageroi)="mainManageROI()" (zoom)="mainzoom()" (pan)="mainpan()" (rotate)="mainrotate()" (autoroi)="mainautoroi()"
             (reset)="mainreset()" (wlww)="mainWLWW()" (setcenter)="mainSetCenterPro()" [seriesList]="seriesList"></mpt-contouring-top-bar>
     </div>
     <div id="threebmp" class="three three_inactive">

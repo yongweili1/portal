@@ -31,6 +31,7 @@ export class ContouringTopBarComponent implements OnInit {
     @Input() seriesList: string[];
     @Output() newroi: EventEmitter<any> = new EventEmitter<any>();
     @Output() manageroi: EventEmitter<any> = new EventEmitter<any>();
+    @Output() autoroi: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(
         private conMessage: ConMessageService,
@@ -215,6 +216,10 @@ export class ContouringTopBarComponent implements OnInit {
     }
     OnRunMacro() {
         this.conService.Macro("run").subscribe();
+    }
+
+    OnSegmentation(){
+        this.autoroi.emit();
     }
 
     /**

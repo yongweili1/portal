@@ -71,10 +71,10 @@ export class UploadComponent {
             else if(!typeReg.test(fileItems.file.name)){
                 typeErrorNum++;
             }
-            else{
-                fileNames.push(fileItems.file.name);
-                files.push(fileItems._file);
-            }
+            // else{
+            fileNames.push(fileItems.file.name);
+            files.push(fileItems._file);
+            // }
         })
         if(repeatNum > 0){
             this.priMessageService.add({severity:'info', detail:`${repeatNum} files have the same name. The system has removed the ${repeatNum} files automatically.`, life:5000});
