@@ -52,19 +52,11 @@ export class PacsComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.loadPacs();
     this.selectedPageModel = {};
   }
 
-  public search (){
-    this.loadPacs();
-  }
-
-  public loadPacs(event: LazyLoadEvent = { first: 0, rows: this.tablePageRows[1] }){
-    this.requestPacs(
-      Math.floor(event.first / (event.rows || this.tablePageRows[1])),
-      event.rows || this.tablePageRows[1]
-    )
+  public search(){
+    this.requestPacs();
   }
 
   private requestPacs( page: number = 0, size:number = this.tablePageRows[1]){
@@ -74,12 +66,34 @@ export class PacsComponent implements OnInit {
       patientId:this.patientParam.patientId,
       patientName:this.patientParam.patientName,
       patientAge:this.patientParam.patientAge,
-      gender:JSON.stringify(this.patientParam.gender),  //JSON.stringify(this.patientParam.gender)
+      gender:JSON.stringify(this.patientParam.gender),  
       modality:JSON.stringify(this.patientParam.modality),
     }).subscribe((data) => {
       this.pageModel = data;
       for (let i = 0; i < this.pageModel.numberOfElements; i++) {
-        this.pageModel.content[i].no = i + 1;
+        this.pageModel.content[i].no = page*size + i + 1;
+        this.patientId = this.pageModel.content[i].patientId;
+    }
+    });
+    
+    return;
+  }
+
+  public pageTurning(event: LazyLoadEvent = { first: 0, rows: this.tablePageRows[1] }){
+    this.requestPacsPage(
+      Math.floor(event.first / (event.rows || this.tablePageRows[1])),
+      event.rows || this.tablePageRows[1]
+    )
+  }
+
+  private requestPacsPage( page: number = 0, size:number = this.tablePageRows[1]){
+    this.pacsService.getPage({
+      page, 
+      size,
+    }).subscribe((data) => {
+      this.pageModel = data;
+      for (let i = 0; i < this.pageModel.numberOfElements; i++) {
+        this.pageModel.content[i].no = page*size + i + 1;
         this.patientId = this.pageModel.content[i].patientId;
     }
     });
