@@ -6,17 +6,14 @@ export class Overlay extends createjs.Shape {
     protected _startPoint: Point;
     protected _endPoint: Point;
     protected _is_hover: boolean;
-    protected _default_color: string;
     protected _color: string;
 
     constructor(stage) {
         super();
         this.overlayStage = stage;
         this._is_hover = false;
-        this._color = this._default_color;
         this.addEventListener("mouseover", this.handleMouseOver.bind(this));
         this.addEventListener("mouseout", this.handleMouseOut.bind(this));
-        // this.overlayStage.addChild(this);
     }
 
     setStartPoint(p) {
@@ -35,7 +32,7 @@ export class Overlay extends createjs.Shape {
         console.log(evt.currentTarget.type + ': handle MouseOut')
         this._is_hover = false;
     }
-    public set color(color){
+    public set color(color) {
         this._color = color;
     }
 }

@@ -249,6 +249,9 @@ export class ContouringTopBarComponent implements OnInit {
     FuncFreepen() {
         this.conMessage.setActionInfo(new KeyValuePair(actions.shape, shapes.freepen));
     }
+    FuncFreepenModify() {
+        this.conMessage.setActionInfo(new KeyValuePair(actions.shape, shapes.freepen_edit));
+    }
 
     FuncNudge() {
         this.conMessage.setActionInfo(new KeyValuePair(actions.nudge));

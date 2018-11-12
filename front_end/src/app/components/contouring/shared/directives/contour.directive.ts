@@ -109,6 +109,12 @@ export class ContourDirective implements OnInit {
     }
 
     @HostListener('mousedown', ['$event']) onMouseDown(event: MouseEvent) {
+        this.myStage.children.forEach(shape => {
+            if (shape.type == shapes.freepen) {
+                shape.editable = this.actionInfo.value() == shapes.freepen_edit ? true : false;
+            }
+        });
+
         if (this.actionInfo.key() == actions.nudge) {
             this.fader = this.getFader();
             this.fader.handleMouseDown(event);
@@ -118,7 +124,7 @@ export class ContourDirective implements OnInit {
 
         this.shape = this.getShapeContainerInstance();
         if (this.shape != null) {
-            this.shape.roiConfig = this.activeROI;
+            this.shape.setRoi(this.activeROI);
             this.shape.handleMouseDown(event);
         }
     }
@@ -184,6 +190,7 @@ export class ContourDirective implements OnInit {
     getFader() {
         if (this.fader == null) {
             this.fader = FaderFactory.getInstance().createSharpContainer(this.myStage);
+            this.fader.setRoi(this.activeROI);
             this.nudgeHelper = new NudgeHelper(this.fader)
         }
         return this.fader;
@@ -201,7 +208,7 @@ export class ContourDirective implements OnInit {
             });
             cps.push(cps[0].copy())
             let freepen = FreepenFactory.getInstance().createSharpContainer(this.myStage);
-            freepen.roiConfig = this.activeROI;
+            freepen.setRoi(this.activeROI);
             this.myStage.addChild(freepen)
             freepen.setCps(cps)
             freepen.update()
