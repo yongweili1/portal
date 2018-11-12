@@ -271,6 +271,17 @@ class DcmSeries(object):
 
         return self.dic
 
+    def get_series_uid(self, ds):
+        series_uid = None
+        if 'SeriesInstanceUID' in ds:
+            series_uid = ds.data_element("SeriesInstanceUID").value
+        return series_uid
+
+    def get_image_uid(self, ds):
+        image_uid = None
+        if 'SOPInstanceUID' in ds:
+            image_uid = ds.data_element("SOPInstanceUID").value
+        return image_uid
 
 class DcmImage(object):
     def __init__(self):

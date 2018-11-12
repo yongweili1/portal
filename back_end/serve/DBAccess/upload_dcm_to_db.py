@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import datetime
 import sys
+import os
 
 from django.db import transaction
 from rest_framework import serializers
@@ -73,6 +74,7 @@ class UploadDcm(object):
 
                     d = DcmImage()
                     image_dic = d.get_dicom_image(dataset)
+                    image_dic['dcmfilepath'] = os.path.join(filepath, image_dic['seriesuid'], image_dic['imageuid'])
                     # print(image_dic)
                     if len(Image.objects.filter(imageuid=image_dic['imageuid'])) != 0:
                         Image.objects.filter(imageuid=image_dic['imageuid']).update(updatesign=int(1),

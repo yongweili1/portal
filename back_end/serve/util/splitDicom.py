@@ -8,26 +8,22 @@ from serve.util.readDcm import DcmSeries
 class SplitDicoms(object):
 
     def split_series(self, file_name, dataset):
-        """
-        Distinguish DICOM files according to seriesuid
-        :param patientpath:patient folder path
-        :param file_name: dcm filename
-        :param dataset:dicom filedataset
-        :return:a series path of this upload
-        """
 
         dcmseries = DcmSeries()
-        seriesuid = dcmseries.get_dicom_series(dataset)['seriesuid']
+        series_uid = dcmseries.get_series_uid(dataset)
+        image_uid = dcmseries.get_image_uid(dataset)
 
-        seriespath = filepath.splitDicomPath + str(seriesuid)
+        seriespath = os.path.join(filepath.splitDicomPath + str(series_uid))
         if not os.path.exists(seriespath):
             os.mkdir(seriespath)
 
-        self.save_dicom(file_name, seriespath)
+        file_name = os.path.basename(file_name)
+
+        self.save_dicom(file_name, os.path.join(seriespath, image_uid))
 
         return seriespath
 
-    def save_dicom(self, file_name, seriespath):
+    def save_dicom(self, file_name, new_file_name):
         """
         Save dicom data
         :param file_name: dcm filename
@@ -38,6 +34,6 @@ class SplitDicoms(object):
         file_path = os.path.join(filepath.dicomPath, file_name)
         with open(file_path, 'rb') as f:
             filedata = f.read()
-        with open(seriespath + '\\' + file_name, 'wb+') as r:
+        with open(new_file_name, 'wb+') as r:
             r.write(filedata)
 
