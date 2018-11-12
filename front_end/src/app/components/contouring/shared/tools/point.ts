@@ -22,4 +22,12 @@ export class Point {
     copy() {
         return new Point(this.x, this.y)
     }
+
+    equals(p: Point) {
+        if (p.x == this.x && p.y == this.y) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

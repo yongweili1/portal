@@ -45,6 +45,7 @@ export class ContourDirective implements OnInit {
     nudgeHelper: NudgeHelper;
     curTarget: any;
     activeROI:ROIConfig;
+    preFaderPos: Point;
     @Input() backCanvas;
     @Input() name;
 
@@ -111,7 +112,8 @@ export class ContourDirective implements OnInit {
         if (this.actionInfo.key() == actions.nudge) {
             this.fader = this.getFader();
             this.fader.handleMouseDown(event);
-            this.nudgeHelper.SetMode(this.fader.getCenter(), this.getAllFreepenCps());
+            this.preFaderPos = this.fader.getCenter();
+            this.nudgeHelper.setMode(this.fader.getCenter(), this.getAllFreepenCps());
         }
 
         this.shape = this.getShapeContainerInstance();
@@ -130,7 +132,10 @@ export class ContourDirective implements OnInit {
             this.fader = this.getFader();
             this.fader.handleMouseMove(event);
             if (this.fader.isMousedown) {
-                this.clip();
+                let curFaderPos = this.fader.getCenter();
+                let bridge = this.CreatBridgeRectCps(this.preFaderPos, curFaderPos);
+                this.preFaderPos = curFaderPos;
+                this.clip([bridge]);
             }
         }
     }
@@ -184,8 +189,8 @@ export class ContourDirective implements OnInit {
         return this.fader;
     }
 
-    clip() {
-        let result = this.nudgeHelper.Push(this.getAllFreepenCps())
+    clip(bridgeCps: Array<Array<Point>>) {
+        let result = this.nudgeHelper.Push(this.getAllFreepenCps(), bridgeCps)
 
         this.removeAllFreepens()
 
@@ -196,6 +201,7 @@ export class ContourDirective implements OnInit {
             });
             cps.push(cps[0].copy())
             let freepen = FreepenFactory.getInstance().createSharpContainer(this.myStage);
+            freepen.roiConfig = this.activeROI;
             this.myStage.addChild(freepen)
             freepen.setCps(cps)
             freepen.update()
@@ -213,10 +219,37 @@ export class ContourDirective implements OnInit {
     }
 
     removeAllFreepens() {
+        let freepens = []
         this.myStage.children.forEach(contour => {
             if (contour.type == shapes.freepen) {
-                this.myStage.removeChild(contour)
+                freepens.push(contour)
             }
         });
+        freepens.forEach(freepen => {
+            this.myStage.removeChild(freepen)
+        });
+        this.myStage.clear()
+        this.myStage.update()
+    }
+
+    private CreatBridgeRectCps(prePoint: Point, currPoint:Point) {
+        let radius = this.fader.getRadius()
+        let start = prePoint;
+        let end = currPoint;
+        if (start.equals(end))
+        {
+            return null;
+        }
+        let vec = [end.x - start.x, end.y - start.y];
+        let deno = Math.sqrt(vec[0] ** 2 + vec[1] ** 2);
+        vec = [vec[0] / deno, vec[1] / deno];
+        let crossVec = [-vec[1], vec[0]];
+
+        //the rect
+        let p1 = new Point(start.x + crossVec[0] * radius, start.y + crossVec[1] * radius)
+        let p2 = new Point(end.x + crossVec[0] * radius, end.y + crossVec[1] * radius)
+        let p3 = new Point(end.x - crossVec[0] * radius, end.y - crossVec[1] * radius)
+        let p4 = new Point(start.x - crossVec[0] * radius, start.y - crossVec[1] * radius)
+        return [p1, p2, p3, p4, p1.copy()];
     }
 }

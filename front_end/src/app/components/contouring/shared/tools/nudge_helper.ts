@@ -11,7 +11,10 @@ export class NudgeHelper {
         this.mode = '';
     }
 
-    SetMode(center: Point, voiPt: Array<Array<Point>>) {
+    getMode() {
+        return this.mode;
+    }
+    setMode(center: Point, voiPt: Array<Array<Point>>) {
         let voiPt_Clipper = this.convertPoints(voiPt);
         let pointInContour: boolean = this.ContourContainsPoint(voiPt_Clipper, { X: center.x, Y: center.y });
         let virtualFaderPt_Clipper = this.convertPoints([this.fader.getCps()])
@@ -30,7 +33,8 @@ export class NudgeHelper {
                 this.mode = "OutFader";
             }
         }
-    } 
+        console.log('fader mode',this.mode)
+    }
 
     private ContourContainsPoint(contours: Array<Array<ClipPoint>>, point: ClipPoint): boolean {
         let num: number = 0;
@@ -87,31 +91,33 @@ export class NudgeHelper {
         return abc;
     }
 
-    Push(contours) {
-        if (this.fader.getCps().length == 0 || this.mode == null) {
-            return null;
+    Push(contours: Array<Array<Point>>, bridgeClipper: Array<Array<Point>>) {
+        if (contours == null || this.fader.getCps().length == 0 || this.mode == null) {
+            return [];
         }
 
         let voiPt_Clipper = this.convertPoints(contours);
         let pusherPt_Clipper = this.convertPoints([this.fader.getCps()]);
-        if (this.mode == "InFader") {
-            return this.InPusher(voiPt_Clipper, pusherPt_Clipper);
-        } else if (this.mode == "OutFader") {
-            return this.OutPusher(voiPt_Clipper, pusherPt_Clipper);
-        } else if (this.mode == "CreateOutFader") {
-            return this.OutPusher(voiPt_Clipper, pusherPt_Clipper);
-        } else if (this.mode == "CreateInFader") {
-            return this.InPusher(voiPt_Clipper, pusherPt_Clipper);
+        let bridgePts = this.convertPoints(bridgeClipper);
+        let clipper = this.InPush(bridgePts, pusherPt_Clipper)
+        if (this.mode == "InFader") { // push out
+            return this.InPush(voiPt_Clipper, clipper);
+        } else if (this.mode == "OutFader") { // push in
+            return this.OutPush(voiPt_Clipper, clipper);
+        } else if (this.mode == "CreateOutFader") { // create a new contour
+            return this.InPush(voiPt_Clipper, clipper);
+        } else if (this.mode == "CreateInFader") { // push out
+            return this.InPush(voiPt_Clipper, clipper);
         }
     }
 
-    private OutPusher(voiPt_Clipper: Array<Array<ClipPoint>>, pusherPt_Clipper: Array<Array<ClipPoint>>): Array<Array<number>> {
+    private OutPush(voiPt_Clipper: Array<Array<ClipPoint>>, pusherPt_Clipper: any): Array<Array<number>> {
         let difference = [];
         difference = ClipperHelper.Clipper(voiPt_Clipper, pusherPt_Clipper, 1, "difference");
         return difference;
     }
 
-    private InPusher(voiPt_Clipper: Array<Array<ClipPoint>>, pusherPt_Clipper: Array<Array<ClipPoint>>): Array<Array<number>> {
+    private InPush(voiPt_Clipper: Array<Array<ClipPoint>>, pusherPt_Clipper: any): Array<Array<number>> {
         let union = [];
         union = ClipperHelper.Clipper(voiPt_Clipper, pusherPt_Clipper, 1, "union");
         return union;
