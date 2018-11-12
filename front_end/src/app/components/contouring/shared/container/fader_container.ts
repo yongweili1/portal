@@ -1,6 +1,7 @@
 import { BaseContainer } from "./base_container";
 import { Fader } from "../overlay/fader";
 import { Point } from "../tools/point";
+import { ROIConfig } from "../model/ROIConfig.model";
 
 export class FaderContainer extends BaseContainer {
 	fader: Fader;
@@ -11,6 +12,11 @@ export class FaderContainer extends BaseContainer {
 		this.fader = new Fader(stage);
 		this.addChild(this.fader)
 	}
+
+	public setRoi(roi: ROIConfig) {
+        super.setRoi(roi)
+        this.fader.color = roi.ROIColor;
+    }
 
 	update() {
 		this.fader.update(this.fader.center);

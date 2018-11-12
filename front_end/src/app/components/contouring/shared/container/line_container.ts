@@ -3,6 +3,7 @@ import { Line } from '../overlay/line'
 import { ControlPoint } from '../overlay/controlpoint'
 import { Text } from '../overlay/text'
 import { Point } from '../tools/point';
+import { ROIConfig } from '../model/ROIConfig.model';
 
 export class LineContainer extends BaseContainer {
     start: ControlPoint;
@@ -19,6 +20,11 @@ export class LineContainer extends BaseContainer {
         this.end = new ControlPoint(stage)
         this.text = new Text(stage, 'Length: * mm')
         this.addChild(this.line, this.start, this.end, this.text)
+    }
+
+    public setRoi(roi: ROIConfig) {
+        super.setRoi(roi)
+        this.line.color = roi.ROIColor;
     }
 
     update() {

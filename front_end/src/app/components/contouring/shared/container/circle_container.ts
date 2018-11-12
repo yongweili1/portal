@@ -3,6 +3,7 @@ import { Circle } from '../overlay/circle'
 import { ControlPoint } from '../overlay/controlpoint'
 import { Text } from '../overlay/text'
 import { Point } from '../tools/point';
+import { ROIConfig } from '../model/ROIConfig.model';
 
 export class CircleContainer extends BaseContainer {
     start: ControlPoint;
@@ -18,6 +19,11 @@ export class CircleContainer extends BaseContainer {
         this.text = new Text(stage, 'Length: * mm')
         this.addChild(this.circle, this.start, this.end, this.text)
         this.initCps(2)
+    }
+
+    public setRoi(roi: ROIConfig) {
+        super.setRoi(roi)
+        this.circle.color = roi.ROIColor;
     }
 
     update() {
