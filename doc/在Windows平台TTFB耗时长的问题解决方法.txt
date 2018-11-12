@@ -1,0 +1,11 @@
+在Windows平台TTFB耗时长的问题解决方法：
+修改Settings.py中的DATABASES，将HOST设置为本机IP地址
+
+然后：
+1. cd C:\Program Files\MySQL\MySQL Server 5.5\bin
+2. mysql -uroot -p -D ai_portal
+3. Enter password: ******
+4. use mysql;
+5. UPDATE user SET Password=PASSWORD('111111') where USER='root';
+6. flush privileges;
+7. quit;
