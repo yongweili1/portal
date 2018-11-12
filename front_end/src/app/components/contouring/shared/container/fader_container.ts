@@ -20,6 +20,10 @@ export class FaderContainer extends BaseContainer {
 		return this.fader.center;
 	}
 
+	getRadius() {
+		return this.fader.radius;
+	}
+
 	getCps() {
 		return this.fader.cps;
 	}
