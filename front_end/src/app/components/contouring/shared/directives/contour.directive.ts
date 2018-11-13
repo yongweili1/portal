@@ -170,8 +170,8 @@ export class ContourDirective implements OnInit {
         });
         freepens.forEach( freepen => {
             let cps = freepen.cps;
-            let uid = freepen.roiConfig.ROIId;
-            EventAggregator.Instance().contourCps.publish([uid, cps])
+            let roi_uid = freepen.roiConfig.ROIId;
+            EventAggregator.Instance().contourCps.publish([roi_uid, cps])
         });
     }
 

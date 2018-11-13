@@ -3,17 +3,16 @@ from __future__ import unicode_literals
 
 import time
 import json
-import random
-
-import datetime as Time
 
 # Create your views here.
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from back_end.settings import STATIC_ROOT
-from serve.DBAccess.models import Series, Contours
-from serve.DBAccess.upload_dot_to_db import contour
+from serve.DBAccess.models import Series, Contour
+# from serve.DBAccess.upload_dot_to_db import contour
 from serve.util.connectImageServe import request
+from serve.util.generate_uid import GenerateUid
+from serve.DBAccess.ss_serializer import ContourSerializer
 
 
 class GraphElement(APIView):
@@ -45,11 +44,12 @@ class GraphElement(APIView):
         :param cps: point sets
         :return: True or False
         """
-        uid = request.data.get('uid', None)
+
         roi_uid = request.data.get('roi_uid', None)
         cps = request.data.get('cps', None)
-        uid_suffix = Time.datetime.now().strftime('%Y%m%d.%H%M%S.')# + random.randint(0, 1000)
-        contour_uid = '1.2.840.10008.5.1.1.33.' + uid_suffix
+        contour_uid = request.data.get('uid', None)
+
+
         # user_ip = request.META.get('REMOTE_ADDR', None)
 
         # get z index of current slice
@@ -63,27 +63,36 @@ class GraphElement(APIView):
         #     cps_world.append(point3d)
 
         # if uid is null, add a new record, otherwise, update it
-        if uid is None:
+        if contour_uid is None or len(contour_uid) < 1:
+            generateUid = GenerateUid()
+            contour_uid = generateUid.ContourUid()
             file_name = contour_uid
-            cpspath = r'D:\svr\volume' + '\\' + file_name + '.txt'
-            self.save_cps_to_file(cps, cpspath)
-            data = {
-                'roi_uid': roi_uid,
-                # 'patientposition_z': patientposition_z,
-                'cpspath': cpspath
-            }
-            result = contour.upload_to_db(**data)
-            return Response('Save contour success！')
-        else:
-            file_name = uid
             cpspath = r'D:\volume' + '\\' + file_name + '.txt'
             self.save_cps_to_file(cps, cpspath)
-            data = {
-                'roi_uid': roi_uid,
-                # 'patientposition_z': patientposition_z,
-                'cpspath': cpspath
+            params = {
+                'roiuid': roi_uid,
+                'contouruid': contour_uid,
+                'cpspath': cpspath,
+                'imageuid': ''
             }
-            contour.upload_to_db(**data)
+            try:
+                contour = ContourSerializer(data=params)
+                contour.is_valid(raise_exception=True)
+                # contour.save()
+            except Exception as ex:
+                print ex.message
+                return Response('contour save failed')
+        else:
+            pass
+            # file_name = uid
+            # cpspath = r'D:\volume' + '\\' + file_name + '.txt'
+            # self.save_cps_to_file(cps, cpspath)
+            # data = {
+            #     'roi_uid': roi_uid,
+            #     # 'patientposition_z': patientposition_z,
+            #     'cpspath': cpspath
+            # }
+            # contour.upload_to_db(**data)
             # contours = Contours.objects.filter(uid=uid)\
             #                            .filter(patientposition_z=float(patientposition_z))\
             #                            .filter(roi_uid=roi_uid)

@@ -115,10 +115,11 @@ class Image(models.Model):
 
 class Roi(models.Model):
     pid = models.AutoField(primary_key=True)
+    roiuid = models.CharField(unique=True, max_length=64)
+    seriesuid = models.ForeignKey(Series, on_delete=models.CASCADE, db_column='seriesuid', related_name='sub4',
+                                  to_field='seriesuid')
     roiname = models.CharField(max_length=64)
-    seriesuid = models.ForeignKey(Series, on_delete=models.CASCADE, db_column='seriesuid', to_field='seriesuid')
     roicolor = models.CharField(max_length=64)
-    importdatatime = models.DateTimeField(auto_now_add=True)
     updatetime = models.DateTimeField(auto_now=True)
 
     class Meta:
@@ -128,17 +129,18 @@ class Roi(models.Model):
 
 
 class Contour(models.Model):
-    uid = models.AutoField(primary_key=True)
-    roi_uid = models.CharField(max_length=255, blank=True, null=False)
+    pid = models.AutoField(primary_key=True)
+    contouruid = models.CharField(unique=True, max_length=64)
+    roiuid = models.ForeignKey(Roi, on_delete=models.CASCADE, db_column='roiuid', related_name='sub5',
+                               to_field='roiuid')
+    imageuid = models.CharField(max_length=64)
     cpspath = models.CharField(max_length=255, blank=True, null=True)
-    patientposition_z = models.FloatField(blank=True, null=True)
-    importdatatime = models.DateTimeField(auto_now_add=True)
     updatetime = models.DateTimeField(auto_now=True)
 
     class Meta:
-        app_label = 'Contours'
+        app_label = 'Contour'
         managed = False
-        db_table = 'contours'
+        db_table = 'contour'
 
 
 class AlgCsv(models.Model):
