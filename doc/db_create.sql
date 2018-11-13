@@ -142,19 +142,34 @@ create table image
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-create table contours
+create table roi
 (
-   uid      			int auto_increment,
-   seriesuid 		    varchar(64) not null,
+	pid                 int auto_increment,
+    roiuid              varchar(64) not null default '',
+    seriesuid           varchar(64) not null comment 'Fk to series', 
+	roiname             varchar(64) not null,
+	roicolor            varchar(64) not null,
+    updatetime          timestamp not null default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+	primary key (pid),
+    unique key (roiuid),
+    foreign key (seriesuid) references series(seriesuid) on delete cascade
+)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+create table contour
+(
+   pid      			int auto_increment,
+   contouruid 		    varchar(64) not null default '',
+   roiuid               varchar(64) not null comment 'Fk to roi', 
+   imageuid             varchar(64) not null default '',
    cpspath	            varchar(255),
-   organ				varchar(255),
-   patientposition_z    float,
-   importdatatime		datetime,
    updatetime           timestamp not null default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-   primary key (uid),
-   unique key (uid),
-   foreign key (seriesuid) references series(seriesuid) on delete cascade
+   primary key (pid),
+   unique key (contouruid),
+   foreign key (roiuid) references roi(roiuid) on delete cascade
 )
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
@@ -187,21 +202,6 @@ create table new_django_session
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-create table roi
-(
-	pid                 int auto_increment,
-	roiname             varchar(64) not null,
-    seriesuid           varchar(64) not null,
-	roicolor            varchar(64) not null,
-    importdatatime		datetime,
-    updatetime          timestamp not null default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-
-	primary key (pid),
-    unique key (pid),
-    foreign key (seriesuid) references series(seriesuid) on delete cascade
-)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
 /*
 create table role
 (

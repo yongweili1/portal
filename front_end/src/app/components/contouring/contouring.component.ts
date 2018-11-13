@@ -664,8 +664,9 @@ export class ContouringComponent implements OnInit {
         console.log('save contour');
         let dto = new ContourDto();
         // if uid is null, add a new record, otherwise, update it
-        dto.uid = data[0];
-        dto.roi_uid = $("#seriesSelect").val(); // need to replace
+        dto.roi_uid = data[0];
+        // dto.roi_uid = $("#seriesSelect").val(); // need to replace
+        // dto.uid = '';
         dto.cps = data[1];
         this.conService.saveContour(dto).subscribe(response => {
             console.log('aaa')

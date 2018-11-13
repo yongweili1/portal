@@ -8,9 +8,11 @@ import json
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from back_end.settings import STATIC_ROOT
-from serve.DBAccess.models import Series, Contours
-from serve.DBAccess.upload_dot_to_db import contour
+from serve.DBAccess.models import Series, Contour
+# from serve.DBAccess.upload_dot_to_db import contour
 from serve.util.connectImageServe import request
+from serve.util.generate_uid import GenerateUid
+from serve.DBAccess.ss_serializer import ContourSerializer
 
 
 class GraphElement(APIView):
@@ -42,45 +44,66 @@ class GraphElement(APIView):
         :param cps: point sets
         :return: True or False
         """
-        uid = request.data.get('uid', None)
+
         roi_uid = request.data.get('roi_uid', None)
         cps = request.data.get('cps', None)
-        user_ip = request.META.get('REMOTE_ADDR', None)
+        contour_uid = request.data.get('uid', None)
+
+
+        # user_ip = request.META.get('REMOTE_ADDR', None)
 
         # get z index of current slice
-        point3d = self.get_point3d([cps[0]['x'], cps[0]['y']])
-        patientposition_z = float(point3d[2])
+        # point3d = self.get_point3d([cps[0]['x'], cps[0]['y']])
+        # patientposition_z = float(point3d[2])
 
         # converter screen point to patient point
-        cps_world = []
-        for cp in cps:
-            point3d = self.get_point3d([cp['x'], cp['y']])
-            cps_world.append(point3d)
+        # cps_world = []
+        # for cp in cps:
+        #     point3d = self.get_point3d([cp['x'], cp['y']])
+        #     cps_world.append(point3d)
 
         # if uid is null, add a new record, otherwise, update it
-        if uid is None:
-            file_name = user_ip + '-' + str(time.time())
-            cpspath = r'D:\svr\volume' + '\\' + file_name + '.txt'
-            self.save_cps_to_file(cps_world, cpspath)
-            data = {
-                'roi_uid': roi_uid,
-                'patientposition_z': patientposition_z,
-                'cpspath': cpspath
+        if contour_uid is None or len(contour_uid) < 1:
+            generateUid = GenerateUid()
+            contour_uid = generateUid.ContourUid()
+            file_name = contour_uid
+            cpspath = r'D:\volume' + '\\' + file_name + '.txt'
+            self.save_cps_to_file(cps, cpspath)
+            params = {
+                'roiuid': roi_uid,
+                'contouruid': contour_uid,
+                'cpspath': cpspath,
+                'imageuid': ''
             }
-            result = contour.upload_to_db(**data)
-            return Response('Save contour success！')
+            try:
+                contour = ContourSerializer(data=params)
+                contour.is_valid(raise_exception=True)
+                # contour.save()
+            except Exception as ex:
+                print ex.message
+                return Response('contour save failed')
         else:
-            contours = Contours.objects.filter(uid=uid)\
-                                       .filter(patientposition_z=float(patientposition_z))\
-                                       .filter(roi_uid=roi_uid)
-            if len(contours) == 1:
-                cpspath = contours[0]['cpspath']
-                self.save_cps_to_file(cps_world, cpspath)
-                # update this record?
-                return Response('Update exist contour succeed.')
-                pass
-            else:
-                return Response('Failed to update exist contour.')
+            pass
+            # file_name = uid
+            # cpspath = r'D:\volume' + '\\' + file_name + '.txt'
+            # self.save_cps_to_file(cps, cpspath)
+            # data = {
+            #     'roi_uid': roi_uid,
+            #     # 'patientposition_z': patientposition_z,
+            #     'cpspath': cpspath
+            # }
+            # contour.upload_to_db(**data)
+            # contours = Contours.objects.filter(uid=uid)\
+            #                            .filter(patientposition_z=float(patientposition_z))\
+            #                            .filter(roi_uid=roi_uid)
+            # if len(contours) == 1:
+            #     cpspath = contours[0]['cpspath']
+            #     self.save_cps_to_file(cps_world, cpspath)
+            #     # update this record?
+            #     return Response('Update exist contour succeed.')
+            #     pass
+            # else:
+            #     return Response('Failed to update exist contour.')
 
     def get_point3d(self, point2d):
         params = {

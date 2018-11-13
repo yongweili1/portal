@@ -5,6 +5,8 @@ from rest_framework.response import Response
 
 from rest_framework.views import APIView
 from serve.DBAccess.models import Roi, Series
+from serve.DBAccess.ss_serializer import RoiSerializer
+from serve.util.generate_uid import GenerateUid
 
 
 class RoiAPIView(APIView):
@@ -17,7 +19,7 @@ class RoiAPIView(APIView):
         roi_list = []
         for roi in roi_query:
             roi_dict = {}
-            roi_dict['ROIId'] = roi.pid
+            roi_dict['ROIId'] = roi.roiuid
             roi_dict['ROIName'] = roi.roiname
             roi_dict['ROIColor'] = roi.roicolor
             roi_list.append(roi_dict)
@@ -37,31 +39,32 @@ class RoiAPIView(APIView):
 
         if seriesuid is None or roiname is None or roicolor is None:
             return Response('请携带完整的有效参数')
-        try:
-            seriesobj = Series.objects.get(seriesuid=seriesuid)
-        except Exception as e:
-            return Response('外键seriesuid无对应的数据对象')
 
         if Roi.objects.filter(seriesuid=seriesuid, roiname=roiname):
             return Response('ROI命名重复')
 
+        generateUid = GenerateUid()
+        roiuid = generateUid.RoiUid()
         params = {
-            'seriesuid': seriesobj,
+            'seriesuid': seriesuid,
             'roiname': roiname,
-            'roicolor': roicolor
+            'roicolor': roicolor,
+            'roiuid': roiuid
         }
 
         try:
-            roiobj = Roi.objects.create(**params)
-            roiobj.save()
-        except Exception as e:
-            return Response('ROI 提交失败')
+            roi = RoiSerializer(data=params)
+            roi.is_valid(raise_exception=True)
+            roi.save()
+        except Exception as ex:
+            print ex.message
+            return Response('ROI save failed')
 
         roi_query = Roi.objects.filter(seriesuid=seriesuid)
         roi_list = []
         for roi in roi_query:
             roi_dict = {}
-            roi_dict['ROIId'] = roi.pid
+            roi_dict['ROIId'] = roi.roiuid
             roi_dict['ROIName'] = roi.roiname
             roi_dict['ROIColor'] = roi.roicolor
             roi_list.append(roi_dict)
@@ -75,11 +78,11 @@ class RoiAPIView(APIView):
         return Response(rsp)
 
     def put(self, request):
-        pid = request.data.get('ROIId', None)
+        roiuid = request.data.get('ROIId', None)
         roiname = request.data.get('ROIName', None)
         roicolor = request.data.get('ROIColor', None)
 
-        if pid is None or roiname is None or roicolor is None:
+        if roiuid is None or roiname is None or roicolor is None:
             return Response('请携带完整的有效参数')
 
         params = {
@@ -87,7 +90,7 @@ class RoiAPIView(APIView):
             'roicolor': roicolor
         }
 
-        rois = Roi.objects.filter(pid=pid)
+        rois = Roi.objects.filter(roiuid=roiuid)
         if len(rois) == 0:
             return Response('该pid无对应的ROI')
         seriesuid = rois[0].seriesuid
@@ -96,7 +99,7 @@ class RoiAPIView(APIView):
             return Response('ROI命名重复')
 
         try:
-            Roi.objects.filter(pid=pid).update(**params)
+            Roi.objects.filter(roiuid=roiuid).update(**params)
         except Exception as e:
             return Response('ROI 更新失败')
 
@@ -104,7 +107,7 @@ class RoiAPIView(APIView):
         roi_list = []
         for roi in roi_query:
             roi_dict = {}
-            roi_dict['ROIId'] = roi.pid
+            roi_dict['ROIId'] = roi.roiuid
             roi_dict['ROIName'] = roi.roiname
             roi_dict['ROIColor'] = roi.roicolor
             roi_list.append(roi_dict)
@@ -127,20 +130,20 @@ class RoiAPIView(APIView):
         seruid = ''
 
         for pid in pids:
-            rois = Roi.objects.filter(pid=pid)
+            rois = Roi.objects.filter(roiuid=pid)
             if len(rois) == 0:
                 return Response('该pid无对应的ROI')
             seruid = rois[0].seriesuid
 
             try:
-                Roi.objects.filter(pid=pid).delete()
+                Roi.objects.filter(roiuid=pid).delete()
             except Exception as e:
                 return Response('ROI 删除失败')
 
         roi_query = Roi.objects.filter(seriesuid=seruid)
         for roi in roi_query:
             roi_dict = {}
-            roi_dict['ROIId'] = roi.pid
+            roi_dict['ROIId'] = roi.roiuid
             roi_dict['ROIName'] = roi.roiname
             roi_dict['ROIColor'] = roi.roicolor
             roi_list.append(roi_dict)

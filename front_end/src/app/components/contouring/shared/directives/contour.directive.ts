@@ -161,6 +161,18 @@ export class ContourDirective implements OnInit {
             this.fader = this.getFader();
             this.fader.handleMouseUp(event);
         }
+
+        let freepens = []
+        this.myStage.children.forEach(contour => {
+            if (contour.type == shapes.freepen) {
+                freepens.push(contour)
+            }
+        });
+        freepens.forEach( freepen => {
+            let cps = freepen.cps;
+            let roi_uid = freepen.roiConfig.ROIId;
+            EventAggregator.Instance().contourCps.publish([roi_uid, cps])
+        });
     }
 
     @HostListener('mouseleave', ['$event']) onMouseLeave(event: MouseEvent) {
