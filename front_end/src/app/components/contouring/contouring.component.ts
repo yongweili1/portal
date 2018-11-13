@@ -363,7 +363,8 @@ export class ContouringComponent implements OnInit {
         this.conMessage.seriList$.subscribe(value => {
             this.seriList = value;
         });
-        this.conMessage.actionInfo$.subscribe(value => {
+
+        EventAggregator.Instance().actionInfo.subscribe(value => {
             this.actionInfo = value;
             let toolsActionArray = ['zoom', 'pan','rotate','window']
             let priActionArray = ['shape', 'clear','select', 'nudge']
