@@ -34,6 +34,7 @@ export class NudgeHelper {
             }
         }
         console.log('fader mode',this.mode)
+        return this.mode;
     }
 
     private ContourContainsPoint(contours: Array<Array<ClipPoint>>, point: ClipPoint): boolean {
