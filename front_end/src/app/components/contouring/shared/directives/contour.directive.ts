@@ -143,12 +143,8 @@ export class ContourDirective implements OnInit {
                 this.preFaderPos = curFaderPos;
                 this.clip([bridge]);
             } else {
-                let mode = this.nudgeHelper.setMode(this.fader.getCenter(), this.getAllFreepenCps());
-                if (mode == 'CreateInFader' || mode == 'InFader' || mode == 'CreateOutFader') {
-                    this.fader.showState(1);
-                } else if (mode == 'OutFader') {
-                    this.fader.showState(-1);
-                }
+                this.nudgeHelper.setMode(this.fader.getCenter(), this.getAllFreepenCps());
+                this.nudgeHelper.setState();
             }
         }
     }
