@@ -2,7 +2,7 @@ export class Point {
     x: number;
     y: number;
 
-    constructor(private _x: number, private _y: number) {
+    constructor(_x: number, _y: number) {
         this.x = _x;
         this.y = _y;
     }
@@ -17,6 +17,7 @@ export class Point {
             this.x += delta_x;
         if (delta_y != null)
             this.y += delta_y;
+        return this;
     }
 
     copy() {

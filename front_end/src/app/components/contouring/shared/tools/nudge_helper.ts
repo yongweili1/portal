@@ -34,6 +34,15 @@ export class NudgeHelper {
             }
         }
         console.log('fader mode',this.mode)
+        return this.mode;
+    }
+
+    setState() {
+        if (this.mode == 'CreateInFader' || this.mode == 'InFader') {
+            this.fader.showState(1);
+        } else if (this.mode == 'OutFader' || this.mode == 'CreateOutFader') {
+            this.fader.showState(-1);
+        }
     }
 
     private ContourContainsPoint(contours: Array<Array<ClipPoint>>, point: ClipPoint): boolean {
@@ -105,7 +114,7 @@ export class NudgeHelper {
         } else if (this.mode == "OutFader") { // push in
             return this.OutPush(voiPt_Clipper, clipper);
         } else if (this.mode == "CreateOutFader") { // create a new contour
-            return this.InPush(voiPt_Clipper, clipper);
+            return this.OutPush(voiPt_Clipper, clipper);
         } else if (this.mode == "CreateInFader") { // push out
             return this.InPush(voiPt_Clipper, clipper);
         }
