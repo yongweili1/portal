@@ -54,7 +54,7 @@ export class ContourDirective implements OnInit {
     ngOnInit() {
         this.myContext = this.el.nativeElement.getContext("2d");
         this.myStage = new createjs.Stage(this.el.nativeElement);
-        this.actionInfo = new KeyValuePair(actions.locate, null);
+        this.actionInfo = new KeyValuePair(actions.locate);
         createjs.Touch.enable(this.myStage);
         this.myStage.enableMouseOver();
         this.myStage.mouseMoveOutside = true;
@@ -64,7 +64,7 @@ export class ContourDirective implements OnInit {
         this.myContext.strokeStyle = this.contourColor;
         this.myContext.lineWidth = this.contourLineWidth;
 
-        this.contouringService.actionInfo$.subscribe(actionInfo => {
+        EventAggregator.Instance().actionInfo.subscribe(actionInfo => {
             if (actionInfo == null) {
                 console.log('ActionInfo is wrong.')
                 return;
@@ -103,9 +103,13 @@ export class ContourDirective implements OnInit {
             });
         });
 
-        this.contouringService.activeRoi$.subscribe(data=>{
+        this.contouringService.activeRoi$.subscribe(data => {
             this.activeROI = data;
-        })
+        });
+
+        EventAggregator.Instance().scrollInfo.subscribe(data => {
+            this.fader.updateRadius(data);
+        });
     }
 
     @HostListener('mousedown', ['$event']) onMouseDown(event: MouseEvent) {

@@ -24,6 +24,7 @@ export class FaderContainer extends BaseContainer {
 	}
 
 	public setRoi(roi: ROIConfig) {
+		if (roi === undefined) return;
         super.setRoi(roi)
 		this.fader.color = roi.ROIColor;
 		this.horizontal.color = roi.ROIColor;
@@ -54,19 +55,24 @@ export class FaderContainer extends BaseContainer {
 		return this.fader.radius;
 	}
 
+	updateRadius(delta: number) {
+		this.fader.radius += delta;
+		this.update();
+	}
+
 	getCps() {
 		return this.fader.cps;
 	}
 
 	handleMouseDown(evt) {
 		super.handleMouseDown(evt)
-		
+
 		if (evt.offsetX === undefined || evt.offsetY === undefined) {
 			this.prePos = new Point(evt.stageX, evt.stageY)
 		} else {
 			this.prePos = new Point(evt.offsetX, evt.offsetY)
 		}
-		
+
 		this.fader.setCenter(this.prePos);
 		this.update();
     }
@@ -74,20 +80,6 @@ export class FaderContainer extends BaseContainer {
     handleMouseMove(e) {
 		this.fader.setCenter(new Point(e.offsetX, e.offsetY));
         this.update();
-
-        if (this.isMousedown) {
-			let curPos = new Point(e.offsetX, e.offsetY)
-			if (this.currentPressDownBtn == 1) {  // middle button
-				if (curPos.y - this.prePos.y < 0) {
-					if (this.fader.radius < 80)
-						this.fader.radius += 1;
-				} else {
-					if (this.fader.radius > 5)
-						this.fader.radius -= 1;
-				}
-			}
-			this.prePos = curPos;
-        }
 	}
 
     handleMouseUp(e) {

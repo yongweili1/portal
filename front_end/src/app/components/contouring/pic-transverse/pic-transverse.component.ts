@@ -9,6 +9,7 @@ import { AppConfigService } from '../../../app.config';
 import { LazyExcuteHandler } from '../lazy_excute_handler';
 import { Hitbar } from '../shared/overlay/hitbar';
 import { KeyValuePair } from '../../../shared/common/keyvaluepair';
+import { EventAggregator } from '../../../shared/common/event_aggregator';
 declare var $: any;
 declare var createjs: any;
 declare var THREE: any;
@@ -64,6 +65,7 @@ export class PicTransverseComponent implements OnChanges {
     name: string;
     viewWL:any;
     viewWW:any;
+    actionInfo: any;
 
     constructor(
         public http: HttpClient,
@@ -76,6 +78,12 @@ export class PicTransverseComponent implements OnChanges {
     ) {
         this.lazyExcuteHandler = new LazyExcuteHandler();
         this.curAction = 'croselect';
+
+        this.actionInfo = new KeyValuePair(actions.locate);
+        EventAggregator.Instance().actionInfo.subscribe(value => {
+            console.log('pic-transverse.component.ts get action info:', value.key())
+            this.actionInfo = value;
+        })
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -195,7 +203,13 @@ export class PicTransverseComponent implements OnChanges {
         var scrollFunc = function (e) {
             e = e || window.event;
             delt = e.wheelDelta / 120;
-            that.P2Cross(delt);
+            if (that.actionInfo.key() == actions.nudge) {
+                console.log('scroll func fader radius', delt)
+                EventAggregator.Instance().scrollInfo.publish(delt);
+            } else {
+                console.log('scroll func page', delt)
+                that.P2Cross(delt);
+            }
         };
         this.canbas.get(0).onmousewheel = scrollFunc;
     }
@@ -207,7 +221,7 @@ export class PicTransverseComponent implements OnChanges {
      * 清除所有图元
      */
     clearPri() {
-        this.conMessage.setActionInfo(new KeyValuePair(actions.clear))
+        EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.clear));
     }
 
     /**
