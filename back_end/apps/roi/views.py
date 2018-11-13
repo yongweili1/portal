@@ -5,6 +5,7 @@ from rest_framework.response import Response
 
 from rest_framework.views import APIView
 from serve.DBAccess.models import Roi, Series
+from serve.DBAccess.ss_serializer import ROISerializer
 
 
 class RoiAPIView(APIView):
@@ -37,25 +38,23 @@ class RoiAPIView(APIView):
 
         if seriesuid is None or roiname is None or roicolor is None:
             return Response('请携带完整的有效参数')
-        try:
-            seriesobj = Series.objects.get(seriesuid=seriesuid)
-        except Exception as e:
-            return Response('外键seriesuid无对应的数据对象')
 
         if Roi.objects.filter(seriesuid=seriesuid, roiname=roiname):
             return Response('ROI命名重复')
 
         params = {
-            'seriesuid': seriesobj,
+            'seriesuid': seriesuid,
             'roiname': roiname,
             'roicolor': roicolor
         }
 
         try:
-            roiobj = Roi.objects.create(**params)
-            roiobj.save()
-        except Exception as e:
-            return Response('ROI 提交失败')
+            serimage = ROISerializer(data=params)
+            serimage.is_valid(raise_exception=True)
+            serimage.save()
+        except Exception as ex:
+            print ex.message
+            return Response('ROI save failed')
 
         roi_query = Roi.objects.filter(seriesuid=seriesuid)
         roi_list = []

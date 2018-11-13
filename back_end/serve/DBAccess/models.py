@@ -113,34 +113,21 @@ class Image(models.Model):
         db_table = 'image'
 
 
-class Script(models.Model):
+class Roi(models.Model):
     pid = models.AutoField(primary_key=True)
-    scriptname = models.CharField(unique=True, max_length=64)
-    # userid = models.ForeignKey(User, on_delete=models.CASCADE, db_column='userid', to_field='userid')
-    userid = models.CharField(max_length=64)
-    scriptpath = models.CharField(max_length=255, blank=True, null=True)
+    roiname = models.CharField(max_length=64)
+    seriesuid = models.ForeignKey(Series, on_delete=models.CASCADE, db_column='seriesuid', to_field='seriesuid')
+    roicolor = models.CharField(max_length=64)
     importdatatime = models.DateTimeField(auto_now_add=True)
     updatetime = models.DateTimeField(auto_now=True)
 
     class Meta:
-        app_label = 'Script'
+        app_label = 'Roi'
         managed = False
-        db_table = 'script'
+        db_table = 'roi'
 
 
-class NewDjangoSession(models.Model):
-    client_ip = models.CharField(max_length=64)
-    session_key = models.CharField(primary_key=True, max_length=40)
-    session_data = models.CharField(max_length=255)
-    expire_date = models.DateTimeField(blank=True, null=True)
-
-    class Meta:
-        app_label = 'NewDjangoSession'
-        managed = False
-        db_table = 'new_django_session'
-
-
-class Contours(models.Model):
+class Contour(models.Model):
     uid = models.AutoField(primary_key=True)
     roi_uid = models.CharField(max_length=255, blank=True, null=False)
     cpspath = models.CharField(max_length=255, blank=True, null=True)
@@ -173,6 +160,21 @@ class AlgCsv(models.Model):
         db_table = 'alg_csv'
 
 
+class Script(models.Model):
+    pid = models.AutoField(primary_key=True)
+    scriptname = models.CharField(unique=True, max_length=64)
+    # userid = models.ForeignKey(User, on_delete=models.CASCADE, db_column='userid', to_field='userid')
+    userid = models.CharField(max_length=64)
+    scriptpath = models.CharField(max_length=255, blank=True, null=True)
+    importdatatime = models.DateTimeField(auto_now_add=True)
+    updatetime = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        app_label = 'Script'
+        managed = False
+        db_table = 'script'
+
+
 class DjangoSession(models.Model):
     session_key = models.CharField(primary_key=True, max_length=40)
     session_data = models.TextField()
@@ -184,15 +186,14 @@ class DjangoSession(models.Model):
         db_table = 'django_session'
 
 
-class Roi(models.Model):
-    pid = models.AutoField(primary_key=True)
-    roiname = models.CharField(max_length=64)
-    seriesuid = models.ForeignKey(Series, on_delete=models.CASCADE, db_column='seriesuid', to_field='seriesuid')
-    roicolor = models.CharField(max_length=64)
-    importdatatime = models.DateTimeField(auto_now_add=True)
-    updatetime = models.DateTimeField(auto_now=True)
+class NewDjangoSession(models.Model):
+    client_ip = models.CharField(max_length=64)
+    session_key = models.CharField(primary_key=True, max_length=40)
+    session_data = models.CharField(max_length=255)
+    expire_date = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        app_label = 'Roi'
+        app_label = 'NewDjangoSession'
         managed = False
-        db_table = 'roi'
+        db_table = 'new_django_session'
+
