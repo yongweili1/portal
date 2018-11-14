@@ -44,16 +44,18 @@ class GraphElement(APIView):
         :param cps: point sets
         :return: True or False
         """
-
+        roi_uid = request.data.get('roi_uid', None)
+        slice_index = request.data.get('slice_index', None)
         contours = request.data.get('contours', None)
-        for contour in contours:
-            roi_uid = contour['RoiUid']
-            slice_index = contour['SliceIndex']
 
-            Contour.objects.filter(imageuid=slice_index).delete()
+        # delete all contours for given roi and slice index
+        try:
+            Contour.objects.filter(imageuid=slice_index, roiuid=roi_uid).delete()
+        except Exception as ex:
+            print ex.message
+            print 'contour delete error'
 
-
-            cps = contour['cps']
+        for cps in contours:
             generateUid = GenerateUid()
             contour_uid = generateUid.ContourUid()
             file_name = contour_uid

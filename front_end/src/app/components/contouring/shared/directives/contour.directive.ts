@@ -168,26 +168,17 @@ export class ContourDirective implements OnInit {
             this.fader.handleMouseUp(event);
         }
 
-        let freepens = []
-        this.myStage.children.forEach(contour => {
-            if (contour.type == shapes.freepen) {
-                freepens.push(contour)
-            }
-        });
         let contours = []
-        freepens.forEach( freepen => {
-            let cps = freepen.cps;
-            let roi_uid = freepen.roiConfig.ROIId;
-            let slice_index = this.sliceIndex;
-            let contour = new ContourInfo();
-            contour.cps = cps;
-            contour.RoiUid = roi_uid;
-            contour.SliceIndex = slice_index;
-            contours.push(contour);
+        this.myStage.children.forEach(contour => {
+            if (contour.type == shapes.freepen) {                
+                contours.push(contour.cps);
+            }
         });
         
         if (contours.length > 0){
-            EventAggregator.Instance().contourCps.publish(contours)
+            let roi_uid = this.activeROI.ROIId;
+            let slice_index = this.sliceIndex;
+            EventAggregator.Instance().contourCps.publish([roi_uid, slice_index, contours])
         }        
     }
 
