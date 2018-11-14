@@ -45,9 +45,37 @@ class GraphElement(APIView):
         :return: True or False
         """
 
-        roi_uid = request.data.get('roi_uid', None)
-        cps = request.data.get('cps', None)
-        contour_uid = request.data.get('uid', None)
+        contours = request.data.get('contours', None)
+        for contour in contours:
+            roi_uid = contour['RoiUid']
+            slice_index = contour['SliceIndex']
+
+            Contour.objects.filter(imageuid=slice_index).delete()
+
+
+            cps = contour['cps']
+            generateUid = GenerateUid()
+            contour_uid = generateUid.ContourUid()
+            file_name = contour_uid
+            cpspath = r'D:\volume' + '\\' + file_name + '.txt'
+            self.save_cps_to_file(cps, cpspath)
+            params = {
+                'roiuid': roi_uid,
+                'contouruid': contour_uid,
+                'cpspath': cpspath,
+                'imageuid': slice_index
+            }
+            try:
+                contour = ContourSerializer(data=params)
+                contour.is_valid(raise_exception=True)
+                contour.save()
+            except Exception as ex:
+                print ex.message
+                return Response('contour save failed')
+        return Response('Update exist contour succeed.')
+
+        # cps = request.data.get('cps', None)
+        # contour_uid = request.data.get('uid', None)
 
 
         # user_ip = request.META.get('REMOTE_ADDR', None)
@@ -63,27 +91,30 @@ class GraphElement(APIView):
         #     cps_world.append(point3d)
 
         # if uid is null, add a new record, otherwise, update it
-        if contour_uid is None or len(contour_uid) < 1:
-            generateUid = GenerateUid()
-            contour_uid = generateUid.ContourUid()
-            file_name = contour_uid
-            cpspath = r'D:\volume' + '\\' + file_name + '.txt'
-            self.save_cps_to_file(cps, cpspath)
-            params = {
-                'roiuid': roi_uid,
-                'contouruid': contour_uid,
-                'cpspath': cpspath,
-                'imageuid': ''
-            }
-            try:
-                contour = ContourSerializer(data=params)
-                contour.is_valid(raise_exception=True)
-                # contour.save()
-            except Exception as ex:
-                print ex.message
-                return Response('contour save failed')
-        else:
-            pass
+        # contour_uid = ''
+        # cps = None
+        # roi_uid = None
+        # if contour_uid is None or len(contour_uid) < 1:
+        #     generateUid = GenerateUid()
+        #     contour_uid = generateUid.ContourUid()
+        #     file_name = contour_uid
+        #     cpspath = r'D:\volume' + '\\' + file_name + '.txt'
+        #     self.save_cps_to_file(cps, cpspath)
+        #     params = {
+        #         'roiuid': roi_uid,
+        #         'contouruid': contour_uid,
+        #         'cpspath': cpspath,
+        #         'imageuid': ''
+        #     }
+        #     try:
+        #         contour = ContourSerializer(data=params)
+        #         contour.is_valid(raise_exception=True)
+        #         # contour.save()
+        #     except Exception as ex:
+        #         print ex.message
+        #         return Response('contour save failed')
+        # else:
+        #     pass
             # file_name = uid
             # cpspath = r'D:\volume' + '\\' + file_name + '.txt'
             # self.save_cps_to_file(cps, cpspath)

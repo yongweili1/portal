@@ -1,5 +1,5 @@
+import { ContourInfo } from '../model/ContourInfo.model'
+
 export class ContourDto {
-    uid: string;
-    roi_uid: string;
-    cps: Array<any>;
+    contours: Array<ContourInfo>;
 }

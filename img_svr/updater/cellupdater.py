@@ -13,6 +13,7 @@ class CellUpdater(BaseUpdater):
         self._result = {'image': None,
                         'crosshair': (),
                         'wwwl': (),
+                        'slice_index': 0,
                         'graphic': {'prolines': {}, 'circle': {}, 'contours': []}
                         }
 
@@ -32,10 +33,13 @@ class CellUpdater(BaseUpdater):
                     self.update_graphic(scene, workflow)
                 elif t == RefreshType.Text:
                     pass
+                elif t == RefreshType.Slice_index:
+                    self.update_slice_index(scene, workflow)
                 elif t == RefreshType.Wwwl:
                     self.update_wwwl(scene)
                 elif t == RefreshType.All:
-                    self.update(RefreshType.Image, RefreshType.Crosshair, RefreshType.Graphic, RefreshType.Wwwl)
+                    self.update(RefreshType.Image, RefreshType.Crosshair, RefreshType.Graphic, RefreshType.Wwwl,
+                                RefreshType.Slice_index)
         except Exception, e:
             print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! CellUpdater update() ---> {}'.format(e)
 
@@ -47,6 +51,13 @@ class CellUpdater(BaseUpdater):
         model_vol = workflow.get_model(GET_CLASS_NAME(VolumeInfo))
         cursor2d = translate_from_world_to_screen(scene, model_vol.cursor3d)
         self._result[RefreshType.Crosshair] = tuple(cursor2d.tolist())
+
+    def update_slice_index(self, scene, workflow):
+        model_vol = workflow.get_model(GET_CLASS_NAME(VolumeInfo))
+        vol_pt3d = scene.volume.world_to_voxel(model_vol.cursor3d)
+        print vol_pt3d
+        self._result[RefreshType.Slice_index] = vol_pt3d[2]
+        print self._result[RefreshType.Slice_index]
 
     def update_graphic(self, scene, workflow):
         model_graphic = workflow.get_model(GET_CLASS_NAME(GraphicModel))

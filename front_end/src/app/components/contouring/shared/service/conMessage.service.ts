@@ -19,6 +19,7 @@ export class ConMessageService {
     private activeRoiSource = new Subject<ROIConfig>();
     private contourSource = new Subject<Array<any>>();
     private graphicsSource = new Subject<Array<any>>();
+    private sliceIndexSource = new Subject<Array<any>>();
 
     serieses$ = this.seriesesSource.asObservable();// 作为可观察对象/订阅
     seriList$ = this.seriListSource.asObservable();
@@ -26,6 +27,7 @@ export class ConMessageService {
     activeRoi$ = this.activeRoiSource.asObservable();
     contour$ = this.contourSource.asObservable();
     graphics$ = this.graphicsSource.asObservable();
+    sliceIndex$ = this.sliceIndexSource.asObservable();
 
     SetSerieses(serieses: Array<any>) {
         this.seriesesSource.next(serieses);//发布通知： 实际产生的数据，包括数字、字符串、对象等 选择tree的id
@@ -44,6 +46,10 @@ export class ConMessageService {
 
     SetActiveRoi(acriveRoi: ROIConfig) {
         this.activeRoiSource.next(acriveRoi);
+    }
+
+    SetSliceIndex(sliceIndex: any){
+        this.sliceIndexSource.next(sliceIndex);
     }
 
     Setcontour(contour){
