@@ -84,6 +84,7 @@ export class ContouringComponent implements OnInit {
     ) {
         this.lazyExcuteHandler = new LazyExcuteHandler()
         EventAggregator.Instance().contourCps.subscribe(data => { this.saveContour(data); });
+        EventAggregator.Instance().removeCps.subscribe(data => { this.deleteContours(data); });
     }
 
     mainNewROI(){
@@ -672,15 +673,31 @@ export class ContouringComponent implements OnInit {
     }
 
     saveContour(data:any) {
-        console.log('save contour');
-        let dto = new ContourDto();
-        // if uid is null, add a new record, otherwise, update it
-        dto.contours = data;
-        // dto.roi_uid = $("#seriesSelect").val(); // need to replace
-        // dto.uid = '';
-        // dto.cps = data[1];
-        this.conService.saveContour(dto).subscribe(response => {
-            console.log('aaa')
-        });
+        if (data.length > 0){
+            console.log('begin save contour');
+            let dto = new ContourDto();
+
+            dto.roi_uid = data[0];
+            dto.slice_index = data[1];
+            dto.contours = data[2];
+
+            this.conService.saveContour(dto).subscribe(response => {
+                console.log(response)
+            });
+        }        
+    }
+
+    deleteContours(data:any) {
+        if (data.length > 0){
+            console.log('begin delete contour');
+            let dto = new ContourDto();
+
+            dto.roi_uid = data[0];
+            dto.slice_index = data[1];
+
+            this.conService.deleteContours(dto).subscribe(response => {
+                console.log(response)
+            });
+        }        
     }
 }

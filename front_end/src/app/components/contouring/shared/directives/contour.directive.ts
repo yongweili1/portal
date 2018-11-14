@@ -1,6 +1,5 @@
 import { Directive, ElementRef, Input, HostListener, OnInit, Output, EventEmitter } from '@angular/core';
 import { ROIConfig } from '../model/ROIConfig.model'
-import { ContourInfo } from '../model/ContourInfo.model'
 import { ConMessageService } from '../service/conMessage.service';
 import { CircleFactory } from '../tools/factory/circle-factory'
 import { LineFactory } from '../tools/factory/line-factory'
@@ -73,8 +72,13 @@ export class ContourDirective implements OnInit {
             }
             console.log('Current action is ' + actionInfo.key());
             if (actionInfo.key() == actions.clear) {
-                this.myStage.removeAllChildren()
-                this.myStage.clear()
+                if (this.myStage.children.length > 0){
+                    let roi_uid = this.activeROI.ROIId;
+                    let slice_index = this.sliceIndex;
+                    EventAggregator.Instance().removeCps.publish([roi_uid, slice_index])
+                    this.myStage.removeAllChildren()
+                    this.myStage.clear()
+                }
             }
             this.actionInfo = actionInfo;
         })
@@ -168,31 +172,22 @@ export class ContourDirective implements OnInit {
             this.fader.handleMouseUp(event);
         }
 
-        let freepens = []
-        this.myStage.children.forEach(contour => {
-            if (contour.type == shapes.freepen) {
-                freepens.push(contour)
-            }
-        });
         let contours = []
-        freepens.forEach( freepen => {
-            let cps = freepen.cps;
-            let roi_uid = freepen.roiConfig.ROIId;
-            let slice_index = this.sliceIndex;
-            let contour = new ContourInfo();
-            contour.cps = cps;
-            contour.RoiUid = roi_uid;
-            contour.SliceIndex = slice_index;
-            contours.push(contour);
+        this.myStage.children.forEach(contour => {
+            if (contour.type == shapes.freepen) {                
+                contours.push(contour.cps);
+            }
         });
         
         if (contours.length > 0){
-            EventAggregator.Instance().contourCps.publish(contours)
+            let roi_uid = this.activeROI.ROIId;
+            let slice_index = this.sliceIndex;
+            EventAggregator.Instance().contourCps.publish([roi_uid, slice_index, contours])
         }        
     }
 
     @HostListener('mouseleave', ['$event']) onMouseLeave(event: MouseEvent) {
-        this.onMouseUp(event);
+        // this.onMouseUp(event);
         this.myStage.removeChild(this.fader);
         this.fader = null;
         this.myStage.clear();

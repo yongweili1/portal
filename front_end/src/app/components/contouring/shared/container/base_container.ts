@@ -1,6 +1,5 @@
 import { Point } from '../tools/point'
 import { ROIConfig } from '../model/ROIConfig.model'
-import { ContourInfo } from '../model/ContourInfo.model';
 declare var createjs: any;
 
 export class BaseContainer extends createjs.Container {
@@ -19,7 +18,7 @@ export class BaseContainer extends createjs.Container {
     currentPressDownBtn: number;
     
     protected _roiConfig: ROIConfig;
-    protected _contourInfo: ContourInfo;
+    protected _contourInfo: any;
 
     constructor(stage, type) {
         super();
@@ -46,7 +45,7 @@ export class BaseContainer extends createjs.Container {
         return this._contourInfo;
     }
 
-    public set contourInfo(contourInfo: ContourInfo){
+    public set contourInfo(contourInfo: any){
         this._contourInfo = contourInfo;
     }
 
