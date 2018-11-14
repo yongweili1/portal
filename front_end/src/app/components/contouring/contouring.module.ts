@@ -21,6 +21,7 @@ import {
 
 
 import { ToastModule } from 'primeng/toast';
+import {SliderModule} from 'primeng/slider';
 import { SharedModule } from '../../shared/shared.module';
 import { EasyUIModule } from 'ng-easyui/components/easyui/easyui.module';
 
@@ -36,7 +37,7 @@ import { StorageService } from './shared/service/storage.service';
 import { actionService } from './pic-transverse/action.service';
 import { ContourDirective } from './shared/directives/contour.directive';
 import { SeriesListComponent } from './series-list/series-list.component';
-
+import { SliderBarComponent } from './slider-bar/slider-bar.component';
 
 // const routes: Routes = [
 //   {
@@ -65,6 +66,7 @@ import { SeriesListComponent } from './series-list/series-list.component';
     ColorPickerModule,
     ToastModule,
     SplitButtonModule,
+    SliderModule,
     //RouterModule.forChild(routes)
   ],
   declarations: [
@@ -73,6 +75,7 @@ import { SeriesListComponent } from './series-list/series-list.component';
     ContouringTopBarComponent,
     ContourDirective,
     SeriesListComponent,
+    SliderBarComponent,
   ],
   exports: [
     ContouringComponent,

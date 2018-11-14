@@ -1,4 +1,4 @@
-在Windows平台TTFB耗时长的问题解决方法：
+﻿在Windows平台TTFB耗时长的问题解决方法：
 修改Settings.py中的DATABASES，将HOST设置为本机IP地址
 
 然后：
@@ -7,5 +7,6 @@
 3. Enter password: ******
 4. use mysql;
 5. UPDATE user SET Password=PASSWORD('111111') where USER='root';
+5.1 update user set host = '%' where user = 'root';
 6. flush privileges;
 7. quit;
