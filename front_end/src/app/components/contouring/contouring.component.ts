@@ -63,6 +63,7 @@ export class ContouringComponent implements OnInit {
     editROIDisplay: any =false;
     editROIConfig:ROIConfig = {ROIId:'',ROIName:'',ROIColor:''};
     activeROIConfig:ROIConfig= {ROIId:'',ROIName:'',ROIColor:''};
+    sliceIndex: any;
     lazyExcuteHandler: LazyExcuteHandler;
 
     @ViewChild('picLeft1') picLeft1;
@@ -316,6 +317,10 @@ export class ContouringComponent implements OnInit {
                 this.picLeft1.cellUpdate(data['0']['image'], null, data['0']['graphic']['contours'])
                 this.picLeft2.cellUpdate(null, data['1']['crosshair'], data['1']['graphic']['contours'])
                 this.picLeft3.cellUpdate(null, data['2']['crosshair'], data['2']['graphic']['contours'])
+                let a = data['0']['slice_index'];
+                console.log(a);
+                this.sliceIndex = data['0']['slice_index'];         
+                this.conMessage.SetSliceIndex(this.sliceIndex);       
             }, (error) => {
                 console.log(error);
             })
@@ -418,6 +423,8 @@ export class ContouringComponent implements OnInit {
                                 that.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair'], data['0']['graphic']['contours']);
                                 that.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair'], data['1']['graphic']['contours']);
                                 that.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair'], data['2']['graphic']['contours']);
+                                this.sliceIndex = data['0']['slice_index'];         
+                                this.conMessage.SetSliceIndex(this.sliceIndex); 
                             })
                         }
                     });
@@ -607,6 +614,8 @@ export class ContouringComponent implements OnInit {
                             that.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair'], data['0']['graphic']['contours'], data['0']['wwwl']);
                             that.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair'], data['1']['graphic']['contours'], data['1']['wwwl']);
                             that.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair'], data['2']['graphic']['contours'], data['2']['wwwl']);
+                            this.sliceIndex = data['0']['slice_index'];         
+                            this.conMessage.SetSliceIndex(this.sliceIndex); 
                             this.priMessageService.add({ severity: 'success', detail: 'Load succeed.' });
                         }, (error) => {
                             this.priMessageService.add({ severity: 'error', detail: 'Load failed.' });
@@ -627,6 +636,8 @@ export class ContouringComponent implements OnInit {
                                     that.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair'], data['0']['graphic']['contours'], data['0']['wwwl']);
                                     that.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair'], data['1']['graphic']['contours'], data['1']['wwwl']);
                                     that.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair'], data['2']['graphic']['contours'], data['2']['wwwl']);
+                                    this.sliceIndex = data['0']['slice_index'];         
+                                    this.conMessage.SetSliceIndex(this.sliceIndex); 
                                     this.priMessageService.add({ severity: 'success', detail: 'Load succeed.' });
                                 }, (error) => {
                                     this.priMessageService.add({ severity: 'error', detail: 'Load failed.' });
@@ -664,10 +675,10 @@ export class ContouringComponent implements OnInit {
         console.log('save contour');
         let dto = new ContourDto();
         // if uid is null, add a new record, otherwise, update it
-        dto.roi_uid = data[0];
+        dto.contours = data;
         // dto.roi_uid = $("#seriesSelect").val(); // need to replace
         // dto.uid = '';
-        dto.cps = data[1];
+        // dto.cps = data[1];
         this.conService.saveContour(dto).subscribe(response => {
             console.log('aaa')
         });

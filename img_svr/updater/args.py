@@ -6,4 +6,5 @@ class RefreshType(object):
     Text = 'text'
     Mask = 'mask'
     Wwwl = 'wwwl'
+    Slice_index = 'slice_index'
     All = 'all'

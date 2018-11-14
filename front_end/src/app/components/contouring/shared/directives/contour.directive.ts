@@ -1,5 +1,6 @@
 import { Directive, ElementRef, Input, HostListener, OnInit, Output, EventEmitter } from '@angular/core';
 import { ROIConfig } from '../model/ROIConfig.model'
+import { ContourInfo } from '../model/ContourInfo.model'
 import { ConMessageService } from '../service/conMessage.service';
 import { CircleFactory } from '../tools/factory/circle-factory'
 import { LineFactory } from '../tools/factory/line-factory'
@@ -45,6 +46,7 @@ export class ContourDirective implements OnInit {
     nudgeHelper: NudgeHelper;
     curTarget: any;
     activeROI:ROIConfig;
+    sliceIndex: any;
     preFaderPos: Point;
     @Input() backCanvas;
     @Input() name;
@@ -105,6 +107,10 @@ export class ContourDirective implements OnInit {
 
         this.contouringService.activeRoi$.subscribe(data => {
             this.activeROI = data;
+        });
+
+        this.contouringService.sliceIndex$.subscribe(data => {
+            this.sliceIndex = data;
         });
 
         EventAggregator.Instance().scrollInfo.subscribe(data => {
@@ -168,11 +174,21 @@ export class ContourDirective implements OnInit {
                 freepens.push(contour)
             }
         });
+        let contours = []
         freepens.forEach( freepen => {
             let cps = freepen.cps;
             let roi_uid = freepen.roiConfig.ROIId;
-            EventAggregator.Instance().contourCps.publish([roi_uid, cps])
+            let slice_index = this.sliceIndex;
+            let contour = new ContourInfo();
+            contour.cps = cps;
+            contour.RoiUid = roi_uid;
+            contour.SliceIndex = slice_index;
+            contours.push(contour);
         });
+        
+        if (contours.length > 0){
+            EventAggregator.Instance().contourCps.publish(contours)
+        }        
     }
 
     @HostListener('mouseleave', ['$event']) onMouseLeave(event: MouseEvent) {
