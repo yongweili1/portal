@@ -1,49 +1,37 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import time
 import json
 
-# Create your views here.
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from back_end.settings import STATIC_ROOT
+
 from serve.DBAccess.models import Series, Contour
-# from serve.DBAccess.upload_dot_to_db import contour
-from serve.util.connectImageServe import request
 from serve.util.generate_uid import GenerateUid
 from serve.DBAccess.ss_serializer import ContourSerializer
 
 
 class GraphElement(APIView):
+    def __save_cps_to_file(self, cps, path):
+        with open(path, 'wb') as f:
+            f.write(json.dumps(cps))
+
     def get(self, request):
-        roi_uid = request.GET.get('roi_uid', None)
-        cross_point = request.GET.get('cross_point', None)
-        point3d = self.get_point3d(cross_point)
-        z = float(point3d[2])
-        contours = Contours.objects.filter(roi_uid=roi_uid).filter(patientposition_z=z)
-        contour_cps = []
-
-        if contours is not None and len(contours) > 0:
-            for item in contours:
-                path = item['cpspath']
-                point2ds = []
-                with open(path, 'rb') as f:
-                    cps = json.loads(f.read())
-                    for cp in cps:
-                        point2ds.append(self.get_point2d(cp))
-                contour_cps.append(point2ds)
-
-        return Response(contour_cps)
+        roi_uid = request.data.get('roi_uid', None)
+        slice_index = request.data.get('slice_index', None)
+        cps = None
+        try:
+            cps = Contour.objects.filter(imageuid=slice_index, roiuid=roi_uid)
+        except Exception as ex:
+            print ex.message
+        rsp = {
+            'code': '200',
+            'msg': 'success',
+            'data': cps,
+        }
+        return Response(rsp)
 
     def post(self, request):
-        """
-        upload contour to local file and save path to DB
-        :param uid: primary key
-        :param roi_uid: related roi's uid
-        :param cps: point sets
-        :return: True or False
-        """
         roi_uid = request.data.get('roi_uid', None)
         slice_index = request.data.get('slice_index', None)
         contours = request.data.get('contours', None)
@@ -60,7 +48,7 @@ class GraphElement(APIView):
             contour_uid = generateUid.ContourUid()
             file_name = contour_uid
             cpspath = r'D:\volume' + '\\' + file_name + '.txt'
-            self.save_cps_to_file(cps, cpspath)
+            self.__save_cps_to_file(cps, cpspath)
             params = {
                 'roiuid': roi_uid,
                 'contouruid': contour_uid,
@@ -76,86 +64,13 @@ class GraphElement(APIView):
                 return Response('contour save failed')
         return Response('Update exist contour succeed.')
 
-        # cps = request.data.get('cps', None)
-        # contour_uid = request.data.get('uid', None)
-
-
-        # user_ip = request.META.get('REMOTE_ADDR', None)
-
-        # get z index of current slice
-        # point3d = self.get_point3d([cps[0]['x'], cps[0]['y']])
-        # patientposition_z = float(point3d[2])
-
-        # converter screen point to patient point
-        # cps_world = []
-        # for cp in cps:
-        #     point3d = self.get_point3d([cp['x'], cp['y']])
-        #     cps_world.append(point3d)
-
-        # if uid is null, add a new record, otherwise, update it
-        # contour_uid = ''
-        # cps = None
-        # roi_uid = None
-        # if contour_uid is None or len(contour_uid) < 1:
-        #     generateUid = GenerateUid()
-        #     contour_uid = generateUid.ContourUid()
-        #     file_name = contour_uid
-        #     cpspath = r'D:\volume' + '\\' + file_name + '.txt'
-        #     self.save_cps_to_file(cps, cpspath)
-        #     params = {
-        #         'roiuid': roi_uid,
-        #         'contouruid': contour_uid,
-        #         'cpspath': cpspath,
-        #         'imageuid': ''
-        #     }
-        #     try:
-        #         contour = ContourSerializer(data=params)
-        #         contour.is_valid(raise_exception=True)
-        #         # contour.save()
-        #     except Exception as ex:
-        #         print ex.message
-        #         return Response('contour save failed')
-        # else:
-        #     pass
-            # file_name = uid
-            # cpspath = r'D:\volume' + '\\' + file_name + '.txt'
-            # self.save_cps_to_file(cps, cpspath)
-            # data = {
-            #     'roi_uid': roi_uid,
-            #     # 'patientposition_z': patientposition_z,
-            #     'cpspath': cpspath
-            # }
-            # contour.upload_to_db(**data)
-            # contours = Contours.objects.filter(uid=uid)\
-            #                            .filter(patientposition_z=float(patientposition_z))\
-            #                            .filter(roi_uid=roi_uid)
-            # if len(contours) == 1:
-            #     cpspath = contours[0]['cpspath']
-            #     self.save_cps_to_file(cps_world, cpspath)
-            #     # update this record?
-            #     return Response('Update exist contour succeed.')
-            #     pass
-            # else:
-            #     return Response('Failed to update exist contour.')
-
-    def get_point3d(self, point2d):
-        params = {
-            'point_2d': point2d,
-            'command': 'point3d'
-        }
-        rst = request(**params)
-        point3d = json.loads(rst.kwargs)
-        return point3d
-
-    def get_point2d(self, point3d):
-        params = {
-            'point_3d': point3d,
-            'command': 'point3d'
-        }
-        rst = request(**params)
-        point2d = json.loads(rst.kwargs)
-        return point2d
-
-    def save_cps_to_file(self, cps, path):
-        with open(path, 'wb') as f:
-            f.write(json.dumps(cps))
+    def delete(self, request):
+        roi_uid = request.GET.get('roi_uid', None)
+        slice_index = request.GET.get('slice_index', None)
+        # delete all contours for given roi and slice index
+        try:
+            Contour.objects.filter(imageuid=slice_index, roiuid=roi_uid).delete()
+        except Exception as ex:
+            print ex.message
+            return Response('contour delete error')
+        return Response('delete exist contour succeed.')

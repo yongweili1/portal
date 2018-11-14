@@ -1,6 +1,5 @@
 import { Directive, ElementRef, Input, HostListener, OnInit, Output, EventEmitter } from '@angular/core';
 import { ROIConfig } from '../model/ROIConfig.model'
-import { ContourInfo } from '../model/ContourInfo.model'
 import { ConMessageService } from '../service/conMessage.service';
 import { CircleFactory } from '../tools/factory/circle-factory'
 import { LineFactory } from '../tools/factory/line-factory'
@@ -73,8 +72,13 @@ export class ContourDirective implements OnInit {
             }
             console.log('Current action is ' + actionInfo.key());
             if (actionInfo.key() == actions.clear) {
-                this.myStage.removeAllChildren()
-                this.myStage.clear()
+                if (this.myStage.children.length > 0){
+                    let roi_uid = this.activeROI.ROIId;
+                    let slice_index = this.sliceIndex;
+                    EventAggregator.Instance().removeCps.publish([roi_uid, slice_index])
+                    this.myStage.removeAllChildren()
+                    this.myStage.clear()
+                }
             }
             this.actionInfo = actionInfo;
         })
@@ -183,7 +187,7 @@ export class ContourDirective implements OnInit {
     }
 
     @HostListener('mouseleave', ['$event']) onMouseLeave(event: MouseEvent) {
-        this.onMouseUp(event);
+        // this.onMouseUp(event);
         this.myStage.removeChild(this.fader);
         this.fader = null;
         this.myStage.clear();
