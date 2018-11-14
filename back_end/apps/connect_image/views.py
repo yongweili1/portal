@@ -160,7 +160,7 @@ class LoadVolume(APIView):
         if rst.success is False:
             return Response(rst.comment)
 
-        return Response('success')
+        return Response(rst.kwargs)
 
     def put(self, request):
 

@@ -84,6 +84,10 @@ export class PicTransverseComponent implements OnChanges {
             console.log('pic-transverse.component.ts get action info:', value.key())
             this.actionInfo = value;
         })
+
+        EventAggregator.Instance().pageDelta.subscribe(value=>{
+            this.P2Cross(value)
+        });
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -398,13 +402,13 @@ export class PicTransverseComponent implements OnChanges {
     }
 
     clearmouse() {
-        $('#threebmp').removeClass();
+        // $('#threebmp').removeClass();
         this.canbas.get(0).onmousedown = null;
     }
 
     addPanEvent() {
         let that = this;
-        $('#threebmp').removeClass().addClass("MoveCursor");
+        // $('#threebmp').removeClass().addClass("MoveCursor");
         that.toolsvas.onmousedown = function (e) {
             let prePos = [e.clientX, e.clientY];
             console.log('enter pan mouse down');
@@ -423,7 +427,7 @@ export class PicTransverseComponent implements OnChanges {
 
     addZoomEvent() {
         let that = this;
-        $('#threebmp').removeClass().addClass("ZoomCursor");
+        // $('#threebmp').removeClass().addClass("ZoomCursor");
         that.toolsvas.onmousedown = function (e) {
             let zoom_factor = 0;
             let preY = e.clientY;
