@@ -13,8 +13,8 @@ export class CrosslineContainer extends BaseContainer {
 
     constructor(stage) {
         super(stage, 'crossline');
-        this.horizontal = new Line(stage, 'green')
-        this.vertical = new Line(stage, 'yellow')
+        this.horizontal = new Line(stage)
+        this.vertical = new Line(stage)
         this.crossPoint = new ControlPoint(stage)
         this.setCenter(new Point(this.overlayStage.canvas.width / 2, this.overlayStage.canvas.height / 2))
         this.addChild(this.horizontal, this.vertical, this.crossPoint)

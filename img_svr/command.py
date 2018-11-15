@@ -75,6 +75,8 @@ def load(**kwargs):
 
     try:
         vol = cio.read_image(volume_path)
+        size = vol.size().tolist()
+
         mask_path = volume_path.rstrip('.nii.gz') + '_mask.nii.gz'
 
         mask = None
@@ -96,7 +98,7 @@ def load(**kwargs):
             scene.add_voi(mask)
 
         print("load volume succeed")
-        return response(success=True, message='load volume succeed')
+        return response(content=json.dumps(size), success=True, message='load volume succeed')
     except Exception as err:
         return response(success=False, message=err.message)
 

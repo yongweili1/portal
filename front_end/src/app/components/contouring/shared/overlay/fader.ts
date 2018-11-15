@@ -1,23 +1,18 @@
 import { Point } from '../tools/point';
+import { Overlay } from './overlay';
 
 declare var createjs: any;
 
-export class Fader extends createjs.Shape {
+export class Fader extends Overlay {
     type: string = 'fader';
-    overlayStage: any;
     radius: number;
     center: Point;
-    protected _color: string;
     cps: Array<Point>;
 
     constructor(stage) {
-        super();
-        this.overlayStage = stage;
+        super(stage);
         this.cps = new Array();
         this.radius = 20;
-        this._color = 'yellow';
-        this.addEventListener("mouseover", this.handleMouseOver.bind(this));
-        this.addEventListener("mouseout", this.handleMouseOut.bind(this));
     }
 
     setRadius(value:number) {
@@ -52,12 +47,5 @@ export class Fader extends createjs.Shape {
 
             this.cps.push(new Point(x, y))
         }
-    }
-
-    handleMouseOver(evt) {
-        console.log('handle MouseOver', evt.currentTarget.type)
-    }
-    handleMouseOut(evt) {
-        console.log('handle MouseOut', evt.currentTarget.type)
     }
 }

@@ -11,6 +11,12 @@ export class EventAggregator {
 
     //#region observable msg
     contourCps = new ObservableObject();
+    removeCps = new ObservableObject();
+    actionInfo = new ObservableObject();
+    scrollInfo = new ObservableObject();
+    volumnSize = new ObservableObject();
+    sliceIndex = new ObservableObject();
+    pageDelta = new ObservableObject();
     //#endregion
     
     private constructor() { }

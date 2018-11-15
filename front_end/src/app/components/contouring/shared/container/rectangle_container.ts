@@ -3,6 +3,7 @@ import { Rectangle } from '../overlay/rectangle'
 import { ControlPoint } from '../overlay/controlpoint'
 import { Point } from '../tools/point'
 import { Text } from '../overlay/text'
+import { ROIConfig } from '../model/ROIConfig.model';
 
 export class RectangleContainer extends BaseContainer {
     rectangle: Rectangle;
@@ -32,6 +33,11 @@ export class RectangleContainer extends BaseContainer {
                       this.top_right, this.left_center, this.right_center, 
                       this.bottom_left, this.bottom_center, this.bottom_right, this.text)
         this.initCps(8)
+    }
+
+    public setRoi(roi: ROIConfig) {
+        super.setRoi(roi)
+        this.rectangle.color = roi.ROIColor;
     }
 
     update() {

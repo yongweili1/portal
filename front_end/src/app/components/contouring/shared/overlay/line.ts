@@ -4,8 +4,8 @@ import { Hitbar } from '../overlay/hitbar'
 export class Line extends Overlay {
     type: string = 'line';
 
-    constructor(stage, default_color='white') {
-        super(stage, default_color);
+    constructor(stage) {
+        super(stage);
     }
 
     update(start, end) {

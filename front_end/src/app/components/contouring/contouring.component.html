@@ -2,38 +2,55 @@
     <div class="top_Button">
         <!-- <mpt-contouring-top-bar (zoom)="mainzoom()" (wlww)="mainwlww()" (move)="mainmove()" (sfile)="sfile()" (plan)="addPlan()" (loadSeries)="loadSeries()" (auto)="auto($event)" (remouse)="remouse($event)"></mpt-contouring-top-bar> -->
         <mpt-contouring-top-bar (loadSeries)="loadSeries()" (clear)="mainClearPri()" (hideList)="mainHideList()"
-            (newroi)="mainNewROI()" (manageroi)="mainManageROI()" (zoom)="mainzoom()" (pan)="mainpan()" (rotate)="mainrotate()" (autoroi)="mainautoroi()"
-            (reset)="mainreset()" (wlww)="mainWLWW()" (setcenter)="mainSetCenterPro()" [seriesList]="seriesList"></mpt-contouring-top-bar>
+            (newroi)="mainNewROI()" (manageroi)="mainManageROI()" (zoom)="mainzoom()" (pan)="mainpan()" (rotate)="mainrotate()"
+            (autoroi)="mainautoroi()" (reset)="mainreset()" (wlww)="mainWLWW()" (setcenter)="mainSetCenterPro()"
+            [seriesList]="seriesList"></mpt-contouring-top-bar>
     </div>
-    <div id="threebmp" class="three three_inactive">
-        <mpt-pic-transverse #picLeft1 class="a_class" [tag]="'transverse'" [imageWidth]="imageX" [imageHeight]="imageY"
-            [pageindex]="sliceX" [wl]="wl" [ww]="ww" [spacingX]="spacingX" [spacingY]="spacingY" [gap]="gap" [sliceAll]="sliceAll"
-            [pixelRepresentation]="pixelRepresentation" [rescaleSlope]="rescaleSlope" [rescaleIntercept]="rescaleIntercept"
-            [firstImagePosition]="firstImagePosition" [lastImagePosition]="lastImagePosition" [hasLoadVolume]="hasLoadVolume"
-            (changeCross)="transverseChange($event)" (twoCross)="aCross($event)" (message)="message($event)" (zoomReq)="mainZoomPro($event)"
-            (panReq)="mainPanPro($event)" (rotateReq)="mainRotatePro($event)" (wwwlReq)="mainWWWLPro($event)"
-            (wwwlReq2)="mainWWWLPro2($event)">
-        </mpt-pic-transverse>
 
-        <mpt-pic-transverse #picLeft2 class="b_class" [tag]="'coronal'" [imageWidth]="imageX" [imageHeight]="imageZ"
-            [pageindex]="sliceY" [wl]="wl" [ww]="ww" [spacingX]="spacingX" [spacingY]="spacingZ" [gap]="gap" [sliceAll]="sliceAll"
-            [pixelRepresentation]="pixelRepresentation" [rescaleSlope]="rescaleSlope" [rescaleIntercept]="rescaleIntercept"
-            [firstImagePosition]="firstImagePosition" [lastImagePosition]="lastImagePosition" [hasLoadVolume]="hasLoadVolume"
-            (changeCross)="coronalChange($event)" (twoCross)="bCross($event)" (zoomReq)="mainZoomPro($event)" (panReq)="mainPanPro($event)"
-            (rotateReq)="mainRotatePro($event)" (wwwlReq)="mainWWWLPro($event)" (wwwlReq2)="mainWWWLPro2($event)">
-        </mpt-pic-transverse>
+    <div id="threebmp" class="viewport">
+        <div class='cell_group u-3of5 horizontal'>
+            <div class='main_cell' style="background-color:pink">
+                <mpt-pic-transverse #picLeft1 class="a_class" [tag]="'transverse'" [imageWidth]="imageX" [imageHeight]="imageY"
+                    [pageindex]="sliceX" [wl]="wl" [ww]="ww" [spacingX]="spacingX" [spacingY]="spacingY" [gap]="gap"
+                    [sliceAll]="sliceAll" [pixelRepresentation]="pixelRepresentation" [rescaleSlope]="rescaleSlope"
+                    [rescaleIntercept]="rescaleIntercept" [firstImagePosition]="firstImagePosition" [lastImagePosition]="lastImagePosition"
+                    [hasLoadVolume]="hasLoadVolume" (changeCross)="transverseChange($event)" (twoCross)="aCross($event)"
+                    (message)="message($event)" (zoomReq)="mainZoomPro($event)" (panReq)="mainPanPro($event)" (rotateReq)="mainRotatePro($event)"
+                    (wwwlReq)="mainWWWLPro($event)" (wwwlReq2)="mainWWWLPro2($event)">
+                </mpt-pic-transverse>
+            </div>
 
-        <mpt-pic-transverse #picLeft3 class="c_class" [tag]="'saggital'" [imageWidth]="imageY" [imageHeight]="imageZ"
-            [pageindex]="sliceZ" [wl]="wl" [ww]="ww" [spacingX]="spacingY" [spacingY]="spacingZ" [gap]="gap" [sliceAll]="sliceAll"
-            [pixelRepresentation]="pixelRepresentation" [rescaleSlope]="rescaleSlope" [rescaleIntercept]="rescaleIntercept"
-            [firstImagePosition]="firstImagePosition" [lastImagePosition]="lastImagePosition" [hasLoadVolume]="hasLoadVolume"
-            (changeCross)="saggitalChange($event)" (twoCross)="cCross($event)" (zoomReq)="mainZoomPro($event)" (panReq)="mainPanPro($event)"
-            (rotateReq)="mainRotatePro($event)" (wwwlReq)="mainWWWLPro($event)" (wwwlReq2)="mainWWWLPro2($event)">
-        </mpt-pic-transverse>
+            <div class='slider_bar'>
+                <mpt-slider-bar></mpt-slider-bar>
+            </div>
+        </div>
+
+        <div class='cell_group u-2of5'>
+            <div class='cell' style="background-color:green">
+                <mpt-pic-transverse #picLeft2 class="b_class" [tag]="'coronal'" [imageWidth]="imageX" [imageHeight]="imageZ"
+                    [pageindex]="sliceY" [wl]="wl" [ww]="ww" [spacingX]="spacingX" [spacingY]="spacingZ" [gap]="gap"
+                    [sliceAll]="sliceAll" [pixelRepresentation]="pixelRepresentation" [rescaleSlope]="rescaleSlope"
+                    [rescaleIntercept]="rescaleIntercept" [firstImagePosition]="firstImagePosition" [lastImagePosition]="lastImagePosition"
+                    [hasLoadVolume]="hasLoadVolume" (changeCross)="coronalChange($event)" (twoCross)="bCross($event)"
+                    (zoomReq)="mainZoomPro($event)" (panReq)="mainPanPro($event)" (rotateReq)="mainRotatePro($event)"
+                    (wwwlReq)="mainWWWLPro($event)" (wwwlReq2)="mainWWWLPro2($event)">
+                </mpt-pic-transverse>
+            </div>
+
+            <div class='cell' style="background-color:yellow">
+                <mpt-pic-transverse #picLeft3 class="c_class" [tag]="'saggital'" [imageWidth]="imageY" [imageHeight]="imageZ"
+                    [pageindex]="sliceZ" [wl]="wl" [ww]="ww" [spacingX]="spacingY" [spacingY]="spacingZ" [gap]="gap"
+                    [sliceAll]="sliceAll" [pixelRepresentation]="pixelRepresentation" [rescaleSlope]="rescaleSlope"
+                    [rescaleIntercept]="rescaleIntercept" [firstImagePosition]="firstImagePosition" [lastImagePosition]="lastImagePosition"
+                    [hasLoadVolume]="hasLoadVolume" (changeCross)="saggitalChange($event)" (twoCross)="cCross($event)"
+                    (zoomReq)="mainZoomPro($event)" (panReq)="mainPanPro($event)" (rotateReq)="mainRotatePro($event)"
+                    (wwwlReq)="mainWWWLPro($event)" (wwwlReq2)="mainWWWLPro2($event)">
+                </mpt-pic-transverse>
+            </div>
+        </div>
     </div>
-    <!-- <div id="series_list" class="series_inactive" >
-        <mpt-series-list [seriesList]="seriesList"></mpt-series-list>
-    </div> -->
+
+
     <p-dialog header="Create New ROI" [modal]="true" [(visible)]="newROIDisplay" [width]="300" [style]="{'border':'none'}"
         [contentStyle]="{'border':'none','overflow':'visible'}" (onHide)="hideNewROIDia()">
         <div class="roi-name roi-input-group">
@@ -52,37 +69,37 @@
     </p-dialog>
     <p-dialog header="Manage ROI" [(visible)]="manageROIDisplay" [width]="250" [style]="{'border':'none'}"
         [contentStyle]="{'border':'none','overflow':'visible'}" (onHide)="hideManageROIDia()">
-            <table class="roi-table" style="border-collapse:collapse" cellspacing="5">
-                <tbody>
-                    <div *ngIf="ROIListLength == 0">
-                        <span>Empty</span>
-                    </div>
-                    <tr *ngFor="let item of ROIList">
-                        <td>
-                            <button (click)="changeROIVisible($event)" class="fa fa-eye fa-lg" style="background: none;border: none">
-                            </button>
-                        </td>
-                        <td class='roi-id-td' hidden='true'>{{item.ROIId}}</td>
-                        <td>
-                            <div class="roi-color-div" [ngStyle]="{'width':'20px','height':'20px','background-color':item.ROIColor}"></div>
-                        </td>
-                        <td class="select-td" (click)="onClickROIItem($event)">
-                            <span>{{item.ROIName}}</span>
-                        </td>
-                        <td class="delete-td">
-                            <button  (click)="deleteROI($event)" class="fa fa-trash fa-lg" style="background: none;border: none">
-                            </button>
-                        </td>
-                        <td class="edit-td">
-                            <button  (click)="editROI($event)" class="fa fa-edit fa-lg" style="background: none;border: none">
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <p-footer [style]="{'border':'none'}" *ngIf="ROIListLength > 2" >
-                <p-button label="Del All" icon="fa fa-trash" iconPos="left" (onClick)="deleteAllROI()"></p-button>
-            </p-footer>
+        <table class="roi-table" style="border-collapse:collapse" cellspacing="5">
+            <tbody>
+                <div *ngIf="ROIListLength == 0">
+                    <span>Empty</span>
+                </div>
+                <tr *ngFor="let item of ROIList">
+                    <td>
+                        <button (click)="changeROIVisible($event)" class="fa fa-eye fa-lg" style="background: none;border: none">
+                        </button>
+                    </td>
+                    <td class='roi-id-td' hidden='true'>{{item.ROIId}}</td>
+                    <td>
+                        <div class="roi-color-div" [ngStyle]="{'width':'20px','height':'20px','background-color':item.ROIColor}"></div>
+                    </td>
+                    <td class="select-td" (click)="onClickROIItem($event)">
+                        <span>{{item.ROIName}}</span>
+                    </td>
+                    <td class="delete-td">
+                        <button (click)="deleteROI($event)" class="fa fa-trash fa-lg" style="background: none;border: none">
+                        </button>
+                    </td>
+                    <td class="edit-td">
+                        <button (click)="editROI($event)" class="fa fa-edit fa-lg" style="background: none;border: none">
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p-footer [style]="{'border':'none'}" *ngIf="ROIListLength > 2">
+            <p-button label="Del All" icon="fa fa-trash" iconPos="left" (onClick)="deleteAllROI()"></p-button>
+        </p-footer>
     </p-dialog>
     <p-dialog header="Edit ROI" [modal]="true" [(visible)]="editROIDisplay" [width]="300" [style]="{'border':'none'}"
         [contentStyle]="{'border':'none','overflow':'visible'}">

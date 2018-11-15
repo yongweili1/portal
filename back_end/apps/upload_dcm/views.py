@@ -41,48 +41,53 @@ class Patinfo(APIView):
         print(len(files))
 
         for f in files:
-            wpath = os.path.abspath(filepath.dicomPath + f.name)
-            destination = open(wpath, 'wb+')
+            file_name = os.path.join(filepath.dicomPath, f.name)
+            destination = open(file_name, 'wb+')
             for chunk in f.chunks():
                 destination.write(chunk)
             destination.close()
-            file_name_list.append(f.name)
+            file_name_list.append(file_name)
 
         dataset_list = []
         series_path_list = []
 
-        print('上传完成，正在执行DCM数据入库...')
+        print('上传完成，正在执行数据入库...')
         for file_name in file_name_list:
             # if platform.system() == 'Windows':
-            file_path = os.path.join(filepath.dicomPath, file_name)
-            dataset = pydicom.dcmread(file_path, force=True)
-            splitdicoms = SplitDicoms()
             try:
+                # file_path = os.path.join(filepath.dicomPath, file_name)
+                dataset = pydicom.dcmread(file_name, force=True)
+                splitdicoms = SplitDicoms()
                 seriespath = splitdicoms.split_series(file_name, dataset)
                 series_path_list.append(seriespath)
-            except Exception as e:
-                print('分离DCM失败')
-            dataset_list.append(dataset)
+                dataset_list.append(dataset)
+                os.remove(file_name)
+            except Exception as ex:
+                print '文件解析失败', file_name, ex.message
 
         uploaddcm = UploadDcm()
-        uploaddcm.upload_dcm(dataset_list)
+        uploaddcm.upload_dcm(dataset_list, filepath.splitDicomPath)
 
-        print('数据入库成功，重新build_volume（此操作比较耗时，请稍等）...')
+
         for seriespath in set(series_path_list):
             try:
                 if len(os.listdir(seriespath)) <= 1:
-                    return Response('series下的dicom文件单一，无法build volume')
+                    print ('series下的dicom文件单一，无法build volume')
+                    continue
 
-                if platform.system() == 'Windows':
+		if platform.system() == 'Windows':
+                    print('begin data checking')
                     series_dir = str(seriespath).encode('GB2312')
                     reply = data_checker.DataChecker().data_checking(series_dir)
                     if '' != reply:
                         print reply
                         return Response('dicom文件不符合规范,创建volume失败')
 
+                print('begin build volume')
                 buildvol = DicomToVolume()
                 volfilepath, seriesuid = buildvol.dicom_to_volume(seriespath)
-            except Exception as e:
+            except Exception as ex:
+                print ex.message
                 return Response('创建volume异常')
 
             try:

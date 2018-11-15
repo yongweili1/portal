@@ -5,7 +5,7 @@
         padding-left: 10px;
         font-size: 13px;
         line-height: 30px;
-        color:#CCC;
+        color: #CCC;
     }
 }
 
@@ -13,33 +13,48 @@
     width: 100%;
 }
 
+.box {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: space-between;
+    // height: 100%;
+    // width: 100%;
+    position: absolute;
+}
+
+.column {
+    flex-basis: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.item {
+    flex-shrink: 1;
+    flex-basis: 0%;
+}
+
 .containe {
-    background: #000000;
     width: 100%;
-    position: relative;
-    display: block;
+    height: 100%;
+    background: #000000;
     color: #CCC;
     text-shadow: 0px 1px 2px #808080;
     font-size: 13px;
     border: 1px solid gray;
+    float: left;
 }
 
-canvas{
-    width: 100%;
-    height: 100%;
+canvas {
+    position: absolute;
 }
 
 .cleft {
     position: absolute;
-    left: 9px;
-    top: 6px;
     z-index: 11;
 }
 
 .cright {
     position: absolute;
-    right: 9px;
-    top: 6px;
     z-index: 11;
     span {
         vertical-align: middle;
@@ -64,40 +79,29 @@ canvas{
 
 .cleftdown {
     position: absolute;
-    left: 9px;
-    bottom: 7px;
     z-index: 11;
 }
 
 .crightdown {
     position: absolute;
-    right: 9px;
-    bottom: 7px;
     z-index: 3;
 }
 
 .ZoomCursor {
-    cursor: url(/assets/img/mouse_zoom.cur), auto ;
+    cursor: url(/assets/img/mouse_zoom.cur), auto;
 }
 
 .MoveCursor {
-    cursor: url(/assets/img/mouse_move.cur), auto ;
+    cursor: url(/assets/img/mouse_move.cur), auto;
 }
 
 .mouse_windows {
-    cursor: url(/assets/img/mouse_windows.cur), auto ;
+    cursor: url(/assets/img/mouse_windows.cur), auto;
 }
 
 #canvas-frame {
     border: none;
     width: 50px;
-    height: 100px;
-}
-
-
-#isobands {
-    z-index: 99;
-    position: relative;
 }
 
 .containe .img {
@@ -108,7 +112,7 @@ canvas{
     display: none;
 }
 
-#toolsCanvas{
+#toolsCanvas {
     z-index: 0;
 }
 

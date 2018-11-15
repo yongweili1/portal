@@ -12,7 +12,6 @@ export class ConMessageService {
     seriList: Array<any>;
     currentRois: Array<any>;
     contourset: Array<any>;
-    actionInfo: KeyValuePair;
 
     private seriesesSource = new Subject<Array<any>>();//事件发射器 向观察者广播值
     private seriListSource = new Subject<Array<any>>();
@@ -20,7 +19,7 @@ export class ConMessageService {
     private activeRoiSource = new Subject<ROIConfig>();
     private contourSource = new Subject<Array<any>>();
     private graphicsSource = new Subject<Array<any>>();
-    private actionInfoSource = new Subject<KeyValuePair>();
+    private sliceIndexSource = new Subject<Array<any>>();
 
     serieses$ = this.seriesesSource.asObservable();// 作为可观察对象/订阅
     seriList$ = this.seriListSource.asObservable();
@@ -28,7 +27,7 @@ export class ConMessageService {
     activeRoi$ = this.activeRoiSource.asObservable();
     contour$ = this.contourSource.asObservable();
     graphics$ = this.graphicsSource.asObservable();
-    actionInfo$ = this.actionInfoSource.asObservable();
+    sliceIndex$ = this.sliceIndexSource.asObservable();
 
     SetSerieses(serieses: Array<any>) {
         this.seriesesSource.next(serieses);//发布通知： 实际产生的数据，包括数字、字符串、对象等 选择tree的id
@@ -49,6 +48,10 @@ export class ConMessageService {
         this.activeRoiSource.next(acriveRoi);
     }
 
+    SetSliceIndex(sliceIndex: any){
+        this.sliceIndexSource.next(sliceIndex);
+    }
+
     Setcontour(contour){
         this.contourSource.next(contour);
         this.contourset = contour;
@@ -56,9 +59,5 @@ export class ConMessageService {
 
     setGraphics(graphics) {
         this.graphicsSource.next(graphics);
-    }
-
-    setActionInfo(info) {
-        this.actionInfoSource.next(info);
     }
 }

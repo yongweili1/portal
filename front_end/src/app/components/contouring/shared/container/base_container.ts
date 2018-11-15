@@ -18,6 +18,7 @@ export class BaseContainer extends createjs.Container {
     currentPressDownBtn: number;
     
     protected _roiConfig: ROIConfig;
+    protected _contourInfo: any;
 
     constructor(stage, type) {
         super();
@@ -36,9 +37,20 @@ export class BaseContainer extends createjs.Container {
         return this._roiConfig;
     }
 
-    public set roiConfig(roiConfig:ROIConfig){
+    public set roiConfig(roiConfig: ROIConfig){
         this._roiConfig = roiConfig;
-        this.getChildAt(0).color = this._roiConfig.ROIColor;
+    }
+
+    public get contourInfo(){
+        return this._contourInfo;
+    }
+
+    public set contourInfo(contourInfo: any){
+        this._contourInfo = contourInfo;
+    }
+
+    public setRoi(roi) {
+        this.roiConfig = roi;
     }
 
     initCps(count:number=-1) {

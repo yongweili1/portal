@@ -63,6 +63,7 @@ export class ContouringComponent implements OnInit {
     editROIDisplay: any =false;
     editROIConfig:ROIConfig = {ROIId:'',ROIName:'',ROIColor:''};
     activeROIConfig:ROIConfig= {ROIId:'',ROIName:'',ROIColor:''};
+    sliceIndex: any;
     lazyExcuteHandler: LazyExcuteHandler;
 
     @ViewChild('picLeft1') picLeft1;
@@ -83,6 +84,7 @@ export class ContouringComponent implements OnInit {
     ) {
         this.lazyExcuteHandler = new LazyExcuteHandler()
         EventAggregator.Instance().contourCps.subscribe(data => { this.saveContour(data); });
+        EventAggregator.Instance().removeCps.subscribe(data => { this.deleteContours(data); });
     }
 
     mainNewROI(){
@@ -269,6 +271,9 @@ export class ContouringComponent implements OnInit {
                 let data = JSON.parse(value);
                 this.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair'], data['1']['graphic']['contours']);
                 this.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair'], data['2']['graphic']['contours']);
+                this.sliceIndex = data['0']['slice_index'];
+                this.conMessage.SetSliceIndex(this.sliceIndex);
+                EventAggregator.Instance().sliceIndex.publish(this.sliceIndex);
             })
         }
     }
@@ -280,6 +285,9 @@ export class ContouringComponent implements OnInit {
                 let data = JSON.parse(value);
                 this.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair'], data['0']['graphic']['contours']);
                 this.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair'], data['2']['graphic']['contours']);
+                this.sliceIndex = data['0']['slice_index'];
+                this.conMessage.SetSliceIndex(this.sliceIndex);
+                EventAggregator.Instance().sliceIndex.publish(this.sliceIndex);
             })
         }
     }
@@ -290,6 +298,9 @@ export class ContouringComponent implements OnInit {
                 let data = JSON.parse(value);
                 this.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair'], data['0']['graphic']['contours']);
                 this.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair'], data['1']['graphic']['contours']);
+                this.sliceIndex = data['0']['slice_index'];
+                this.conMessage.SetSliceIndex(this.sliceIndex);
+                EventAggregator.Instance().sliceIndex.publish(this.sliceIndex);
             })
         }
     }
@@ -316,6 +327,11 @@ export class ContouringComponent implements OnInit {
                 this.picLeft1.cellUpdate(data['0']['image'], null, data['0']['graphic']['contours'])
                 this.picLeft2.cellUpdate(null, data['1']['crosshair'], data['1']['graphic']['contours'])
                 this.picLeft3.cellUpdate(null, data['2']['crosshair'], data['2']['graphic']['contours'])
+                let a = data['0']['slice_index'];
+                console.log(a);
+                this.sliceIndex = data['0']['slice_index'];
+                this.conMessage.SetSliceIndex(this.sliceIndex);
+                EventAggregator.Instance().sliceIndex.publish(this.sliceIndex);
             }, (error) => {
                 console.log(error);
             })
@@ -330,6 +346,8 @@ export class ContouringComponent implements OnInit {
                 this.picLeft1.cellUpdate(null, data['0']['crosshair'], data['0']['graphic']['contours'])
                 this.picLeft2.cellUpdate(data['1']['image'], null, data['1']['graphic']['contours'])
                 this.picLeft3.cellUpdate(null, data['2']['crosshair'], data['2']['graphic']['contours'])
+                this.sliceIndex = data['0']['slice_index'];
+                EventAggregator.Instance().sliceIndex.publish(this.sliceIndex);
             }, (error) => {
                 console.log(error);
             })
@@ -344,6 +362,8 @@ export class ContouringComponent implements OnInit {
                 this.picLeft1.cellUpdate(null, data['0']['crosshair'], data['0']['graphic']['contours'])
                 this.picLeft2.cellUpdate(null, data['1']['crosshair'], data['1']['graphic']['contours'])
                 this.picLeft3.cellUpdate(data['2']['image'], null, data['2']['graphic']['contours'])
+                this.sliceIndex = data['0']['slice_index'];
+                EventAggregator.Instance().sliceIndex.publish(this.sliceIndex);
             }, (error) => {
                 console.log(error);
             })
@@ -363,7 +383,8 @@ export class ContouringComponent implements OnInit {
         this.conMessage.seriList$.subscribe(value => {
             this.seriList = value;
         });
-        this.conMessage.actionInfo$.subscribe(value => {
+
+        EventAggregator.Instance().actionInfo.subscribe(value => {
             this.actionInfo = value;
             let toolsActionArray = ['zoom', 'pan','rotate','window']
             let priActionArray = ['shape', 'clear','select', 'nudge']
@@ -417,6 +438,8 @@ export class ContouringComponent implements OnInit {
                                 that.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair'], data['0']['graphic']['contours']);
                                 that.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair'], data['1']['graphic']['contours']);
                                 that.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair'], data['2']['graphic']['contours']);
+                                this.sliceIndex = data['0']['slice_index'];         
+                                this.conMessage.SetSliceIndex(this.sliceIndex); 
                             })
                         }
                     });
@@ -598,7 +621,9 @@ export class ContouringComponent implements OnInit {
         }
         this.priMessageService.add({ severity: 'info', detail: 'Loading now, please wait.' });
         this.seriesHttpService.LoadVolume(seriesId).subscribe(value => {
-            if (value == "success") {
+            value = JSON.parse(value)
+            if (value.length == 3) {
+                EventAggregator.Instance().volumnSize.publish(value);
                 this.conService.noticeSize(canvasSize).subscribe(result => {
                     if (result.body == "success") {
                         this.seriesHttpService.GetSeries(seriesId, "", "all", transverseCanvas.width, transverseCanvas.height).subscribe((value) => {
@@ -606,6 +631,9 @@ export class ContouringComponent implements OnInit {
                             that.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair'], data['0']['graphic']['contours'], data['0']['wwwl']);
                             that.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair'], data['1']['graphic']['contours'], data['1']['wwwl']);
                             that.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair'], data['2']['graphic']['contours'], data['2']['wwwl']);
+                            this.sliceIndex = data['0']['slice_index'];         
+                            this.conMessage.SetSliceIndex(this.sliceIndex); 
+                            EventAggregator.Instance().sliceIndex.publish(this.sliceIndex);
                             this.priMessageService.add({ severity: 'success', detail: 'Load succeed.' });
                         }, (error) => {
                             this.priMessageService.add({ severity: 'error', detail: 'Load failed.' });
@@ -615,10 +643,11 @@ export class ContouringComponent implements OnInit {
                         this.seriesId = seriesId;
                     }
                 });
-            } else if(value == "rebuild"){
+            } else if(value == "rebuild") {
                 this.priMessageService.add({ severity: 'error', detail: 'Load failed, rebuiding now, please wait' });
                 this.seriesHttpService.ReLoadVolume(seriesId).subscribe(value=>{
-                    if (value == "success") {
+                    value = JSON.parse(value)
+                    if (value.length == 3) {
                         this.conService.noticeSize(canvasSize).subscribe(result => {
                             if (result.body == "success") {
                                 this.seriesHttpService.GetSeries(seriesId, "", "all", transverseCanvas.width, transverseCanvas.height).subscribe((value) => {
@@ -626,6 +655,9 @@ export class ContouringComponent implements OnInit {
                                     that.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair'], data['0']['graphic']['contours'], data['0']['wwwl']);
                                     that.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair'], data['1']['graphic']['contours'], data['1']['wwwl']);
                                     that.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair'], data['2']['graphic']['contours'], data['2']['wwwl']);
+                                    this.sliceIndex = data['0']['slice_index'];         
+                                    this.conMessage.SetSliceIndex(this.sliceIndex); 
+                                    EventAggregator.Instance().sliceIndex.publish(this.sliceIndex);
                                     this.priMessageService.add({ severity: 'success', detail: 'Load succeed.' });
                                 }, (error) => {
                                     this.priMessageService.add({ severity: 'error', detail: 'Load failed.' });
@@ -635,13 +667,11 @@ export class ContouringComponent implements OnInit {
                                 this.seriesId = seriesId;
                             }
                         });
-                    }
-                    else{
+                    } else{
                         this.priMessageService.add({ severity: 'error', detail: `Rebuild failed. ${value}` });
                     }
                 })
-            }
-            else{
+            } else{
                 this.priMessageService.add({ severity: 'error', detail: 'Load failed.' });
             }
         })
@@ -660,14 +690,31 @@ export class ContouringComponent implements OnInit {
     }
 
     saveContour(data:any) {
-        console.log('save contour');
-        let dto = new ContourDto();
-        // if uid is null, add a new record, otherwise, update it
-        dto.uid = data[0];
-        dto.roi_uid = $("#seriesSelect").val(); // need to replace
-        dto.cps = data[1];
-        this.conService.saveContour(dto).subscribe(response => {
-            console.log('aaa')
-        });
+        if (data.length > 0){
+            console.log('begin save contour');
+            let dto = new ContourDto();
+
+            dto.roi_uid = data[0];
+            dto.slice_index = data[1];
+            dto.contours = data[2];
+
+            this.conService.saveContour(dto).subscribe(response => {
+                console.log(response)
+            });
+        }        
+    }
+
+    deleteContours(data:any) {
+        if (data.length > 0){
+            console.log('begin delete contour');
+            let dto = new ContourDto();
+
+            dto.roi_uid = data[0];
+            dto.slice_index = data[1];
+
+            this.conService.deleteContours(dto).subscribe(response => {
+                console.log(response)
+            });
+        }        
     }
 }

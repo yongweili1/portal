@@ -4,6 +4,7 @@ import { ConMessageService } from '../shared/service/conMessage.service';
 import { MenuItem } from 'primeng/api';
 import { ContouringService } from '../shared/service/contouring.service'
 import { KeyValuePair } from '../../../shared/common/keyvaluepair';
+import { EventAggregator } from '../../../shared/common/event_aggregator';
 
 declare var actions: any;
 declare var shapes: any;
@@ -58,16 +59,16 @@ export class ContouringTopBarComponent implements OnInit {
     addPlanDisplay: boolean = false;
 
     onImgZoom() {
-        this.conMessage.setActionInfo(new KeyValuePair(actions.zoom))
+        EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.zoom));
         this.zoom.emit();
     }
 
     onImgPan() {
-        this.conMessage.setActionInfo(new KeyValuePair(actions.pan))
+        EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.pan));
         this.pan.emit();
     }
     onImgRotate() {
-        this.conMessage.setActionInfo(new KeyValuePair(actions.rotate))
+        EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.rotate));
         this.rotate.emit();
     }
     onImgReset() {
@@ -75,12 +76,12 @@ export class ContouringTopBarComponent implements OnInit {
     }
 
     onImgWindow() {
-        this.conMessage.setActionInfo(new KeyValuePair(actions.window))
+        EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.window));
         this.wlww.emit();
     }
 
     onImgCenter() {
-        this.conMessage.setActionInfo(new KeyValuePair(actions.locate))
+        EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.locate));
         this.setcenter.emit();
     }
 
@@ -195,11 +196,11 @@ export class ContouringTopBarComponent implements OnInit {
     }
 
     OnSelect() {
-        this.conMessage.setActionInfo(new KeyValuePair(actions.select));
+        EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.select));
     }
 
     OnCrossSelect() {
-        this.conMessage.setActionInfo(new KeyValuePair(actions.locate));
+        EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.locate));
     }
 
     OnStartMacro() {
@@ -226,32 +227,35 @@ export class ContouringTopBarComponent implements OnInit {
     * 测量，直线
     */
     FuncMeasure() {
-        this.conMessage.setActionInfo(new KeyValuePair(actions.shape, shapes.line));
+        EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.shape, shapes.line));
     }
 
     /**
     * 圆
     */
     FuncCircle() {
-        this.conMessage.setActionInfo(new KeyValuePair(actions.shape, shapes.circle));
+        EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.shape, shapes.circle));
     }
 
     /**
     * 矩形
     */
     FuncRectangle() {
-        this.conMessage.setActionInfo(new KeyValuePair(actions.shape, shapes.rectangle));
+        EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.shape, shapes.rectangle));
     }
 
     /**
     * 自由笔
     */
     FuncFreepen() {
-        this.conMessage.setActionInfo(new KeyValuePair(actions.shape, shapes.freepen));
+        EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.shape, shapes.freepen));
+    }
+    FuncFreepenModify() {
+        EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.shape, shapes.freepen_edit));
     }
 
     FuncNudge() {
-        this.conMessage.setActionInfo(new KeyValuePair(actions.nudge));
+        EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.nudge));
     }
 }
 

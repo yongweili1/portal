@@ -1,5 +1,7 @@
-export class ContourDto {
-    uid: string;
+import { Point } from '../tools/point'
+
+export class ContourDto {    
     roi_uid: string;
-    cps: Array<any>;
+    slice_index: string;
+    contours: Array<Point>;
 }

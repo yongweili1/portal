@@ -44,10 +44,17 @@ export class ContouringService {
     return this.http.post<ContourDto>(`${this.appConfig.apiUrl}/contour/contour/`, dto, this.options);
   }
 
-  getContour(series_uid, cross_point): Observable<any> {
+  deleteContours(dto: ContourDto): Observable<any> {
     const getParams = new HttpParams()
-      .set('series_uid', series_uid)
-      .set('cross_point', cross_point);
+      .set('roi_uid', dto['roi_uid'])
+      .set('slice_index', dto['slice_index']);
+    return this.http.delete(`${this.appConfig.apiUrl}/contour/contour/`, { params: getParams });
+  }
+
+  getContours(roi_uid, slice_index): Observable<any> {
+    const getParams = new HttpParams()
+      .set('roi_uid', roi_uid)
+      .set('slice_index', slice_index);
     return this.http.get(`${this.appConfig.apiUrl}/contour/contour/`, { params: getParams })
   }
 }
