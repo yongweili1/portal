@@ -3,13 +3,13 @@
 import json
 import time
 
-from serve.util import imageMsgPb2 as msg
+from serve.util import image_msg_pb2 as msg
 from serve.util.macroRecording import Macro
 import sys
 sys.path.append('..')
 from netbase import comproxy
 
-proxy = comproxy.PyCommProxy("web_be", "127.0.0.1:10000")
+proxy = comproxy.PyCommProxy("web_be", "10.9.19.153:10000")
 
 
 class ResponseData(object):

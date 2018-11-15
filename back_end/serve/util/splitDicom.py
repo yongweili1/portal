@@ -38,6 +38,6 @@ class SplitDicoms(object):
         file_path = os.path.join(filepath.dicomPath, file_name)
         with open(file_path, 'rb') as f:
             filedata = f.read()
-        with open(seriespath + '\\' + file_name, 'wb+') as r:
+        with open(seriespath + '/' + file_name, 'wb+') as r:
             r.write(filedata)
 

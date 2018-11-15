@@ -4,6 +4,8 @@ from __future__ import unicode_literals
 import copy
 import os
 import platform
+import sys
+
 import pydicom
 
 from rest_framework.response import Response
@@ -39,7 +41,8 @@ class Patinfo(APIView):
         print(len(files))
 
         for f in files:
-            destination = open(filepath.dicomPath + f.name, 'wb+')
+            wpath = os.path.abspath(filepath.dicomPath + f.name)
+            destination = open(wpath, 'wb+')
             for chunk in f.chunks():
                 destination.write(chunk)
             destination.close()
@@ -70,11 +73,12 @@ class Patinfo(APIView):
                 if len(os.listdir(seriespath)) <= 1:
                     return Response('series下的dicom文件单一，无法build volume')
 
-                series_dir = str(seriespath).encode('GB2312')
-                reply = data_checker.DataChecker().data_checking(series_dir)
-                if '' != reply:
-                    print reply
-                    return Response('dicom文件不符合规范,创建volume失败')
+                if platform.system() == 'Windows':
+                    series_dir = str(seriespath).encode('GB2312')
+                    reply = data_checker.DataChecker().data_checking(series_dir)
+                    if '' != reply:
+                        print reply
+                        return Response('dicom文件不符合规范,创建volume失败')
 
                 buildvol = DicomToVolume()
                 volfilepath, seriesuid = buildvol.dicom_to_volume(seriespath)
