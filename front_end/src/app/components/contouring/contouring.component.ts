@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { EventAggregator } from '../../shared/common/event_aggregator';
 import { LazyExcuteHandler } from './lazy_excute_handler';
@@ -9,7 +9,6 @@ import { ConMessageService } from './shared/service/conMessage.service';
 import { ContouringService } from './shared/service/contouring.service';
 import { RoiHttpService } from './shared/service/roiHttp.service';
 import { SeriesHttpService } from './shared/service/seriesHttp.service';
-import { StorageService } from './shared/service/storage.service';
 
 declare var $: any;
 declare var actions: any;
@@ -64,9 +63,7 @@ export class ContouringComponent implements OnInit {
         public activeRoute: ActivatedRoute,
         private conMessage: ConMessageService,
         public roiHttp: RoiHttpService,
-        private storageService: StorageService,
         private seriesHttpService: SeriesHttpService,
-        private router: Router,
         private conService: ContouringService,
         private priMessageService: MessageService
     ) {
@@ -88,9 +85,8 @@ export class ContouringComponent implements OnInit {
 
         EventAggregator.Instance().actionInfo.subscribe(value => {
             this.actionInfo = value;
-            let toolsActionArray = ['zoom', 'pan', 'rotate', 'window']
-            let priActionArray = ['shape', 'clear', 'select', 'nudge']
-            if (this.actionInfo.key() == actions.locate) {
+            const priActionArray = ['shape', 'clear', 'select', 'nudge'];
+            if (this.actionInfo.key() === actions.locate) {
                 this.picLeft1.SetCanvasIndex("#crossCanvas", 10);
                 this.picLeft2.SetCanvasIndex("#crossCanvas", 10);
                 this.picLeft3.SetCanvasIndex("#crossCanvas", 10);
@@ -125,19 +121,17 @@ export class ContouringComponent implements OnInit {
         this.activeRoute.queryParams.subscribe(params => {
             this.patientId = params.patientId;
         });
-        let that = this;
-        let canvasSize: any = {};
+        const that = this;
+        const canvasSize: any = {};
         $(window).resize(function () {
             setTimeout(() => {
                 if (that.hasLoadVolume === true) {
                     canvasSize['view_size'] = that.getCanvasSize();
                     that.conService.noticeSize(canvasSize).subscribe(result => {
-                        if (result.body === "success" && that.hasLoadVolume === true) {
+                        if (result.body === "success" && that.hasLoadVolume) {
                             that.seriesHttpService.GetSeries("", "", "all", "", "").subscribe(data => {
                                 data = JSON.parse(data);
-                                that.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair'], data['0']['graphic']['contours']);
-                                that.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair'], data['1']['graphic']['contours']);
-                                that.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair'], data['2']['graphic']['contours']);
+                                that.updateCells(result);
                                 that.sliceIndex = data['0']['slice_index'];
                                 that.conMessage.SetSliceIndex(that.sliceIndex);
                             });
@@ -162,37 +156,34 @@ export class ContouringComponent implements OnInit {
     }
 
     mainNewROI() {
-        let seriesuid = $("#seriesSelect").val();
+        const seriesuid = $("#seriesSelect").val();
         if (seriesuid != '' && seriesuid != null && seriesuid != undefined) {
             this.newROIDisplay = true;
-        }
-        else {
+        } else {
             this.priMessageService.add({ severity: 'error', detail: 'Please select series first.' });
         }
     }
 
     mainautoroi() {
-        let ROIData = {
+        const ROIData = {
             seriesuid: $("#seriesSelect").val(),
             ROIName: 'heart',
             ROIColor: '#FFFF00'
-        }
+        };
         this.roiHttp.CreateNewSegROI(ROIData).subscribe(result => {
             if (result.body.code == '200') {
                 this.priMessageService.add({ severity: 'success', detail: `Save succeed.` });
                 this.ROIList = result.body.data;
                 this.ROIListLength = this.ROIList.length;
                 this.newROIDisplay = false;
-                let new_roi_id = 0;
                 this.ROIList.forEach(element => {
-                    if (element.ROIId > new_roi_id) {
+                    if (element.ROIId > 0) {
                         this.activeROIConfig = element;
                     }
                 });
 
                 this.conMessage.SetActiveRoi(this.activeROIConfig);
-            }
-            else {
+            } else {
                 this.priMessageService.add({ severity: 'error', detail: `${result.msg}` });
             }
         })
@@ -207,9 +198,8 @@ export class ContouringComponent implements OnInit {
                     this.ROIList = result['data'];
                     this.ROIListLength = this.ROIList.length;
                 }
-            })
-        }
-        else {
+            });
+        } else {
             this.priMessageService.add({ severity: 'error', detail: 'Please select series first.' });
         }
     }
@@ -220,42 +210,36 @@ export class ContouringComponent implements OnInit {
     }
 
     saveROI() {
-        let colorReg = new RegExp('^\#\w{0,6}$', 'i')
-        //TODO false这个地方color的正则有问题
-        if (false || this.ROIName == '') {
+        if (this.ROIName == '') {
             this.priMessageService.add({ severity: 'error', detail: `Illegal input.` });
             return;
         }
-        let ROIData = {
-            seriesuid: $("#seriesSelect").val(),
+        const ROIData = {
+            seriesuid: $('#seriesSelect').val(),
             ROIName: this.ROIName,
             ROIColor: this.ROIColor
-        }
+        };
         this.roiHttp.PostCreateNewROI(ROIData).subscribe(result => {
             if (result.body.code == '200') {
                 this.priMessageService.add({ severity: 'success', detail: `Save succeed.` });
                 this.ROIList = result.body.data;
                 this.ROIListLength = this.ROIList.length;
                 this.newROIDisplay = false;
-                let new_roi_id = 0;
                 this.ROIList.forEach(element => {
-                    if (element.ROIId > new_roi_id) {
+                    if (element.ROIId > 0) {
                         this.activeROIConfig = element;
                     }
                 });
 
                 this.conMessage.SetActiveRoi(this.activeROIConfig);
-            }
-            else {
+            } else {
                 this.priMessageService.add({ severity: 'error', detail: `${result.msg}` });
             }
-        })
+        });
     }
 
     updateROI() {
-        let colorReg = new RegExp('^\#\w{0,6}$', 'i')
-        //TODO false这个地方color的正则有问题
-        if (false || this.editROIConfig.ROIName == '') {
+        if (this.editROIConfig.ROIName == '') {
             this.priMessageService.add({ severity: 'error', detail: `Illegal input.` });
             return;
         }
@@ -265,41 +249,37 @@ export class ContouringComponent implements OnInit {
                 this.ROIList = result.body.data;
                 this.ROIListLength = this.ROIList.length;
                 this.editROIDisplay = false;
-            }
-            else {
+            } else {
                 this.priMessageService.add({ severity: 'error', detail: `${result.msg}` });
             }
-        })
+        });
     }
 
     deleteROI(evt) {
-        let ROIId = $(evt.target).parents('tr').find('.roi-id-td').text();
+        const ROIId = $(evt.target).parents('tr').find('.roi-id-td').text();
         this.roiHttp.DeleteROIConfig(ROIId).subscribe(result => {
             if (result.code == '200') {
                 this.priMessageService.add({ severity: 'success', detail: `Delete succeed.` });
                 this.ROIList = result.data;
                 this.ROIListLength = this.ROIList.length;
                 this.editROIDisplay = false;
-            }
-            else {
+            } else {
                 this.priMessageService.add({ severity: 'error', detail: `${result.msg}` });
             }
-        }
-        )
+        });
     }
 
     deleteAllROI() {
-        let ROIIdArray = []
+        const ROIIdArray = [];
         this.ROIList.forEach(element => {
             ROIIdArray.push(element.ROIId);
-        })
+        });
         this.roiHttp.DeleteROIConfig(ROIIdArray).subscribe(result => {
             if (result.code == '200') {
                 this.priMessageService.add({ severity: 'success', detail: `Delete succeed.` });
                 this.ROIList = result.data;
                 this.ROIListLength = 0;
-            }
-            else {
+            } else {
                 this.priMessageService.add({ severity: 'error', detail: `${result.msg}` });
             }
         }
@@ -339,44 +319,45 @@ export class ContouringComponent implements OnInit {
     }
 
     transverseChange(event: any) {
-        let displayView = 'coronal,saggital'
-        if (this.hasLoadVolume == true) {
-            this.seriesHttpService.GetLocatePic('transverse', displayView, event).subscribe((value) => {
-                let data = JSON.parse(value);
-                this.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair'], data['1']['graphic']['contours']);
-                this.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair'], data['2']['graphic']['contours']);
-                this.sliceIndex = data['0']['slice_index'];
-                this.conMessage.SetSliceIndex(this.sliceIndex);
-                EventAggregator.Instance().sliceIndex.publish(this.sliceIndex);
-            })
+        if (!this.hasLoadVolume) {
+            return;
         }
+        const displayView = 'coronal,saggital';
+        this.seriesHttpService.GetLocatePic('transverse', displayView, event).subscribe((value) => {
+            const data = JSON.parse(value);
+            this.updateCells(data, false, displayView);
+            this.sliceIndex = data['0']['slice_index'];
+            this.conMessage.SetSliceIndex(this.sliceIndex);
+            EventAggregator.Instance().sliceIndex.publish(this.sliceIndex);
+        });
     }
 
     coronalChange(event: any) {
-        let displayView = 'transverse,saggital'
-        if (this.hasLoadVolume == true) {
-            this.seriesHttpService.GetLocatePic('coronal', displayView, event).subscribe((value) => {
-                let data = JSON.parse(value);
-                this.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair'], data['0']['graphic']['contours']);
-                this.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair'], data['2']['graphic']['contours']);
-                this.sliceIndex = data['0']['slice_index'];
-                this.conMessage.SetSliceIndex(this.sliceIndex);
-                EventAggregator.Instance().sliceIndex.publish(this.sliceIndex);
-            })
+        if (!this.hasLoadVolume) {
+            return;
         }
+        const displayView = 'transverse,saggital';
+        this.seriesHttpService.GetLocatePic('coronal', displayView, event).subscribe((value) => {
+            const data = JSON.parse(value);
+            this.updateCells(data, false, displayView);
+            this.sliceIndex = data['0']['slice_index'];
+            this.conMessage.SetSliceIndex(this.sliceIndex);
+            EventAggregator.Instance().sliceIndex.publish(this.sliceIndex);
+        });
     }
+
     saggitalChange(event: any) {
-        let displayView = 'transverse,coronal'
-        if (this.hasLoadVolume == true) {
-            this.seriesHttpService.GetLocatePic('saggital', displayView, event).subscribe((value) => {
-                let data = JSON.parse(value);
-                this.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair'], data['0']['graphic']['contours']);
-                this.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair'], data['1']['graphic']['contours']);
-                this.sliceIndex = data['0']['slice_index'];
-                this.conMessage.SetSliceIndex(this.sliceIndex);
-                EventAggregator.Instance().sliceIndex.publish(this.sliceIndex);
-            })
+        if (!this.hasLoadVolume) {
+            return;
         }
+        const displayView = 'transverse,coronal';
+        this.seriesHttpService.GetLocatePic('saggital', displayView, event).subscribe((value) => {
+            const data = JSON.parse(value);
+            this.updateCells(data, false, displayView);
+            this.sliceIndex = data['0']['slice_index'];
+            this.conMessage.SetSliceIndex(this.sliceIndex);
+            EventAggregator.Instance().sliceIndex.publish(this.sliceIndex);
+        });
     }
 
     mainClearPri() {
@@ -388,97 +369,95 @@ export class ContouringComponent implements OnInit {
     showDialog() {
         this.display = true;
     }
+
     hideDialog() {
         this.display = false;
     }
 
     aCross(event: any) {
-        if (!this.lazyExcuteHandler.canExcute(new Date().getTime(), 'a')) return;
-        let data = {}
-        if (this.hasLoadVolume == true) {
-            this.seriesHttpService.GetSeriesPic('transverse', 'transverse', event, "", "").subscribe((value) => {
-                data = JSON.parse(value);
-                this.picLeft1.cellUpdate(data['0']['image'], null, data['0']['graphic']['contours'])
-                this.picLeft2.cellUpdate(null, data['1']['crosshair'], data['1']['graphic']['contours'])
-                this.picLeft3.cellUpdate(null, data['2']['crosshair'], data['2']['graphic']['contours'])
-                let a = data['0']['slice_index'];
-                console.log(a);
-                this.sliceIndex = data['0']['slice_index'];
-                this.conMessage.SetSliceIndex(this.sliceIndex);
-                EventAggregator.Instance().sliceIndex.publish(this.sliceIndex);
-            }, (error) => {
-                console.log(error);
-            })
+        if (!this.lazyExcuteHandler.canExcute(new Date().getTime(), 'a')
+            || !this.hasLoadVolume) {
+            return;
         }
+
+        this.seriesHttpService.GetSeriesPic('transverse', 'transverse', event, '', '').subscribe((value) => {
+            const data = JSON.parse(value);
+            this.updateCells(data, false);
+            this.sliceIndex = data['0']['slice_index'];
+            this.conMessage.SetSliceIndex(this.sliceIndex);
+            EventAggregator.Instance().sliceIndex.publish(this.sliceIndex);
+        }, (error) => {
+            console.log(error);
+        });
     }
+
     bCross(event: any) {
-        if (!this.lazyExcuteHandler.canExcute(new Date().getTime(), 'b')) return;
-        let data = {}
-        if (this.hasLoadVolume == true) {
-            this.seriesHttpService.GetSeriesPic('coronal', 'coronal', event, "", "").subscribe((value) => {
-                data = JSON.parse(value);
-                this.picLeft1.cellUpdate(null, data['0']['crosshair'], data['0']['graphic']['contours'])
-                this.picLeft2.cellUpdate(data['1']['image'], null, data['1']['graphic']['contours'])
-                this.picLeft3.cellUpdate(null, data['2']['crosshair'], data['2']['graphic']['contours'])
-                this.sliceIndex = data['0']['slice_index'];
-                EventAggregator.Instance().sliceIndex.publish(this.sliceIndex);
-            }, (error) => {
-                console.log(error);
-            })
+        if (!this.lazyExcuteHandler.canExcute(new Date().getTime(), 'b') ||
+            !this.hasLoadVolume) {
+            return;
         }
+
+        this.seriesHttpService.GetSeriesPic('coronal', 'coronal', event, '', '').subscribe((value) => {
+            const data = JSON.parse(value);
+            this.updateCells(data, false);
+            this.sliceIndex = data['0']['slice_index'];
+            EventAggregator.Instance().sliceIndex.publish(this.sliceIndex);
+        }, (error) => {
+            console.log(error);
+        });
     }
+
     cCross(event: any) {
-        if (!this.lazyExcuteHandler.canExcute(new Date().getTime(), 'c')) return;
-        let data = {}
-        if (this.hasLoadVolume == true) {
-            this.seriesHttpService.GetSeriesPic('saggital', 'saggital', event, "", "").subscribe((value) => {
-                data = JSON.parse(value);
-                this.picLeft1.cellUpdate(null, data['0']['crosshair'], data['0']['graphic']['contours'])
-                this.picLeft2.cellUpdate(null, data['1']['crosshair'], data['1']['graphic']['contours'])
-                this.picLeft3.cellUpdate(data['2']['image'], null, data['2']['graphic']['contours'])
-                this.sliceIndex = data['0']['slice_index'];
-                EventAggregator.Instance().sliceIndex.publish(this.sliceIndex);
-            }, (error) => {
-                console.log(error);
-            })
+        if (!this.lazyExcuteHandler.canExcute(new Date().getTime(), 'c')
+            || !this.hasLoadVolume) {
+            return;
         }
+
+        this.seriesHttpService.GetSeriesPic('saggital', 'saggital', event, '', '').subscribe((value) => {
+            const data = JSON.parse(value);
+            this.updateCells(data, false);
+            this.sliceIndex = data['0']['slice_index'];
+            EventAggregator.Instance().sliceIndex.publish(this.sliceIndex);
+        }, (error) => {
+            console.log(error);
+        });
     }
+
     mainQuitDraw() {
 
     }
 
     getCanvasSize() {
-        let view_size: any = {};
+        const view_size: any = {};
         view_size['transverse'] = [this.transverseCanvas.width, this.transverseCanvas.height];
         view_size['coronal'] = [this.coronalCanvas.width, this.coronalCanvas.height];
         view_size['saggital'] = [this.saggitalCanvas.width, this.saggitalCanvas.height];
 
         return view_size;
-
     }
 
     mainHideList() {
-        document.getElementById("series_list").classList.toggle("series_inactive");
+        document.getElementById('series_list').classList.toggle('series_inactive');
     }
+
     mainzoom() {
         this.picLeft1.addZoomEvent();
         this.picLeft2.addZoomEvent();
         this.picLeft3.addZoomEvent();
     }
+
     mainZoomPro(evt) {
         console.log(evt);
-        let focus_view = evt[0];
-        let factor = evt[1];
-        let that = this;
-        if (this.hasLoadVolume == true) {
-            this.seriesHttpService.GetZoomPic(focus_view, factor).subscribe(result => {
-                result = JSON.parse(result);
-                that.picLeft1.cellUpdate(result['0']['image'], result['0']['crosshair'], result['0']['graphic']['contours']);
-                that.picLeft2.cellUpdate(result['1']['image'], result['1']['crosshair'], result['1']['graphic']['contours']);
-                that.picLeft3.cellUpdate(result['2']['image'], result['2']['crosshair'], result['2']['graphic']['contours']);
-            })
+        if (!this.hasLoadVolume) {
+            return;
         }
+        const that = this;
+        this.seriesHttpService.GetZoomPic(evt[0], evt[1]).subscribe(result => {
+            result = JSON.parse(result);
+            that.updateCells(result);
+        });
     }
+
     mainWLWW() {
         this.picLeft1.addChangeWlEvent();
         this.picLeft2.addChangeWlEvent();
@@ -487,36 +466,27 @@ export class ContouringComponent implements OnInit {
 
     mainWWWLPro(evt) {
         console.log(evt);
-        let focus_view = evt[0];
-        let ww_factor = evt[1];
-        let wl_factor = evt[2];
-        let that = this;
-        if (this.hasLoadVolume == true) {
-            this.seriesHttpService.GetWindowPic(focus_view, ww_factor, wl_factor).subscribe(result => {
-                result = JSON.parse(result);
-                that.picLeft1.cellUpdate(result['0']['image'], result['0']['crosshair'], result['0']['graphic']['contours'], result['0']['wwwl']);
-                that.picLeft2.cellUpdate(result['1']['image'], result['1']['crosshair'], result['1']['graphic']['contours'], result['1']['wwwl']);
-                that.picLeft3.cellUpdate(result['2']['image'], result['2']['crosshair'], result['2']['graphic']['contours'], result['2']['wwwl']);
-            })
+        if (!this.hasLoadVolume) {
+            return;
         }
+        const that = this;
+        this.seriesHttpService.GetWindowPic(evt[0], evt[1], evt[2]).subscribe(result => {
+            result = JSON.parse(result);
+            that.updateCells(result, true);
+        });
     }
 
     mainWWWLPro2(evt) {
-        let validFlag = evt[2];
+        const validFlag = evt[2];
         if (validFlag == 'true') {
-            let ww = evt[0];
-            let wl = evt[1];
-            let that = this;
-            if (this.hasLoadVolume == true) {
-                this.seriesHttpService.GetWindowPic2(ww, wl).subscribe(result => {
+            const that = this;
+            if (this.hasLoadVolume) {
+                this.seriesHttpService.GetWindowPic2(evt[0], evt[1]).subscribe(result => {
                     result = JSON.parse(result);
-                    that.picLeft1.cellUpdate(result['0']['image'], result['0']['crosshair'], result['0']['graphic']['contours']);
-                    that.picLeft2.cellUpdate(result['1']['image'], result['1']['crosshair'], result['1']['graphic']['contours']);
-                    that.picLeft3.cellUpdate(result['2']['image'], result['2']['crosshair'], result['2']['graphic']['contours']);
-                })
+                    that.updateCells(result);
+                });
             }
-        }
-        else {
+        } else {
             this.priMessageService.add({ severity: 'error', detail: 'ww wl illegal.' });
         }
     }
@@ -526,66 +496,63 @@ export class ContouringComponent implements OnInit {
         this.picLeft2.addPanEvent();
         this.picLeft3.addPanEvent();
     }
+
     mainPanPro(evt) {
         console.log(evt);
-        let focus_view = evt[0];
-        let prePos = evt[1];
-        let curPso = evt[2];
-        let that = this;
-        if (this.hasLoadVolume == true) {
-            this.seriesHttpService.GetPanPic(focus_view, prePos, curPso).subscribe(result => {
-                result = JSON.parse(result);
-                that.picLeft1.cellUpdate(result['0']['image'], result['0']['crosshair'], result['0']['graphic']['contours']);
-                that.picLeft2.cellUpdate(result['1']['image'], result['1']['crosshair'], result['1']['graphic']['contours']);
-                that.picLeft3.cellUpdate(result['2']['image'], result['2']['crosshair'], result['2']['graphic']['contours']);
-            })
+        if (!this.hasLoadVolume) {
+            return;
         }
+        const that = this;
+        this.seriesHttpService.GetPanPic(evt[0], evt[1], evt[2]).subscribe(result => {
+            result = JSON.parse(result);
+            that.updateCells(result);
+        });
     }
+
     mainrotate() {
         this.picLeft1.addRotateEvent();
         this.picLeft2.addRotateEvent();
         this.picLeft3.addRotateEvent();
     }
+
     mainRotatePro(evt) {
         console.log(evt);
-        let focus_view = evt[0];
-        let prePos = evt[1];
-        let curPso = evt[2];
-        let that = this;
-        if (this.hasLoadVolume == true) {
-            this.seriesHttpService.GetRotatePic(focus_view, prePos, curPso).subscribe(result => {
-                result = JSON.parse(result);
-                that.picLeft1.cellUpdate(result['0']['image'], result['0']['crosshair'], result['0']['graphic']['contours']);
-                that.picLeft2.cellUpdate(result['1']['image'], result['1']['crosshair'], result['1']['graphic']['contours']);
-                that.picLeft3.cellUpdate(result['2']['image'], result['2']['crosshair'], result['2']['graphic']['contours']);
-            })
+        if (!this.hasLoadVolume) {
+            return;
         }
+        const that = this;
+        this.seriesHttpService.GetRotatePic(evt[0], evt[1], evt[2]).subscribe(result => {
+            result = JSON.parse(result);
+            that.updateCells(result);
+        });
     }
+
     mainSetCenterPro() {
-        let that = this;
-        if (this.hasLoadVolume == true) {
-            this.seriesHttpService.GetCenterPic().subscribe(result => {
-                result = JSON.parse(result);
-                that.picLeft1.cellUpdate(result['0']['image'], result['0']['crosshair'], result['0']['graphic']['contours']);
-                that.picLeft2.cellUpdate(result['1']['image'], result['1']['crosshair'], result['1']['graphic']['contours']);
-                that.picLeft3.cellUpdate(result['2']['image'], result['2']['crosshair'], result['2']['graphic']['contours']);
-            })
+        if (!this.hasLoadVolume) {
+            return;
         }
+        const that = this;
+        this.seriesHttpService.GetCenterPic().subscribe(result => {
+            result = JSON.parse(result);
+            that.updateCells(result);
+        });
     }
+
     mainreset() {
-        let that = this;
-        if (this.hasLoadVolume == true) {
-            this.seriesHttpService.GetResetPic().subscribe(result => {
-                result = JSON.parse(result);
-                that.picLeft1.cellUpdate(result['0']['image'], result['0']['crosshair'], result['0']['graphic']['contours']);
-                that.picLeft2.cellUpdate(result['1']['image'], result['1']['crosshair'], result['1']['graphic']['contours']);
-                that.picLeft3.cellUpdate(result['2']['image'], result['2']['crosshair'], result['2']['graphic']['contours']);
-            })
+        if (!this.hasLoadVolume) {
+            return;
         }
+        const that = this;
+        this.seriesHttpService.GetResetPic().subscribe(result => {
+            result = JSON.parse(result);
+            that.updateCells(result);
+        });
     }
+
     sfile() {
         this.picLeft1.file();
     }
+
     remouse() {
         this.picLeft1.clearmouse();
         this.picLeft2.clearmouse();
@@ -599,60 +566,58 @@ export class ContouringComponent implements OnInit {
     }
 
     loadSeries() {
-        let transverseCanvas = $(".a_class .icanvas").get(0);
-        let seriesId: any = $("#seriesSelect").val();
-        let canvasSize: any = {}
+        const transverseCanvas = $('.a_class .icanvas').get(0);
+        const seriesId: any = $('#seriesSelect').val();
+        const canvasSize: any = {};
         canvasSize['view_size'] = this.getCanvasSize();
-        console.log(canvasSize)
-        let that = this;
-        if (seriesId == "" || seriesId == null || seriesId == undefined) {
+        console.log(canvasSize);
+        const that = this;
+        if (seriesId === '' || seriesId == null || seriesId === undefined) {
             this.priMessageService.add({ severity: 'error', detail: 'No series selected.' });
             return;
         }
         this.priMessageService.add({ severity: 'info', detail: 'Loading now, please wait.' });
         this.seriesHttpService.LoadVolume(seriesId).subscribe(value => {
-            value = JSON.parse(value)
-            if (value.length == 3) {
+            value = JSON.parse(value);
+            if (value.length === 3) {
                 EventAggregator.Instance().volumnSize.publish(value);
                 this.conService.noticeSize(canvasSize).subscribe(result => {
-                    if (result.body == "success") {
-                        this.seriesHttpService.GetSeries(seriesId, "", "all", transverseCanvas.width, transverseCanvas.height).subscribe((value) => {
-                            let data = JSON.parse(value);
-                            that.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair'], data['0']['graphic']['contours'], data['0']['wwwl']);
-                            that.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair'], data['1']['graphic']['contours'], data['1']['wwwl']);
-                            that.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair'], data['2']['graphic']['contours'], data['2']['wwwl']);
-                            this.sliceIndex = data['0']['slice_index'];
-                            this.conMessage.SetSliceIndex(this.sliceIndex);
-                            EventAggregator.Instance().sliceIndex.publish(this.sliceIndex);
-                            this.priMessageService.add({ severity: 'success', detail: 'Load succeed.' });
-                        }, (error) => {
-                            this.priMessageService.add({ severity: 'error', detail: 'Load failed.' });
-                            console.log(error);
-                        })
+                    if (result.body === "success") {
+                        this.seriesHttpService.GetSeries(seriesId, '', 'all', transverseCanvas.width, transverseCanvas.height)
+                            .subscribe((value) => {
+                                const data = JSON.parse(value);
+                                that.updateCells(data, true);
+                                this.sliceIndex = data['0']['slice_index'];
+                                this.conMessage.SetSliceIndex(this.sliceIndex);
+                                EventAggregator.Instance().sliceIndex.publish(this.sliceIndex);
+                                this.priMessageService.add({ severity: 'success', detail: 'Load succeed.' });
+                            }, (error) => {
+                                this.priMessageService.add({ severity: 'error', detail: 'Load failed.' });
+                                console.log(error);
+                            });
                         this.hasLoadVolume = true;
                         this.seriesId = seriesId;
                     }
                 });
-            } else if (value == "rebuild") {
+            } else if (value === "rebuild") {
                 this.priMessageService.add({ severity: 'error', detail: 'Load failed, rebuiding now, please wait' });
                 this.seriesHttpService.ReLoadVolume(seriesId).subscribe(value => {
-                    value = JSON.parse(value)
-                    if (value.length == 3) {
+                    value = JSON.parse(value);
+                    if (value.length === 3) {
                         this.conService.noticeSize(canvasSize).subscribe(result => {
                             if (result.body == "success") {
-                                this.seriesHttpService.GetSeries(seriesId, "", "all", transverseCanvas.width, transverseCanvas.height).subscribe((value) => {
-                                    let data = JSON.parse(value);
-                                    that.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair'], data['0']['graphic']['contours'], data['0']['wwwl']);
-                                    that.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair'], data['1']['graphic']['contours'], data['1']['wwwl']);
-                                    that.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair'], data['2']['graphic']['contours'], data['2']['wwwl']);
-                                    this.sliceIndex = data['0']['slice_index'];
-                                    this.conMessage.SetSliceIndex(this.sliceIndex);
-                                    EventAggregator.Instance().sliceIndex.publish(this.sliceIndex);
-                                    this.priMessageService.add({ severity: 'success', detail: 'Load succeed.' });
-                                }, (error) => {
-                                    this.priMessageService.add({ severity: 'error', detail: 'Load failed.' });
-                                    console.log(error);
-                                })
+                                this.seriesHttpService.GetSeries(seriesId, '', 'all', transverseCanvas.width, transverseCanvas.height)
+                                    .subscribe((value) => {
+                                        const data = JSON.parse(value);
+                                        that.updateCells(data, true);
+                                        this.sliceIndex = data['0']['slice_index'];
+                                        this.conMessage.SetSliceIndex(this.sliceIndex);
+                                        EventAggregator.Instance().sliceIndex.publish(this.sliceIndex);
+                                        this.priMessageService.add({ severity: 'success', detail: 'Load succeed.' });
+                                    }, (error) => {
+                                        this.priMessageService.add({ severity: 'error', detail: 'Load failed.' });
+                                        console.log(error);
+                                    });
                                 this.hasLoadVolume = true;
                                 this.seriesId = seriesId;
                             }
@@ -660,11 +625,11 @@ export class ContouringComponent implements OnInit {
                     } else {
                         this.priMessageService.add({ severity: 'error', detail: `Rebuild failed. ${value}` });
                     }
-                })
+                });
             } else {
                 this.priMessageService.add({ severity: 'error', detail: 'Load failed.' });
             }
-        })
+        });
     }
 
     fb(a) {
@@ -678,14 +643,14 @@ export class ContouringComponent implements OnInit {
     saveContour(data: any) {
         if (data.length > 0) {
             console.log('begin save contour');
-            let dto = new ContourDto();
 
+            const dto = new ContourDto();
             dto.roi_uid = data[0];
             dto.slice_index = data[1];
             dto.contours = data[2];
 
             this.conService.saveContour(dto).subscribe(response => {
-                console.log(response)
+                console.log(response);
             });
         }
     }
@@ -693,14 +658,30 @@ export class ContouringComponent implements OnInit {
     deleteContours(data: any) {
         if (data.length > 0) {
             console.log('begin delete contour');
-            let dto = new ContourDto();
 
+            const dto = new ContourDto();
             dto.roi_uid = data[0];
             dto.slice_index = data[1];
 
             this.conService.deleteContours(dto).subscribe(response => {
-                console.log(response)
+                console.log(response);
             });
         }
     }
+
+    updateCells(data, updateWwwl: boolean = false, updateViews: string = 'all') {
+        if (updateViews === 'all' || updateViews.indexOf('transverse') > -1) {
+            this.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair'], data['0']['graphic']['contours'],
+                updateWwwl ? data['0']['wwwl'] : undefined);
+        }
+        if (updateViews === 'all' || updateViews.indexOf('coronal') > -1) {
+            this.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair'], data['1']['graphic']['contours'],
+                updateWwwl ? data['1']['wwwl'] : undefined);
+        }
+        if (updateViews === 'all' || updateViews.indexOf('saggital') > -1) {
+            this.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair'], data['2']['graphic']['contours'],
+                updateWwwl ? data['2']['wwwl'] : undefined);
+        }
+    }
+
 }

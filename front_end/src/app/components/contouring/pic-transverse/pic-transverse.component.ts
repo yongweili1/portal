@@ -202,7 +202,7 @@ export class PicTransverseComponent implements OnChanges {
         this.stage.enableMouseOver(50);
         this.stage.mouseMoveOutside = true;
 
-        this.horizontalLine = new createjs.Shape();// 横线
+        this.horizontalLine = new createjs.Shape(); // 横线
         if (this.tag == "transverse") {
             this.horizontalLine.graphics.beginStroke("#2196F3").setStrokeStyle(1, "round").moveTo(0, 0).lineTo(width, 0);
         }
@@ -217,7 +217,7 @@ export class PicTransverseComponent implements OnChanges {
         this.horizontalLine.hitArea = horizontalHitbar
         this.horizontalLine.cursor = "url('/assets/img/vertical.cur'),auto";
 
-        this.verticalLine = new createjs.Shape();// 竖线
+        this.verticalLine = new createjs.Shape(); // 竖线
         if (this.tag == "transverse") {
             this.verticalLine.graphics.beginStroke("#CDDC39").setStrokeStyle(1, "round").moveTo(0, 0).lineTo(0, height);
         }
