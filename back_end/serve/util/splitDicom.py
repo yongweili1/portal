@@ -1,7 +1,7 @@
 # -*-coding:utf-8-*-
 import os
 
-from serve.static_parameters.setFilePath import filepath
+from serve.static_parameters.setFilePath import file_path_ferry
 from serve.util.readDcm import DcmSeries
 
 
@@ -13,7 +13,7 @@ class SplitDicoms(object):
         series_uid = dcmseries.get_series_uid(dataset)
         image_uid = dcmseries.get_image_uid(dataset)
 
-        seriespath = os.path.join(filepath.splitDicomPath + str(series_uid))
+        seriespath = os.path.join(file_path_ferry.splitDicomPath + str(series_uid))
         if not os.path.exists(seriespath):
             os.mkdir(seriespath)
 
@@ -31,7 +31,7 @@ class SplitDicoms(object):
         :return:
         """
         # file_name = [k for k, v in filename_dataset_dic.items() if v == dataset][0]
-        file_path = os.path.join(filepath.dicomPath, file_name)
+        file_path = os.path.join(file_path_ferry.dicomPath, file_name)
         with open(file_path, 'rb') as f:
             filedata = f.read()
         with open(new_file_name, 'wb+') as r:

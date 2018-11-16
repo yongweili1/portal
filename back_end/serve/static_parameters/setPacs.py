@@ -1,6 +1,5 @@
 # -*-coding:utf-8-*-
-from serve.static_parameters.setFilePath import filepath
-
+from serve.static_parameters.setFilePath import file_path_ferry
 
 class PacsConf(object):
 
@@ -11,7 +10,7 @@ class PacsConf(object):
 
         self.client_ae_title = 'LY'
         self.client_port = 3333
-        self.dcm_file_path = filepath.splitDicomPath
+        self.dcm_file_path = file_path_ferry.splitDicomPath
 
     def set_pacs_ae_title(self, pacs_ae_title):
         self.pacs_ae_title = pacs_ae_title

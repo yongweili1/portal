@@ -11,7 +11,7 @@ import pydicom
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from serve.static_parameters.setFilePath import filepath
+from serve.static_parameters.setFilePath import file_path_ferry
 from serve.util.splitDicom import SplitDicoms
 from serve.DBAccess.upload_dcm_to_db import UploadDcm
 from serve.DBAccess.upload_vol_to_db import UploadVolume
@@ -41,7 +41,7 @@ class Patinfo(APIView):
         print(len(files))
 
         for f in files:
-            file_name = os.path.join(filepath.dicomPath, f.name)
+            file_name = os.path.join(file_path_ferry.dicomPath, f.name)
             destination = open(file_name, 'wb+')
             for chunk in f.chunks():
                 destination.write(chunk)
@@ -53,9 +53,7 @@ class Patinfo(APIView):
 
         print('上传完成，正在执行数据入库...')
         for file_name in file_name_list:
-            # if platform.system() == 'Windows':
             try:
-                # file_path = os.path.join(filepath.dicomPath, file_name)
                 dataset = pydicom.dcmread(file_name, force=True)
                 splitdicoms = SplitDicoms()
                 seriespath = splitdicoms.split_series(file_name, dataset)
@@ -66,7 +64,7 @@ class Patinfo(APIView):
                 print '文件解析失败', file_name, ex.message
 
         uploaddcm = UploadDcm()
-        uploaddcm.upload_dcm(dataset_list, filepath.splitDicomPath)
+        uploaddcm.upload_dcm(dataset_list, file_path_ferry.splitDicomPath)
 
 
         for seriespath in set(series_path_list):
@@ -75,7 +73,7 @@ class Patinfo(APIView):
                     print ('series下的dicom文件单一，无法build volume')
                     continue
 
-		if platform.system() == 'Windows':
+                if platform.system() == 'Windows':
                     print('begin data checking')
                     series_dir = str(seriespath).encode('GB2312')
                     reply = data_checker.DataChecker().data_checking(series_dir)

@@ -3,47 +3,32 @@ from __future__ import unicode_literals
 
 import os
 
-from django.core.files.storage import FileSystemStorage
-
-
-class LinuxFilePath(FileSystemStorage):
-    basePath = '/home/lyw/work/git_local_repository/portal'
-    dicomPath = os.path.join(basePath, 'dicoms/')
-    splitDicomPath = os.path.join(basePath, 'split_dicom/')
-    volumePath = os.path.join(basePath, 'volume/')
-    cpsPath = os.path.join(basePath, 'cps/')
-
-
-class WindowsFilePath(FileSystemStorage):
-    dicomPath = 'D:/dicoms/'
-    splitDicomPath = 'D:/split_dicom/'
-    volumePath = 'D:/volume/'
-    cpsPath = 'D:/cps/'
-
 
 class SaveDicomFilePath(object):
-
     def __init__(self):
-        self.dicomPath = ''
-        self.splitDicomPath = ''
-        self.volumePath = ''
-        self.cpsPath = ''
+        root = os.path.dirname(os.path.abspath(__file__)).split('portal')[0]
+        root = os.path.join(root, 'portal_ferry')
+        self.dicomPath = os.path.join(root, 'dicoms/')
+        if not os.path.isdir(self.dicomPath):
+            os.makedirs(self.dicomPath)
 
-    def set_dcmpath(self, dcmfilepath):
-        self.dicomPath = dcmfilepath
+        self.splitDicomPath = os.path.join(root, 'split_dicom/')
+        if not os.path.isdir(self.splitDicomPath):
+            os.makedirs(self.splitDicomPath)
 
-    def set_splitdcmpath(self, splitfilepath):
-        self.splitDicomPath = splitfilepath
+        self.volumePath = os.path.join(root, 'volume/')
+        if not os.path.isdir(self.volumePath):
+            os.makedirs(self.volumePath)
 
-    def set_volumepath(self, volumepath):
-        self.volumePath = volumepath
-
-    def set_cpspath(self, cpspath):
-        self.cpsPath = cpspath
+        self.cpsPath = os.path.join(root, 'cps/')
+        if not os.path.isdir(self.cpsPath):
+            os.makedirs(self.cpsPath)
 
 
-filepath = SaveDicomFilePath()
-
+file_path_ferry = SaveDicomFilePath()
 
 if __name__ == '__main__':
-    print LinuxFilePath().dicomPath
+    print file_path_ferry.dicomPath
+    print file_path_ferry.splitDicomPath
+    print file_path_ferry.volumePath
+    print file_path_ferry.cpsPath
