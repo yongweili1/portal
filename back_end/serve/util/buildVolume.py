@@ -4,7 +4,7 @@ import os
 # from md.image3d.python.image3d_io import BuildVolume
 from md.image3d.python.image3d_io import write_image, read_dicom_series
 
-from serve.static_parameters.setFilePath import filepath
+from serve.static_parameters.setFilePath import file_path_ferry
 
 
 class DicomToVolume(object):
@@ -19,11 +19,11 @@ class DicomToVolume(object):
         volume_name = seriesuid + '.nii.gz'
 
         # 保存文件到本地
-        if os.path.exists(filepath.volumePath):
+        if os.path.exists(file_path_ferry.volumePath):
             pass
         else:
-            os.mkdir(filepath.volumePath)
-        volfilepath = os.path.join(filepath.volumePath, volume_name)
+            os.mkdir(file_path_ferry.volumePath)
+        volfilepath = os.path.join(file_path_ferry.volumePath, volume_name)
         if not write_image(vol, volfilepath):
             pass
 

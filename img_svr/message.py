@@ -9,6 +9,11 @@ class RequestData(object):
         self.server_name = ''
         self.command = ''
         self.kwargs = {}
+        root = os.path.dirname(os.path.abspath(__file__)).split('portal')[0]
+        root = os.path.join(root, 'portal_ferry')
+        self.dir_path = os.path.join(root, 'srv/volume')
+        if not os.path.isdir(self.dir_path):
+            os.makedirs(self.dir_path)
 
         data = msg.RequestMsg()
         data.ParseFromString(request_data)
@@ -19,9 +24,7 @@ class RequestData(object):
         if data.content and data.content.params:
             self.kwargs = json.loads(data.content.params)
         if data.content and data.content.volume:
-            if os.path.exists(r'D:\svr\volume') is False:
-                os.makedirs(r'D:\svr\volume')
-            volume_path = r'D:\svr\volume\{}.nii.gz'.format(self.kwargs['seriesuid'])
+            volume_path = r'{0}/{1}.nii.gz'.format(self.dir_path, self.kwargs['seriesuid'])
             f = open(volume_path, 'wb')
             f.write(data.content.volume)
             f.close()

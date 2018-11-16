@@ -69,3 +69,5 @@ log.txt
 
 # updatable files in 3rd party lib
 /3rd/Windows/redis/dump.rdb
+uwsgi.log
+uwsgi.pid
