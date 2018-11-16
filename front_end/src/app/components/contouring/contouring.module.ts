@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
 import {
   ButtonModule,
   InputTextModule,
@@ -21,7 +20,7 @@ import {
 
 
 import { ToastModule } from 'primeng/toast';
-import {SliderModule} from 'primeng/slider';
+import { SliderModule } from 'primeng/slider';
 import { SharedModule } from '../../shared/shared.module';
 import { EasyUIModule } from 'ng-easyui/components/easyui/easyui.module';
 
@@ -34,7 +33,6 @@ import { PatientHttpService } from './shared/service/patientHttp.service';
 import { RoiHttpService } from './shared/service/roiHttp.service';
 import { SeriesHttpService } from './shared/service/seriesHttp.service';
 import { StorageService } from './shared/service/storage.service';
-import { actionService } from './pic-transverse/action.service';
 import { ContourDirective } from './shared/directives/contour.directive';
 import { SeriesListComponent } from './series-list/series-list.component';
 import { SliderBarComponent } from './slider-bar/slider-bar.component';
@@ -67,7 +65,6 @@ import { SliderBarComponent } from './slider-bar/slider-bar.component';
     ToastModule,
     SplitButtonModule,
     SliderModule,
-    //RouterModule.forChild(routes)
   ],
   declarations: [
     ContouringComponent,
@@ -81,14 +78,14 @@ import { SliderBarComponent } from './slider-bar/slider-bar.component';
     ContouringComponent,
   ],
   providers: [
-    ContouringService, 
+    ContouringService,
     ConfirmationService,
     ConMessageService,
     PatientHttpService,
     RoiHttpService,
     SeriesHttpService,
-    StorageService,
-    actionService]
+    StorageService]
 })
+
 export class ContouringModule {
 }

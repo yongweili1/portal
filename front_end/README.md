@@ -92,8 +92,8 @@ front_end/
  │   │   └──humans.txt             * for humans to know who the developers are
  │   │ 
  │   └──third-party/               * 三方库
- │           ├──clipper/             
- │           └──bootstrap/
+ │       ├──clipper/             
+ │       └──bootstrap/
  │
  │
  ├──tslint.json                    * typescript lint config

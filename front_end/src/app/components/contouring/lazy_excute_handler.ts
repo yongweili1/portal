@@ -13,27 +13,27 @@ export class LazyExcuteHandler {
         this.recordTimeC = 0;
     }
 
-    canExcute(now, type='a') {
-        let delta = 0
-        if (type == 'a') {
+    canExcute(now, type = 'a') {
+        let delta = 0;
+        if (type === 'a') {
             delta = now - this.recordTimeA;
             this.recordTimeA = now;
-        } else if (type == 'b') {
+        } else if (type === 'b') {
             delta = now - this.recordTimeB;
             this.recordTimeB = now;
-        } else if (type == 'c') {
+        } else if (type === 'c') {
             delta = now - this.recordTimeC;
             this.recordTimeC = now;
         } else {
             return true;
         }
-        console.log(type, delta)
+        console.log(type, delta);
         return !(delta < delta_time);
     }
 
     canExcuteByCount() {
-        this.count += 1
-        if (this.count == delta_count) {
+        this.count += 1;
+        if (this.count === delta_count) {
             this.count = 0;
             return true;
         }

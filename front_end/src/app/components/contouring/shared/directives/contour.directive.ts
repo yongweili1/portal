@@ -44,7 +44,7 @@ export class ContourDirective implements OnInit {
     fader: FaderContainer;
     nudgeHelper: NudgeHelper;
     curTarget: any;
-    activeROI:ROIConfig;
+    activeROI: ROIConfig;
     sliceIndex: any;
     preFaderPos: Point;
     @Input() backCanvas;
@@ -72,7 +72,7 @@ export class ContourDirective implements OnInit {
             }
             console.log('Current action is ' + actionInfo.key());
             if (actionInfo.key() == actions.clear) {
-                if (this.myStage.children.length > 0){
+                if (this.myStage.children.length > 0) {
                     let roi_uid = this.activeROI.ROIId;
                     let slice_index = this.sliceIndex;
                     EventAggregator.Instance().removeCps.publish([roi_uid, slice_index])
@@ -124,12 +124,12 @@ export class ContourDirective implements OnInit {
 
     @HostListener('mousedown', ['$event']) onMouseDown(event: MouseEvent) {
         this.myStage.children.forEach(shape => {
-            if (shape.type == shapes.freepen) {
-                shape.editable = this.actionInfo.value() == shapes.freepen_edit ? true : false;
+            if (shape.type === shapes.freepen) {
+                shape.editable = this.actionInfo.value() === shapes.freepen_edit ? true : false;
             }
         });
 
-        if (this.actionInfo.key() == actions.nudge) {
+        if (this.actionInfo.key() === actions.nudge) {
             this.fader = this.getFader();
             this.fader.handleMouseDown(event);
             this.preFaderPos = this.fader.getCenter();
@@ -164,26 +164,27 @@ export class ContourDirective implements OnInit {
     }
 
     @HostListener('mouseup', ['$event']) onMouseUp(event: MouseEvent) {
-        if (this.shape != null)
-            this.shape.handleMouseUp(event)
+        if (this.shape != null) {
+            this.shape.handleMouseUp(event);
+        }
 
-        if (this.actionInfo.key() == actions.nudge) {
+        if (this.actionInfo.key() === actions.nudge) {
             this.fader = this.getFader();
             this.fader.handleMouseUp(event);
         }
 
-        let contours = []
+        let contours = [];
         this.myStage.children.forEach(contour => {
-            if (contour.type == shapes.freepen) {                
+            if (contour.type === shapes.freepen) {
                 contours.push(contour.cps);
             }
         });
-        
-        if (contours.length > 0){
+
+        if (contours.length > 0) {
             let roi_uid = this.activeROI.ROIId;
             let slice_index = this.sliceIndex;
             EventAggregator.Instance().contourCps.publish([roi_uid, slice_index, contours])
-        }        
+        }
     }
 
     @HostListener('mouseleave', ['$event']) onMouseLeave(event: MouseEvent) {
@@ -191,17 +192,17 @@ export class ContourDirective implements OnInit {
         this.myStage.removeChild(this.fader);
         this.fader = null;
         this.myStage.clear();
-        this.myStage.update()
+        this.myStage.update();
     }
 
     @HostListener('dblclick', ['$event']) onDbClick(event: MouseEvent) { }
 
     getShapeContainerInstance() {
-        if (this.actionInfo.key() != actions.shape) {
-            console.log('Can not create shape on this action')
+        if (this.actionInfo.key() !== actions.shape) {
+            console.log('Can not create shape on this action');
             return null;
         }
-        switch(this.actionInfo.value()) {
+        switch (this.actionInfo.value()) {
             case shapes.line:
                 return LineFactory.getInstance().createSharpContainer(this.myStage);
             case shapes.rectangle:
@@ -229,52 +230,51 @@ export class ContourDirective implements OnInit {
     clip(bridgeCps: Array<Array<Point>>) {
         let result = this.nudgeHelper.Push(this.getAllFreepenCps(), bridgeCps)
 
-        this.removeAllFreepens()
+        this.removeAllFreepens();
 
         result.forEach(contour => {
-            let cps = new Array()
+            let cps = new Array();
             contour.forEach(cp => {
-                cps.push(new Point(cp['X'], cp['Y']))
+                cps.push(new Point(cp['X'], cp['Y']));
             });
-            cps.push(cps[0].copy())
+            cps.push(cps[0].copy());
             let freepen = FreepenFactory.getInstance().createSharpContainer(this.myStage);
             freepen.setRoi(this.activeROI);
-            this.myStage.addChild(freepen)
-            freepen.setCps(cps)
-            freepen.update()
+            this.myStage.addChild(freepen);
+            freepen.setCps(cps);
+            freepen.update();
         });
     }
 
-    getAllFreepenCps():Array<Array<Point>> {
+    getAllFreepenCps(): Array<Array<Point>> {
         let cps = new Array();
         this.myStage.children.forEach(contour => {
             if (contour.type == shapes.freepen) {
-                cps.push(contour.cps)
+                cps.push(contour.cps);
             }
         });
         return cps;
     }
 
     removeAllFreepens() {
-        let freepens = []
+        let freepens = [];
         this.myStage.children.forEach(contour => {
-            if (contour.type == shapes.freepen) {
-                freepens.push(contour)
+            if (contour.type === shapes.freepen) {
+                freepens.push(contour);
             }
         });
         freepens.forEach(freepen => {
-            this.myStage.removeChild(freepen)
+            this.myStage.removeChild(freepen);
         });
-        this.myStage.clear()
-        this.myStage.update()
+        this.myStage.clear();
+        this.myStage.update();
     }
 
-    private CreatBridgeRectCps(prePoint: Point, currPoint:Point) {
-        let radius = this.fader.getRadius()
+    private CreatBridgeRectCps(prePoint: Point, currPoint: Point) {
+        let radius = this.fader.getRadius();
         let start = prePoint;
         let end = currPoint;
-        if (start.equals(end))
-        {
+        if (start.equals(end)) {
             return null;
         }
         let vec = [end.x - start.x, end.y - start.y];
@@ -282,11 +282,11 @@ export class ContourDirective implements OnInit {
         vec = [vec[0] / deno, vec[1] / deno];
         let crossVec = [-vec[1], vec[0]];
 
-        //the rect
-        let p1 = new Point(start.x + crossVec[0] * radius, start.y + crossVec[1] * radius)
-        let p2 = new Point(end.x + crossVec[0] * radius, end.y + crossVec[1] * radius)
-        let p3 = new Point(end.x - crossVec[0] * radius, end.y - crossVec[1] * radius)
-        let p4 = new Point(start.x - crossVec[0] * radius, start.y - crossVec[1] * radius)
+        // the rect
+        let p1 = new Point(start.x + crossVec[0] * radius, start.y + crossVec[1] * radius);
+        let p2 = new Point(end.x + crossVec[0] * radius, end.y + crossVec[1] * radius);
+        let p3 = new Point(end.x - crossVec[0] * radius, end.y - crossVec[1] * radius);
+        let p4 = new Point(start.x - crossVec[0] * radius, start.y - crossVec[1] * radius);
         return [p1, p2, p3, p4, p1.copy()];
     }
 }

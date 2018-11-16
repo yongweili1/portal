@@ -1,26 +1,15 @@
-import { Component, OnInit, ViewChild, Injector, ElementRef } from '@angular/core';
-import { ActivatedRoute, ParamMap } from '@angular/router';
-import { HttpClient } from "@angular/common/http";
-import { switchMap } from 'rxjs/operators';
-import { Router } from '@angular/router';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-
-import { ConMessageService } from './shared/service/conMessage.service';
-import { SeriesHttpService } from './shared/service/seriesHttp.service';
-import { RoiHttpService } from './shared/service/roiHttp.service';
-import { StorageService } from './shared/service/storage.service';
-import { ContouringService } from './shared/service/contouring.service';
-
-
-import { ToastService } from '../../core/toast.service';
-import { Page, PageRequest } from '../../shared/models';
-import { LazyExcuteHandler } from './lazy_excute_handler';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { EventAggregator } from '../../shared/common/event_aggregator';
+import { LazyExcuteHandler } from './lazy_excute_handler';
 import { ContourDto } from './shared/dtos/contour_dto';
-import { ROIConfig } from './shared/model/ROIConfig.model'
-import { NONE_TYPE } from '@angular/compiler/src/output/output_ast';
-import { element } from '@angular/core/src/render3/instructions';
+import { ROIConfig } from './shared/model/ROIConfig.model';
+import { ConMessageService } from './shared/service/conMessage.service';
+import { ContouringService } from './shared/service/contouring.service';
+import { RoiHttpService } from './shared/service/roiHttp.service';
+import { SeriesHttpService } from './shared/service/seriesHttp.service';
+import { StorageService } from './shared/service/storage.service';
 
 declare var $: any;
 declare var actions: any;
@@ -31,7 +20,7 @@ declare var actions: any;
     styleUrls: ['./contouring.component.less'],
 })
 export class ContouringComponent implements OnInit {
-    patientId: any = "";
+    patientId: any = '';
     imageX: any;
     imageY: any;
     imageZ: any;
@@ -47,22 +36,22 @@ export class ContouringComponent implements OnInit {
     lastImagePosition: any;
     seriList: any;
     actionInfo: any;
-    display: boolean = false;
+    display = false;
     seriesList: any;
-    hasLoadVolume: boolean = false;
+    hasLoadVolume = false;
     seriesId: any;
     transverseCanvas: any;
     saggitalCanvas: any;
     coronalCanvas: any;
-    ROIName:any = '';
-    ROIColor:any = '#FFFF00';
-    ROIList:Array<any>;
-    ROIListLength:number=0;
-    newROIDisplay: any =false;
+    ROIName: any = '';
+    ROIColor: any = '#FFFF00';
+    ROIList: Array<any>;
+    ROIListLength = 0;
+    newROIDisplay: any = false;
     manageROIDisplay: any = false;
-    editROIDisplay: any =false;
-    editROIConfig:ROIConfig = {ROIId:'',ROIName:'',ROIColor:''};
-    activeROIConfig:ROIConfig= {ROIId:'',ROIName:'',ROIColor:''};
+    editROIDisplay: any = false;
+    editROIConfig: ROIConfig = { ROIId: '', ROIName: '', ROIColor: '' };
+    activeROIConfig: ROIConfig = { ROIId: '', ROIName: '', ROIColor: '' };
     sliceIndex: any;
     lazyExcuteHandler: LazyExcuteHandler;
 
@@ -73,7 +62,6 @@ export class ContouringComponent implements OnInit {
 
     constructor(
         public activeRoute: ActivatedRoute,
-        //private seriesHttp: SeriesHttpService, 
         private conMessage: ConMessageService,
         public roiHttp: RoiHttpService,
         private storageService: StorageService,
@@ -82,73 +70,159 @@ export class ContouringComponent implements OnInit {
         private conService: ContouringService,
         private priMessageService: MessageService
     ) {
-        this.lazyExcuteHandler = new LazyExcuteHandler()
+        this.lazyExcuteHandler = new LazyExcuteHandler();
         EventAggregator.Instance().contourCps.subscribe(data => { this.saveContour(data); });
         EventAggregator.Instance().removeCps.subscribe(data => { this.deleteContours(data); });
     }
 
-    mainNewROI(){
+    ngOnInit() {
+        this.transverseCanvas = $(".a_class .icanvas").get(0);
+        this.saggitalCanvas = $(".c_class .icanvas").get(0);
+        this.coronalCanvas = $(".b_class .icanvas").get(0);
+        if (this.conMessage.seriList != undefined) {
+            this.seriList = this.conMessage.seriList[0];
+        }
+        this.conMessage.seriList$.subscribe(value => {
+            this.seriList = value;
+        });
+
+        EventAggregator.Instance().actionInfo.subscribe(value => {
+            this.actionInfo = value;
+            let toolsActionArray = ['zoom', 'pan', 'rotate', 'window']
+            let priActionArray = ['shape', 'clear', 'select', 'nudge']
+            if (this.actionInfo.key() == actions.locate) {
+                this.picLeft1.SetCanvasIndex("#crossCanvas", 10);
+                this.picLeft2.SetCanvasIndex("#crossCanvas", 10);
+                this.picLeft3.SetCanvasIndex("#crossCanvas", 10);
+                this.picLeft1.SetCanvasIndex("#primitiveDrawCanvas", 9);
+                this.picLeft2.SetCanvasIndex("#primitiveDrawCanvas", 9);
+                this.picLeft3.SetCanvasIndex("#primitiveDrawCanvas", 9);
+                this.picLeft1.SetCanvasIndex("#toolsCanvas", 8);
+                this.picLeft2.SetCanvasIndex("#toolsCanvas", 8);
+                this.picLeft3.SetCanvasIndex("#toolsCanvas", 8);
+            } else if (priActionArray.indexOf(this.actionInfo.key()) > -1) {
+                this.picLeft1.SetCanvasIndex("#crossCanvas", 9);
+                this.picLeft2.SetCanvasIndex("#crossCanvas", 9);
+                this.picLeft3.SetCanvasIndex("#crossCanvas", 9);
+                this.picLeft1.SetCanvasIndex("#primitiveDrawCanvas", 10);
+                this.picLeft2.SetCanvasIndex("#primitiveDrawCanvas", 10);
+                this.picLeft3.SetCanvasIndex("#primitiveDrawCanvas", 10);
+                this.picLeft1.SetCanvasIndex("#toolsCanvas", 8);
+                this.picLeft2.SetCanvasIndex("#toolsCanvas", 8);
+                this.picLeft3.SetCanvasIndex("#toolsCanvas", 8);
+            } else {
+                this.picLeft1.SetCanvasIndex("#crossCanvas", 9);
+                this.picLeft2.SetCanvasIndex("#crossCanvas", 9);
+                this.picLeft3.SetCanvasIndex("#crossCanvas", 9);
+                this.picLeft1.SetCanvasIndex("#primitiveDrawCanvas", 8);
+                this.picLeft2.SetCanvasIndex("#primitiveDrawCanvas", 8);
+                this.picLeft3.SetCanvasIndex("#primitiveDrawCanvas", 8);
+                this.picLeft1.SetCanvasIndex("#toolsCanvas", 10);
+                this.picLeft2.SetCanvasIndex("#toolsCanvas", 10);
+                this.picLeft3.SetCanvasIndex("#toolsCanvas", 10);
+            }
+        });
+        this.activeRoute.queryParams.subscribe(params => {
+            this.patientId = params.patientId;
+        });
+        let that = this;
+        let canvasSize: any = {};
+        $(window).resize(function () {
+            setTimeout(() => {
+                if (that.hasLoadVolume === true) {
+                    canvasSize['view_size'] = that.getCanvasSize();
+                    that.conService.noticeSize(canvasSize).subscribe(result => {
+                        if (result.body === "success" && that.hasLoadVolume === true) {
+                            that.seriesHttpService.GetSeries("", "", "all", "", "").subscribe(data => {
+                                data = JSON.parse(data);
+                                that.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair'], data['0']['graphic']['contours']);
+                                that.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair'], data['1']['graphic']['contours']);
+                                that.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair'], data['2']['graphic']['contours']);
+                                that.sliceIndex = data['0']['slice_index'];
+                                that.conMessage.SetSliceIndex(that.sliceIndex);
+                            });
+                        }
+                    });
+                }
+            }, 300);
+        });
+    }
+
+    ngAfterViewInit() {
+        if (this.patientId === '' || this.patientId === undefined || this.patientId == null) {
+            this.priMessageService.add({ severity: 'error', detail: 'Please select the patient first.' });
+        } else {
+            this.getSeriesList(this.patientId);
+        }
+    }
+
+    ngOnDestroy() {
+        this.hasLoadVolume = false;
+        this.seriesHttpService.UnLoadVolume(this.seriesId).subscribe();
+    }
+
+    mainNewROI() {
         let seriesuid = $("#seriesSelect").val();
-        if(seriesuid!='' && seriesuid!=null && seriesuid!=undefined){
+        if (seriesuid != '' && seriesuid != null && seriesuid != undefined) {
             this.newROIDisplay = true;
         }
-        else{
+        else {
             this.priMessageService.add({ severity: 'error', detail: 'Please select series first.' });
         }
     }
 
-    mainautoroi(){
+    mainautoroi() {
         let ROIData = {
             seriesuid: $("#seriesSelect").val(),
             ROIName: 'heart',
             ROIColor: '#FFFF00'
         }
-        this.roiHttp.CreateNewSegROI(ROIData).subscribe(result=>{
-            if(result.body.code == '200'){
+        this.roiHttp.CreateNewSegROI(ROIData).subscribe(result => {
+            if (result.body.code == '200') {
                 this.priMessageService.add({ severity: 'success', detail: `Save succeed.` });
                 this.ROIList = result.body.data;
                 this.ROIListLength = this.ROIList.length;
                 this.newROIDisplay = false;
                 let new_roi_id = 0;
                 this.ROIList.forEach(element => {
-                    if(element.ROIId > new_roi_id){
+                    if (element.ROIId > new_roi_id) {
                         this.activeROIConfig = element;
                     }
                 });
 
                 this.conMessage.SetActiveRoi(this.activeROIConfig);
             }
-            else{
+            else {
                 this.priMessageService.add({ severity: 'error', detail: `${result.msg}` });
             }
-        })        
+        })
     }
 
-    mainManageROI(){
+    mainManageROI() {
         let seriesuid = $("#seriesSelect").val();
-        if(seriesuid!='' && seriesuid!=null && seriesuid!=undefined){
+        if (seriesuid != '' && seriesuid != null && seriesuid != undefined) {
             this.manageROIDisplay = true;
-            this.roiHttp.GetROIConfig(seriesuid).subscribe(result=>{
-                if(result.code='200'){
+            this.roiHttp.GetROIConfig(seriesuid).subscribe(result => {
+                if (result.code = '200') {
                     this.ROIList = result['data'];
                     this.ROIListLength = this.ROIList.length;
                 }
             })
         }
-        else{
+        else {
             this.priMessageService.add({ severity: 'error', detail: 'Please select series first.' });
         }
     }
 
-    hideNewROIDia(){
+    hideNewROIDia() {
         this.ROIColor = '#FFFF00';
         this.ROIName = '';
     }
-    
-    saveROI(){
-        let colorReg = new RegExp('^\#\w{0,6}$','i')
+
+    saveROI() {
+        let colorReg = new RegExp('^\#\w{0,6}$', 'i')
         //TODO false这个地方color的正则有问题
-        if( false || this.ROIName==''){
+        if (false || this.ROIName == '') {
             this.priMessageService.add({ severity: 'error', detail: `Illegal input.` });
             return;
         }
@@ -157,95 +231,95 @@ export class ContouringComponent implements OnInit {
             ROIName: this.ROIName,
             ROIColor: this.ROIColor
         }
-        this.roiHttp.PostCreateNewROI(ROIData).subscribe(result=>{
-            if(result.body.code == '200'){
+        this.roiHttp.PostCreateNewROI(ROIData).subscribe(result => {
+            if (result.body.code == '200') {
                 this.priMessageService.add({ severity: 'success', detail: `Save succeed.` });
                 this.ROIList = result.body.data;
                 this.ROIListLength = this.ROIList.length;
                 this.newROIDisplay = false;
                 let new_roi_id = 0;
                 this.ROIList.forEach(element => {
-                    if(element.ROIId > new_roi_id){
+                    if (element.ROIId > new_roi_id) {
                         this.activeROIConfig = element;
                     }
                 });
 
                 this.conMessage.SetActiveRoi(this.activeROIConfig);
             }
-            else{
+            else {
                 this.priMessageService.add({ severity: 'error', detail: `${result.msg}` });
             }
         })
     }
 
-    updateROI(){
-        let colorReg = new RegExp('^\#\w{0,6}$','i')
+    updateROI() {
+        let colorReg = new RegExp('^\#\w{0,6}$', 'i')
         //TODO false这个地方color的正则有问题
-        if( false || this.editROIConfig.ROIName==''){
+        if (false || this.editROIConfig.ROIName == '') {
             this.priMessageService.add({ severity: 'error', detail: `Illegal input.` });
             return;
         }
-        this.roiHttp.UpdateROIConfig(this.editROIConfig).subscribe(result=>{
-            if(result.body.code == '200'){
+        this.roiHttp.UpdateROIConfig(this.editROIConfig).subscribe(result => {
+            if (result.body.code == '200') {
                 this.priMessageService.add({ severity: 'success', detail: `Save succeed.` });
                 this.ROIList = result.body.data;
                 this.ROIListLength = this.ROIList.length;
                 this.editROIDisplay = false;
             }
-            else{
+            else {
                 this.priMessageService.add({ severity: 'error', detail: `${result.msg}` });
             }
         })
     }
 
-    deleteROI(evt){
+    deleteROI(evt) {
         let ROIId = $(evt.target).parents('tr').find('.roi-id-td').text();
-        this.roiHttp.DeleteROIConfig(ROIId).subscribe(result=>{
-            if(result.code == '200'){
+        this.roiHttp.DeleteROIConfig(ROIId).subscribe(result => {
+            if (result.code == '200') {
                 this.priMessageService.add({ severity: 'success', detail: `Delete succeed.` });
                 this.ROIList = result.data;
                 this.ROIListLength = this.ROIList.length;
                 this.editROIDisplay = false;
             }
-            else{
+            else {
                 this.priMessageService.add({ severity: 'error', detail: `${result.msg}` });
             }
         }
         )
     }
 
-    deleteAllROI(){
+    deleteAllROI() {
         let ROIIdArray = []
-        this.ROIList.forEach(element=>{
+        this.ROIList.forEach(element => {
             ROIIdArray.push(element.ROIId);
         })
-        this.roiHttp.DeleteROIConfig(ROIIdArray).subscribe(result=>{
-            if(result.code == '200'){
+        this.roiHttp.DeleteROIConfig(ROIIdArray).subscribe(result => {
+            if (result.code == '200') {
                 this.priMessageService.add({ severity: 'success', detail: `Delete succeed.` });
                 this.ROIList = result.data;
                 this.ROIListLength = 0;
             }
-            else{
+            else {
                 this.priMessageService.add({ severity: 'error', detail: `${result.msg}` });
             }
         }
         )
     }
 
-    hideManageROIDia(){
+    hideManageROIDia() {
 
     }
 
-    changeROIVisible(evt){
+    changeROIVisible(evt) {
         evt.target.classList.toggle("fa-eye-slash");
     }
 
-    onClickROIItem(evt){
+    onClickROIItem(evt) {
         $(".roi-select-tr").removeClass('roi-select-tr');
         $(evt.target).parents('tr').addClass('roi-select-tr');
         this.activeROIConfig.ROIId = $(evt.target).parents('tr').find('.roi-id-td').text();
         this.ROIList.forEach(element => {
-            if(this.activeROIConfig.ROIId == element.ROIId){
+            if (this.activeROIConfig.ROIId == element.ROIId) {
                 this.activeROIConfig.ROIName = element.ROIName;
                 this.activeROIConfig.ROIColor = element.ROIColor;
             }
@@ -253,11 +327,11 @@ export class ContouringComponent implements OnInit {
         this.conMessage.SetActiveRoi(this.activeROIConfig);
     }
 
-    editROI(evt){
+    editROI(evt) {
         this.editROIConfig.ROIId = $(evt.target).parents('tr').find('.roi-id-td').text();
-        this.editROIDisplay=true;
+        this.editROIDisplay = true;
         this.ROIList.forEach(element => {
-            if(this.editROIConfig.ROIId == element.ROIId){
+            if (this.editROIConfig.ROIId == element.ROIId) {
                 this.editROIConfig.ROIName = element.ROIName;
                 this.editROIConfig.ROIColor = element.ROIColor;
             }
@@ -373,90 +447,6 @@ export class ContouringComponent implements OnInit {
 
     }
 
-    ngOnInit() {
-        this.transverseCanvas = $(".a_class .icanvas").get(0);
-        this.saggitalCanvas = $(".c_class .icanvas").get(0);
-        this.coronalCanvas = $(".b_class .icanvas").get(0);
-        if (this.conMessage.seriList != undefined) {
-            this.seriList = this.conMessage.seriList[0];
-        }
-        this.conMessage.seriList$.subscribe(value => {
-            this.seriList = value;
-        });
-
-        EventAggregator.Instance().actionInfo.subscribe(value => {
-            this.actionInfo = value;
-            let toolsActionArray = ['zoom', 'pan','rotate','window']
-            let priActionArray = ['shape', 'clear','select', 'nudge']
-            if (this.actionInfo.key() == actions.locate ) {
-                this.picLeft1.SetCanvasIndex("#crossCanvas", 10);
-                this.picLeft2.SetCanvasIndex("#crossCanvas", 10);
-                this.picLeft3.SetCanvasIndex("#crossCanvas", 10);
-                this.picLeft1.SetCanvasIndex("#primitiveDrawCanvas", 9);
-                this.picLeft2.SetCanvasIndex("#primitiveDrawCanvas", 9);
-                this.picLeft3.SetCanvasIndex("#primitiveDrawCanvas", 9);
-                this.picLeft1.SetCanvasIndex("#toolsCanvas", 8);
-                this.picLeft2.SetCanvasIndex("#toolsCanvas", 8);
-                this.picLeft3.SetCanvasIndex("#toolsCanvas", 8);
-            } 
-            else if(priActionArray.indexOf(this.actionInfo.key())>-1){
-                this.picLeft1.SetCanvasIndex("#crossCanvas", 9);
-                this.picLeft2.SetCanvasIndex("#crossCanvas", 9);
-                this.picLeft3.SetCanvasIndex("#crossCanvas", 9);
-                this.picLeft1.SetCanvasIndex("#primitiveDrawCanvas", 10);
-                this.picLeft2.SetCanvasIndex("#primitiveDrawCanvas", 10);
-                this.picLeft3.SetCanvasIndex("#primitiveDrawCanvas", 10);
-                this.picLeft1.SetCanvasIndex("#toolsCanvas", 8);
-                this.picLeft2.SetCanvasIndex("#toolsCanvas", 8);
-                this.picLeft3.SetCanvasIndex("#toolsCanvas", 8);
-            }
-            else{
-                this.picLeft1.SetCanvasIndex("#crossCanvas", 9);
-                this.picLeft2.SetCanvasIndex("#crossCanvas", 9);
-                this.picLeft3.SetCanvasIndex("#crossCanvas", 9);
-                this.picLeft1.SetCanvasIndex("#primitiveDrawCanvas", 8);
-                this.picLeft2.SetCanvasIndex("#primitiveDrawCanvas", 8);
-                this.picLeft3.SetCanvasIndex("#primitiveDrawCanvas", 8);
-                this.picLeft1.SetCanvasIndex("#toolsCanvas", 10);
-                this.picLeft2.SetCanvasIndex("#toolsCanvas", 10);
-                this.picLeft3.SetCanvasIndex("#toolsCanvas", 10);
-            }
-        });
-        this.activeRoute.queryParams.subscribe(params => {
-            this.patientId = params.patientId;
-        });
-        let that = this;
-        let canvasSize: any = {};
-        $(window).resize(function () {
-            setTimeout(() => {
-                if (that.hasLoadVolume == true) {
-                    canvasSize['view_size'] = that.getCanvasSize();
-                    that.conService.noticeSize(canvasSize).subscribe(result => {
-                        if (result.body == "success" && that.hasLoadVolume == true) {
-                            that.seriesHttpService.GetSeries("", "", "all", "", "").subscribe(data => {
-                                data = JSON.parse(data);
-                                that.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair'], data['0']['graphic']['contours']);
-                                that.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair'], data['1']['graphic']['contours']);
-                                that.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair'], data['2']['graphic']['contours']);
-                                this.sliceIndex = data['0']['slice_index'];         
-                                this.conMessage.SetSliceIndex(this.sliceIndex); 
-                            })
-                        }
-                    });
-                }
-            }, 300);
-        });
-    }
-
-    ngAfterViewInit() {
-        if (this.patientId == "" || this.patientId == undefined || this.patientId == null) {
-            this.priMessageService.add({ severity: 'error', detail: 'Please select the patient first.' });
-        }
-        else {
-            this.getSeriesList(this.patientId);
-        }
-    }
-
     getCanvasSize() {
         let view_size: any = {};
         view_size['transverse'] = [this.transverseCanvas.width, this.transverseCanvas.height];
@@ -511,9 +501,9 @@ export class ContouringComponent implements OnInit {
         }
     }
 
-    mainWWWLPro2(evt){
+    mainWWWLPro2(evt) {
         let validFlag = evt[2];
-        if(validFlag == 'true'){
+        if (validFlag == 'true') {
             let ww = evt[0];
             let wl = evt[1];
             let that = this;
@@ -526,8 +516,8 @@ export class ContouringComponent implements OnInit {
                 })
             }
         }
-        else{
-            this.priMessageService.add({severity:'error', detail:'ww wl illegal.'});
+        else {
+            this.priMessageService.add({ severity: 'error', detail: 'ww wl illegal.' });
         }
     }
 
@@ -631,8 +621,8 @@ export class ContouringComponent implements OnInit {
                             that.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair'], data['0']['graphic']['contours'], data['0']['wwwl']);
                             that.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair'], data['1']['graphic']['contours'], data['1']['wwwl']);
                             that.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair'], data['2']['graphic']['contours'], data['2']['wwwl']);
-                            this.sliceIndex = data['0']['slice_index'];         
-                            this.conMessage.SetSliceIndex(this.sliceIndex); 
+                            this.sliceIndex = data['0']['slice_index'];
+                            this.conMessage.SetSliceIndex(this.sliceIndex);
                             EventAggregator.Instance().sliceIndex.publish(this.sliceIndex);
                             this.priMessageService.add({ severity: 'success', detail: 'Load succeed.' });
                         }, (error) => {
@@ -643,9 +633,9 @@ export class ContouringComponent implements OnInit {
                         this.seriesId = seriesId;
                     }
                 });
-            } else if(value == "rebuild") {
+            } else if (value == "rebuild") {
                 this.priMessageService.add({ severity: 'error', detail: 'Load failed, rebuiding now, please wait' });
-                this.seriesHttpService.ReLoadVolume(seriesId).subscribe(value=>{
+                this.seriesHttpService.ReLoadVolume(seriesId).subscribe(value => {
                     value = JSON.parse(value)
                     if (value.length == 3) {
                         this.conService.noticeSize(canvasSize).subscribe(result => {
@@ -655,8 +645,8 @@ export class ContouringComponent implements OnInit {
                                     that.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair'], data['0']['graphic']['contours'], data['0']['wwwl']);
                                     that.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair'], data['1']['graphic']['contours'], data['1']['wwwl']);
                                     that.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair'], data['2']['graphic']['contours'], data['2']['wwwl']);
-                                    this.sliceIndex = data['0']['slice_index'];         
-                                    this.conMessage.SetSliceIndex(this.sliceIndex); 
+                                    this.sliceIndex = data['0']['slice_index'];
+                                    this.conMessage.SetSliceIndex(this.sliceIndex);
                                     EventAggregator.Instance().sliceIndex.publish(this.sliceIndex);
                                     this.priMessageService.add({ severity: 'success', detail: 'Load succeed.' });
                                 }, (error) => {
@@ -667,30 +657,26 @@ export class ContouringComponent implements OnInit {
                                 this.seriesId = seriesId;
                             }
                         });
-                    } else{
+                    } else {
                         this.priMessageService.add({ severity: 'error', detail: `Rebuild failed. ${value}` });
                     }
                 })
-            } else{
+            } else {
                 this.priMessageService.add({ severity: 'error', detail: 'Load failed.' });
             }
         })
     }
 
     fb(a) {
-        this.load.loadbar(a)
+        this.load.loadbar(a);
     }
 
     message(w) {
         this.load.message(w);
     }
-    ngOnDestroy() {
-        this.hasLoadVolume = false;
-        this.seriesHttpService.UnLoadVolume(this.seriesId).subscribe();
-    }
 
-    saveContour(data:any) {
-        if (data.length > 0){
+    saveContour(data: any) {
+        if (data.length > 0) {
             console.log('begin save contour');
             let dto = new ContourDto();
 
@@ -701,11 +687,11 @@ export class ContouringComponent implements OnInit {
             this.conService.saveContour(dto).subscribe(response => {
                 console.log(response)
             });
-        }        
+        }
     }
 
-    deleteContours(data:any) {
-        if (data.length > 0){
+    deleteContours(data: any) {
+        if (data.length > 0) {
             console.log('begin delete contour');
             let dto = new ContourDto();
 
@@ -715,6 +701,6 @@ export class ContouringComponent implements OnInit {
             this.conService.deleteContours(dto).subscribe(response => {
                 console.log(response)
             });
-        }        
+        }
     }
 }
