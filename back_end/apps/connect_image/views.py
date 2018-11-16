@@ -16,7 +16,7 @@ from back_end.settings import STATIC_ROOT
 from serve.DBAccess.models import Study
 from serve.util.buildVolume import DicomToVolume
 from serve.DBAccess.upload_vol_to_db import UploadVolume
-from serve.static_parameters.setFilePath import filepath
+from serve.static_parameters.setFilePath import file_path_ferry
 
 
 class Home(APIView):
@@ -67,7 +67,7 @@ class MacroRecording(APIView):
         elif macro_status == 'finish':
             macro_name = str(user_name) + str(time.time())
             scriptname = '{}.py'.format(macro_name)
-            scriptpath = STATIC_ROOT + '\\serve\\macro\\' + scriptname
+            scriptpath = STATIC_ROOT + '/serve/macro/' + scriptname
 
             try:
                 with open(scriptpath, 'a+') as f:
@@ -170,7 +170,7 @@ class LoadVolume(APIView):
         if request_data is None:
             return Response('请携带有效的seriesuid')
         seriesuid = request_data['params']['updates'][0]['value']
-        seriespath = filepath.splitDicomPath + str(seriesuid)
+        seriespath = file_path_ferry.splitDicomPath + str(seriesuid)
 
         if not os.path.exists(seriespath):
             return Response('请确认series数据是否存在')
