@@ -73,9 +73,9 @@ export class ContouringComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.transverseCanvas = $(".a_class .icanvas").get(0);
-        this.saggitalCanvas = $(".c_class .icanvas").get(0);
-        this.coronalCanvas = $(".b_class .icanvas").get(0);
+        this.transverseCanvas = $(".a_class .imageCanvas").get(0);
+        this.saggitalCanvas = $(".c_class .imageCanvas").get(0);
+        this.coronalCanvas = $(".b_class .imageCanvas").get(0);
         if (this.conMessage.seriList != undefined) {
             this.seriList = this.conMessage.seriList[0];
         }
@@ -125,7 +125,7 @@ export class ContouringComponent implements OnInit {
         const canvasSize: any = {};
         $(window).resize(function () {
             setTimeout(() => {
-                if (that.hasLoadVolume === true) {
+                if (that.hasLoadVolume) {
                     canvasSize['view_size'] = that.getCanvasSize();
                     that.conService.noticeSize(canvasSize).subscribe(result => {
                         if (result.body === "success" && that.hasLoadVolume) {
@@ -446,13 +446,13 @@ export class ContouringComponent implements OnInit {
         this.picLeft3.addZoomEvent();
     }
 
-    mainZoomPro(evt) {
-        console.log(evt);
+    handleZoom(e) {
+        console.log(e);
         if (!this.hasLoadVolume) {
             return;
         }
         const that = this;
-        this.seriesHttpService.GetZoomPic(evt[0], evt[1]).subscribe(result => {
+        this.seriesHttpService.GetZoomPic(e[0], e[1]).subscribe(result => {
             result = JSON.parse(result);
             that.updateCells(result);
         });
@@ -464,13 +464,13 @@ export class ContouringComponent implements OnInit {
         this.picLeft3.addChangeWlEvent();
     }
 
-    mainWWWLPro(evt) {
-        console.log(evt);
+    handleWwwl(e) {
+        console.log(e);
         if (!this.hasLoadVolume) {
             return;
         }
         const that = this;
-        this.seriesHttpService.GetWindowPic(evt[0], evt[1], evt[2]).subscribe(result => {
+        this.seriesHttpService.GetWindowPic(e[0], e[1], e[2]).subscribe(result => {
             result = JSON.parse(result);
             that.updateCells(result, true);
         });
@@ -497,13 +497,13 @@ export class ContouringComponent implements OnInit {
         this.picLeft3.addPanEvent();
     }
 
-    mainPanPro(evt) {
-        console.log(evt);
+    handlePan(e) {
+        console.log(e);
         if (!this.hasLoadVolume) {
             return;
         }
         const that = this;
-        this.seriesHttpService.GetPanPic(evt[0], evt[1], evt[2]).subscribe(result => {
+        this.seriesHttpService.GetPanPic(e[0], e[1], e[2]).subscribe(result => {
             result = JSON.parse(result);
             that.updateCells(result);
         });
@@ -515,13 +515,13 @@ export class ContouringComponent implements OnInit {
         this.picLeft3.addRotateEvent();
     }
 
-    mainRotatePro(evt) {
-        console.log(evt);
+    handleRotate(e) {
+        console.log(e);
         if (!this.hasLoadVolume) {
             return;
         }
         const that = this;
-        this.seriesHttpService.GetRotatePic(evt[0], evt[1], evt[2]).subscribe(result => {
+        this.seriesHttpService.GetRotatePic(e[0], e[1], e[2]).subscribe(result => {
             result = JSON.parse(result);
             that.updateCells(result);
         });
@@ -566,7 +566,7 @@ export class ContouringComponent implements OnInit {
     }
 
     loadSeries() {
-        const transverseCanvas = $('.a_class .icanvas').get(0);
+        const transverseCanvas = $('.a_class .imageCanvas').get(0);
         const seriesId: any = $('#seriesSelect').val();
         const canvasSize: any = {};
         canvasSize['view_size'] = this.getCanvasSize();

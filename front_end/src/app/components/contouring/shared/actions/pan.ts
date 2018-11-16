@@ -14,13 +14,8 @@ export class Pan extends BaseAction {
     }
 
     handleMouseMove(evt) {
-        // if (!this.lazyExcuteHandler.canExcuteByCount()) return;
-        // let curPos = [evt.clientX, evt.clientY];
-        // that.panReq.emit([this.tag, this.prePos, curPos]);
-        // this.prePos = curPos;
     }
 
     handleMouseUp(evt) {
-        
     }
 }

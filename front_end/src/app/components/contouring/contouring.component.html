@@ -1,6 +1,5 @@
 <div class="my-page">
     <div class="top_Button">
-        <!-- <mpt-contouring-top-bar (zoom)="mainzoom()" (wlww)="mainwlww()" (move)="mainmove()" (sfile)="sfile()" (plan)="addPlan()" (loadSeries)="loadSeries()" (auto)="auto($event)" (remouse)="remouse($event)"></mpt-contouring-top-bar> -->
         <mpt-contouring-top-bar (loadSeries)="loadSeries()" (clear)="mainClearPri()" (hideList)="mainHideList()"
             (newroi)="mainNewROI()" (manageroi)="mainManageROI()" (zoom)="mainzoom()" (pan)="mainpan()" (rotate)="mainrotate()"
             (autoroi)="mainautoroi()" (reset)="mainreset()" (wlww)="mainWLWW()" (setcenter)="mainSetCenterPro()"
@@ -9,14 +8,11 @@
 
     <div id="threebmp" class="viewport">
         <div class='cell_group u-3of5 horizontal'>
-            <div class='main_cell' style="background-color:pink">
-                <mpt-cell #picLeft1 class="a_class" [tag]="'transverse'" [imageWidth]="imageX" [imageHeight]="imageY"
-                    [pageindex]="sliceX" [wl]="wl" [ww]="ww" [spacingX]="spacingX" [spacingY]="spacingY" [gap]="gap"
-                    [sliceAll]="sliceAll" [pixelRepresentation]="pixelRepresentation" [rescaleSlope]="rescaleSlope"
-                    [rescaleIntercept]="rescaleIntercept" [firstImagePosition]="firstImagePosition" [lastImagePosition]="lastImagePosition"
-                    [hasLoadVolume]="hasLoadVolume" (changeCross)="transverseChange($event)" (twoCross)="aCross($event)"
-                    (message)="message($event)" (zoomReq)="mainZoomPro($event)" (panReq)="mainPanPro($event)" (rotateReq)="mainRotatePro($event)"
-                    (wwwlReq)="mainWWWLPro($event)" (wwwlReq2)="mainWWWLPro2($event)">
+            <div class='main_cell'>
+                <mpt-cell #picLeft1 class="a_class" [tag]="'transverse'" [wl]="wl" [ww]="ww" [hasLoadVolume]="hasLoadVolume"
+                    (onLocate)="transverseChange($event)" (onScroll)="aCross($event)" (onZoom)="handleZoom($event)"
+                    (onPan)="handlePan($event)" (onRotate)="handleRotate($event)" (onChangeWwwl)="handleWwwl($event)"
+                    (wwwlReq2)="mainWWWLPro2($event)">
                 </mpt-cell>
             </div>
 
@@ -26,25 +22,19 @@
         </div>
 
         <div class='cell_group u-2of5'>
-            <div class='cell' style="background-color:green">
-                <mpt-cell #picLeft2 class="b_class" [tag]="'coronal'" [imageWidth]="imageX" [imageHeight]="imageZ"
-                    [pageindex]="sliceY" [wl]="wl" [ww]="ww" [spacingX]="spacingX" [spacingY]="spacingZ" [gap]="gap"
-                    [sliceAll]="sliceAll" [pixelRepresentation]="pixelRepresentation" [rescaleSlope]="rescaleSlope"
-                    [rescaleIntercept]="rescaleIntercept" [firstImagePosition]="firstImagePosition" [lastImagePosition]="lastImagePosition"
-                    [hasLoadVolume]="hasLoadVolume" (changeCross)="coronalChange($event)" (twoCross)="bCross($event)"
-                    (zoomReq)="mainZoomPro($event)" (panReq)="mainPanPro($event)" (rotateReq)="mainRotatePro($event)"
-                    (wwwlReq)="mainWWWLPro($event)" (wwwlReq2)="mainWWWLPro2($event)">
+            <div class='cell'>
+                <mpt-cell #picLeft2 class="b_class" [tag]="'coronal'" [wl]="wl" [ww]="ww" [hasLoadVolume]="hasLoadVolume"
+                    (onLocate)="coronalChange($event)" (onScroll)="bCross($event)" (onZoom)="handleZoom($event)"
+                    (onPan)="handlePan($event)" (onRotate)="handleRotate($event)" (onChangeWwwl)="handleWwwl($event)"
+                    (wwwlReq2)="mainWWWLPro2($event)">
                 </mpt-cell>
             </div>
 
-            <div class='cell' style="background-color:yellow">
-                <mpt-cell #picLeft3 class="c_class" [tag]="'saggital'" [imageWidth]="imageY" [imageHeight]="imageZ"
-                    [pageindex]="sliceZ" [wl]="wl" [ww]="ww" [spacingX]="spacingY" [spacingY]="spacingZ" [gap]="gap"
-                    [sliceAll]="sliceAll" [pixelRepresentation]="pixelRepresentation" [rescaleSlope]="rescaleSlope"
-                    [rescaleIntercept]="rescaleIntercept" [firstImagePosition]="firstImagePosition" [lastImagePosition]="lastImagePosition"
-                    [hasLoadVolume]="hasLoadVolume" (changeCross)="saggitalChange($event)" (twoCross)="cCross($event)"
-                    (zoomReq)="mainZoomPro($event)" (panReq)="mainPanPro($event)" (rotateReq)="mainRotatePro($event)"
-                    (wwwlReq)="mainWWWLPro($event)" (wwwlReq2)="mainWWWLPro2($event)">
+            <div class='cell'>
+                <mpt-cell #picLeft3 class="c_class" [tag]="'saggital'" [wl]="wl" [ww]="ww" [hasLoadVolume]="hasLoadVolume"
+                    (onLocate)="saggitalChange($event)" (onScroll)="cCross($event)" (onZoom)="handleZoom($event)"
+                    (onPan)="handlePan($event)" (onRotate)="handleRotate($event)" (onChangeWwwl)="handleWwwl($event)"
+                    (wwwlReq2)="mainWWWLPro2($event)">
                 </mpt-cell>
             </div>
         </div>
