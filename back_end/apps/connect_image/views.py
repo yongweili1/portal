@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import os
 import time
+import json
 
 from django.shortcuts import render
 # Create your views here.
@@ -277,7 +278,12 @@ class GetImage(APIView):
         if rst.success is False:
             return Response(rst.comment)
 
-        return Response(rst.kwargs)
+        a = rst.kwargs
+        b = json.loads(a)
+        # b.get('0')[u'graphic']['contours'] = [{"y": 327, "x": 656}, {"y": 327, "x": 649}, {"y": 323, "x": 634}, {"y": 321, "x": 619}, {"y": 316, "x": 606}, {"y": 308, "x": 594}, {"y": 296, "x": 585}, {"y": 278, "x": 575}, {"y": 259, "x": 568}, {"y": 243, "x": 563}, {"y": 230, "x": 560}, {"y": 214, "x": 560}, {"y": 192, "x": 562}, {"y": 158, "x": 577}, {"y": 145, "x": 584}, {"y": 137, "x": 592}, {"y": 130, "x": 602}, {"y": 124, "x": 617}, {"y": 118, "x": 639}, {"y": 117, "x": 667}, {"y": 117, "x": 693}, {"y": 117, "x": 715}, {"y": 134, "x": 749}, {"y": 146, "x": 759}, {"y": 167, "x": 771}, {"y": 181, "x": 774}, {"y": 198, "x": 774}, {"y": 223, "x": 774}, {"y": 247, "x": 774}, {"y": 268, "x": 769}, {"y": 285, "x": 763}, {"y": 299, "x": 755}, {"y": 309, "x": 749}, {"y": 318, "x": 740}, {"y": 325, "x": 732}, {"y": 329, "x": 724}, {"y": 333, "x": 714}, {"y": 335, "x": 707}, {"y": 336, "x": 698}, {"y": 337, "x": 690}, {"y": 338, "x": 680}, {"y": 340, "x": 667}, {"y": 340, "x": 658}, {"y": 340, "x": 655}, {"y": 340, "x": 653}, {"y": 340, "x": 652}, {"y": 340, "x": 651}, {"y": 327, "x": 656}]
+        c = json.dumps(b)
+
+        return Response(c)
 
 
 class ChangeColor(APIView):

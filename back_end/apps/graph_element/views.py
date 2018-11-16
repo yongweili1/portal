@@ -16,14 +16,23 @@ class GraphElement(APIView):
         with open(path, 'wb') as f:
             f.write(json.dumps(cps))
 
+    def __read_from_file(self, path):
+        pass
+
     def get(self, request):
-        roi_uid = request.data.get('roi_uid', None)
-        slice_index = request.data.get('slice_index', None)
+        roi_uid = request.GET.get('roi_uid', None)
+        slice_index = request.GET.get('slice_index', None)
         cps = None
         try:
             cps = Contour.objects.filter(imageuid=slice_index, roiuid=roi_uid)
         except Exception as ex:
             print ex.message
+        for cp in cps:
+            series_query = Series.objects.filter(contouruid=cp.contouruid)
+            if len(series_query) == 0:
+                return Response('数据库无此seriesuid')
+            volumepath = series_query[0].cpspath
+
         rsp = {
             'code': '200',
             'msg': 'success',
