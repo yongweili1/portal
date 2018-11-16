@@ -90,9 +90,9 @@ export class ContouringComponent implements OnInit {
                 this.picLeft1.SetCanvasIndex("#crossCanvas", 10);
                 this.picLeft2.SetCanvasIndex("#crossCanvas", 10);
                 this.picLeft3.SetCanvasIndex("#crossCanvas", 10);
-                this.picLeft1.SetCanvasIndex("#primitiveDrawCanvas", 9);
-                this.picLeft2.SetCanvasIndex("#primitiveDrawCanvas", 9);
-                this.picLeft3.SetCanvasIndex("#primitiveDrawCanvas", 9);
+                this.picLeft1.SetCanvasIndex("#overlayCanvas", 9);
+                this.picLeft2.SetCanvasIndex("#overlayCanvas", 9);
+                this.picLeft3.SetCanvasIndex("#overlayCanvas", 9);
                 this.picLeft1.SetCanvasIndex("#toolsCanvas", 8);
                 this.picLeft2.SetCanvasIndex("#toolsCanvas", 8);
                 this.picLeft3.SetCanvasIndex("#toolsCanvas", 8);
@@ -100,9 +100,9 @@ export class ContouringComponent implements OnInit {
                 this.picLeft1.SetCanvasIndex("#crossCanvas", 9);
                 this.picLeft2.SetCanvasIndex("#crossCanvas", 9);
                 this.picLeft3.SetCanvasIndex("#crossCanvas", 9);
-                this.picLeft1.SetCanvasIndex("#primitiveDrawCanvas", 10);
-                this.picLeft2.SetCanvasIndex("#primitiveDrawCanvas", 10);
-                this.picLeft3.SetCanvasIndex("#primitiveDrawCanvas", 10);
+                this.picLeft1.SetCanvasIndex("#overlayCanvas", 10);
+                this.picLeft2.SetCanvasIndex("#overlayCanvas", 10);
+                this.picLeft3.SetCanvasIndex("#overlayCanvas", 10);
                 this.picLeft1.SetCanvasIndex("#toolsCanvas", 8);
                 this.picLeft2.SetCanvasIndex("#toolsCanvas", 8);
                 this.picLeft3.SetCanvasIndex("#toolsCanvas", 8);
@@ -110,9 +110,9 @@ export class ContouringComponent implements OnInit {
                 this.picLeft1.SetCanvasIndex("#crossCanvas", 9);
                 this.picLeft2.SetCanvasIndex("#crossCanvas", 9);
                 this.picLeft3.SetCanvasIndex("#crossCanvas", 9);
-                this.picLeft1.SetCanvasIndex("#primitiveDrawCanvas", 8);
-                this.picLeft2.SetCanvasIndex("#primitiveDrawCanvas", 8);
-                this.picLeft3.SetCanvasIndex("#primitiveDrawCanvas", 8);
+                this.picLeft1.SetCanvasIndex("#overlayCanvas", 8);
+                this.picLeft2.SetCanvasIndex("#overlayCanvas", 8);
+                this.picLeft3.SetCanvasIndex("#overlayCanvas", 8);
                 this.picLeft1.SetCanvasIndex("#toolsCanvas", 10);
                 this.picLeft2.SetCanvasIndex("#toolsCanvas", 10);
                 this.picLeft3.SetCanvasIndex("#toolsCanvas", 10);

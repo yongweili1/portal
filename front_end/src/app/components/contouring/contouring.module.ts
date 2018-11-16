@@ -26,7 +26,7 @@ import { EasyUIModule } from 'ng-easyui/components/easyui/easyui.module';
 
 import { ContouringComponent } from './contouring.component';
 import { ContouringService } from './shared/service/contouring.service';
-import { PicTransverseComponent } from './pic-transverse/pic-transverse.component';
+import { CellComponent } from './cell/cell.component';
 import { ContouringTopBarComponent } from './contouring-top-bar/contouring-top-bar.component';
 import { ConMessageService } from './shared/service/conMessage.service';
 import { PatientHttpService } from './shared/service/patientHttp.service';
@@ -68,7 +68,7 @@ import { SliderBarComponent } from './slider-bar/slider-bar.component';
   ],
   declarations: [
     ContouringComponent,
-    PicTransverseComponent,
+    CellComponent,
     ContouringTopBarComponent,
     ContourDirective,
     SeriesListComponent,

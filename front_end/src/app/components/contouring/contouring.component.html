@@ -10,14 +10,14 @@
     <div id="threebmp" class="viewport">
         <div class='cell_group u-3of5 horizontal'>
             <div class='main_cell' style="background-color:pink">
-                <mpt-pic-transverse #picLeft1 class="a_class" [tag]="'transverse'" [imageWidth]="imageX" [imageHeight]="imageY"
+                <mpt-cell #picLeft1 class="a_class" [tag]="'transverse'" [imageWidth]="imageX" [imageHeight]="imageY"
                     [pageindex]="sliceX" [wl]="wl" [ww]="ww" [spacingX]="spacingX" [spacingY]="spacingY" [gap]="gap"
                     [sliceAll]="sliceAll" [pixelRepresentation]="pixelRepresentation" [rescaleSlope]="rescaleSlope"
                     [rescaleIntercept]="rescaleIntercept" [firstImagePosition]="firstImagePosition" [lastImagePosition]="lastImagePosition"
                     [hasLoadVolume]="hasLoadVolume" (changeCross)="transverseChange($event)" (twoCross)="aCross($event)"
                     (message)="message($event)" (zoomReq)="mainZoomPro($event)" (panReq)="mainPanPro($event)" (rotateReq)="mainRotatePro($event)"
                     (wwwlReq)="mainWWWLPro($event)" (wwwlReq2)="mainWWWLPro2($event)">
-                </mpt-pic-transverse>
+                </mpt-cell>
             </div>
 
             <div class='slider_bar'>
@@ -27,25 +27,25 @@
 
         <div class='cell_group u-2of5'>
             <div class='cell' style="background-color:green">
-                <mpt-pic-transverse #picLeft2 class="b_class" [tag]="'coronal'" [imageWidth]="imageX" [imageHeight]="imageZ"
+                <mpt-cell #picLeft2 class="b_class" [tag]="'coronal'" [imageWidth]="imageX" [imageHeight]="imageZ"
                     [pageindex]="sliceY" [wl]="wl" [ww]="ww" [spacingX]="spacingX" [spacingY]="spacingZ" [gap]="gap"
                     [sliceAll]="sliceAll" [pixelRepresentation]="pixelRepresentation" [rescaleSlope]="rescaleSlope"
                     [rescaleIntercept]="rescaleIntercept" [firstImagePosition]="firstImagePosition" [lastImagePosition]="lastImagePosition"
                     [hasLoadVolume]="hasLoadVolume" (changeCross)="coronalChange($event)" (twoCross)="bCross($event)"
                     (zoomReq)="mainZoomPro($event)" (panReq)="mainPanPro($event)" (rotateReq)="mainRotatePro($event)"
                     (wwwlReq)="mainWWWLPro($event)" (wwwlReq2)="mainWWWLPro2($event)">
-                </mpt-pic-transverse>
+                </mpt-cell>
             </div>
 
             <div class='cell' style="background-color:yellow">
-                <mpt-pic-transverse #picLeft3 class="c_class" [tag]="'saggital'" [imageWidth]="imageY" [imageHeight]="imageZ"
+                <mpt-cell #picLeft3 class="c_class" [tag]="'saggital'" [imageWidth]="imageY" [imageHeight]="imageZ"
                     [pageindex]="sliceZ" [wl]="wl" [ww]="ww" [spacingX]="spacingY" [spacingY]="spacingZ" [gap]="gap"
                     [sliceAll]="sliceAll" [pixelRepresentation]="pixelRepresentation" [rescaleSlope]="rescaleSlope"
                     [rescaleIntercept]="rescaleIntercept" [firstImagePosition]="firstImagePosition" [lastImagePosition]="lastImagePosition"
                     [hasLoadVolume]="hasLoadVolume" (changeCross)="saggitalChange($event)" (twoCross)="cCross($event)"
                     (zoomReq)="mainZoomPro($event)" (panReq)="mainPanPro($event)" (rotateReq)="mainRotatePro($event)"
                     (wwwlReq)="mainWWWLPro($event)" (wwwlReq2)="mainWWWLPro2($event)">
-                </mpt-pic-transverse>
+                </mpt-cell>
             </div>
         </div>
     </div>

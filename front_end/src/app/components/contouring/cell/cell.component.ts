@@ -9,11 +9,11 @@ declare var createjs: any;
 declare var actions: any;
 
 @Component({
-    selector: 'mpt-pic-transverse',
-    templateUrl: './pic-transverse.component.html',
-    styleUrls: ['./pic-transverse.component.less']
+    selector: 'mpt-cell',
+    templateUrl: './cell.component.html',
+    styleUrls: ['./cell.component.less']
 })
-export class PicTransverseComponent implements OnChanges {
+export class CellComponent implements OnChanges {
 
     scale = 1.0; transX = 0.0; transY = 0.0;
     canvas: any; canbas: any; crosscan: any; toolsvas: any; primitivecan: any; primitivedrawcan: any;
@@ -60,7 +60,7 @@ export class PicTransverseComponent implements OnChanges {
 
         this.actionInfo = new KeyValuePair(actions.locate);
         EventAggregator.Instance().actionInfo.subscribe(value => {
-            console.log('pic-transverse.component.ts get action info:', value.key())
+            console.log('cell.component.ts get action info:', value.key())
             this.actionInfo = value;
         });
 
