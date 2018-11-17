@@ -1,14 +1,8 @@
-﻿import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
-import { AuthHttp } from '../../../../core/auth-http';
-import { SecurityService } from '../../../../services/security.service';
+﻿import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { StorageService } from './storage.service';
-import { HttpParams } from "@angular/common/http";
-import { ajax } from "rxjs/ajax";
-import { AjaxService } from "../../../../services/ajax.service";
 import { AppConfigService } from '../../../../app.config';
-import { ContourDto } from '../dtos/contour_dto';
+import { AjaxService } from "../../../../services/ajax.service";
 
 @Injectable()
 export class SeriesHttpService {
@@ -27,11 +21,9 @@ export class SeriesHttpService {
         return this.http.get<Array<any>>(`${this.appConfig.apiUrl}/image/serids/`, { params: getParams });
     }
 
-
-
     /**
      * 从后端获取序列图片
-     * @param seriesId 
+     * @param seriesId
      */
     LoadVolume(seriesId: any): Observable<any> {
         const getParams = new HttpParams()

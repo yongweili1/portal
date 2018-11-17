@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs/Subject';
 
 export class EventAggregator {
-    private static _aggregator:EventAggregator;
+    private static _aggregator: EventAggregator;
 
     public static Instance() {
         if (this._aggregator == null)

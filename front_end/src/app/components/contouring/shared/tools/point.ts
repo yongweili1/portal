@@ -7,12 +7,12 @@ export class Point {
         this.y = _y;
     }
 
-    update(_x:number, _y:number) {
+    update(_x: number, _y: number) {
         this.x = _x;
         this.y = _y;
     }
 
-    offset(delta_x:number, delta_y:number) {
+    offset(delta_x: number, delta_y: number) {
         if (delta_x != null)
             this.x += delta_x;
         if (delta_y != null)

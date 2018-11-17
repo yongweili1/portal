@@ -1,17 +1,15 @@
-import { Directive, ElementRef, Input, HostListener, OnInit, Output, EventEmitter } from '@angular/core';
-import { ROIConfig } from '../model/ROIConfig.model'
-import { ConMessageService } from '../service/conMessage.service';
-import { CircleFactory } from '../tools/factory/circle-factory'
-import { LineFactory } from '../tools/factory/line-factory'
-import { RectangleFactory } from '../tools/factory/rectangle-factory'
-import { FreepenFactory } from '../tools/factory/freepen-factory'
-import { Point } from '../tools/point'
-import { FreepenContainer } from '../container/freepen_container';
-import { KeyValuePair } from '../../../../shared/common/keyvaluepair';
-import { FaderFactory } from '../tools/factory/fader-factory';
+import { Directive, ElementRef, HostListener, Input, OnInit } from '@angular/core';
 import { EventAggregator } from '../../../../shared/common/event_aggregator';
+import { KeyValuePair } from '../../../../shared/common/keyvaluepair';
+import { CircleContainer } from '../container/circle_container';
 import { FaderContainer } from '../container/fader_container';
+import { FreepenContainer } from '../container/freepen_container';
+import { LineContainer } from '../container/line_container';
+import { RectangleContainer } from '../container/rectangle_container';
+import { ROIConfig } from '../model/ROIConfig.model';
+import { ConMessageService } from '../service/conMessage.service';
 import { NudgeHelper } from '../tools/nudge_helper';
+import { Point } from '../tools/point';
 
 declare var createjs: any;
 declare var actions: any;
@@ -204,15 +202,15 @@ export class ContourDirective implements OnInit {
         }
         switch (this.actionInfo.value()) {
             case shapes.line:
-                return LineFactory.getInstance().createSharpContainer(this.myStage);
+                return new LineContainer(this.myStage);
             case shapes.rectangle:
-                return RectangleFactory.getInstance().createSharpContainer(this.myStage);
+                return new RectangleContainer(this.myStage);
             case shapes.circle:
-                return CircleFactory.getInstance().createSharpContainer(this.myStage);
+                return new CircleContainer(this.myStage);
             case shapes.freepen:
-                return FreepenFactory.getInstance().createSharpContainer(this.myStage);
+                return new FreepenContainer(this.myStage);
             case shapes.nudge:
-                return FaderFactory.getInstance().createSharpContainer(this.myStage);
+                return new FaderContainer(this.myStage);
             default:
                 return null;
         }
@@ -220,7 +218,7 @@ export class ContourDirective implements OnInit {
 
     getFader() {
         if (this.fader == null) {
-            this.fader = FaderFactory.getInstance().createSharpContainer(this.myStage);
+            this.fader = new FaderContainer(this.myStage);
             this.fader.setRoi(this.activeROI);
             this.nudgeHelper = new NudgeHelper(this.fader)
         }
@@ -238,7 +236,7 @@ export class ContourDirective implements OnInit {
                 cps.push(new Point(cp['X'], cp['Y']));
             });
             cps.push(cps[0].copy());
-            let freepen = FreepenFactory.getInstance().createSharpContainer(this.myStage);
+            let freepen = new FreepenContainer(this.myStage);
             freepen.setRoi(this.activeROI);
             this.myStage.addChild(freepen);
             freepen.setCps(cps);
