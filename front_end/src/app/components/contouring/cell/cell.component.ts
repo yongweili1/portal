@@ -15,7 +15,7 @@ declare var actions: any;
     styleUrls: ['./cell.component.less']
 })
 export class CellComponent implements OnChanges {
-    imageCanvas: any; canbas: any; crossCanvas: any; toolsCavas: any; overlayCanvas: any;
+    imageCanvas: any; canbas: any; crossCanvas: any; actionCanvas: any; overlayCanvas: any;
 
     @Input() tag: any;
     @Input() hasLoadVolume;
@@ -75,7 +75,7 @@ export class CellComponent implements OnChanges {
             this.canbas = $(".a_class");
             this.crossCanvas = $(".a_class .crossCanvas").get(0);
             this.overlayCanvas = $(".a_class .overlayCanvas").get(0);
-            this.toolsCavas = $(".a_class #toolsCanvas").get(0);
+            this.actionCanvas = $(".a_class #actionCanvas").get(0);
             this.canbas.find(".mpr").text('Transverse');
         }
         if (this.tag == "coronal") {
@@ -83,7 +83,7 @@ export class CellComponent implements OnChanges {
             this.canbas = $(".b_class");
             this.crossCanvas = $(".b_class .crossCanvas").get(0);
             this.overlayCanvas = $(".b_class .overlayCanvas").get(0);
-            this.toolsCavas = $(".b_class #toolsCanvas").get(0);
+            this.actionCanvas = $(".b_class #actionCanvas").get(0);
             this.canbas.find(".mpr").text('Coronal');
         }
         if (this.tag == "saggital") {
@@ -91,7 +91,7 @@ export class CellComponent implements OnChanges {
             this.canbas = $(".c_class");
             this.crossCanvas = $(".c_class .crossCanvas").get(0);
             this.overlayCanvas = $(".c_class .overlayCanvas").get(0);
-            this.toolsCavas = $(".c_class #toolsCanvas").get(0);
+            this.actionCanvas = $(".c_class #actionCanvas").get(0);
             this.canbas.find(".mpr").text('Sagittal');
         }
         this.calcviewportsize();
@@ -130,8 +130,8 @@ export class CellComponent implements OnChanges {
         this.crossCanvas.setAttribute('height', this.viewportHeight);
         this.overlayCanvas.setAttribute('width', this.viewportWidth); // 图元操作绘画层的canvas
         this.overlayCanvas.setAttribute('height', this.viewportHeight);
-        this.toolsCavas.setAttribute('width', this.viewportWidth); // nuge的canvas
-        this.toolsCavas.setAttribute('height', this.viewportHeight);
+        this.actionCanvas.setAttribute('width', this.viewportWidth); // nuge的canvas
+        this.actionCanvas.setAttribute('height', this.viewportHeight);
         this.initCrossLine();
     }
 
@@ -241,18 +241,18 @@ export class CellComponent implements OnChanges {
     addPanEvent() {
         let that = this;
         // $('#threebmp').removeClass().addClass("MoveCursor");
-        that.toolsCavas.onmousedown = function (e) {
+        that.actionCanvas.onmousedown = function (e) {
             let prePos = [e.clientX, e.clientY];
             console.log('enter pan mouse down');
-            that.toolsCavas.onmousemove = function (e) {
+            that.actionCanvas.onmousemove = function (e) {
                 if (!that.lazyExcuteHandler.canExcuteByCount()) return;
                 let curPos = [e.clientX, e.clientY];
                 that.onPan.emit([that.tag, prePos, curPos]);
                 prePos = curPos;
             };
-            that.toolsCavas.onmouseup = function () {
-                that.toolsCavas.onmousemove = null;
-                that.toolsCavas.onmouseup = null;
+            that.actionCanvas.onmouseup = function () {
+                that.actionCanvas.onmousemove = null;
+                that.actionCanvas.onmouseup = null;
             };
         }
     }
@@ -260,10 +260,10 @@ export class CellComponent implements OnChanges {
     addZoomEvent() {
         let that = this;
         // $('#threebmp').removeClass().addClass("ZoomCursor");
-        that.toolsCavas.onmousedown = function (e) {
+        that.actionCanvas.onmousedown = function (e) {
             let zoom_factor = 0;
             let preY = e.clientY;
-            that.toolsCavas.onmousemove = function (e) {
+            that.actionCanvas.onmousemove = function (e) {
                 if (!that.lazyExcuteHandler.canExcuteByCount()) return;
                 let curY = e.clientY;
                 let shiftY = curY - preY;
@@ -276,38 +276,38 @@ export class CellComponent implements OnChanges {
 
                 that.onZoom.emit([that.tag, zoom_factor]);
             }
-            that.toolsCavas.onmouseup = function (e) {
-                that.toolsCavas.onmousemove = null;
-                that.toolsCavas.onmouseup = null;
+            that.actionCanvas.onmouseup = function (e) {
+                that.actionCanvas.onmousemove = null;
+                that.actionCanvas.onmouseup = null;
             }
         }
     }
 
     addRotateEvent() {
         const that = this;
-        that.toolsCavas.onmousedown = function (e) {
+        that.actionCanvas.onmousedown = function (e) {
             let prePos = [e.clientX, e.clientY];
-            that.toolsCavas.onmousemove = function (e) {
+            that.actionCanvas.onmousemove = function (e) {
                 if (!that.lazyExcuteHandler.canExcuteByCount()) return;
                 let curPos = [e.clientX, e.clientY];
                 that.onRotate.emit([that.tag, prePos, curPos]);
                 prePos = curPos;
             };
-            that.toolsCavas.onmouseup = function () {
-                that.toolsCavas.onmousemove = null;
-                that.toolsCavas.onmouseup = null;
+            that.actionCanvas.onmouseup = function () {
+                that.actionCanvas.onmousemove = null;
+                that.actionCanvas.onmouseup = null;
             };
         };
     }
 
     addChangeWlEvent() {
         const that = this;
-        that.toolsCavas.onmousedown = function (e) {
+        that.actionCanvas.onmousedown = function (e) {
             let ww_factor = 0;
             let wl_factor = 0;
             let preX = e.clientX;
             let preY = e.clientY;
-            that.toolsCavas.onmousemove = function (e) {
+            that.actionCanvas.onmousemove = function (e) {
                 if (!that.lazyExcuteHandler.canExcuteByCount()) return;
                 let curX = e.clientX;
                 let curY = e.clientY;
@@ -327,9 +327,9 @@ export class CellComponent implements OnChanges {
                 }
                 that.onChangeWwwl.emit([width, level, 'true']);
             };
-            that.toolsCavas.onmouseup = function (e) {
-                that.toolsCavas.onmousemove = null;
-                that.toolsCavas.onmouseup = null;
+            that.actionCanvas.onmouseup = function (e) {
+                that.actionCanvas.onmousemove = null;
+                that.actionCanvas.onmouseup = null;
             };
         };
     }

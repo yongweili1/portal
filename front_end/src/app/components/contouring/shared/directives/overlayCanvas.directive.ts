@@ -16,9 +16,9 @@ declare var actions: any;
 declare var shapes: any;
 
 @Directive({
-    selector: '[myContour]'
+    selector: '[overlay-canvas]'
 })
-export class ContourDirective implements OnInit {
+export class OverlayCanvasDirective implements OnInit {
     curAction: string;
     actionInfo: KeyValuePair;
     canvasLeft: number;
