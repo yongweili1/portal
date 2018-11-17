@@ -1,7 +1,7 @@
 window.appConfig = {
     messagingUrl: "http://localhost:9090",
     //localeUrl: 'http://localhost:9000/api/i18n/',
-    apiUrl: 'http://10.9.19.218:8000',
+    apiUrl: 'http://10.9.19.150:8010',
     wsApiUrl: 'ws://10.9.19.24:8000',
     locale: 'en_US',
     theme: 'lightness',

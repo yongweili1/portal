@@ -30,7 +30,7 @@ class MyCommandHandler(comproxy.PyBaseCmdHandlerEx):
 
 if __name__ == '__main__':
     # c_log.PyLogInstance().create_log()
-    proxy = comproxy.PyCommProxy("img_srv", "10.9.19.153:10000")
+    proxy = comproxy.PyCommProxy("img_srv", "10.9.19.150:10000")
     x = MyCommandHandler()
     proxy.register_cmd_handler_ex(100, x)
 

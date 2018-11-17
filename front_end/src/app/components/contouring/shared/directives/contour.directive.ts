@@ -95,14 +95,14 @@ export class ContourDirective implements OnInit {
                 graphic.forEach(shape => {
                     let contour = []
                     shape.forEach(cp => {
-                        contour.push(new Point(cp[0][0], cp[0][1]))
+                        contour.push(new Point(cp.x, cp.y))
                     });
                     contours.push(contour)
                 });
             });
             // draw graphics
             contours.forEach(cps => {
-                cps.push(cps[0].copy())
+                cps.push(cps[0])
                 let freepen = new FreepenContainer(this.myStage)
                 freepen.cps = cps
                 freepen.update()
