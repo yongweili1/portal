@@ -1,5 +1,4 @@
 import os
-import platform
 import ctypes
 import sys
 import threading
@@ -14,10 +13,10 @@ class PyLogInstance(object):
         self._source_name = ''
         self._frame_switch = 0
         path = os.path.dirname(os.path.abspath(__file__))
-        if platform.system == 'linux':
-            path = os.path.join(path, "linux/libMcsfLogger.so")
-        else:
+        if sys.platform == 'win32':
             path = os.path.join(path, "McsfLogger.dll")
+        else:
+            path = os.path.join(path, "linux/libMcsfLogger.so")
 
         try:
             self._lib = ctypes.cdll.LoadLibrary(path)
