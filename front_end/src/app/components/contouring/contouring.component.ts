@@ -464,31 +464,17 @@ export class ContouringComponent implements OnInit {
         this.picLeft3.addChangeWlEvent();
     }
 
-    handleWwwl(e) {
-        console.log(e);
-        if (!this.hasLoadVolume) {
+    handleWwwl(evt) {
+        const validFlag = evt[2];
+        if (validFlag != 'true' || !this.hasLoadVolume) {
+            this.priMessageService.add({ severity: 'error', detail: 'ww wl illegal.' });
             return;
         }
         const that = this;
-        this.seriesHttpService.GetWindowPic(e[0], e[1], e[2]).subscribe(result => {
+        this.seriesHttpService.GetWindowPic(evt[0], evt[1]).subscribe(result => {
             result = JSON.parse(result);
             that.updateCells(result, true);
         });
-    }
-
-    mainWWWLPro2(evt) {
-        const validFlag = evt[2];
-        if (validFlag == 'true') {
-            const that = this;
-            if (this.hasLoadVolume) {
-                this.seriesHttpService.GetWindowPic2(evt[0], evt[1]).subscribe(result => {
-                    result = JSON.parse(result);
-                    that.updateCells(result);
-                });
-            }
-        } else {
-            this.priMessageService.add({ severity: 'error', detail: 'ww wl illegal.' });
-        }
     }
 
     mainpan() {

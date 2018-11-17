@@ -17,7 +17,7 @@ declare var actions: any;
 export class CellComponent implements OnChanges {
     imageCanvas: any; canbas: any; crossCanvas: any; toolsCavas: any; overlayCanvas: any;
 
-    @Input() tag: any; @Input() wl: any = 0; @Input() ww: any = 2000;
+    @Input() tag: any;
     @Input() hasLoadVolume;
 
     containerWidth = $('.containe').width();
@@ -35,12 +35,10 @@ export class CellComponent implements OnChanges {
     @Output() onRotate: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
     @Output() onChangeWwwl: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
 
-    @Output() wwwlReq2: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
-
     lazyExcuteHandler: LazyExcuteHandler;
     name: string;
-    viewWL: any;
-    viewWW: any;
+    windowLevel: any = 0;
+    windowWidth: any = 2000;
     actionInfo: any;
 
     constructor(private conMessage: ConMessageService) {
@@ -97,7 +95,7 @@ export class CellComponent implements OnChanges {
             this.canbas.find(".mpr").text('Sagittal');
         }
         this.calcviewportsize();
-        this.windowAddMouseWheel(this.tag);
+        this.windowAddMouseWheel();
     }
 
     ngOnInit() {
@@ -106,8 +104,8 @@ export class CellComponent implements OnChanges {
             that.calcviewportsize();
             console.log("=== resize ===")
         });
-        this.viewWW = 2000;
-        this.viewWL = 0;
+        this.windowWidth = 2000;
+        this.windowLevel = 0;
     }
 
     // 设置和区分canvas窗口大小
@@ -154,18 +152,15 @@ export class CellComponent implements OnChanges {
         }
     }
 
-    // 翻页
-    windowAddMouseWheel(tag) {
+    windowAddMouseWheel() {
         const that = this;
         let delt: any;
         const scrollFunc = function (e) {
             e = e || window.event;
             delt = e.wheelDelta / 120;
             if (that.actionInfo.key() === actions.nudge) {
-                console.log('scroll func fader radius', delt)
                 EventAggregator.Instance().scrollInfo.publish(delt);
             } else {
-                console.log('scroll func page', delt);
                 that.P2Cross(delt);
             }
         };
@@ -217,7 +212,6 @@ export class CellComponent implements OnChanges {
         let wwwlIntArray = []
         let flag = 'true'
         wwwlStrArray.forEach(element => {
-            ''
             try {
                 wwwlIntArray.push(Number(element));
             }
@@ -227,18 +221,16 @@ export class CellComponent implements OnChanges {
             }
         });
         if (typeof (wwwlIntArray[0]) == 'number' && wwwlIntArray[0] > 0) {
-            this.ww = wwwlIntArray[0]
-        }
-        else {
+            this.windowWidth = wwwlIntArray[0]
+        } else {
             flag = 'false'
         }
         if (typeof (wwwlIntArray[1]) == 'number') {
-            this.wl = wwwlIntArray[1]
-        }
-        else {
+            this.windowLevel = wwwlIntArray[1]
+        } else {
             flag = 'false'
         }
-        this.wwwlReq2.emit([this.ww, this.wl, flag]);
+        this.onChangeWwwl.emit([this.windowWidth, this.windowLevel, flag]);
     }
 
     clearmouse() {
@@ -321,14 +313,19 @@ export class CellComponent implements OnChanges {
                 let curY = e.clientY;
                 let shiftY = curY - preY;
                 if (shiftY >= 0) {
-                    ww_factor = 1.0 + shiftY * 1.0 / 120
+                    ww_factor = 1.0 + shiftY * 1.0 / 1000
                 } else {
-                    ww_factor = 1.0 / (1.0 - shiftY * 1.0 / 120)
+                    ww_factor = 1.0 / (1.0 - shiftY * 1.0 / 1000)
                 }
-                wl_factor = (preX - curX) * 1.0 / 240;
+                wl_factor = (preX - curX) * 1.0 / 2000;
                 preX = curX;
                 preY = curY;
-                that.onChangeWwwl.emit([that.tag, ww_factor, wl_factor]);
+                const level = Math.round(that.windowLevel + that.windowWidth * wl_factor);
+                const width = Math.round(that.windowWidth * ww_factor);
+                if (level == that.windowLevel && width == that.windowWidth) {
+                    return;
+                }
+                that.onChangeWwwl.emit([width, level, 'true']);
             };
             that.toolsCavas.onmouseup = function (e) {
                 that.toolsCavas.onmousemove = null;
@@ -366,9 +363,10 @@ export class CellComponent implements OnChanges {
     }
 
     updateWWWL(wwwl) {
-        if (wwwl != null && wwwl !== undefined && Array.isArray(wwwl) === true) {
-            this.viewWW = Math.round(wwwl[0]);
-            this.viewWL = Math.round(wwwl[1]);
+        if (wwwl === undefined || !Array.isArray(wwwl)) {
+            return;
         }
+        this.windowWidth = Math.round(wwwl[0]);
+        this.windowLevel = Math.round(wwwl[1]);
     }
 }

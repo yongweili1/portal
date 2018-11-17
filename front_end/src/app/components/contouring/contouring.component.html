@@ -9,10 +9,9 @@
     <div id="threebmp" class="viewport">
         <div class='cell_group u-3of5 horizontal'>
             <div class='main_cell'>
-                <mpt-cell #picLeft1 class="a_class" [tag]="'transverse'" [wl]="wl" [ww]="ww" [hasLoadVolume]="hasLoadVolume"
-                    (onLocate)="transverseChange($event)" (onScroll)="aCross($event)" (onZoom)="handleZoom($event)"
-                    (onPan)="handlePan($event)" (onRotate)="handleRotate($event)" (onChangeWwwl)="handleWwwl($event)"
-                    (wwwlReq2)="mainWWWLPro2($event)">
+                <mpt-cell #picLeft1 class="a_class" [tag]="'transverse'" [hasLoadVolume]="hasLoadVolume" (onLocate)="transverseChange($event)"
+                    (onScroll)="aCross($event)" (onZoom)="handleZoom($event)" (onPan)="handlePan($event)" (onRotate)="handleRotate($event)"
+                    (onChangeWwwl)="handleWwwl($event)">
                 </mpt-cell>
             </div>
 
@@ -23,18 +22,16 @@
 
         <div class='cell_group u-2of5'>
             <div class='cell'>
-                <mpt-cell #picLeft2 class="b_class" [tag]="'coronal'" [wl]="wl" [ww]="ww" [hasLoadVolume]="hasLoadVolume"
-                    (onLocate)="coronalChange($event)" (onScroll)="bCross($event)" (onZoom)="handleZoom($event)"
-                    (onPan)="handlePan($event)" (onRotate)="handleRotate($event)" (onChangeWwwl)="handleWwwl($event)"
-                    (wwwlReq2)="mainWWWLPro2($event)">
+                <mpt-cell #picLeft2 class="b_class" [tag]="'coronal'" [hasLoadVolume]="hasLoadVolume" (onLocate)="coronalChange($event)"
+                    (onScroll)="bCross($event)" (onZoom)="handleZoom($event)" (onPan)="handlePan($event)" (onRotate)="handleRotate($event)"
+                    (onChangeWwwl)="handleWwwl($event)">
                 </mpt-cell>
             </div>
 
             <div class='cell'>
-                <mpt-cell #picLeft3 class="c_class" [tag]="'saggital'" [wl]="wl" [ww]="ww" [hasLoadVolume]="hasLoadVolume"
-                    (onLocate)="saggitalChange($event)" (onScroll)="cCross($event)" (onZoom)="handleZoom($event)"
-                    (onPan)="handlePan($event)" (onRotate)="handleRotate($event)" (onChangeWwwl)="handleWwwl($event)"
-                    (wwwlReq2)="mainWWWLPro2($event)">
+                <mpt-cell #picLeft3 class="c_class" [tag]="'saggital'" [hasLoadVolume]="hasLoadVolume" (onLocate)="saggitalChange($event)"
+                    (onScroll)="cCross($event)" (onZoom)="handleZoom($event)" (onPan)="handlePan($event)" (onRotate)="handleRotate($event)"
+                    (onChangeWwwl)="handleWwwl($event)">
                 </mpt-cell>
             </div>
         </div>

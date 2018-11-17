@@ -9,11 +9,11 @@
                 <span *ngIf="tag == 'transverse'">Slice: <span class="pageindex"></span></span><br>
 
                 <div *ngIf="tag == 'transverse'" class='cright'>
-                    <span>WL:</span> <input class="wl" type="number" #wl (change)="onChangewlww(ww.value + ',' + wl.value)"
-                        value="{{ viewWL }}">
+                    <span>WL:</span>
+                    <input class="wl" type="number" #wl (change)="onChangewlww(ww.value + ',' + wl.value)" value="{{ windowLevel }}">
                     <br>
-                    <span>WW:</span> <input class="ww" type="number" #ww (change)="onChangewlww(ww.value + ',' + wl.value)"
-                        value="{{ viewWW }}">
+                    <span>WW:</span>
+                    <input class="ww" type="number" #ww (change)="onChangewlww(ww.value + ',' + wl.value)" value="{{ windowWidth }}">
                 </div>
             </div>
         </div>

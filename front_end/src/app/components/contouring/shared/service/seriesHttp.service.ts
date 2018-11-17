@@ -103,19 +103,11 @@ export class SeriesHttpService {
         return this.http.get<any>(`${this.appConfig.apiUrl}/image/backs/`);
     }
 
-    GetWindowPic(focus: any, ww_factor: any, wl_factor: any): Observable<any> {
-        const getParams = new HttpParams()
-            .set('focus_view', focus)
-            .set('ww_factor', ww_factor)
-            .set('wl_factor', wl_factor);
-        return this.http.get<any>(`${this.appConfig.apiUrl}/image/windows/`, { params: getParams })
-    }
-
-    GetWindowPic2(ww: any, wl: any): Observable<any> {
+    GetWindowPic(ww: any, wl: any): Observable<any> {
         const getParams = new HttpParams()
             .set('ww', ww)
             .set('wl', wl)
-        return this.http.get<any>(`${this.appConfig.apiUrl}/image/windows2/`, { params: getParams })
+        return this.http.get<any>(`${this.appConfig.apiUrl}/image/windows/`, { params: getParams })
     }
 
     GetCenterPic(): Observable<any> {
