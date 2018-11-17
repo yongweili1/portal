@@ -131,7 +131,7 @@ export class ContouringComponent implements OnInit {
                         if (result.body === "success" && that.hasLoadVolume) {
                             that.seriesHttpService.GetSeries("", "", "all", "", "").subscribe(data => {
                                 data = JSON.parse(data);
-                                that.updateCells(result);
+                                that.updateCells(data);
                                 that.sliceIndex = data['0']['slice_index'];
                                 that.conMessage.SetSliceIndex(that.sliceIndex);
                             });
