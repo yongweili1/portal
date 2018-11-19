@@ -361,9 +361,9 @@ export class ContouringComponent implements OnInit {
     }
 
     mainClearPri() {
-        this.picLeft1.clearPri();
-        this.picLeft2.clearPri();
-        this.picLeft3.clearPri();
+        this.picLeft1.clearContours();
+        this.picLeft2.clearContours();
+        this.picLeft3.clearContours();
     }
 
     showDialog() {
@@ -440,12 +440,6 @@ export class ContouringComponent implements OnInit {
         document.getElementById('series_list').classList.toggle('series_inactive');
     }
 
-    mainzoom() {
-        this.picLeft1.addZoomEvent();
-        this.picLeft2.addZoomEvent();
-        this.picLeft3.addZoomEvent();
-    }
-
     handleZoom(e) {
         console.log(e);
         if (!this.hasLoadVolume) {
@@ -456,12 +450,6 @@ export class ContouringComponent implements OnInit {
             result = JSON.parse(result);
             that.updateCells(result);
         });
-    }
-
-    mainWLWW() {
-        this.picLeft1.addChangeWlEvent();
-        this.picLeft2.addChangeWlEvent();
-        this.picLeft3.addChangeWlEvent();
     }
 
     handleWwwl(evt) {
@@ -477,12 +465,6 @@ export class ContouringComponent implements OnInit {
         });
     }
 
-    mainpan() {
-        this.picLeft1.addPanEvent();
-        this.picLeft2.addPanEvent();
-        this.picLeft3.addPanEvent();
-    }
-
     handlePan(e) {
         console.log(e);
         if (!this.hasLoadVolume) {
@@ -493,12 +475,6 @@ export class ContouringComponent implements OnInit {
             result = JSON.parse(result);
             that.updateCells(result);
         });
-    }
-
-    mainrotate() {
-        this.picLeft1.addRotateEvent();
-        this.picLeft2.addRotateEvent();
-        this.picLeft3.addRotateEvent();
     }
 
     handleRotate(e) {
@@ -533,16 +509,6 @@ export class ContouringComponent implements OnInit {
             result = JSON.parse(result);
             that.updateCells(result);
         });
-    }
-
-    sfile() {
-        this.picLeft1.file();
-    }
-
-    remouse() {
-        this.picLeft1.clearmouse();
-        this.picLeft2.clearmouse();
-        this.picLeft3.clearmouse();
     }
 
     getSeriesList(patientId: any) {
@@ -657,15 +623,15 @@ export class ContouringComponent implements OnInit {
 
     updateCells(data, updateWwwl: boolean = false, updateViews: string = 'all') {
         if (updateViews === 'all' || updateViews.indexOf('transverse') > -1) {
-            this.picLeft1.cellUpdate(data['0']['image'], data['0']['crosshair'], data['0']['graphic']['contours'],
+            this.picLeft1.update(data['0']['image'], data['0']['crosshair'], data['0']['graphic']['contours'],
                 updateWwwl ? data['0']['wwwl'] : undefined);
         }
         if (updateViews === 'all' || updateViews.indexOf('coronal') > -1) {
-            this.picLeft2.cellUpdate(data['1']['image'], data['1']['crosshair'], data['1']['graphic']['contours'],
+            this.picLeft2.update(data['1']['image'], data['1']['crosshair'], data['1']['graphic']['contours'],
                 updateWwwl ? data['1']['wwwl'] : undefined);
         }
         if (updateViews === 'all' || updateViews.indexOf('saggital') > -1) {
-            this.picLeft3.cellUpdate(data['2']['image'], data['2']['crosshair'], data['2']['graphic']['contours'],
+            this.picLeft3.update(data['2']['image'], data['2']['crosshair'], data['2']['graphic']['contours'],
                 updateWwwl ? data['2']['wwwl'] : undefined);
         }
     }

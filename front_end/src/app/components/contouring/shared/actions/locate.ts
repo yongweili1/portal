@@ -10,6 +10,6 @@ export class Locate extends BaseAction {
     }
 
     handleMouseUp(evt) {
-        
+
     }
 }

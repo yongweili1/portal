@@ -1,12 +1,10 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { EventAggregator } from '../../../shared/common/event_aggregator';
 import { KeyValuePair } from '../../../shared/common/keyvaluepair';
-import { LazyExcuteHandler } from '../lazy_excute_handler';
 import { CrosslineContainer } from '../shared/container/crossline_container';
 import { ConMessageService } from '../shared/service/conMessage.service';
 import { Point } from '../shared/tools/point';
 declare var $: any;
-declare var createjs: any;
 declare var actions: any;
 
 @Component({
@@ -35,14 +33,12 @@ export class CellComponent implements OnChanges {
     @Output() onRotate: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
     @Output() onChangeWwwl: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
 
-    lazyExcuteHandler: LazyExcuteHandler;
     name: string;
     windowLevel: any = 0;
     windowWidth: any = 2000;
     actionInfo: any;
 
     constructor(private conMessage: ConMessageService) {
-        this.lazyExcuteHandler = new LazyExcuteHandler();
         this.crossPosition = new Point(0, 0);
         this.actionInfo = new KeyValuePair(actions.locate);
         EventAggregator.Instance().actionInfo.subscribe(value => {
@@ -51,12 +47,12 @@ export class CellComponent implements OnChanges {
         });
 
         EventAggregator.Instance().pageDelta.subscribe(value => {
-            this.P2Cross(value);
+            this.page(value);
         });
 
         EventAggregator.Instance().crossPoint.subscribe(value => {
             if (value[0] !== this.tag) {
-                return
+                return;
             }
             const p = new Point(value[1].x, value[1].y);
             if (this.crossPosition.equals(p)) {
@@ -64,6 +60,37 @@ export class CellComponent implements OnChanges {
             }
             this.onLocate.emit([value[1].x, value[1].y]);
             this.crossPosition = p;
+        });
+
+        EventAggregator.Instance().eventData.subscribe(value => {
+            if (value === undefined || value.length != 2) {
+                return;
+            }
+            const action = value[0];
+            const data = value[1];
+            switch (action) {
+                case actions.locate:
+                    break;
+                case actions.pan:
+                    this.onPan.emit(data);
+                    break;
+                case actions.zoom:
+                    this.onZoom.emit(data);
+                    break;
+                case actions.rotate:
+                    this.onRotate.emit(data);
+                    break;
+                case actions.window:
+                    const level = Math.round(this.windowLevel + this.windowWidth * data[1]);
+                    const width = Math.round(this.windowWidth * data[0]);
+                    if (level == this.windowLevel && width == this.windowWidth) {
+                        return;
+                    }
+                    this.onChangeWwwl.emit([width, level, 'true']);
+                    break;
+                default:
+                    break;
+            }
         });
     }
 
@@ -132,7 +159,8 @@ export class CellComponent implements OnChanges {
         this.overlayCanvas.setAttribute('height', this.viewportHeight);
         this.actionCanvas.setAttribute('width', this.viewportWidth); // nuge的canvas
         this.actionCanvas.setAttribute('height', this.viewportHeight);
-        this.initCrossLine();
+
+        this.crossLine = new CrosslineContainer(this.crossCanvas, this.tag);
     }
 
     /**
@@ -161,49 +189,21 @@ export class CellComponent implements OnChanges {
             if (that.actionInfo.key() === actions.nudge) {
                 EventAggregator.Instance().scrollInfo.publish(delt);
             } else {
-                that.P2Cross(delt);
+                that.page(delt);
             }
         };
         this.canbas.get(0).onmousewheel = scrollFunc;
     }
 
-    P2Cross(delt) {
+    page(delt) {
         this.onScroll.emit(delt);
     }
 
     /**
      * 清除所有图元
      */
-    clearPri() {
+    clearContours() {
         EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.clear));
-    }
-
-    /**
-     * 画十字线和交点，绑定监听事件
-     * @param nix
-     * @param niy
-     */
-    initCrossLine() {
-        this.stage = new createjs.Stage(this.crossCanvas);
-        var width = this.stage.canvas.width;
-        var height = this.stage.canvas.height;
-        createjs.Touch.enable(this.stage);
-        this.stage.enableMouseOver(50);
-        this.stage.mouseMoveOutside = true;
-
-        this.crossLine = new CrosslineContainer(this.stage, this.tag);
-        this.updateCrossLine(width / 2, height / 2);
-    }
-
-    /**
-     * 调整初始的十字线、交点位置，更新stage
-     * @param x
-     * @param y
-     */
-    updateCrossLine(x: number, y: number) {
-        this.clearmouse();
-        this.crossLine.setCenter(x, y);
-        this.crossLine.update();
     }
 
     onChangewlww(inval) {
@@ -233,133 +233,37 @@ export class CellComponent implements OnChanges {
         this.onChangeWwwl.emit([this.windowWidth, this.windowLevel, flag]);
     }
 
-    clearmouse() {
-        // $('#threebmp').removeClass();
-        this.canbas.get(0).onmousedown = null;
-    }
-
-    addPanEvent() {
-        let that = this;
-        // $('#threebmp').removeClass().addClass("MoveCursor");
-        that.actionCanvas.onmousedown = function (e) {
-            let prePos = [e.clientX, e.clientY];
-            console.log('enter pan mouse down');
-            that.actionCanvas.onmousemove = function (e) {
-                if (!that.lazyExcuteHandler.canExcuteByCount()) return;
-                let curPos = [e.clientX, e.clientY];
-                that.onPan.emit([that.tag, prePos, curPos]);
-                prePos = curPos;
-            };
-            that.actionCanvas.onmouseup = function () {
-                that.actionCanvas.onmousemove = null;
-                that.actionCanvas.onmouseup = null;
-            };
-        }
-    }
-
-    addZoomEvent() {
-        let that = this;
-        // $('#threebmp').removeClass().addClass("ZoomCursor");
-        that.actionCanvas.onmousedown = function (e) {
-            let zoom_factor = 0;
-            let preY = e.clientY;
-            that.actionCanvas.onmousemove = function (e) {
-                if (!that.lazyExcuteHandler.canExcuteByCount()) return;
-                let curY = e.clientY;
-                let shiftY = curY - preY;
-                preY = curY;
-                if (shiftY >= 0) {
-                    zoom_factor = 1.0 + shiftY * 1.0 / 120
-                } else {
-                    zoom_factor = 1.0 / (1.0 - shiftY * 1.0 / 120)
-                }
-
-                that.onZoom.emit([that.tag, zoom_factor]);
-            }
-            that.actionCanvas.onmouseup = function (e) {
-                that.actionCanvas.onmousemove = null;
-                that.actionCanvas.onmouseup = null;
-            }
-        }
-    }
-
-    addRotateEvent() {
-        const that = this;
-        that.actionCanvas.onmousedown = function (e) {
-            let prePos = [e.clientX, e.clientY];
-            that.actionCanvas.onmousemove = function (e) {
-                if (!that.lazyExcuteHandler.canExcuteByCount()) return;
-                let curPos = [e.clientX, e.clientY];
-                that.onRotate.emit([that.tag, prePos, curPos]);
-                prePos = curPos;
-            };
-            that.actionCanvas.onmouseup = function () {
-                that.actionCanvas.onmousemove = null;
-                that.actionCanvas.onmouseup = null;
-            };
-        };
-    }
-
-    addChangeWlEvent() {
-        const that = this;
-        that.actionCanvas.onmousedown = function (e) {
-            let ww_factor = 0;
-            let wl_factor = 0;
-            let preX = e.clientX;
-            let preY = e.clientY;
-            that.actionCanvas.onmousemove = function (e) {
-                if (!that.lazyExcuteHandler.canExcuteByCount()) return;
-                let curX = e.clientX;
-                let curY = e.clientY;
-                let shiftY = curY - preY;
-                if (shiftY >= 0) {
-                    ww_factor = 1.0 + shiftY * 1.0 / 1000
-                } else {
-                    ww_factor = 1.0 / (1.0 - shiftY * 1.0 / 1000)
-                }
-                wl_factor = (preX - curX) * 1.0 / 2000;
-                preX = curX;
-                preY = curY;
-                const level = Math.round(that.windowLevel + that.windowWidth * wl_factor);
-                const width = Math.round(that.windowWidth * ww_factor);
-                if (level == that.windowLevel && width == that.windowWidth) {
-                    return;
-                }
-                that.onChangeWwwl.emit([width, level, 'true']);
-            };
-            that.actionCanvas.onmouseup = function (e) {
-                that.actionCanvas.onmousemove = null;
-                that.actionCanvas.onmouseup = null;
-            };
-        };
-    }
-
-    cellUpdate(imageData, crossPoint, graphics = null, wwwl = null) {
-        if (imageData != null) {
+    update(imageData, crossPoint, graphics = null, wwwl = null) {
+        if (imageData !== undefined) {
             this.updateImage(imageData);
         }
-        if (crossPoint != null) {
+        if (crossPoint !== undefined) {
             this.updateCrossLine(crossPoint[0], crossPoint[1]);
         }
         this.updateGraphics(graphics);
         this.updateWWWL(wwwl);
     }
 
-    updateGraphics(graphics) {
-        this.conMessage.setGraphics([this.tag, graphics]);
-    }
-
     updateImage(imageData) {
-        const img1 = new Image();
+        const img = new Image();
         const base64Header = 'data:image/jpeg;base64,';
         const imgData1 = base64Header + imageData;
-        img1.src = imgData1;
+        img.src = imgData1;
         const that = this;
-        img1.onload = function () {
+        img.onload = function () {
             const ctx = that.imageCanvas.getContext('2d');
             ctx.clearRect(0, 0, that.imageCanvas.width, that.imageCanvas.height);
-            ctx.drawImage(img1, 0, 0, that.imageCanvas.width, that.imageCanvas.height);
+            ctx.drawImage(img, 0, 0, that.imageCanvas.width, that.imageCanvas.height);
         };
+    }
+
+    updateCrossLine(x: number, y: number) {
+        this.crossLine.setCenter(x, y);
+        this.crossLine.update();
+    }
+
+    updateGraphics(graphics) {
+        this.conMessage.setGraphics([this.tag, graphics]);
     }
 
     updateWWWL(wwwl) {

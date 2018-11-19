@@ -7,30 +7,26 @@ import { Locate } from './locate';
 declare var actions: any;
 
 export class Action {
-    private static _instance: Action;
-    static Handler() {
-        if (Action._instance == null)
-            Action._instance = new Action()
-        return this._instance;
+    private _action: any;
+    private _tag: any;
+
+    constructor(tag) {
+        this._tag = tag;
     }
 
-    private _action: any;
-
-    private constructor() {}
-
-    setAction(action) {
+    set(action) {
         if (action == actions.pan) {
-            this._action = new Pan()
+            this._action = new Pan(this._tag);
         } else if (action == actions.zoom) {
-            this._action = new Zoom()
+            this._action = new Zoom(this._tag);
         } else if (action == actions.rotate) {
-            this._action = new Rotate()
-        } else if (action == actions.wwwl) {
-            this._action = new WWWL()
+            this._action = new Rotate(this._tag);
+        } else if (action == actions.window) {
+            this._action = new WWWL(this._tag);
         } else if (action == actions.locate) {
-            this._action = new Locate()
-        } else {
-
+            this._action = new Locate(this._tag);
+        } else { // default: pan
+            this._action = new Pan(this._tag);
         }
     }
 

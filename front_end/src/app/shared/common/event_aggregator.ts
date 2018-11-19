@@ -18,6 +18,7 @@ export class EventAggregator {
     sliceIndex = new ObservableObject();
     pageDelta = new ObservableObject();
     crossPoint = new ObservableObject();
+    eventData = new ObservableObject();
     //#endregion
 
     private constructor() { }

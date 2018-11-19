@@ -51,6 +51,7 @@ export class OverlayCanvasDirective implements OnInit {
     constructor(private el: ElementRef, private contouringService: ConMessageService) { }
 
     ngOnInit() {
+        console.log('[overlay-canvas]ngOnInit');
         this.myContext = this.el.nativeElement.getContext("2d");
         this.myStage = new createjs.Stage(this.el.nativeElement);
         this.actionInfo = new KeyValuePair(actions.locate);
@@ -65,10 +66,10 @@ export class OverlayCanvasDirective implements OnInit {
 
         EventAggregator.Instance().actionInfo.subscribe(actionInfo => {
             if (actionInfo == null) {
-                console.log('ActionInfo is wrong.')
+                console.log('ActionInfo is wrong.');
                 return;
             }
-            console.log('Current action is ' + actionInfo.key());
+            console.log('[overlay-canvas]Current action is ' + actionInfo.key());
             if (actionInfo.key() == actions.clear) {
                 if (this.myStage.children.length > 0) {
                     let roi_uid = this.activeROI.ROIId;
@@ -121,6 +122,7 @@ export class OverlayCanvasDirective implements OnInit {
     }
 
     @HostListener('mousedown', ['$event']) onMouseDown(event: MouseEvent) {
+        console.log('[overlay-canvas]mousedown');
         this.myStage.children.forEach(shape => {
             if (shape.type === shapes.freepen) {
                 shape.editable = this.actionInfo.value() === shapes.freepen_edit ? true : false;
@@ -142,6 +144,7 @@ export class OverlayCanvasDirective implements OnInit {
     }
 
     @HostListener('mousemove', ['$event']) onMouseMove(event: MouseEvent) {
+        console.log('[overlay-canvas]mousemove');
         if (this.shape != null) {
             this.shape.handleMouseMove(event)
         }
@@ -162,6 +165,7 @@ export class OverlayCanvasDirective implements OnInit {
     }
 
     @HostListener('mouseup', ['$event']) onMouseUp(event: MouseEvent) {
+        console.log('[overlay-canvas]mouseup');
         if (this.shape != null) {
             this.shape.handleMouseUp(event);
         }
@@ -186,14 +190,16 @@ export class OverlayCanvasDirective implements OnInit {
     }
 
     @HostListener('mouseleave', ['$event']) onMouseLeave(event: MouseEvent) {
-        // this.onMouseUp(event);
+        console.log('[overlay-canvas]mouseleave');
         this.myStage.removeChild(this.fader);
         this.fader = null;
         this.myStage.clear();
         this.myStage.update();
     }
 
-    @HostListener('dblclick', ['$event']) onDbClick(event: MouseEvent) { }
+    @HostListener('dblclick', ['$event']) onDbClick(event: MouseEvent) {
+        console.log('[overlay-canvas]dblclick');
+    }
 
     getShapeContainerInstance() {
         if (this.actionInfo.key() !== actions.shape) {
