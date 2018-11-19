@@ -1,8 +1,11 @@
 <div id="commonTools_1" class="btn-toolbar">
     <div class="upfloor">
-        <button type="button" class="btn activeToolButton" id="btn_load" title="加载序列" (click)="loadMPR()"><img src="/assets/img/sendImagefilm.svg"></button>
-        <!-- <button type="button" class="btn activeToolButton" id="btn_series" title="显示/隐藏序列" (click)="OnHideList()"><img
-                src="" class="fa fa-fw fa-lg fa-list-ul"></button> -->
+        <button type="button" class="btn activeToolButton" id="btn_load" title="加载序列" (click)="loadMPR()">
+            <img src="/assets/img/sendImagefilm.svg">
+        </button>
+        <!-- <button type="button" class="btn activeToolButton" id="btn_series" title="显示/隐藏序列" (click)="OnHideList()">
+            <img src="" class="fa fa-fw fa-lg fa-list-ul">
+        </button> -->
     </div>
     <div class="downfloor">
         <span>LOAD FILE</span>
@@ -22,8 +25,10 @@
 
 <div id="commonTools_6" class="btn-toolbar">
     <div class="upfloor">
-        <button type="button" class="btn activeToolButton fa fa-plus-circle fa-lg" id="btn_new_roi" title="新建ROI" (click)="OnNewROI()"></button>
-        <button type="button" class="btn activeToolButton fa fa-fw fa-lg fa-list-ul" id="btn_manage_roi" title="管理ROI" (click)="OnManageROI()"></button>
+        <button type="button" class="btn activeToolButton fa fa-plus-circle fa-lg" id="btn_new_roi" title="新建ROI"
+            (click)="OnNewROI()"></button>
+        <button type="button" class="btn activeToolButton fa fa-fw fa-lg fa-list-ul" id="btn_manage_roi" title="管理ROI"
+            (click)="OnManageROI()"></button>
     </div>
     <div class="downfloor">
         <span>ROI</span>
@@ -68,9 +73,12 @@
 
 <div id="commonTools_5" class="btn-toolbar">
     <div class="upfloor">
-        <button type="button" class="btn activeToolButton fa fa-video-camera" id="btn_macro_start" title="开始录制" (click)="OnStartMacro()" disabled="true"></button>
-        <button type="button" class="btn activeToolButton fa fa-stop" id="btn_macro_end" title="停止录制" (click)="OnEndMacro()" disabled="true"></button>
-        <button type="button" class="btn activeToolButton fa fa-play" id="btn_macro_run" title="运行" (click)="OnRunMacro()" disabled="true"></button>
+        <button type="button" class="btn activeToolButton fa fa-video-camera" id="btn_macro_start" title="开始录制" (click)="OnStartMacro()"
+            disabled="true"></button>
+        <button type="button" class="btn activeToolButton fa fa-stop" id="btn_macro_end" title="停止录制" (click)="OnEndMacro()"
+            disabled="true"></button>
+        <button type="button" class="btn activeToolButton fa fa-play" id="btn_macro_run" title="运行" (click)="OnRunMacro()"
+            disabled="true"></button>
     </div>
     <div class="downfloor">
         <span>MACRO</span>

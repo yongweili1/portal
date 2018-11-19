@@ -1,16 +1,18 @@
-import { LazyExcuteHandler } from "../../../contouring/lazy_excute_handler";
-
 export class BaseAction {
-    lazyExcuteHandler: LazyExcuteHandler;
     tag: string;
-    
-    constructor () {
-        this.lazyExcuteHandler = new LazyExcuteHandler();
+    isMouseDown: boolean = false;
+
+    constructor (tag) {
+        this.tag = tag;
     }
 
-    handleMouseDown(evt) {}
+    handleMouseDown(e) {
+        this.isMouseDown = true;
+    }
 
-    handleMouseMove(evt) {}
+    handleMouseMove(e) {}
 
-    handleMouseUp(evt) {}
+    handleMouseUp(e) {
+        this.isMouseDown = false;
+    }
 }

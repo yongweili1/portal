@@ -1,18 +1,16 @@
 <div class="my-page">
     <div class="top_Button">
-        <mpt-contouring-top-bar (loadSeries)="loadSeries()" (clear)="mainClearPri()" (hideList)="mainHideList()"
-            (newroi)="mainNewROI()" (manageroi)="mainManageROI()" (zoom)="mainzoom()" (pan)="mainpan()" (rotate)="mainrotate()"
-            (autoroi)="mainautoroi()" (reset)="mainreset()" (wlww)="mainWLWW()" (setcenter)="mainSetCenterPro()"
+        <mpt-contouring-top-bar (loadSeries)="loadSeries()" (onClearGraphics)="handleClearGraphics()" (newroi)="mainNewROI()"
+            (manageroi)="mainManageROI()" (autoroi)="mainautoroi()" (onReset)="handleReset()" (setcenter)="mainSetCenterPro()"
             [seriesList]="seriesList"></mpt-contouring-top-bar>
     </div>
 
     <div id="threebmp" class="viewport">
         <div class='cell_group u-3of5 horizontal'>
             <div class='main_cell'>
-                <mpt-cell #picLeft1 class="a_class" [tag]="'transverse'" [wl]="wl" [ww]="ww" [hasLoadVolume]="hasLoadVolume"
-                    (onLocate)="transverseChange($event)" (onScroll)="aCross($event)" (onZoom)="handleZoom($event)"
-                    (onPan)="handlePan($event)" (onRotate)="handleRotate($event)" (onChangeWwwl)="handleWwwl($event)"
-                    (wwwlReq2)="mainWWWLPro2($event)">
+                <mpt-cell #cell1 id='{{ cell1.id }}' [tag]="'transverse'" (onLocate)="transverseChange($event)"
+                    (onScroll)="aCross($event)" (onZoom)="handleZoom($event)" (onPan)="handlePan($event)" (onRotate)="handleRotate($event)"
+                    (onChangeWwwl)="handleWwwl($event)">
                 </mpt-cell>
             </div>
 
@@ -23,18 +21,16 @@
 
         <div class='cell_group u-2of5'>
             <div class='cell'>
-                <mpt-cell #picLeft2 class="b_class" [tag]="'coronal'" [wl]="wl" [ww]="ww" [hasLoadVolume]="hasLoadVolume"
-                    (onLocate)="coronalChange($event)" (onScroll)="bCross($event)" (onZoom)="handleZoom($event)"
-                    (onPan)="handlePan($event)" (onRotate)="handleRotate($event)" (onChangeWwwl)="handleWwwl($event)"
-                    (wwwlReq2)="mainWWWLPro2($event)">
+                <mpt-cell #cell2 id='{{ cell2.id }}' [tag]="'coronal'" (onLocate)="coronalChange($event)" (onScroll)="bCross($event)"
+                    (onZoom)="handleZoom($event)" (onPan)="handlePan($event)" (onRotate)="handleRotate($event)"
+                    (onChangeWwwl)="handleWwwl($event)">
                 </mpt-cell>
             </div>
 
             <div class='cell'>
-                <mpt-cell #picLeft3 class="c_class" [tag]="'saggital'" [wl]="wl" [ww]="ww" [hasLoadVolume]="hasLoadVolume"
-                    (onLocate)="saggitalChange($event)" (onScroll)="cCross($event)" (onZoom)="handleZoom($event)"
-                    (onPan)="handlePan($event)" (onRotate)="handleRotate($event)" (onChangeWwwl)="handleWwwl($event)"
-                    (wwwlReq2)="mainWWWLPro2($event)">
+                <mpt-cell #cell3 id='{{ cell3.id }}' [tag]="'saggital'" (onLocate)="saggitalChange($event)" (onScroll)="cCross($event)"
+                    (onZoom)="handleZoom($event)" (onPan)="handlePan($event)" (onRotate)="handleRotate($event)"
+                    (onChangeWwwl)="handleWwwl($event)">
                 </mpt-cell>
             </div>
         </div>

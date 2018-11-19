@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs/Subject';
 
 export class EventAggregator {
-    private static _aggregator:EventAggregator;
+    private static _aggregator: EventAggregator;
 
     public static Instance() {
         if (this._aggregator == null)
@@ -18,6 +18,7 @@ export class EventAggregator {
     sliceIndex = new ObservableObject();
     pageDelta = new ObservableObject();
     crossPoint = new ObservableObject();
+    eventData = new ObservableObject();
     //#endregion
 
     private constructor() { }

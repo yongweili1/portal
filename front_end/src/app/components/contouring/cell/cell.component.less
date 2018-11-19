@@ -14,10 +14,10 @@
 }
 
 .box {
+    z-index: 32;
     display: flex;
     flex-wrap: wrap;
-    align-content: space-between;
-    // height: 100%;
+    align-content: space-between; // height: 100%;
     // width: 100%;
     position: absolute;
 }
@@ -48,43 +48,21 @@ canvas {
     position: absolute;
 }
 
-.cleft {
-    position: absolute;
-    z-index: 11;
+input {
+    background: transparent;
+    border: none;
+    width: 40px;
+    border-bottom: 1px solid #cddc39;
+    text-align: center;
+    padding: 0;
+    color: #CCC;
 }
-
-.cright {
-    position: absolute;
-    z-index: 11;
-    span {
-        vertical-align: middle;
-    }
-    input {
-        background: transparent;
-        border: none;
-        width: 40px;
-        border-bottom: 1px solid #cddc39;
-        text-align: center;
-        padding: 0;
-        color: #CCC;
-    }
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-    }
-    input[type="number"] {
-        -moz-appearance: textfield;
-    }
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
 }
-
-.cleftdown {
-    position: absolute;
-    z-index: 11;
-}
-
-.crightdown {
-    position: absolute;
-    z-index: 3;
+input[type="number"] {
+    -moz-appearance: textfield;
 }
 
 .ZoomCursor {
@@ -97,33 +75,4 @@ canvas {
 
 .mouse_windows {
     cursor: url(/assets/img/mouse_windows.cur), auto;
-}
-
-#canvas-frame {
-    border: none;
-    width: 50px;
-}
-
-.containe .img {
-    // display: block;
-    // margin: auto;
-    position: absolute;
-    z-index: 2;
-    display: none;
-}
-
-#toolsCanvas {
-    z-index: 0;
-}
-
-/deep/ #imageCanvas {
-    z-index: 5
-}
-
-/deep/ #crossCanvas {
-    z-index: 10
-}
-
-/deep/ #overlayCanvas {
-    z-index: 9
 }
