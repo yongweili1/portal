@@ -13,16 +13,11 @@ declare var shapes: any;
     styleUrls: ['./contouring-top-bar.component.less']
 })
 export class ContouringTopBarComponent implements OnInit {
-
-    @Output() zoom: EventEmitter<any> = new EventEmitter<any>();
-    @Output() wlww: EventEmitter<any> = new EventEmitter<any>();
-    @Output() pan: EventEmitter<any> = new EventEmitter<any>();
-    @Output() rotate: EventEmitter<any> = new EventEmitter<any>();
-    @Output() reset: EventEmitter<any> = new EventEmitter<any>();
+    @Output() onReset: EventEmitter<any> = new EventEmitter<any>();
     @Output() loadSeries: EventEmitter<any> = new EventEmitter<any>();
     @Output() auto: EventEmitter<any> = new EventEmitter<any>();
     @Output() measure: EventEmitter<any> = new EventEmitter<any>();
-    @Output() clear: EventEmitter<any> = new EventEmitter<any>();
+    @Output() onClearGraphics: EventEmitter<any> = new EventEmitter<any>();
     @Output() hideList: EventEmitter<any> = new EventEmitter<any>();
     @Output() setcenter: EventEmitter<any> = new EventEmitter<any>();
     @Input() seriesList: string[];
@@ -58,24 +53,21 @@ export class ContouringTopBarComponent implements OnInit {
 
     onImgZoom() {
         EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.zoom));
-        this.zoom.emit();
     }
 
     onImgPan() {
         EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.pan));
-        this.pan.emit();
     }
     onImgRotate() {
         EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.rotate));
-        this.rotate.emit();
     }
     onImgReset() {
-        this.reset.emit();
+        this.onReset.emit();
     }
 
     onImgWindow() {
         EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.window));
-        this.wlww.emit();
+        // this.wlww.emit();
     }
 
     onImgCenter() {
@@ -96,7 +88,7 @@ export class ContouringTopBarComponent implements OnInit {
     }
 
     OnClearAllClick() {
-        this.clear.emit();
+        this.onClearGraphics.emit();
     }
 
     OnHideList() {

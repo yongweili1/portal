@@ -12,16 +12,11 @@ declare var actions: any;
     templateUrl: './cell.component.html',
     styleUrls: ['./cell.component.less']
 })
-export class CellComponent implements OnChanges {
-    imageCanvas: any; canbas: any; crossCanvas: any; actionCanvas: any; overlayCanvas: any;
+export class CellComponent {
+    id: string;
+    container: any; imageCanvas: any; crossCanvas: any; actionCanvas: any; overlayCanvas: any;
 
     @Input() tag: any;
-    @Input() hasLoadVolume;
-
-    containerWidth = $('.containe').width();
-    containerHeight = $('.containe').height();
-    viewportWidth = Math.floor(this.containerWidth / 2) * 2;
-    viewportHeight = Math.floor(this.containerHeight / 2) * 2;
 
     // 十字线
     stage: any; crossLine: CrosslineContainer; crossPosition: Point;
@@ -33,12 +28,12 @@ export class CellComponent implements OnChanges {
     @Output() onRotate: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
     @Output() onChangeWwwl: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
 
-    name: string;
     windowLevel: any = 0;
     windowWidth: any = 2000;
     actionInfo: any;
 
     constructor(private conMessage: ConMessageService) {
+        this.id = 'cell';
         this.crossPosition = new Point(0, 0);
         this.actionInfo = new KeyValuePair(actions.locate);
         EventAggregator.Instance().actionInfo.subscribe(value => {
@@ -86,7 +81,7 @@ export class CellComponent implements OnChanges {
                     if (level == this.windowLevel && width == this.windowWidth) {
                         return;
                     }
-                    this.onChangeWwwl.emit([width, level, 'true']);
+                    this.onChangeWwwl.emit([width, level]);
                     break;
                 default:
                     break;
@@ -94,143 +89,86 @@ export class CellComponent implements OnChanges {
         });
     }
 
-    ngOnChanges(changes: SimpleChanges) {
-        this.name = this.tag;
+    ngAfterViewInit() {
+        this.container = $('#' + this.id + '-container').get(0);
+        this.imageCanvas = $('#' + this.id + '-image').get(0);
+        this.crossCanvas = $('#' + this.id + '-cross').get(0);
+        this.overlayCanvas = $('#' + this.id + '-overlay').get(0);
+        this.actionCanvas = $('#' + this.id + '-action').get(0);
 
-        if (this.tag == "transverse") {
-            this.imageCanvas = $(".a_class .imageCanvas").get(0);
-            this.canbas = $(".a_class");
-            this.crossCanvas = $(".a_class .crossCanvas").get(0);
-            this.overlayCanvas = $(".a_class .overlayCanvas").get(0);
-            this.actionCanvas = $(".a_class #actionCanvas").get(0);
-            this.canbas.find(".mpr").text('Transverse');
-        }
-        if (this.tag == "coronal") {
-            this.imageCanvas = $(".b_class .imageCanvas").get(0);
-            this.canbas = $(".b_class");
-            this.crossCanvas = $(".b_class .crossCanvas").get(0);
-            this.overlayCanvas = $(".b_class .overlayCanvas").get(0);
-            this.actionCanvas = $(".b_class #actionCanvas").get(0);
-            this.canbas.find(".mpr").text('Coronal');
-        }
-        if (this.tag == "saggital") {
-            this.imageCanvas = $(".c_class .imageCanvas").get(0);
-            this.canbas = $(".c_class");
-            this.crossCanvas = $(".c_class .crossCanvas").get(0);
-            this.overlayCanvas = $(".c_class .overlayCanvas").get(0);
-            this.actionCanvas = $(".c_class #actionCanvas").get(0);
-            this.canbas.find(".mpr").text('Sagittal');
-        }
-        this.calcviewportsize();
-        this.windowAddMouseWheel();
+        this.changeSize();
+        this.attachMouseWheelEvent();
+        this.crossLine = new CrosslineContainer(this.crossCanvas, this.tag);
     }
 
     ngOnInit() {
         let that = this;
-        $(window).resize(function () {
-            that.calcviewportsize();
-            console.log("=== resize ===")
-        });
+        window.addEventListener("resize", function () { that.changeSize(); });
         this.windowWidth = 2000;
         this.windowLevel = 0;
     }
 
-    // 设置和区分canvas窗口大小
-    calcviewportsize() {
-        if (this.tag === 'transverse') {
-            this.containerWidth = $('.a_class .containe').width();
-            this.containerHeight = $('.a_class .containe').height();
-        }
-        if (this.tag === 'coronal') {
-            this.containerWidth = $('.b_class .containe').width();
-            this.containerHeight = $('.b_class .containe').height();
-        }
-        if (this.tag === 'saggital') {
-            this.containerWidth = $('.c_class .containe').width();
-            this.containerHeight = $('.c_class .containe').height();
-        }
-        this.viewportWidth = Math.floor(this.containerWidth / 2) * 2;
-        this.viewportHeight = Math.floor(this.containerHeight / 2) * 2;
-        this.imageCanvas.setAttribute('width', this.viewportWidth);
-        this.imageCanvas.setAttribute('height', this.viewportHeight);
-        this.crossCanvas.setAttribute('width', this.viewportWidth); // 十字线的canvas
-        this.crossCanvas.setAttribute('height', this.viewportHeight);
-        this.overlayCanvas.setAttribute('width', this.viewportWidth); // 图元操作绘画层的canvas
-        this.overlayCanvas.setAttribute('height', this.viewportHeight);
-        this.actionCanvas.setAttribute('width', this.viewportWidth); // nuge的canvas
-        this.actionCanvas.setAttribute('height', this.viewportHeight);
-
-        this.crossLine = new CrosslineContainer(this.crossCanvas, this.tag);
+    /**
+     * 置顶指定类型的canvas
+     * @param type canvas的类型，overlay、action、cross
+     */
+    riseZIndexOfCanvas(type) {
+        this.imageCanvas.style.zIndex = 0;
+        this.overlayCanvas.style.zIndex = 2;
+        this.actionCanvas.style.zIndex = 4;
+        this.crossCanvas.style.zIndex = 8;
+        $('#' + this.id + '-' + type).get(0).style.zIndex = 16;
     }
 
     /**
-     * 设置canvas的Z-index
-     * @param canvasid
-     * @param targetindex
+     * 改变窗口大小
      */
-    SetCanvasIndex(canvasid: any, targetindex: number) {
-        if (this.tag == "transverse") {
-            $(`.a_class ${canvasid}`).get(0).style.zIndex = targetindex;
-        }
-        if (this.tag == "coronal") {
-            $(`.b_class ${canvasid}`).get(0).style.zIndex = targetindex;
-        }
-        if (this.tag == "saggital") {
-            $(`.c_class ${canvasid}`).get(0).style.zIndex = targetindex;
-        }
+    private changeSize() {
+        let containerWidth = this.container.clientWidth;
+        let containerHeight = this.container.clientHeight;
+        this.imageCanvas.setAttribute('width', containerWidth);
+        this.imageCanvas.setAttribute('height', containerHeight);
+        this.crossCanvas.setAttribute('width', containerWidth);
+        this.crossCanvas.setAttribute('height', containerHeight);
+        this.overlayCanvas.setAttribute('width', containerWidth);
+        this.overlayCanvas.setAttribute('height', containerHeight);
+        this.actionCanvas.setAttribute('width', containerWidth);
+        this.actionCanvas.setAttribute('height', containerHeight);
     }
 
-    windowAddMouseWheel() {
+    /**
+     * 给cell容器添加鼠标滚轮事件
+     */
+    attachMouseWheelEvent() {
         const that = this;
-        let delt: any;
         const scrollFunc = function (e) {
             e = e || window.event;
-            delt = e.wheelDelta / 120;
+            let delt = e.wheelDelta / 120;
             if (that.actionInfo.key() === actions.nudge) {
                 EventAggregator.Instance().scrollInfo.publish(delt);
             } else {
                 that.page(delt);
             }
         };
-        this.canbas.get(0).onmousewheel = scrollFunc;
-    }
-
-    page(delt) {
-        this.onScroll.emit(delt);
+        this.container.onmousewheel = scrollFunc;
     }
 
     /**
-     * 清除所有图元
+     * 翻页
+     * @param delt 目标页数距离当前页数的间隔
      */
-    clearContours() {
-        EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.clear));
+    private page(delt) {
+        this.onScroll.emit(delt);
     }
 
-    onChangewlww(inval) {
-        console.log(inval)
-        let wwwlStrArray = inval.split(',')
-        let wwwlIntArray = []
-        let flag = 'true'
-        wwwlStrArray.forEach(element => {
-            try {
-                wwwlIntArray.push(Number(element));
-            }
-            catch (err) {
-                console.log('cant convert to number');
-                flag = 'false'
-            }
-        });
-        if (typeof (wwwlIntArray[0]) == 'number' && wwwlIntArray[0] > 0) {
-            this.windowWidth = wwwlIntArray[0]
-        } else {
-            flag = 'false'
-        }
-        if (typeof (wwwlIntArray[1]) == 'number') {
-            this.windowLevel = wwwlIntArray[1]
-        } else {
-            flag = 'false'
-        }
-        this.onChangeWwwl.emit([this.windowWidth, this.windowLevel, flag]);
+    inputWl(wl) {
+        this.windowLevel = Number(wl);
+        this.onChangeWwwl.emit([this.windowWidth, this.windowLevel]);
+    }
+
+    inputWw(ww) {
+        this.windowWidth = Number(ww);
+        this.onChangeWwwl.emit([this.windowWidth, this.windowLevel]);
     }
 
     update(imageData, crossPoint, graphics = null, wwwl = null) {
@@ -244,7 +182,7 @@ export class CellComponent implements OnChanges {
         this.updateWWWL(wwwl);
     }
 
-    updateImage(imageData) {
+    private updateImage(imageData) {
         const img = new Image();
         const base64Header = 'data:image/jpeg;base64,';
         const imgData1 = base64Header + imageData;
@@ -257,16 +195,16 @@ export class CellComponent implements OnChanges {
         };
     }
 
-    updateCrossLine(x: number, y: number) {
+    private updateCrossLine(x: number, y: number) {
         this.crossLine.setCenter(x, y);
         this.crossLine.update();
     }
 
-    updateGraphics(graphics) {
+    private updateGraphics(graphics) {
         this.conMessage.setGraphics([this.tag, graphics]);
     }
 
-    updateWWWL(wwwl) {
+    private updateWWWL(wwwl) {
         if (wwwl === undefined || !Array.isArray(wwwl)) {
             return;
         }

@@ -24,11 +24,11 @@ export class WWWL extends BaseAction {
         let curY = e.clientY;
         let shiftY = curY - this.preY;
         if (shiftY >= 0) {
-            this.ww_factor = 1.0 + shiftY * 1.0 / 1000
+            this.ww_factor = 1.0 + shiftY * 1.0 / 120
         } else {
-            this.ww_factor = 1.0 / (1.0 - shiftY * 1.0 / 1000)
+            this.ww_factor = 1.0 / (1.0 - shiftY * 1.0 / 120)
         }
-        this.wl_factor = (this.preX - curX) * 1.0 / 2000;
+        this.wl_factor = (this.preX - curX) * 1.0 / 240;
         this.preX = curX;
         this.preY = curY;
 
