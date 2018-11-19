@@ -4,7 +4,7 @@ import { SharpFactory } from './sharp-factory'
 export class CrosslineFactory implements SharpFactory{
     private static _factory: CrosslineFactory;
 
-    private constructor() { 
+    private constructor() {
     }
 
     static getInstance() {
@@ -16,6 +16,6 @@ export class CrosslineFactory implements SharpFactory{
     }
 
     public createSharpContainer(stage: any) {
-        return new CrosslineContainer(stage);
+        return new CrosslineContainer(stage, '');
     }
 }

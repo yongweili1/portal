@@ -16,7 +16,7 @@ export class BaseContainer extends createjs.Container {
     // 1: middle mouse button down
     // 2: right mouse button down
     currentPressDownBtn: number;
-    
+
     protected _roiConfig: ROIConfig;
     protected _contourInfo: any;
 
@@ -53,14 +53,14 @@ export class BaseContainer extends createjs.Container {
         this.roiConfig = roi;
     }
 
-    initCps(count:number=-1) {
+    initCps(count: number = -1) {
         this.cps = new Array()
         for (let index = 0; index < count; index++) {
             this.cps.push(new Point(0, 0))
         }
-    }    
+    }
 
-    updateCp(index:number, x, y) {
+    updateCp(index: number, x, y) {
         if (index < this.cps.length)
             this.cps[index].update(x, y)
     }
@@ -72,11 +72,11 @@ export class BaseContainer extends createjs.Container {
         console.log('[base_container]handle MouseDown')
         this._tempPoint = new Point(evt.stageX, evt.stageY);
         this.isMousedown = true;
-		this.currentPressDownBtn = evt.button;
+        this.currentPressDownBtn = evt.button;
     }
     handleMouseUp(e) {
         this.isMousedown = false;
-		this.currentPressDownBtn = -1;
+        this.currentPressDownBtn = -1;
     }
     handlePressMove(evt) {
         console.log('[base_container]handle PressMove')

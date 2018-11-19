@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PicTransverseComponent } from './pic-transverse.component';
+import { CellComponent } from './cell.component';
 
-describe('PicTransverseComponent', () => {
-  let component: PicTransverseComponent;
-  let fixture: ComponentFixture<PicTransverseComponent>;
+describe('CellComponent', () => {
+  let component: CellComponent;
+  let fixture: ComponentFixture<CellComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PicTransverseComponent ]
+      declarations: [ CellComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PicTransverseComponent);
+    fixture = TestBed.createComponent(CellComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

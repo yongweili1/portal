@@ -1,37 +1,37 @@
-declare var ClipperLib: any
+declare var ClipperLib: any;
 
 export abstract class ClipperHelper {
     constructor() { }
 
-    public static Clipper(contours: Array<Array<ClipPoint>>, clipper: Array<Array<ClipPoint>>, scale: number = 1, clipperType: string): Array<Array<number>> {
-        let returnValue = [];
+    public static Clipper(contours: Array<Array<ClipPoint>>,
+        clipper: Array<Array<ClipPoint>>, scale: number = 1, clipperType: string): Array<Array<number>> {
+        const returnValue = [];
         ClipperLib.JS.ScaleUpPaths(contours, scale);
         ClipperLib.JS.ScaleUpPaths(clipper, scale);
-        let cpr = new ClipperLib.Clipper();
-        // var cleaning_paths = ClipperLib.Clipper.CleanPolygons(contours, 1.1);
+        const cpr = new ClipperLib.Clipper();
         cpr.AddPaths(contours, ClipperLib.PolyType.ptSubject, true);
         cpr.AddPaths(clipper, ClipperLib.PolyType.ptClip, true);
-        let subject_fillType = ClipperLib.PolyFillType.pftNonZero;
-        let clip_fillType = ClipperLib.PolyFillType.pftNonZero;
+        const subject_fillType = ClipperLib.PolyFillType.pftNonZero;
+        const clip_fillType = ClipperLib.PolyFillType.pftNonZero;
 
-        if (clipperType == "difference") {
+        if (clipperType === 'difference') {
             cpr.Execute(ClipperLib.ClipType.ctDifference, returnValue, subject_fillType, clip_fillType);
             ClipperLib.JS.ScaleDownPaths(returnValue, scale);
             return returnValue;
-        } else if (clipperType == "union") {
+        } else if (clipperType === 'union') {
             cpr.Execute(ClipperLib.ClipType.ctUnion, returnValue, subject_fillType, clip_fillType);
             ClipperLib.JS.ScaleDownPaths(returnValue, scale);
             return returnValue;
-        } else if (clipperType == "intersection") {
+        } else if (clipperType === 'intersection') {
             cpr.Execute(ClipperLib.ClipType.ctIntersection, returnValue, subject_fillType, clip_fillType);
             ClipperLib.JS.ScaleDownPaths(returnValue, scale);
             return returnValue;
-        } else if (clipperType == "xor") {
+        } else if (clipperType === 'xor') {
             cpr.Execute(ClipperLib.ClipType.ctXor, returnValue, subject_fillType, clip_fillType);
             ClipperLib.JS.ScaleDownPaths(returnValue, scale);
             return returnValue;
         } else {
-            console.log("The clipper has not the " + clipperType);
+            console.log('The clipper has not the ' + clipperType);
             return null;
         }
     }
