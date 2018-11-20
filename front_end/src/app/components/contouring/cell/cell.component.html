@@ -1,0 +1,25 @@
+<div id='{{ id }}-container' class="containe">
+    <div id='corner' class="box">
+        <div class="column">
+            <div class="item">
+                {{ tag }}<br>
+                Location: <span class="position"></span><br>
+                <span *ngIf="tag == 'transverse'">Size: <span class="sizeinfo"></span></span><br>
+                <span *ngIf="tag == 'transverse'">Slice: <span class="pageindex"></span></span><br>
+
+                <div *ngIf="tag == 'transverse'">
+                    <span>WL:</span>
+                    <input class="wl" type="number" #wl (change)="inputWl(wl.value)" value="{{ windowLevel }}">
+                    <br>
+                    <span>WW:</span>
+                    <input class="ww" type="number" #ww (change)="inputWw(ww.value)" value="{{ windowWidth }}">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <canvas id="{{ id }}-image" class="imageCanvas"></canvas>
+    <canvas id="{{ id }}-cross" class="crossCanvas"></canvas>
+    <canvas id="{{ id }}-overlay" class="overlayCanvas" overlay-canvas [name]='tag'></canvas>
+    <canvas id="{{ id }}-action" class="actionCanvas" action-canvas [name]='tag'></canvas>
+</div>

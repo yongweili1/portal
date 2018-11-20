@@ -1,4 +1,3 @@
-import { Point } from '../tools/point'
 declare var createjs: any;
 
 export class Hitbar extends createjs.Shape {

@@ -309,34 +309,6 @@ def color(**kwargs):
     return response(json.dumps(imgs))
 
 
-@command.register('wcww')
-def wcww(**kwargs):
-    """
-    Change window center and window width
-    :param ww_factor:
-    :param wl_factor:
-    :param focus_view: current focused view, 'transverse' for transverse,
-    'saggital' for saggital, 'coronal' for coronal
-    :return: rgb image data
-    """
-    try:
-        print(kwargs['ww_factor'])
-        ww_factor = float(kwargs['ww_factor'])
-        wl_factor = float(kwargs['wl_factor'])
-        focus_view = get_view_index(kwargs['focus_view'])
-    except Exception as err:
-        print(err)
-        return response(success=False, message='Invalid parameters.')
-
-    try:
-        imageentity.window_(focus_view, ww_factor, wl_factor)
-        imageentity.updater().update(RefreshType.All)
-        result = imageentity.updater().get_result()
-        return response(json.dumps(result))
-    except Exception as e:
-        return response(success=False, message='windows failed')
-
-
 @command.register('resize')
 def resize(**kwargs):
     """
@@ -392,7 +364,7 @@ def wwwl(**kwargs):
         ww = float(kwargs['ww'])
         wl = float(kwargs['wl'])
     except Exception as err:
-        return response(success=False, message='Invalid parameters.')
+        return response(success=False, message=err.message)
     try:
         views = imageentity.get_children_views()
         for view in views:

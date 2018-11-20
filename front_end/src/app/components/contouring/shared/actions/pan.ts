@@ -1,26 +1,28 @@
 import { BaseAction } from "./base";
-import { Point } from "../tools/point";
+import { EventAggregator } from '../../../../shared/common/event_aggregator';
+declare var actions: any;
 
 export class Pan extends BaseAction {
     prePos: any;
 
-    constructor() {
-        super()
-        this.prePos = [0, 0]
+    handleMouseDown(e) {
+        super.handleMouseDown(e);
+        this.prePos = [e.clientX, e.clientY];
     }
 
-    handleMouseDown(evt) {
-        this.prePos = [evt.clientX, evt.clientY];
+    handleMouseMove(e) {
+        if (!this.isMouseDown) {
+            return;
+        }
+        let curPos = [e.clientX, e.clientY];
+        const data = []
+        data[0] = actions.pan;
+        data[1] = [this.tag, this.prePos, curPos]
+        EventAggregator.Instance().eventData.publish(data);
+        this.prePos = curPos;
     }
 
-    handleMouseMove(evt) {
-        // if (!this.lazyExcuteHandler.canExcuteByCount()) return;
-        // let curPos = [evt.clientX, evt.clientY];
-        // that.panReq.emit([this.tag, this.prePos, curPos]);
-        // this.prePos = curPos;
-    }
-
-    handleMouseUp(evt) {
-        
+    handleMouseUp(e) {
+        super.handleMouseUp(e);
     }
 }
