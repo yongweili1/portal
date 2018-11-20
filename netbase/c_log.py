@@ -78,13 +78,13 @@ class PyLogInstance(object):
         self._lib.GLogWriteToBuffer(log_content)
 
 
-log_inst = PyLogInstance()
+log = PyLogInstance()
 
 
 def test():
-    log_inst.create_log()
+    log.create_log()
     for i in range(100):
-        log_inst.dev_info('give me a number {0}'.format(i))
+        log.dev_info('give me a number {0}'.format(i))
         time.sleep(1)
 
 
