@@ -1,4 +1,4 @@
-import { Directive, ElementRef, HostListener, Input, OnInit } from '@angular/core';
+import { Directive, ElementRef, HostListener, Input, OnInit, SimpleChanges } from '@angular/core';
 import { EventAggregator } from '../../../../shared/common/event_aggregator';
 import { KeyValuePair } from '../../../../shared/common/keyvaluepair';
 import { CircleContainer } from '../container/circle_container';
@@ -6,7 +6,7 @@ import { FaderContainer } from '../container/fader_container';
 import { FreepenContainer } from '../container/freepen_container';
 import { LineContainer } from '../container/line_container';
 import { RectangleContainer } from '../container/rectangle_container';
-import { ROIConfig } from '../model/ROIConfig.model';
+import { RoiModel } from '../model/roi.model';
 import { ConMessageService } from '../service/conMessage.service';
 import { NudgeHelper } from '../tools/nudge_helper';
 import { Point } from '../tools/point';
@@ -19,7 +19,6 @@ declare var shapes: any;
     selector: '[overlay-canvas]'
 })
 export class OverlayCanvasDirective implements OnInit {
-    actionInfo: KeyValuePair;
     radius: number;
     contourColor: string = "#00ffff";
     contourLineWidth = 2;
@@ -28,12 +27,13 @@ export class OverlayCanvasDirective implements OnInit {
     shape: any;
     fader: FaderContainer;
     nudgeHelper: NudgeHelper;
-    activeROI: ROIConfig;
-    sliceIndex: any;
+    @Input() activeROI: RoiModel;
     preFaderPos: Point;
 
-    @Input() name;
+    @Input() sliceIndex: any;
+    @Input() tag;
     @Input() graphics;
+    @Input() actionInfo: KeyValuePair;
 
     constructor(private el: ElementRef, private contouringService: ConMessageService) { }
 
@@ -46,18 +46,24 @@ export class OverlayCanvasDirective implements OnInit {
         this.myStage.enableMouseOver();
         this.myStage.mouseMoveOutside = true;
         this.myStage.autoClear = false;
-        this.myStage.name = this.name;
+        this.myStage.name = this.tag;
 
         this.myContext.strokeStyle = this.contourColor;
         this.myContext.lineWidth = this.contourLineWidth;
 
-        EventAggregator.Instance().actionInfo.subscribe(actionInfo => {
-            if (actionInfo == null) {
-                console.log('ActionInfo is wrong.');
-                return;
-            }
-            console.log('[overlay-canvas]Current action is ' + actionInfo.key());
-            if (actionInfo.key() == actions.clear) {
+        this.contouringService.activeRoi$.subscribe(data => {
+            this.activeROI = data;
+        });
+
+        EventAggregator.Instance().scrollInfo.subscribe(data => {
+            this.fader.updateRadius(data);
+        });
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes.actionInfo !== undefined) {
+            console.log('[overlay-canvas]Current action is ' + this.actionInfo.key());
+            if (this.actionInfo.key() == actions.clear) {
                 if (this.myStage.children.length > 0) {
                     let roi_uid = this.activeROI.ROIId;
                     let slice_index = this.sliceIndex;
@@ -66,24 +72,11 @@ export class OverlayCanvasDirective implements OnInit {
                     this.myStage.clear()
                 }
             }
-            this.actionInfo = actionInfo;
-        })
+        }
 
-        this.contouringService.activeRoi$.subscribe(data => {
-            this.activeROI = data;
-        });
-
-        this.contouringService.sliceIndex$.subscribe(data => {
-            this.sliceIndex = data;
-        });
-
-        EventAggregator.Instance().scrollInfo.subscribe(data => {
-            this.fader.updateRadius(data);
-        });
-    }
-
-    ngOnChanges() {
-        this.update();
+        if (changes.graphics !== undefined) {
+            this.update();
+        }
     }
 
     @HostListener('mousedown', ['$event']) onMouseDown(event: MouseEvent) {
@@ -260,6 +253,9 @@ export class OverlayCanvasDirective implements OnInit {
     }
 
     update() {
+        if (this.myStage === undefined) {
+            return;
+        }
         // if (this.name != data[0]) return;
         this.myStage.removeAllChildren();
         this.myStage.clear();

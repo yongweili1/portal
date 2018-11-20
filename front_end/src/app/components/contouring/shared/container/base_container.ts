@@ -1,5 +1,5 @@
 import { Point } from '../tools/point'
-import { ROIConfig } from '../model/ROIConfig.model'
+import { RoiModel } from '../model/roi.model'
 declare var createjs: any;
 
 export class BaseContainer extends createjs.Container {
@@ -17,7 +17,7 @@ export class BaseContainer extends createjs.Container {
     // 2: right mouse button down
     currentPressDownBtn: number;
 
-    protected _roiConfig: ROIConfig;
+    protected _roiConfig: RoiModel;
     protected _contourInfo: any;
 
     constructor(stage, type) {
@@ -37,7 +37,7 @@ export class BaseContainer extends createjs.Container {
         return this._roiConfig;
     }
 
-    public set roiConfig(roiConfig: ROIConfig){
+    public set roiConfig(roiConfig: RoiModel){
         this._roiConfig = roiConfig;
     }
 

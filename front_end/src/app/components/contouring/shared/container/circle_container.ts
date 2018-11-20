@@ -2,8 +2,7 @@ import { BaseContainer } from '../container/base_container'
 import { Circle } from '../overlay/circle'
 import { ControlPoint } from '../overlay/controlpoint'
 import { Text } from '../overlay/text'
-import { Point } from '../tools/point';
-import { ROIConfig } from '../model/ROIConfig.model';
+import { RoiModel } from '../model/roi.model';
 
 export class CircleContainer extends BaseContainer {
     start: ControlPoint;
@@ -21,7 +20,7 @@ export class CircleContainer extends BaseContainer {
         this.initCps(2)
     }
 
-    public setRoi(roi: ROIConfig) {
+    public setRoi(roi: RoiModel) {
         super.setRoi(roi)
         this.circle.color = roi.ROIColor;
     }
@@ -75,7 +74,7 @@ export class CircleContainer extends BaseContainer {
         let delta_y = evt.stageY - this._tempPoint.y;
         this._tempPoint.x = evt.stageX;
         this._tempPoint.y = evt.stageY;
-        
+
         if (evt.target == this.circle || evt.target == this.text) {
             this.cps[0].offset(delta_x, delta_y)
             this.cps[1].offset(delta_x, delta_y)

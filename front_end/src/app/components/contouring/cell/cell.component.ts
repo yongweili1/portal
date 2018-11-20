@@ -1,9 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { EventAggregator } from '../../../shared/common/event_aggregator';
-import { KeyValuePair } from '../../../shared/common/keyvaluepair';
-import { CrosslineContainer } from '../shared/container/crossline_container';
-import { ConMessageService } from '../shared/service/conMessage.service';
 import { Point } from '../shared/tools/point';
+import { CellModel } from '../shared/model/cell.model';
 declare var $: any;
 declare var actions: any;
 
@@ -17,6 +15,7 @@ export class CellComponent {
     container: any; imageCanvas: any; crossCanvas: any; actionCanvas: any; overlayCanvas: any;
 
     @Input() tag: any;
+    @Input() model: CellModel = new CellModel();
 
     @Output() onLocate: EventEmitter<any> = new EventEmitter<any>();
     @Output() onScroll: EventEmitter<any> = new EventEmitter<any>();
@@ -25,21 +24,12 @@ export class CellComponent {
     @Output() onRotate: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
     @Output() onChangeWwwl: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
 
-    imageData: any;
-    crossPosition: Point;
-    graphics: any;
     windowLevel: any = 0;
     windowWidth: any = 2000;
-    actionInfo: any;
 
     constructor() {
         this.id = 'cell';
-        this.crossPosition = new Point(0, 0);
-        this.actionInfo = new KeyValuePair(actions.locate);
-        EventAggregator.Instance().actionInfo.subscribe(value => {
-            console.log('cell.component.ts get action info:', value.key())
-            this.actionInfo = value;
-        });
+        this.model = new CellModel();
 
         EventAggregator.Instance().pageDelta.subscribe(value => {
             this.page(value);
@@ -50,11 +40,11 @@ export class CellComponent {
                 return;
             }
             const p = new Point(value[1].x, value[1].y);
-            if (this.crossPosition.equals(p)) {
+            if (this.model.crossM.point.equals(p)) {
                 return;
             }
             this.onLocate.emit([value[1].x, value[1].y]);
-            this.crossPosition = p;
+            this.model.crossM.point = p;
         });
 
         EventAggregator.Instance().eventData.subscribe(value => {
@@ -143,7 +133,7 @@ export class CellComponent {
         const scrollFunc = function (e) {
             e = e || window.event;
             let delt = e.wheelDelta / 120;
-            if (that.actionInfo.key() === actions.nudge) {
+            if (that.model.actionInfo.key() === actions.nudge) {
                 EventAggregator.Instance().scrollInfo.publish(delt);
             } else {
                 that.page(delt);
@@ -172,12 +162,12 @@ export class CellComponent {
 
     update(imageData, crossPoint, graphics = null, wwwl = null) {
         if (imageData !== undefined) {
-            this.imageData = imageData;
+            this.model.imageM.imageData = imageData;
         }
         if (crossPoint !== undefined) {
-            this.crossPosition = new Point(crossPoint[0], crossPoint[1]);
+            this.model.crossM.point = new Point(crossPoint[0], crossPoint[1]);
         }
-        this.graphics = graphics;
+        this.model.graphics = graphics;
         this.updateWWWL(wwwl);
     }
 

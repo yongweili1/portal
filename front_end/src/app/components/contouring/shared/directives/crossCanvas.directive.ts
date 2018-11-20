@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Input, OnInit } from '@angular/core';
+import { Directive, ElementRef, Input, OnInit, SimpleChanges } from '@angular/core';
 import { Point } from '../tools/point';
 import { Hitbar } from '../overlay/hitbar';
 import { EventAggregator } from '../../../../shared/common/event_aggregator';
@@ -9,17 +9,16 @@ declare var createjs: any;
     selector: '[cross-canvas]'
 })
 export class CrossCanvasDirective implements OnInit {
-    @Input() name;
+    @Input() tag;
     @Input() point: Point;
+    @Input() hColor: string;
+    @Input() vColor: string;
     canvas: any;
     stage: any;
-    context: CanvasRenderingContext2D;
     lazyExcuteHandler: LazyExcuteHandler;
     horizontal: any;
     vertical: any;
     crossPoint: any;
-    horizontalColor: any;
-    verticalColor: any;
 
     constructor(private el: ElementRef) { }
 
@@ -38,33 +37,19 @@ export class CrossCanvasDirective implements OnInit {
 
         // horizontal line
         this.horizontal = new createjs.Shape();
-        if (this.name == "transverse") {
-            this.horizontalColor = "#2196F3";
-        } else if (this.name == "coronal") {
-            this.horizontalColor = "#F44336";
-        } else if (this.name == "saggital") {
-            this.horizontalColor = "#F44336";
-        }
-        this.horizontal.graphics.beginStroke(this.horizontalColor)
-            .setStrokeStyle(1, "round").moveTo(0, this.point.y).lineTo(this.canvas.width, this.point.y);
+        this.horizontal.graphics.beginStroke(this.hColor)
+            .setStrokeStyle(1, "round").moveTo(0, this.point.y).lineTo(width, this.point.y);
         let horizontalHitbar = new Hitbar();
-        horizontalHitbar.graphics.moveTo(0, this.point.y).lineTo(this.canvas.width, this.point.y);
+        horizontalHitbar.graphics.moveTo(0, this.point.y).lineTo(width, this.point.y);
         this.horizontal.hitArea = horizontalHitbar;
         this.horizontal.cursor = "url('/assets/img/vertical.cur'),auto";
 
         // vertical line
         this.vertical = new createjs.Shape();
-        if (this.name == "transverse") {
-            this.verticalColor = "#CDDC39";
-        } else if (this.name == "coronal") {
-            this.verticalColor = "#CDDC39";
-        } else if (this.name == "saggital") {
-            this.verticalColor = "#2196F3";
-        }
-        this.vertical.graphics.beginStroke(this.verticalColor)
-            .setStrokeStyle(1, "round").moveTo(this.point.x, 0).lineTo(this.point.x, this.canvas.height);
+        this.vertical.graphics.beginStroke(this.vColor)
+            .setStrokeStyle(1, "round").moveTo(this.point.x, 0).lineTo(this.point.x, height);
         var verticalHitbar = new Hitbar();
-        verticalHitbar.graphics.moveTo(this.point.x, 0).lineTo(this.point.x, this.canvas.height);
+        verticalHitbar.graphics.moveTo(this.point.x, 0).lineTo(this.point.x, height);
         this.vertical.hitArea = verticalHitbar;
         this.vertical.cursor = "url('/assets/img/horizontal.cur'),auto";
 
@@ -85,7 +70,7 @@ export class CrossCanvasDirective implements OnInit {
         this.crossPoint.addEventListener("pressup", this.handlePressUp.bind(this));
     }
 
-    ngOnChanges() {
+    ngOnChanges(changes: SimpleChanges) {
         this.update();
     }
 
@@ -100,9 +85,9 @@ export class CrossCanvasDirective implements OnInit {
         this.horizontal.graphics.clear();
         this.vertical.graphics.clear();
         this.crossPoint.graphics.clear();
-        this.horizontal.graphics.beginStroke(this.horizontalColor)
+        this.horizontal.graphics.beginStroke(this.hColor)
             .setStrokeStyle(1, "round").moveTo(0, this.point.y).lineTo(this.canvas.width, this.point.y);
-        this.vertical.graphics.beginStroke(this.verticalColor)
+        this.vertical.graphics.beginStroke(this.vColor)
             .setStrokeStyle(1, "round").moveTo(this.point.x, 0).lineTo(this.point.x, this.canvas.height);
         this.crossPoint.graphics.beginFill("white").drawCircle(this.point.x, this.point.y, 8);
 
@@ -124,7 +109,7 @@ export class CrossCanvasDirective implements OnInit {
         }
         this.update();
 
-        EventAggregator.Instance().crossPoint.publish([this.name, this.point]);
+        EventAggregator.Instance().crossPoint.publish([this.tag, this.point]);
     }
 
     handlePressMove(evt) {
@@ -140,7 +125,7 @@ export class CrossCanvasDirective implements OnInit {
         console.log('move')
         if (!this.lazyExcuteHandler.canExcuteByCount()) return;
         console.log('excute')
-        EventAggregator.Instance().crossPoint.publish([this.name, this.point]);
+        EventAggregator.Instance().crossPoint.publish([this.tag, this.point]);
     }
 
     handlePressUp(evt) {
@@ -153,6 +138,6 @@ export class CrossCanvasDirective implements OnInit {
             this.setCrossPoint(new Point(evt.stageX, evt.stageY));
         }
         this.update();
-        EventAggregator.Instance().crossPoint.publish([this.name, this.point]);
+        EventAggregator.Instance().crossPoint.publish([this.tag, this.point]);
     }
 }

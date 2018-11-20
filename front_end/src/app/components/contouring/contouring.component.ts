@@ -2,14 +2,16 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { EventAggregator } from '../../shared/common/event_aggregator';
+import { KeyValuePair } from '../../shared/common/keyvaluepair';
 import { LazyExcuteHandler } from './lazy_excute_handler';
 import { ContourModel } from './shared/model/contour.model';
-import { ROIConfig } from './shared/model/ROIConfig.model';
+import { ContouringModel } from './shared/model/contouring.model';
+import { RoiModel } from './shared/model/roi.model';
 import { ConMessageService } from './shared/service/conMessage.service';
 import { ContouringService } from './shared/service/contouring.service';
 import { RoiHttpService } from './shared/service/roiHttp.service';
 import { SeriesHttpService } from './shared/service/seriesHttp.service';
-import { KeyValuePair } from '../../shared/common/keyvaluepair';
+import { Point } from './shared/tools/point';
 
 declare var $: any;
 declare var actions: any;
@@ -22,22 +24,16 @@ declare var actions: any;
 export class ContouringComponent implements OnInit {
     patientId: any = '';
     seriList: any;
-    actionInfo: any;
     seriesList: any;
     hasLoadVolume = false;
     seriesId: any;
-    ROIName: any = '';
-    ROIColor: any = '#FFFF00';
-    ROIList: Array<any>;
-    ROIListLength = 0;
+
     newROIDisplay: any = false;
     manageROIDisplay: any = false;
     editROIDisplay: any = false;
-    defaultROIConfig: ROIConfig = { ROIId: '', ROIName: '', ROIColor: '#FFFF00' };
-    editROIConfig: ROIConfig = { ROIId: '', ROIName: '', ROIColor: '' };
-    activeROIConfig: ROIConfig = { ROIId: '', ROIName: '', ROIColor: '' };
-    sliceIndex: any;
+
     lazyExcuteHandler: LazyExcuteHandler;
+    data: ContouringModel;
 
     @ViewChild('cell1') cell1;
     @ViewChild('cell2') cell2;
@@ -52,6 +48,9 @@ export class ContouringComponent implements OnInit {
         private priMessageService: MessageService
     ) {
         this.lazyExcuteHandler = new LazyExcuteHandler();
+        this.data = new ContouringModel();
+        this.data.setTag();
+        this.data.setCrossLineColor();
         EventAggregator.Instance().contourCps.subscribe(data => { this.saveContour(data); });
         EventAggregator.Instance().removeCps.subscribe(data => { this.deleteContours(data); });
     }
@@ -69,12 +68,12 @@ export class ContouringComponent implements OnInit {
         });
 
         EventAggregator.Instance().actionInfo.subscribe(value => {
-            this.actionInfo = value;
+            this.data.setActionInfo(value);
             const priActionArray = ['shape', 'clear', 'select', 'nudge'];
             let canvasType = '';
-            if (this.actionInfo.key() === actions.locate) {
+            if (value.key() === actions.locate) {
                 canvasType = 'cross';
-            } else if (priActionArray.indexOf(this.actionInfo.key()) > -1) {
+            } else if (priActionArray.indexOf(value.key()) > -1) {
                 canvasType = 'overlay';
             } else {
                 canvasType = 'action';
@@ -101,8 +100,7 @@ export class ContouringComponent implements OnInit {
                         that.seriesHttpService.GetSeries("", "", "all", "", "").subscribe(data => {
                             data = JSON.parse(data);
                             that.updateCells(data);
-                            that.sliceIndex = data['0']['slice_index'];
-                            that.conMessage.SetSliceIndex(that.sliceIndex);
+                            this.updateSliceIndex(data['0']['slice_index']);
                         });
                     }
                 });
@@ -123,13 +121,32 @@ export class ContouringComponent implements OnInit {
         this.seriesHttpService.UnLoadVolume(this.seriesId).subscribe();
     }
 
+    ///////////////////////////////////////
     handleAddRoi() {
         const seriesuid = $("#seriesSelect").val();
         if (seriesuid != '' && seriesuid !== undefined) {
             this.newROIDisplay = true;
+            this.data.activeRoi = new RoiModel();
         } else {
             this.priMessageService.add({ severity: 'error', detail: 'Please select series first.' });
         }
+    }
+
+    handleEditRoi(roi: RoiModel) {
+        this.editROIDisplay = true;
+        this.data.activeRoi = roi;
+    }
+
+    handleDeleteRoi(roi: RoiModel) {
+        this.roiHttp.DeleteROIConfig(roi.ROIId).subscribe(result => {
+            if (result.code == '200') {
+                this.priMessageService.add({ severity: 'success', detail: `Delete succeed.` });
+                this.data.roiList = result.data;
+                this.editROIDisplay = false;
+            } else {
+                this.priMessageService.add({ severity: 'error', detail: `${result.msg}` });
+            }
+        });
     }
 
     mainautoroi() {
@@ -141,16 +158,15 @@ export class ContouringComponent implements OnInit {
         this.roiHttp.CreateNewSegROI(ROIData).subscribe(result => {
             if (result.body.code == '200') {
                 this.priMessageService.add({ severity: 'success', detail: `Save succeed.` });
-                this.ROIList = result.body.data;
-                this.ROIListLength = this.ROIList.length;
+                this.data.roiList = result.body.data;
                 this.newROIDisplay = false;
-                this.ROIList.forEach(element => {
-                    if (element.ROIId > 0) {
-                        this.activeROIConfig = element;
-                    }
-                });
+                // this.data.roiList.forEach(element => {
+                //     // if (element.ROIId > 0) {
+                //     //     this.activeROIConfig = element;
+                //     // }
+                // });
 
-                this.conMessage.SetActiveRoi(this.activeROIConfig);
+                // this.conMessage.SetActiveRoi(this.activeROIConfig);
             } else {
                 this.priMessageService.add({ severity: 'error', detail: `${result.msg}` });
             }
@@ -163,8 +179,7 @@ export class ContouringComponent implements OnInit {
             this.manageROIDisplay = true;
             this.roiHttp.GetROIConfig(seriesuid).subscribe(result => {
                 if (result.code = '200') {
-                    this.ROIList = result['data'];
-                    this.ROIListLength = this.ROIList.length;
+                    this.data.roiList = result['data'];
                 }
             });
         } else {
@@ -173,33 +188,26 @@ export class ContouringComponent implements OnInit {
     }
 
     hideNewROIDia() {
-        this.ROIColor = '#FFFF00';
-        this.ROIName = '';
+        this.data.activeRoi = new RoiModel();
     }
 
     saveROI() {
-        if (this.ROIName == '') {
+        if (this.data.activeRoi.ROIName == '') {
             this.priMessageService.add({ severity: 'error', detail: `Illegal input.` });
             return;
         }
-        const ROIData = {
-            seriesuid: $('#seriesSelect').val(),
-            ROIName: this.ROIName,
-            ROIColor: this.ROIColor
-        };
-        this.roiHttp.PostCreateNewROI(ROIData).subscribe(result => {
+        this.roiHttp.PostCreateNewROI(this.data.activeRoi).subscribe(result => {
             if (result.body.code == '200') {
                 this.priMessageService.add({ severity: 'success', detail: `Save succeed.` });
-                this.ROIList = result.body.data;
-                this.ROIListLength = this.ROIList.length;
+                this.data.roiList = result.body.data;
                 this.newROIDisplay = false;
-                this.ROIList.forEach(element => {
-                    if (element.ROIId > 0) {
-                        this.activeROIConfig = element;
-                    }
-                });
+                // this.data.roiList.forEach(element => {
+                //     // if (element.ROIId > 0) {
+                //     //     this.activeROIConfig = element;
+                //     // }
+                // });
 
-                this.conMessage.SetActiveRoi(this.activeROIConfig);
+                // this.conMessage.SetActiveRoi(this.activeROIConfig);
             } else {
                 this.priMessageService.add({ severity: 'error', detail: `${result.msg}` });
             }
@@ -207,29 +215,14 @@ export class ContouringComponent implements OnInit {
     }
 
     updateROI() {
-        if (this.editROIConfig.ROIName == '') {
+        if (this.data.activeRoi.ROIName == '') {
             this.priMessageService.add({ severity: 'error', detail: `Illegal input.` });
             return;
         }
-        this.roiHttp.UpdateROIConfig(this.editROIConfig).subscribe(result => {
+        this.roiHttp.UpdateROIConfig(this.data.activeRoi).subscribe(result => {
             if (result.body.code == '200') {
                 this.priMessageService.add({ severity: 'success', detail: `Save succeed.` });
-                this.ROIList = result.body.data;
-                this.ROIListLength = this.ROIList.length;
-                this.editROIDisplay = false;
-            } else {
-                this.priMessageService.add({ severity: 'error', detail: `${result.msg}` });
-            }
-        });
-    }
-
-    deleteROI(evt) {
-        const ROIId = $(evt.target).parents('tr').find('.roi-id-td').text();
-        this.roiHttp.DeleteROIConfig(ROIId).subscribe(result => {
-            if (result.code == '200') {
-                this.priMessageService.add({ severity: 'success', detail: `Delete succeed.` });
-                this.ROIList = result.data;
-                this.ROIListLength = this.ROIList.length;
+                this.data.roiList = result.body.data;
                 this.editROIDisplay = false;
             } else {
                 this.priMessageService.add({ severity: 'error', detail: `${result.msg}` });
@@ -239,52 +232,29 @@ export class ContouringComponent implements OnInit {
 
     deleteAllROI() {
         const ROIIdArray = [];
-        this.ROIList.forEach(element => {
+        this.data.roiList.forEach(element => {
             ROIIdArray.push(element.ROIId);
         });
         this.roiHttp.DeleteROIConfig(ROIIdArray).subscribe(result => {
             if (result.code == '200') {
                 this.priMessageService.add({ severity: 'success', detail: `Delete succeed.` });
-                this.ROIList = result.data;
-                this.ROIListLength = 0;
+                this.data.roiList = result.data;
             } else {
                 this.priMessageService.add({ severity: 'error', detail: `${result.msg}` });
             }
-        }
-        )
-    }
-
-    hideManageROIDia() {
-
+        });
     }
 
     changeROIVisible(evt) {
         evt.target.classList.toggle("fa-eye-slash");
     }
 
-    onClickROIItem(evt) {
-        $(".roi-select-tr").removeClass('roi-select-tr');
-        $(evt.target).parents('tr').addClass('roi-select-tr');
-        this.activeROIConfig.ROIId = $(evt.target).parents('tr').find('.roi-id-td').text();
-        this.ROIList.forEach(element => {
-            if (this.activeROIConfig.ROIId == element.ROIId) {
-                this.activeROIConfig.ROIName = element.ROIName;
-                this.activeROIConfig.ROIColor = element.ROIColor;
-            }
-        });
-        this.conMessage.SetActiveRoi(this.activeROIConfig);
+    onSelectRoi(roi) {
+        this.data.selectedRoi = roi;
+        this.conMessage.SetActiveRoi(this.data.selectedRoi);
     }
 
-    editROI(evt) {
-        this.editROIConfig.ROIId = $(evt.target).parents('tr').find('.roi-id-td').text();
-        this.editROIDisplay = true;
-        this.ROIList.forEach(element => {
-            if (this.editROIConfig.ROIId == element.ROIId) {
-                this.editROIConfig.ROIName = element.ROIName;
-                this.editROIConfig.ROIColor = element.ROIColor;
-            }
-        });
-    }
+    ///////////////////////////////////////
 
     transverseChange(event: any) {
         if (!this.hasLoadVolume) {
@@ -294,9 +264,7 @@ export class ContouringComponent implements OnInit {
         this.seriesHttpService.GetLocatePic('transverse', displayView, event).subscribe((value) => {
             const data = JSON.parse(value);
             this.updateCells(data, false, displayView);
-            this.sliceIndex = data['0']['slice_index'];
-            this.conMessage.SetSliceIndex(this.sliceIndex);
-            EventAggregator.Instance().sliceIndex.publish(this.sliceIndex);
+            this.updateSliceIndex(data['0']['slice_index']);
         });
     }
 
@@ -308,9 +276,7 @@ export class ContouringComponent implements OnInit {
         this.seriesHttpService.GetLocatePic('coronal', displayView, event).subscribe((value) => {
             const data = JSON.parse(value);
             this.updateCells(data, false, displayView);
-            this.sliceIndex = data['0']['slice_index'];
-            this.conMessage.SetSliceIndex(this.sliceIndex);
-            EventAggregator.Instance().sliceIndex.publish(this.sliceIndex);
+            this.updateSliceIndex(data['0']['slice_index']);
         });
     }
 
@@ -322,9 +288,7 @@ export class ContouringComponent implements OnInit {
         this.seriesHttpService.GetLocatePic('saggital', displayView, event).subscribe((value) => {
             const data = JSON.parse(value);
             this.updateCells(data, false, displayView);
-            this.sliceIndex = data['0']['slice_index'];
-            this.conMessage.SetSliceIndex(this.sliceIndex);
-            EventAggregator.Instance().sliceIndex.publish(this.sliceIndex);
+            this.updateSliceIndex(data['0']['slice_index']);
         });
     }
 
@@ -341,9 +305,7 @@ export class ContouringComponent implements OnInit {
         this.seriesHttpService.GetSeriesPic('transverse', 'transverse', event, '', '').subscribe((value) => {
             const data = JSON.parse(value);
             this.updateCells(data, false);
-            this.sliceIndex = data['0']['slice_index'];
-            this.conMessage.SetSliceIndex(this.sliceIndex);
-            EventAggregator.Instance().sliceIndex.publish(this.sliceIndex);
+            this.updateSliceIndex(data['0']['slice_index']);
         }, (error) => {
             console.log(error);
         });
@@ -358,8 +320,7 @@ export class ContouringComponent implements OnInit {
         this.seriesHttpService.GetSeriesPic('coronal', 'coronal', event, '', '').subscribe((value) => {
             const data = JSON.parse(value);
             this.updateCells(data, false);
-            this.sliceIndex = data['0']['slice_index'];
-            EventAggregator.Instance().sliceIndex.publish(this.sliceIndex);
+            this.updateSliceIndex(data['0']['slice_index']);
         }, (error) => {
             console.log(error);
         });
@@ -374,8 +335,7 @@ export class ContouringComponent implements OnInit {
         this.seriesHttpService.GetSeriesPic('saggital', 'saggital', event, '', '').subscribe((value) => {
             const data = JSON.parse(value);
             this.updateCells(data, false);
-            this.sliceIndex = data['0']['slice_index'];
-            EventAggregator.Instance().sliceIndex.publish(this.sliceIndex);
+            this.updateSliceIndex(data['0']['slice_index']);
         }, (error) => {
             console.log(error);
         });
@@ -486,9 +446,7 @@ export class ContouringComponent implements OnInit {
                             .subscribe((value) => {
                                 const data = JSON.parse(value);
                                 that.updateCells(data, true);
-                                this.sliceIndex = data['0']['slice_index'];
-                                this.conMessage.SetSliceIndex(this.sliceIndex);
-                                EventAggregator.Instance().sliceIndex.publish(this.sliceIndex);
+                                this.updateSliceIndex(data['0']['slice_index']);
                                 this.priMessageService.add({ severity: 'success', detail: 'Load succeed.' });
                             }, (error) => {
                                 this.priMessageService.add({ severity: 'error', detail: 'Load failed.' });
@@ -509,9 +467,7 @@ export class ContouringComponent implements OnInit {
                                     this.cell1.imageCanvas.height).subscribe((value) => {
                                         const data = JSON.parse(value);
                                         that.updateCells(data, true);
-                                        this.sliceIndex = data['0']['slice_index'];
-                                        this.conMessage.SetSliceIndex(this.sliceIndex);
-                                        EventAggregator.Instance().sliceIndex.publish(this.sliceIndex);
+                                        this.updateSliceIndex(data['0']['slice_index']);
                                         this.priMessageService.add({ severity: 'success', detail: 'Load succeed.' });
                                     }, (error) => {
                                         this.priMessageService.add({ severity: 'error', detail: 'Load failed.' });
@@ -560,18 +516,32 @@ export class ContouringComponent implements OnInit {
         }
     }
 
+    updateSliceIndex(index) {
+        EventAggregator.Instance().sliceIndex.publish(index);
+        this.data.setSliceIndex(index);
+    }
+
     updateCells(data, updateWwwl: boolean = false, updateViews: string = 'all') {
         if (updateViews === 'all' || updateViews.indexOf('transverse') > -1) {
-            this.cell1.update(data['0']['image'], data['0']['crosshair'], data['0']['graphic']['contours'],
-                updateWwwl ? data['0']['wwwl'] : undefined);
+            // this.cell1.update(data['0']['image'], data['0']['crosshair'], data['0']['graphic']['contours'],
+            //     updateWwwl ? data['0']['wwwl'] : undefined);
+            this.data.cell1.imageM.imageData = data['0']['image'];
+            this.data.cell1.crossM.point = new Point(data['0']['crosshair'][0], data['0']['crosshair'][1]);
+            this.data.cell1.graphics = data['0']['graphic']['contours'];
         }
         if (updateViews === 'all' || updateViews.indexOf('coronal') > -1) {
-            this.cell2.update(data['1']['image'], data['1']['crosshair'], data['1']['graphic']['contours'],
-                updateWwwl ? data['1']['wwwl'] : undefined);
+            // this.cell2.update(data['1']['image'], data['1']['crosshair'], data['1']['graphic']['contours'],
+            //     updateWwwl ? data['1']['wwwl'] : undefined);
+            this.data.cell2.imageM.imageData = data['1']['image'];
+            this.data.cell2.crossM.point = new Point(data['1']['crosshair'][0], data['1']['crosshair'][1]);
+            this.data.cell2.graphics = data['1']['graphic']['contours'];
         }
         if (updateViews === 'all' || updateViews.indexOf('saggital') > -1) {
-            this.cell3.update(data['2']['image'], data['2']['crosshair'], data['2']['graphic']['contours'],
-                updateWwwl ? data['2']['wwwl'] : undefined);
+            // this.cell3.update(data['2']['image'], data['2']['crosshair'], data['2']['graphic']['contours'],
+            //     updateWwwl ? data['2']['wwwl'] : undefined);
+            this.data.cell3.imageM.imageData = data['2']['image'];
+            this.data.cell3.crossM.point = new Point(data['2']['crosshair'][0], data['2']['crosshair'][1]);
+            this.data.cell3.graphics = data['2']['graphic']['contours'];
         }
     }
 }
