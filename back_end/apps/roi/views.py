@@ -5,7 +5,7 @@ from rest_framework.response import Response
 
 from rest_framework.views import APIView
 from serve.DBAccess.models import Roi, Series
-from serve.DBAccess.ss_serializer import RoiSerializer
+from serve.DBAccess.serializer import RoiSerializer
 from serve.util.generate_uid import GenerateUid
 
 

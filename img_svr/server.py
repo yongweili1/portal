@@ -29,8 +29,8 @@ class MyCommandHandler(comproxy.PyBaseCmdHandlerEx):
 
 
 if __name__ == '__main__':
-    log_inst.create_log()
-    proxy = comproxy.PyCommProxy("img_srv", "10.9.19.153:10000")
+    # log_inst.create_log()
+    proxy = comproxy.PyCommProxy("img_srv", "10.9.19.150:10000")
     x = MyCommandHandler()
     proxy.register_cmd_handler_ex(100, x)
     e = threading.Event()
