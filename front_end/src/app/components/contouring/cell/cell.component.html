@@ -2,17 +2,18 @@
     <div id='corner' class="box">
         <div class="column">
             <div class="item">
-                {{ tag }}<br>
-                Location: <span class="position"></span><br>
-                <span *ngIf="tag == 'transverse'">Size: <span class="sizeinfo"></span></span><br>
-                <span *ngIf="tag == 'transverse'">Slice: <span class="pageindex">{{ model.sliceIndex }}</span></span><br>
-
-                <div *ngIf="tag == 'transverse'">
+                {{ model.tag | uppercase }}
+                <br>
+                <span *ngIf="model.tag == 'transverse'">Size: </span>
+                <br>
+                <span *ngIf="model.tag == 'transverse'">Slice: {{ model.sliceIndex }}</span>
+                <br>
+                <div *ngIf="model.tag == 'transverse'">
                     <span>WL:</span>
-                    <input class="wl" type="number" #wl (change)="inputWl(wl.value)" value="{{ windowLevel }}">
+                    <input type="number" #wl (change)="inputWl(wl.value)" value="{{ model.imageM.windowLevel }}">
                     <br>
                     <span>WW:</span>
-                    <input class="ww" type="number" #ww (change)="inputWw(ww.value)" value="{{ windowWidth }}">
+                    <input type="number" #ww (change)="inputWw(ww.value)" value="{{ model.imageM.windowWidth }}">
                 </div>
             </div>
         </div>

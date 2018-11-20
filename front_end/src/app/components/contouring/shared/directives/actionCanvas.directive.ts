@@ -1,7 +1,7 @@
 import { Directive, ElementRef, HostListener, Input, OnInit, SimpleChanges } from '@angular/core';
 import { KeyValuePair } from '../../../../shared/common/keyvaluepair';
 import { Action } from '../actions/action';
-import { LazyExcuteHandler } from "../../../contouring/lazy_excute_handler";
+import { ExcuteHelper } from "../../../contouring/shared/tools/excute_helper";
 
 declare var actions: any;
 
@@ -9,7 +9,7 @@ declare var actions: any;
     selector: '[action-canvas]'
 })
 export class ActionCanvasDirective implements OnInit {
-    lazyExcuteHandler: LazyExcuteHandler;
+    excuteHelper: ExcuteHelper;
     action: Action;
     isMouseDown: boolean;
 
@@ -20,7 +20,7 @@ export class ActionCanvasDirective implements OnInit {
 
     ngOnInit() {
         console.log('[action-canvas]ngOnInit');
-        this.lazyExcuteHandler = new LazyExcuteHandler();
+        this.excuteHelper = new ExcuteHelper();
         this.actionInfo = new KeyValuePair(actions.locate);
         this.action = new Action(this.tag);
     }
@@ -47,7 +47,7 @@ export class ActionCanvasDirective implements OnInit {
         if (!this.isMouseDown) {
             return;
         }
-        if (!this.lazyExcuteHandler.canExcuteByCount()) {
+        if (!this.excuteHelper.canExcuteByCount()) {
             this.action.mouseDown(event);
             return;
         }

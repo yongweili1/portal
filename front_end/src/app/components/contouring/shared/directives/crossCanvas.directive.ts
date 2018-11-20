@@ -2,7 +2,7 @@ import { Directive, ElementRef, Input, OnInit, SimpleChanges } from '@angular/co
 import { Point } from '../tools/point';
 import { Hitbar } from '../overlay/hitbar';
 import { EventAggregator } from '../../../../shared/common/event_aggregator';
-import { LazyExcuteHandler } from '../../lazy_excute_handler';
+import { ExcuteHelper } from "../../../contouring/shared/tools/excute_helper";
 declare var createjs: any;
 
 @Directive({
@@ -15,7 +15,7 @@ export class CrossCanvasDirective implements OnInit {
     @Input() vColor: string;
     canvas: any;
     stage: any;
-    lazyExcuteHandler: LazyExcuteHandler;
+    excuteHelper: ExcuteHelper;
     horizontal: any;
     vertical: any;
     crossPoint: any;
@@ -33,7 +33,7 @@ export class CrossCanvasDirective implements OnInit {
         this.stage.enableMouseOver(50);
         this.stage.mouseMoveOutside = true;
 
-        this.lazyExcuteHandler = new LazyExcuteHandler();
+        this.excuteHelper = new ExcuteHelper();
 
         // horizontal line
         this.horizontal = new createjs.Shape();
@@ -123,7 +123,7 @@ export class CrossCanvasDirective implements OnInit {
         }
         this.update();
         console.log('move')
-        if (!this.lazyExcuteHandler.canExcuteByCount()) return;
+        if (!this.excuteHelper.canExcuteByCount()) return;
         console.log('excute')
         EventAggregator.Instance().crossPoint.publish([this.tag, this.point]);
     }

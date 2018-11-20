@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { EventAggregator } from '../../shared/common/event_aggregator';
 import { KeyValuePair } from '../../shared/common/keyvaluepair';
-import { LazyExcuteHandler } from './lazy_excute_handler';
+import { ExcuteHelper } from "./shared/tools/excute_helper";
 import { ContourModel } from './shared/model/contour.model';
 import { ContouringModel } from './shared/model/contouring.model';
 import { RoiModel } from './shared/model/roi.model';
@@ -32,7 +32,7 @@ export class ContouringComponent implements OnInit {
     manageROIDisplay: any = false;
     editROIDisplay: any = false;
 
-    lazyExcuteHandler: LazyExcuteHandler;
+    excuteHelper: ExcuteHelper;
     data: ContouringModel;
 
     @ViewChild('cell1') cell1;
@@ -47,7 +47,7 @@ export class ContouringComponent implements OnInit {
         private conService: ContouringService,
         private priMessageService: MessageService
     ) {
-        this.lazyExcuteHandler = new LazyExcuteHandler();
+        this.excuteHelper = new ExcuteHelper();
         this.data = new ContouringModel();
         this.data.setTag();
         this.data.setCrossLineColor();
@@ -55,6 +55,7 @@ export class ContouringComponent implements OnInit {
         EventAggregator.Instance().removeCps.subscribe(data => { this.deleteContours(data); });
     }
 
+    //#region life-cycle hook methods
     ngOnInit() {
         this.cell1.id = 'cell-1';
         this.cell2.id = 'cell-2';
@@ -120,8 +121,9 @@ export class ContouringComponent implements OnInit {
         this.hasLoadVolume = false;
         this.seriesHttpService.UnLoadVolume(this.seriesId).subscribe();
     }
+    //#endregion
 
-    ///////////////////////////////////////
+    //#region Roi
     handleAddRoi() {
         const seriesuid = $("#seriesSelect").val();
         if (seriesuid != '' && seriesuid !== undefined) {
@@ -253,86 +255,75 @@ export class ContouringComponent implements OnInit {
         this.data.selectedRoi = roi;
         this.conMessage.SetActiveRoi(this.data.selectedRoi);
     }
+    //#endregion
 
-    ///////////////////////////////////////
-
-    transverseChange(event: any) {
+    //#region handle Locate event
+    handleTransverseLocate(event: any) {
         if (!this.hasLoadVolume) {
             return;
         }
         const displayView = 'coronal,saggital';
-        this.seriesHttpService.GetLocatePic('transverse', displayView, event).subscribe((value) => {
-            const data = JSON.parse(value);
-            this.updateCells(data, false, displayView);
-            this.updateSliceIndex(data['0']['slice_index']);
-        });
+        this.handleLocate('transverse', displayView, event);
     }
 
-    coronalChange(event: any) {
+    handleCoronalLocate(event: any) {
         if (!this.hasLoadVolume) {
             return;
         }
         const displayView = 'transverse,saggital';
-        this.seriesHttpService.GetLocatePic('coronal', displayView, event).subscribe((value) => {
-            const data = JSON.parse(value);
-            this.updateCells(data, false, displayView);
-            this.updateSliceIndex(data['0']['slice_index']);
-        });
+        this.handleLocate('coronal', displayView, event);
     }
 
-    saggitalChange(event: any) {
+    handleSaggitalLocate(event: any) {
         if (!this.hasLoadVolume) {
             return;
         }
         const displayView = 'transverse,coronal';
-        this.seriesHttpService.GetLocatePic('saggital', displayView, event).subscribe((value) => {
+        this.handleLocate('saggital', displayView, event);
+    }
+
+    private handleLocate(focus: any, display: any, crossPoint: any) {
+        this.seriesHttpService.GetLocatePic(focus, display, crossPoint).subscribe((value) => {
             const data = JSON.parse(value);
-            this.updateCells(data, false, displayView);
+            this.updateCells(data, false, display);
             this.updateSliceIndex(data['0']['slice_index']);
         });
     }
+    //#endregion
 
     handleClearGraphics() {
         EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.clear));
     }
 
-    aCross(event: any) {
-        if (!this.lazyExcuteHandler.canExcute(new Date().getTime(), 'a')
+    //#region handle Scroll event
+    handleTransverseScroll(event: any) {
+        if (!this.excuteHelper.canExcute(new Date().getTime(), 'a')
             || !this.hasLoadVolume) {
             return;
         }
 
-        this.seriesHttpService.GetSeriesPic('transverse', 'transverse', event, '', '').subscribe((value) => {
-            const data = JSON.parse(value);
-            this.updateCells(data, false);
-            this.updateSliceIndex(data['0']['slice_index']);
-        }, (error) => {
-            console.log(error);
-        });
+        this.handleScroll('transverse', event);
     }
 
-    bCross(event: any) {
-        if (!this.lazyExcuteHandler.canExcute(new Date().getTime(), 'b') ||
+    handleCoronalScroll(event: any) {
+        if (!this.excuteHelper.canExcute(new Date().getTime(), 'b') ||
             !this.hasLoadVolume) {
             return;
         }
 
-        this.seriesHttpService.GetSeriesPic('coronal', 'coronal', event, '', '').subscribe((value) => {
-            const data = JSON.parse(value);
-            this.updateCells(data, false);
-            this.updateSliceIndex(data['0']['slice_index']);
-        }, (error) => {
-            console.log(error);
-        });
+        this.handleScroll('coronal', event);
     }
 
-    cCross(event: any) {
-        if (!this.lazyExcuteHandler.canExcute(new Date().getTime(), 'c')
+    handleSaggitalScroll(event: any) {
+        if (!this.excuteHelper.canExcute(new Date().getTime(), 'c')
             || !this.hasLoadVolume) {
             return;
         }
+        this.handleScroll('saggital', event);
+    }
 
-        this.seriesHttpService.GetSeriesPic('saggital', 'saggital', event, '', '').subscribe((value) => {
+    private handleScroll(focus: any, delta: any) {
+        this.seriesHttpService.GetSeriesPic(focus, focus, delta, '', '').subscribe((value) => {
             const data = JSON.parse(value);
             this.updateCells(data, false);
             this.updateSliceIndex(data['0']['slice_index']);
@@ -340,6 +331,7 @@ export class ContouringComponent implements OnInit {
             console.log(error);
         });
     }
+    //#endregion
 
     getCanvasSize() {
         const view_size: any = {};
@@ -350,8 +342,8 @@ export class ContouringComponent implements OnInit {
         return view_size;
     }
 
+    //#region handle Zoom event
     handleZoom(e) {
-        console.log(e);
         if (!this.hasLoadVolume) {
             return;
         }
@@ -361,7 +353,9 @@ export class ContouringComponent implements OnInit {
             that.updateCells(result);
         });
     }
+    //#endregion
 
+    //#region handle Wwwl event
     handleWwwl(evt) {
         if (!this.hasLoadVolume) {
             return;
@@ -372,7 +366,9 @@ export class ContouringComponent implements OnInit {
             that.updateCells(result, true);
         });
     }
+    //#endregion
 
+    //#region handle Pan event
     handlePan(e) {
         console.log(e);
         if (!this.hasLoadVolume) {
@@ -384,7 +380,9 @@ export class ContouringComponent implements OnInit {
             that.updateCells(result);
         });
     }
+    //#endregion
 
+    //#region handle Rotate event
     handleRotate(e) {
         console.log(e);
         if (!this.hasLoadVolume) {
@@ -396,6 +394,7 @@ export class ContouringComponent implements OnInit {
             that.updateCells(result);
         });
     }
+    //#endregion
 
     mainSetCenterPro() {
         if (!this.hasLoadVolume) {
@@ -425,7 +424,7 @@ export class ContouringComponent implements OnInit {
         });
     }
 
-    loadSeries() {
+    handleLoadSeries() {
         const seriesId: any = $('#seriesSelect').val();
         const canvasSize: any = {};
         canvasSize['view_size'] = this.getCanvasSize();
@@ -516,32 +515,35 @@ export class ContouringComponent implements OnInit {
         }
     }
 
-    updateSliceIndex(index) {
+    private updateSliceIndex(index) {
         EventAggregator.Instance().sliceIndex.publish(index);
         this.data.setSliceIndex(index);
     }
 
     updateCells(data, updateWwwl: boolean = false, updateViews: string = 'all') {
         if (updateViews === 'all' || updateViews.indexOf('transverse') > -1) {
-            // this.cell1.update(data['0']['image'], data['0']['crosshair'], data['0']['graphic']['contours'],
-            //     updateWwwl ? data['0']['wwwl'] : undefined);
             this.data.cell1.imageM.imageData = data['0']['image'];
             this.data.cell1.crossM.point = new Point(data['0']['crosshair'][0], data['0']['crosshair'][1]);
             this.data.cell1.graphics = data['0']['graphic']['contours'];
+            if (updateWwwl) {
+                this.data.cell1.imageM.setWwwl(data['0']['wwwl']);
+            }
         }
         if (updateViews === 'all' || updateViews.indexOf('coronal') > -1) {
-            // this.cell2.update(data['1']['image'], data['1']['crosshair'], data['1']['graphic']['contours'],
-            //     updateWwwl ? data['1']['wwwl'] : undefined);
             this.data.cell2.imageM.imageData = data['1']['image'];
             this.data.cell2.crossM.point = new Point(data['1']['crosshair'][0], data['1']['crosshair'][1]);
             this.data.cell2.graphics = data['1']['graphic']['contours'];
+            if (updateWwwl) {
+                this.data.cell2.imageM.setWwwl(data['1']['wwwl']);
+            }
         }
         if (updateViews === 'all' || updateViews.indexOf('saggital') > -1) {
-            // this.cell3.update(data['2']['image'], data['2']['crosshair'], data['2']['graphic']['contours'],
-            //     updateWwwl ? data['2']['wwwl'] : undefined);
             this.data.cell3.imageM.imageData = data['2']['image'];
             this.data.cell3.crossM.point = new Point(data['2']['crosshair'][0], data['2']['crosshair'][1]);
             this.data.cell3.graphics = data['2']['graphic']['contours'];
+            if (updateWwwl) {
+                this.data.cell3.imageM.setWwwl(data['2']['wwwl']);
+            }
         }
     }
 }

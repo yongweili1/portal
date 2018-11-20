@@ -19,7 +19,6 @@ declare var shapes: any;
     selector: '[overlay-canvas]'
 })
 export class OverlayCanvasDirective implements OnInit {
-    radius: number;
     contourColor: string = "#00ffff";
     contourLineWidth = 2;
     myContext: CanvasRenderingContext2D;
@@ -34,6 +33,7 @@ export class OverlayCanvasDirective implements OnInit {
     @Input() tag;
     @Input() graphics;
     @Input() actionInfo: KeyValuePair;
+    @Input() faderRadius: number;
 
     constructor(private el: ElementRef, private contouringService: ConMessageService) { }
 
@@ -55,8 +55,11 @@ export class OverlayCanvasDirective implements OnInit {
             this.activeROI = data;
         });
 
-        EventAggregator.Instance().scrollInfo.subscribe(data => {
-            this.fader.updateRadius(data);
+        EventAggregator.Instance().faderRadiusDelta.subscribe(delta => {
+            if (this.fader === undefined) {
+                return;
+            }
+            this.fader.updateRadius(delta);
         });
     }
 

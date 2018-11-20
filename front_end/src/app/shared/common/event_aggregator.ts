@@ -13,7 +13,7 @@ export class EventAggregator {
     contourCps = new ObservableObject();
     removeCps = new ObservableObject();
     actionInfo = new ObservableObject();
-    scrollInfo = new ObservableObject();
+    faderRadiusDelta = new ObservableObject();
     volumnSize = new ObservableObject();
     sliceIndex = new ObservableObject();
     pageDelta = new ObservableObject();
