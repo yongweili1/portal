@@ -5,9 +5,9 @@ from command import command as cmd
 from message import RequestData
 
 import struct
+from netbase.c_log import log_inst
 
 from netbase import comproxy
-from netbase import c_log
 
 
 import time
@@ -29,11 +29,15 @@ class MyCommandHandler(comproxy.PyBaseCmdHandlerEx):
 
 
 if __name__ == '__main__':
+<<<<<<< HEAD
     # c_log.PyLogInstance().create_log()
     proxy = comproxy.PyCommProxy("img_srv", "10.9.19.150:10000")
+=======
+    log_inst.create_log()
+    proxy = comproxy.PyCommProxy("img_srv", "10.9.19.153:10000")
+>>>>>>> master
     x = MyCommandHandler()
     proxy.register_cmd_handler_ex(100, x)
-
     e = threading.Event()
     e.wait()
 
