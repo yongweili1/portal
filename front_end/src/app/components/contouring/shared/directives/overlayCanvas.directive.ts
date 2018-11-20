@@ -1,26 +1,24 @@
-import { Directive, ElementRef, Input, HostListener, OnInit, Output, EventEmitter } from '@angular/core';
-import { ROIConfig } from '../model/ROIConfig.model'
-import { ConMessageService } from '../service/conMessage.service';
-import { CircleFactory } from '../tools/factory/circle-factory'
-import { LineFactory } from '../tools/factory/line-factory'
-import { RectangleFactory } from '../tools/factory/rectangle-factory'
-import { FreepenFactory } from '../tools/factory/freepen-factory'
-import { Point } from '../tools/point'
-import { FreepenContainer } from '../container/freepen_container';
-import { KeyValuePair } from '../../../../shared/common/keyvaluepair';
-import { FaderFactory } from '../tools/factory/fader-factory';
+import { Directive, ElementRef, HostListener, Input, OnInit } from '@angular/core';
 import { EventAggregator } from '../../../../shared/common/event_aggregator';
+import { KeyValuePair } from '../../../../shared/common/keyvaluepair';
+import { CircleContainer } from '../container/circle_container';
 import { FaderContainer } from '../container/fader_container';
+import { FreepenContainer } from '../container/freepen_container';
+import { LineContainer } from '../container/line_container';
+import { RectangleContainer } from '../container/rectangle_container';
+import { ROIConfig } from '../model/ROIConfig.model';
+import { ConMessageService } from '../service/conMessage.service';
 import { NudgeHelper } from '../tools/nudge_helper';
+import { Point } from '../tools/point';
 
 declare var createjs: any;
 declare var actions: any;
 declare var shapes: any;
 
 @Directive({
-    selector: '[myContour]'
+    selector: '[overlay-canvas]'
 })
-export class ContourDirective implements OnInit {
+export class OverlayCanvasDirective implements OnInit {
     curAction: string;
     actionInfo: KeyValuePair;
     canvasLeft: number;
@@ -53,6 +51,7 @@ export class ContourDirective implements OnInit {
     constructor(private el: ElementRef, private contouringService: ConMessageService) { }
 
     ngOnInit() {
+        console.log('[overlay-canvas]ngOnInit');
         this.myContext = this.el.nativeElement.getContext("2d");
         this.myStage = new createjs.Stage(this.el.nativeElement);
         this.actionInfo = new KeyValuePair(actions.locate);
@@ -67,10 +66,10 @@ export class ContourDirective implements OnInit {
 
         EventAggregator.Instance().actionInfo.subscribe(actionInfo => {
             if (actionInfo == null) {
-                console.log('ActionInfo is wrong.')
+                console.log('ActionInfo is wrong.');
                 return;
             }
-            console.log('Current action is ' + actionInfo.key());
+            console.log('[overlay-canvas]Current action is ' + actionInfo.key());
             if (actionInfo.key() == actions.clear) {
                 if (this.myStage.children.length > 0) {
                     let roi_uid = this.activeROI.ROIId;
@@ -123,6 +122,7 @@ export class ContourDirective implements OnInit {
     }
 
     @HostListener('mousedown', ['$event']) onMouseDown(event: MouseEvent) {
+        console.log('[overlay-canvas]mousedown');
         this.myStage.children.forEach(shape => {
             if (shape.type === shapes.freepen) {
                 shape.editable = this.actionInfo.value() === shapes.freepen_edit ? true : false;
@@ -144,6 +144,7 @@ export class ContourDirective implements OnInit {
     }
 
     @HostListener('mousemove', ['$event']) onMouseMove(event: MouseEvent) {
+        console.log('[overlay-canvas]mousemove');
         if (this.shape != null) {
             this.shape.handleMouseMove(event)
         }
@@ -164,6 +165,7 @@ export class ContourDirective implements OnInit {
     }
 
     @HostListener('mouseup', ['$event']) onMouseUp(event: MouseEvent) {
+        console.log('[overlay-canvas]mouseup');
         if (this.shape != null) {
             this.shape.handleMouseUp(event);
         }
@@ -188,14 +190,16 @@ export class ContourDirective implements OnInit {
     }
 
     @HostListener('mouseleave', ['$event']) onMouseLeave(event: MouseEvent) {
-        // this.onMouseUp(event);
+        console.log('[overlay-canvas]mouseleave');
         this.myStage.removeChild(this.fader);
         this.fader = null;
         this.myStage.clear();
         this.myStage.update();
     }
 
-    @HostListener('dblclick', ['$event']) onDbClick(event: MouseEvent) { }
+    @HostListener('dblclick', ['$event']) onDbClick(event: MouseEvent) {
+        console.log('[overlay-canvas]dblclick');
+    }
 
     getShapeContainerInstance() {
         if (this.actionInfo.key() !== actions.shape) {
@@ -204,15 +208,15 @@ export class ContourDirective implements OnInit {
         }
         switch (this.actionInfo.value()) {
             case shapes.line:
-                return LineFactory.getInstance().createSharpContainer(this.myStage);
+                return new LineContainer(this.myStage);
             case shapes.rectangle:
-                return RectangleFactory.getInstance().createSharpContainer(this.myStage);
+                return new RectangleContainer(this.myStage);
             case shapes.circle:
-                return CircleFactory.getInstance().createSharpContainer(this.myStage);
+                return new CircleContainer(this.myStage);
             case shapes.freepen:
-                return FreepenFactory.getInstance().createSharpContainer(this.myStage);
+                return new FreepenContainer(this.myStage);
             case shapes.nudge:
-                return FaderFactory.getInstance().createSharpContainer(this.myStage);
+                return new FaderContainer(this.myStage);
             default:
                 return null;
         }
@@ -220,7 +224,7 @@ export class ContourDirective implements OnInit {
 
     getFader() {
         if (this.fader == null) {
-            this.fader = FaderFactory.getInstance().createSharpContainer(this.myStage);
+            this.fader = new FaderContainer(this.myStage);
             this.fader.setRoi(this.activeROI);
             this.nudgeHelper = new NudgeHelper(this.fader)
         }
@@ -238,7 +242,7 @@ export class ContourDirective implements OnInit {
                 cps.push(new Point(cp['X'], cp['Y']));
             });
             cps.push(cps[0].copy());
-            let freepen = FreepenFactory.getInstance().createSharpContainer(this.myStage);
+            let freepen = new FreepenContainer(this.myStage);
             freepen.setRoi(this.activeROI);
             this.myStage.addChild(freepen);
             freepen.setCps(cps);

@@ -627,47 +627,6 @@ class ChangeWindow(APIView):
     def get(self, request):
         """
         Change window center and window width
-        :param shift: shift of mouse point, like [10, 10], you should pass it like `'10, 10'`
-        :param width: width of viewport
-        :param height: height of viewport
-        :param focus_view: current focused view, 'transverse' for transverse,
-              'saggital' for saggital, 'coronal' for coronal
-        :param display_view: need to displayed on screen, 'transverse' for transverse,
-              'saggital' for saggital, 'coronal' for coronal, 'all' for all view
-        :return: rgb image data
-        """
-        ww_factor = request.GET.get('ww_factor', None)
-        wl_factor = request.GET.get('wl_factor', None)
-        focus_view = request.GET.get('focus_view', None)
-        user_ip = request.META.get('REMOTE_ADDR', None)
-        if ww_factor is None or wl_factor is None:
-            return Response('请输入完整的请求数据')
-
-        params = {
-            'ww_factor': ww_factor,
-            'wl_factor': wl_factor,
-            'focus_view': focus_view,
-            'user_ip': user_ip,
-            'server_name': 'image',
-            'command': 'wcww',
-        }
-
-        try:
-            rst = get_image(**params)
-        except Exception as e:
-            return Response(e.message)
-
-        if rst.success is False:
-            return Response(rst.comment)
-
-        return Response(rst.kwargs)
-
-
-class ChangeWindowTwo(APIView):
-
-    def get(self, request):
-        """
-        Change window center and window width
         :param ww:
         :param wl:
         :return: rgb image data

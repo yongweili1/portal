@@ -1,26 +1,25 @@
-<div class="containe">
-    <div class="box">
+<div id='{{ id }}-container' class="containe">
+    <div id='corner' class="box">
         <div class="column">
-            <div class="item cleft">
-                <span class="mpr"></span><br>
+            <div class="item">
+                {{ tag }}<br>
                 Location: <span class="position"></span><br>
-                <div id="canvas-frame"></div>
                 <span *ngIf="tag == 'transverse'">Size: <span class="sizeinfo"></span></span><br>
                 <span *ngIf="tag == 'transverse'">Slice: <span class="pageindex"></span></span><br>
 
-                <div *ngIf="tag == 'transverse'" class='cright'>
-                    <span>WL:</span> <input class="wl" type="number" #wl (change)="onChangewlww(ww.value + ',' + wl.value)"
-                        value="{{ viewWL }}">
+                <div *ngIf="tag == 'transverse'">
+                    <span>WL:</span>
+                    <input class="wl" type="number" #wl (change)="inputWl(wl.value)" value="{{ windowLevel }}">
                     <br>
-                    <span>WW:</span> <input class="ww" type="number" #ww (change)="onChangewlww(ww.value + ',' + wl.value)"
-                        value="{{ viewWW }}">
+                    <span>WW:</span>
+                    <input class="ww" type="number" #ww (change)="inputWw(ww.value)" value="{{ windowWidth }}">
                 </div>
             </div>
         </div>
     </div>
 
-    <canvas id="imageCanvas" class="imageCanvas"></canvas>
-    <canvas id="crossCanvas" class="crossCanvas"></canvas>
-    <canvas id="overlayCanvas" class="overlayCanvas" myContour [name]='name'></canvas>
-    <canvas id="toolsCanvas" class="toolscan"></canvas>
+    <canvas id="{{ id }}-image" class="imageCanvas"></canvas>
+    <canvas id="{{ id }}-cross" class="crossCanvas"></canvas>
+    <canvas id="{{ id }}-overlay" class="overlayCanvas" overlay-canvas [name]='tag'></canvas>
+    <canvas id="{{ id }}-action" class="actionCanvas" action-canvas [name]='tag'></canvas>
 </div>

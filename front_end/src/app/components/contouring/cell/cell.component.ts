@@ -1,12 +1,10 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { EventAggregator } from '../../../shared/common/event_aggregator';
 import { KeyValuePair } from '../../../shared/common/keyvaluepair';
-import { LazyExcuteHandler } from '../lazy_excute_handler';
 import { CrosslineContainer } from '../shared/container/crossline_container';
 import { ConMessageService } from '../shared/service/conMessage.service';
 import { Point } from '../shared/tools/point';
 declare var $: any;
-declare var createjs: any;
 declare var actions: any;
 
 @Component({
@@ -14,16 +12,11 @@ declare var actions: any;
     templateUrl: './cell.component.html',
     styleUrls: ['./cell.component.less']
 })
-export class CellComponent implements OnChanges {
-    imageCanvas: any; canbas: any; crossCanvas: any; toolsCavas: any; overlayCanvas: any;
+export class CellComponent {
+    id: string;
+    container: any; imageCanvas: any; crossCanvas: any; actionCanvas: any; overlayCanvas: any;
 
-    @Input() tag: any; @Input() wl: any = 0; @Input() ww: any = 2000;
-    @Input() hasLoadVolume;
-
-    containerWidth = $('.containe').width();
-    containerHeight = $('.containe').height();
-    viewportWidth = Math.floor(this.containerWidth / 2) * 2;
-    viewportHeight = Math.floor(this.containerHeight / 2) * 2;
+    @Input() tag: any;
 
     // 十字线
     stage: any; crossLine: CrosslineContainer; crossPosition: Point;
@@ -35,16 +28,12 @@ export class CellComponent implements OnChanges {
     @Output() onRotate: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
     @Output() onChangeWwwl: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
 
-    @Output() wwwlReq2: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
-
-    lazyExcuteHandler: LazyExcuteHandler;
-    name: string;
-    viewWL: any;
-    viewWW: any;
+    windowLevel: any = 0;
+    windowWidth: any = 2000;
     actionInfo: any;
 
     constructor(private conMessage: ConMessageService) {
-        this.lazyExcuteHandler = new LazyExcuteHandler();
+        this.id = 'cell';
         this.crossPosition = new Point(0, 0);
         this.actionInfo = new KeyValuePair(actions.locate);
         EventAggregator.Instance().actionInfo.subscribe(value => {
@@ -53,12 +42,12 @@ export class CellComponent implements OnChanges {
         });
 
         EventAggregator.Instance().pageDelta.subscribe(value => {
-            this.P2Cross(value);
+            this.page(value);
         });
 
         EventAggregator.Instance().crossPoint.subscribe(value => {
             if (value[0] !== this.tag) {
-                return
+                return;
             }
             const p = new Point(value[1].x, value[1].y);
             if (this.crossPosition.equals(p)) {
@@ -67,308 +56,159 @@ export class CellComponent implements OnChanges {
             this.onLocate.emit([value[1].x, value[1].y]);
             this.crossPosition = p;
         });
+
+        EventAggregator.Instance().eventData.subscribe(value => {
+            if (value === undefined || value.length != 2) {
+                return;
+            }
+            const action = value[0];
+            const data = value[1];
+            switch (action) {
+                case actions.locate:
+                    break;
+                case actions.pan:
+                    this.onPan.emit(data);
+                    break;
+                case actions.zoom:
+                    this.onZoom.emit(data);
+                    break;
+                case actions.rotate:
+                    this.onRotate.emit(data);
+                    break;
+                case actions.window:
+                    const level = Math.round(this.windowLevel + this.windowWidth * data[1]);
+                    const width = Math.round(this.windowWidth * data[0]);
+                    if (level == this.windowLevel && width == this.windowWidth) {
+                        return;
+                    }
+                    this.onChangeWwwl.emit([width, level]);
+                    break;
+                default:
+                    break;
+            }
+        });
     }
 
-    ngOnChanges(changes: SimpleChanges) {
-        this.name = this.tag;
+    ngAfterViewInit() {
+        this.container = $('#' + this.id + '-container').get(0);
+        this.imageCanvas = $('#' + this.id + '-image').get(0);
+        this.crossCanvas = $('#' + this.id + '-cross').get(0);
+        this.overlayCanvas = $('#' + this.id + '-overlay').get(0);
+        this.actionCanvas = $('#' + this.id + '-action').get(0);
 
-        if (this.tag == "transverse") {
-            this.imageCanvas = $(".a_class .imageCanvas").get(0);
-            this.canbas = $(".a_class");
-            this.crossCanvas = $(".a_class .crossCanvas").get(0);
-            this.overlayCanvas = $(".a_class .overlayCanvas").get(0);
-            this.toolsCavas = $(".a_class #toolsCanvas").get(0);
-            this.canbas.find(".mpr").text('Transverse');
-        }
-        if (this.tag == "coronal") {
-            this.imageCanvas = $(".b_class .imageCanvas").get(0);
-            this.canbas = $(".b_class");
-            this.crossCanvas = $(".b_class .crossCanvas").get(0);
-            this.overlayCanvas = $(".b_class .overlayCanvas").get(0);
-            this.toolsCavas = $(".b_class #toolsCanvas").get(0);
-            this.canbas.find(".mpr").text('Coronal');
-        }
-        if (this.tag == "saggital") {
-            this.imageCanvas = $(".c_class .imageCanvas").get(0);
-            this.canbas = $(".c_class");
-            this.crossCanvas = $(".c_class .crossCanvas").get(0);
-            this.overlayCanvas = $(".c_class .overlayCanvas").get(0);
-            this.toolsCavas = $(".c_class #toolsCanvas").get(0);
-            this.canbas.find(".mpr").text('Sagittal');
-        }
-        this.calcviewportsize();
-        this.windowAddMouseWheel(this.tag);
+        this.changeSize();
+        this.attachMouseWheelEvent();
+        this.crossLine = new CrosslineContainer(this.crossCanvas, this.tag);
     }
 
     ngOnInit() {
         let that = this;
-        $(window).resize(function () {
-            that.calcviewportsize();
-            console.log("=== resize ===")
-        });
-        this.viewWW = 2000;
-        this.viewWL = 0;
-    }
-
-    // 设置和区分canvas窗口大小
-    calcviewportsize() {
-        if (this.tag === 'transverse') {
-            this.containerWidth = $('.a_class .containe').width();
-            this.containerHeight = $('.a_class .containe').height();
-        }
-        if (this.tag === 'coronal') {
-            this.containerWidth = $('.b_class .containe').width();
-            this.containerHeight = $('.b_class .containe').height();
-        }
-        if (this.tag === 'saggital') {
-            this.containerWidth = $('.c_class .containe').width();
-            this.containerHeight = $('.c_class .containe').height();
-        }
-        this.viewportWidth = Math.floor(this.containerWidth / 2) * 2;
-        this.viewportHeight = Math.floor(this.containerHeight / 2) * 2;
-        this.imageCanvas.setAttribute('width', this.viewportWidth);
-        this.imageCanvas.setAttribute('height', this.viewportHeight);
-        this.crossCanvas.setAttribute('width', this.viewportWidth); // 十字线的canvas
-        this.crossCanvas.setAttribute('height', this.viewportHeight);
-        this.overlayCanvas.setAttribute('width', this.viewportWidth); // 图元操作绘画层的canvas
-        this.overlayCanvas.setAttribute('height', this.viewportHeight);
-        this.toolsCavas.setAttribute('width', this.viewportWidth); // nuge的canvas
-        this.toolsCavas.setAttribute('height', this.viewportHeight);
-        this.initCrossLine();
+        window.addEventListener("resize", function () { that.changeSize(); });
+        this.windowWidth = 2000;
+        this.windowLevel = 0;
     }
 
     /**
-     * 设置canvas的Z-index
-     * @param canvasid
-     * @param targetindex
+     * 置顶指定类型的canvas
+     * @param type canvas的类型，overlay、action、cross
      */
-    SetCanvasIndex(canvasid: any, targetindex: number) {
-        if (this.tag == "transverse") {
-            $(`.a_class ${canvasid}`).get(0).style.zIndex = targetindex;
-        }
-        if (this.tag == "coronal") {
-            $(`.b_class ${canvasid}`).get(0).style.zIndex = targetindex;
-        }
-        if (this.tag == "saggital") {
-            $(`.c_class ${canvasid}`).get(0).style.zIndex = targetindex;
-        }
+    riseZIndexOfCanvas(type) {
+        this.imageCanvas.style.zIndex = 0;
+        this.overlayCanvas.style.zIndex = 2;
+        this.actionCanvas.style.zIndex = 4;
+        this.crossCanvas.style.zIndex = 8;
+        $('#' + this.id + '-' + type).get(0).style.zIndex = 16;
     }
 
-    // 翻页
-    windowAddMouseWheel(tag) {
+    /**
+     * 改变窗口大小
+     */
+    private changeSize() {
+        let containerWidth = this.container.clientWidth;
+        let containerHeight = this.container.clientHeight;
+        this.imageCanvas.setAttribute('width', containerWidth);
+        this.imageCanvas.setAttribute('height', containerHeight);
+        this.crossCanvas.setAttribute('width', containerWidth);
+        this.crossCanvas.setAttribute('height', containerHeight);
+        this.overlayCanvas.setAttribute('width', containerWidth);
+        this.overlayCanvas.setAttribute('height', containerHeight);
+        this.actionCanvas.setAttribute('width', containerWidth);
+        this.actionCanvas.setAttribute('height', containerHeight);
+    }
+
+    /**
+     * 给cell容器添加鼠标滚轮事件
+     */
+    attachMouseWheelEvent() {
         const that = this;
-        let delt: any;
         const scrollFunc = function (e) {
             e = e || window.event;
-            delt = e.wheelDelta / 120;
+            let delt = e.wheelDelta / 120;
             if (that.actionInfo.key() === actions.nudge) {
-                console.log('scroll func fader radius', delt)
                 EventAggregator.Instance().scrollInfo.publish(delt);
             } else {
-                console.log('scroll func page', delt);
-                that.P2Cross(delt);
+                that.page(delt);
             }
         };
-        this.canbas.get(0).onmousewheel = scrollFunc;
+        this.container.onmousewheel = scrollFunc;
     }
 
-    P2Cross(delt) {
+    /**
+     * 翻页
+     * @param delt 目标页数距离当前页数的间隔
+     */
+    private page(delt) {
         this.onScroll.emit(delt);
     }
 
-    /**
-     * 清除所有图元
-     */
-    clearPri() {
-        EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.clear));
+    inputWl(wl) {
+        this.windowLevel = Number(wl);
+        this.onChangeWwwl.emit([this.windowWidth, this.windowLevel]);
     }
 
-    /**
-     * 画十字线和交点，绑定监听事件
-     * @param nix
-     * @param niy
-     */
-    initCrossLine() {
-        this.stage = new createjs.Stage(this.crossCanvas);
-        var width = this.stage.canvas.width;
-        var height = this.stage.canvas.height;
-        createjs.Touch.enable(this.stage);
-        this.stage.enableMouseOver(50);
-        this.stage.mouseMoveOutside = true;
-
-        this.crossLine = new CrosslineContainer(this.stage, this.tag);
-        this.updateCrossLine(width / 2, height / 2);
+    inputWw(ww) {
+        this.windowWidth = Number(ww);
+        this.onChangeWwwl.emit([this.windowWidth, this.windowLevel]);
     }
 
-    /**
-     * 调整初始的十字线、交点位置，更新stage
-     * @param x
-     * @param y
-     */
-    updateCrossLine(x: number, y: number) {
-        this.clearmouse();
-        this.crossLine.setCenter(x, y);
-        this.crossLine.update();
-    }
-
-    onChangewlww(inval) {
-        console.log(inval)
-        let wwwlStrArray = inval.split(',')
-        let wwwlIntArray = []
-        let flag = 'true'
-        wwwlStrArray.forEach(element => {
-            ''
-            try {
-                wwwlIntArray.push(Number(element));
-            }
-            catch (err) {
-                console.log('cant convert to number');
-                flag = 'false'
-            }
-        });
-        if (typeof (wwwlIntArray[0]) == 'number' && wwwlIntArray[0] > 0) {
-            this.ww = wwwlIntArray[0]
-        }
-        else {
-            flag = 'false'
-        }
-        if (typeof (wwwlIntArray[1]) == 'number') {
-            this.wl = wwwlIntArray[1]
-        }
-        else {
-            flag = 'false'
-        }
-        this.wwwlReq2.emit([this.ww, this.wl, flag]);
-    }
-
-    clearmouse() {
-        // $('#threebmp').removeClass();
-        this.canbas.get(0).onmousedown = null;
-    }
-
-    addPanEvent() {
-        let that = this;
-        // $('#threebmp').removeClass().addClass("MoveCursor");
-        that.toolsCavas.onmousedown = function (e) {
-            let prePos = [e.clientX, e.clientY];
-            console.log('enter pan mouse down');
-            that.toolsCavas.onmousemove = function (e) {
-                if (!that.lazyExcuteHandler.canExcuteByCount()) return;
-                let curPos = [e.clientX, e.clientY];
-                that.onPan.emit([that.tag, prePos, curPos]);
-                prePos = curPos;
-            };
-            that.toolsCavas.onmouseup = function () {
-                that.toolsCavas.onmousemove = null;
-                that.toolsCavas.onmouseup = null;
-            };
-        }
-    }
-
-    addZoomEvent() {
-        let that = this;
-        // $('#threebmp').removeClass().addClass("ZoomCursor");
-        that.toolsCavas.onmousedown = function (e) {
-            let zoom_factor = 0;
-            let preY = e.clientY;
-            that.toolsCavas.onmousemove = function (e) {
-                if (!that.lazyExcuteHandler.canExcuteByCount()) return;
-                let curY = e.clientY;
-                let shiftY = curY - preY;
-                preY = curY;
-                if (shiftY >= 0) {
-                    zoom_factor = 1.0 + shiftY * 1.0 / 120
-                } else {
-                    zoom_factor = 1.0 / (1.0 - shiftY * 1.0 / 120)
-                }
-
-                that.onZoom.emit([that.tag, zoom_factor]);
-            }
-            that.toolsCavas.onmouseup = function (e) {
-                that.toolsCavas.onmousemove = null;
-                that.toolsCavas.onmouseup = null;
-            }
-        }
-    }
-
-    addRotateEvent() {
-        const that = this;
-        that.toolsCavas.onmousedown = function (e) {
-            let prePos = [e.clientX, e.clientY];
-            that.toolsCavas.onmousemove = function (e) {
-                if (!that.lazyExcuteHandler.canExcuteByCount()) return;
-                let curPos = [e.clientX, e.clientY];
-                that.onRotate.emit([that.tag, prePos, curPos]);
-                prePos = curPos;
-            };
-            that.toolsCavas.onmouseup = function () {
-                that.toolsCavas.onmousemove = null;
-                that.toolsCavas.onmouseup = null;
-            };
-        };
-    }
-
-    addChangeWlEvent() {
-        const that = this;
-        that.toolsCavas.onmousedown = function (e) {
-            let ww_factor = 0;
-            let wl_factor = 0;
-            let preX = e.clientX;
-            let preY = e.clientY;
-            that.toolsCavas.onmousemove = function (e) {
-                if (!that.lazyExcuteHandler.canExcuteByCount()) return;
-                let curX = e.clientX;
-                let curY = e.clientY;
-                let shiftY = curY - preY;
-                if (shiftY >= 0) {
-                    ww_factor = 1.0 + shiftY * 1.0 / 120
-                } else {
-                    ww_factor = 1.0 / (1.0 - shiftY * 1.0 / 120)
-                }
-                wl_factor = (preX - curX) * 1.0 / 240;
-                preX = curX;
-                preY = curY;
-                that.onChangeWwwl.emit([that.tag, ww_factor, wl_factor]);
-            };
-            that.toolsCavas.onmouseup = function (e) {
-                that.toolsCavas.onmousemove = null;
-                that.toolsCavas.onmouseup = null;
-            };
-        };
-    }
-
-    cellUpdate(imageData, crossPoint, graphics = null, wwwl = null) {
-        if (imageData != null) {
+    update(imageData, crossPoint, graphics = null, wwwl = null) {
+        if (imageData !== undefined) {
             this.updateImage(imageData);
         }
-        if (crossPoint != null) {
+        if (crossPoint !== undefined) {
             this.updateCrossLine(crossPoint[0], crossPoint[1]);
         }
         this.updateGraphics(graphics);
         this.updateWWWL(wwwl);
     }
 
-    updateGraphics(graphics) {
-        this.conMessage.setGraphics([this.tag, graphics]);
-    }
-
-    updateImage(imageData) {
-        const img1 = new Image();
+    private updateImage(imageData) {
+        const img = new Image();
         const base64Header = 'data:image/jpeg;base64,';
         const imgData1 = base64Header + imageData;
-        img1.src = imgData1;
+        img.src = imgData1;
         const that = this;
-        img1.onload = function () {
+        img.onload = function () {
             const ctx = that.imageCanvas.getContext('2d');
             ctx.clearRect(0, 0, that.imageCanvas.width, that.imageCanvas.height);
-            ctx.drawImage(img1, 0, 0, that.imageCanvas.width, that.imageCanvas.height);
+            ctx.drawImage(img, 0, 0, that.imageCanvas.width, that.imageCanvas.height);
         };
     }
 
-    updateWWWL(wwwl) {
-        if (wwwl != null && wwwl !== undefined && Array.isArray(wwwl) === true) {
-            this.viewWW = Math.round(wwwl[0]);
-            this.viewWL = Math.round(wwwl[1]);
+    private updateCrossLine(x: number, y: number) {
+        this.crossLine.setCenter(x, y);
+        this.crossLine.update();
+    }
+
+    private updateGraphics(graphics) {
+        this.conMessage.setGraphics([this.tag, graphics]);
+    }
+
+    private updateWWWL(wwwl) {
+        if (wwwl === undefined || !Array.isArray(wwwl)) {
+            return;
         }
+        this.windowWidth = Math.round(wwwl[0]);
+        this.windowLevel = Math.round(wwwl[1]);
     }
 }

@@ -33,7 +33,7 @@ export class NudgeHelper {
                 this.mode = "OutFader";
             }
         }
-        console.log('fader mode',this.mode)
+        console.log('fader mode', this.mode)
         return this.mode;
     }
 
@@ -56,8 +56,8 @@ export class NudgeHelper {
                     j = j + 1;
                 }
 
-                if (contours[contour][i].Y <= point.Y) {   // 如果多边形的点 小于等于 选定点的 Y 坐标  
-                    if (contours[contour][j].Y > point.Y) {  // 如果多边形的下一点 大于于 选定点的 Y 坐标  
+                if (contours[contour][i].Y <= point.Y) {   // 如果多边形的点 小于等于 选定点的 Y 坐标
+                    if (contours[contour][j].Y > point.Y) {  // 如果多边形的下一点 大于于 选定点的 Y 坐标
                         if (this.IsLeft(contours[contour][i], contours[contour][j], point) > 0) {
                             wn++;
                         }
@@ -135,8 +135,8 @@ export class NudgeHelper {
     PointInPoly(pt, poly) {
         for (var c = false, i = -1, l = poly.length, j = l - 1; ++i < l; j = i)
             ((poly[i].y <= pt.y && pt.y < poly[j].y) || (poly[j].y <= pt.y && pt.y < poly[i].y))
-            && (pt.x < (poly[j].x - poly[i].x) * (pt.y - poly[i].y) / (poly[j].y - poly[i].y) + poly[i].x)
-            && (c = !c);
+                && (pt.x < (poly[j].x - poly[i].x) * (pt.y - poly[i].y) / (poly[j].y - poly[i].y) + poly[i].x)
+                && (c = !c);
         return c;
     }
 }

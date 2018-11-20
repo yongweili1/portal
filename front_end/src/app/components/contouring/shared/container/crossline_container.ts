@@ -12,12 +12,18 @@ export class CrosslineContainer extends BaseContainer {
     tag: any;
     lazyExcuteHandler: LazyExcuteHandler;
 
-    constructor(stage, tag) {
+    constructor(canvas, tag) {
+        const stage = new createjs.Stage(canvas);
         super(stage, 'crossline');
-        this.lazyExcuteHandler = new LazyExcuteHandler();
         this.tag = tag;
-        const width = stage.canvas.width;
-        const height = stage.canvas.height;
+        let width = this.stage.canvas.width;
+        let height = this.stage.canvas.height;
+        createjs.Touch.enable(this.stage);
+        this.stage.enableMouseOver(50);
+        this.stage.mouseMoveOutside = true;
+
+        this.lazyExcuteHandler = new LazyExcuteHandler();
+
         this.horizontal = new createjs.Shape(); // 横线
         if (tag == "transverse") {
             this.horizontal.graphics.beginStroke("#2196F3").setStrokeStyle(1, "round").moveTo(0, 0).lineTo(width, 0);
@@ -62,6 +68,9 @@ export class CrosslineContainer extends BaseContainer {
         this.horizontal.addEventListener("pressup", this.handlePressUp.bind(this));
         this.vertical.addEventListener("pressup", this.handlePressUp.bind(this));
         this.crossPoint.addEventListener("pressup", this.handlePressUp.bind(this));
+
+        this.setCenter(width / 2, height / 2);
+        this.update();
     }
 
     update() {

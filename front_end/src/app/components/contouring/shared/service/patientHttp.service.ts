@@ -28,7 +28,7 @@ export class PatientHttpService extends SecurityService {
             if (response.status == 200) {
                 const _responseText = response.body.result;
                 let result200: any = null;
-                //let resultData200 = _responseText === "" ? null : JSON.parse(_responseText);
+                // let resultData200 = _responseText === "" ? null : JSON.parse(_responseText);
                 result200 = _responseText ? PatientArrayDto.fromJS(_responseText) : new PatientArrayDto();
 
                 return result200;
