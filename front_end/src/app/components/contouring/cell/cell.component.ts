@@ -18,9 +18,6 @@ export class CellComponent {
 
     @Input() tag: any;
 
-    // 十字线
-    stage: any; crossLine: CrosslineContainer; crossPosition: Point;
-
     @Output() onLocate: EventEmitter<any> = new EventEmitter<any>();
     @Output() onScroll: EventEmitter<any> = new EventEmitter<any>();
     @Output() onZoom: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
@@ -28,11 +25,14 @@ export class CellComponent {
     @Output() onRotate: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
     @Output() onChangeWwwl: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
 
+    imageData: any;
+    crossPosition: Point;
+    graphics: any;
     windowLevel: any = 0;
     windowWidth: any = 2000;
     actionInfo: any;
 
-    constructor(private conMessage: ConMessageService) {
+    constructor() {
         this.id = 'cell';
         this.crossPosition = new Point(0, 0);
         this.actionInfo = new KeyValuePair(actions.locate);
@@ -98,7 +98,6 @@ export class CellComponent {
 
         this.changeSize();
         this.attachMouseWheelEvent();
-        this.crossLine = new CrosslineContainer(this.crossCanvas, this.tag);
     }
 
     ngOnInit() {
@@ -173,35 +172,13 @@ export class CellComponent {
 
     update(imageData, crossPoint, graphics = null, wwwl = null) {
         if (imageData !== undefined) {
-            this.updateImage(imageData);
+            this.imageData = imageData;
         }
         if (crossPoint !== undefined) {
-            this.updateCrossLine(crossPoint[0], crossPoint[1]);
+            this.crossPosition = new Point(crossPoint[0], crossPoint[1]);
         }
-        this.updateGraphics(graphics);
+        this.graphics = graphics;
         this.updateWWWL(wwwl);
-    }
-
-    private updateImage(imageData) {
-        const img = new Image();
-        const base64Header = 'data:image/jpeg;base64,';
-        const imgData1 = base64Header + imageData;
-        img.src = imgData1;
-        const that = this;
-        img.onload = function () {
-            const ctx = that.imageCanvas.getContext('2d');
-            ctx.clearRect(0, 0, that.imageCanvas.width, that.imageCanvas.height);
-            ctx.drawImage(img, 0, 0, that.imageCanvas.width, that.imageCanvas.height);
-        };
-    }
-
-    private updateCrossLine(x: number, y: number) {
-        this.crossLine.setCenter(x, y);
-        this.crossLine.update();
-    }
-
-    private updateGraphics(graphics) {
-        this.conMessage.setGraphics([this.tag, graphics]);
     }
 
     private updateWWWL(wwwl) {

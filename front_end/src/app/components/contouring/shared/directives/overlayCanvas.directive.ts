@@ -19,34 +19,21 @@ declare var shapes: any;
     selector: '[overlay-canvas]'
 })
 export class OverlayCanvasDirective implements OnInit {
-    curAction: string;
     actionInfo: KeyValuePair;
-    canvasLeft: number;
-    canvasTop: number;
-    clickXs: Array<number> = Array<number>();
-    clickYs: Array<number> = Array<number>();
-    startX: number;
-    startY: number;
-    startPoint: Point;
-    curX: number;
-    curY: number;
     radius: number;
     contourColor: string = "#00ffff";
     contourLineWidth = 2;
-    isFirstClick: boolean = true;
     myContext: CanvasRenderingContext2D;
     myStage: any;
-    backStage: any;
-    labelTxt: string;
     shape: any;
     fader: FaderContainer;
     nudgeHelper: NudgeHelper;
-    curTarget: any;
     activeROI: ROIConfig;
     sliceIndex: any;
     preFaderPos: Point;
-    @Input() backCanvas;
+
     @Input() name;
+    @Input() graphics;
 
     constructor(private el: ElementRef, private contouringService: ConMessageService) { }
 
@@ -82,32 +69,6 @@ export class OverlayCanvasDirective implements OnInit {
             this.actionInfo = actionInfo;
         })
 
-        this.contouringService.graphics$.subscribe(data => {
-            if (this.name != data[0]) return;
-            this.myStage.removeAllChildren();
-            this.myStage.clear();
-            let graphics = data[1];
-            let contours = [];
-            if (graphics == null || graphics.length == 0) return;
-            graphics.forEach(graphic => {
-                if (graphic == null || graphic.length == 0) return;
-                graphic.forEach(shape => {
-                    let contour = []
-                    shape.forEach(cp => {
-                        contour.push(new Point(cp[0][0], cp[0][1]))
-                    });
-                    contours.push(contour)
-                });
-            });
-            // draw graphics
-            contours.forEach(cps => {
-                cps.push(cps[0].copy())
-                let freepen = new FreepenContainer(this.myStage)
-                freepen.cps = cps
-                freepen.update()
-            });
-        });
-
         this.contouringService.activeRoi$.subscribe(data => {
             this.activeROI = data;
         });
@@ -119,6 +80,10 @@ export class OverlayCanvasDirective implements OnInit {
         EventAggregator.Instance().scrollInfo.subscribe(data => {
             this.fader.updateRadius(data);
         });
+    }
+
+    ngOnChanges() {
+        this.update();
     }
 
     @HostListener('mousedown', ['$event']) onMouseDown(event: MouseEvent) {
@@ -292,5 +257,30 @@ export class OverlayCanvasDirective implements OnInit {
         let p3 = new Point(end.x - crossVec[0] * radius, end.y - crossVec[1] * radius);
         let p4 = new Point(start.x - crossVec[0] * radius, start.y - crossVec[1] * radius);
         return [p1, p2, p3, p4, p1.copy()];
+    }
+
+    update() {
+        // if (this.name != data[0]) return;
+        this.myStage.removeAllChildren();
+        this.myStage.clear();
+        let contours = [];
+        if (this.graphics === undefined || this.graphics.length == 0) return;
+        this.graphics.forEach(graphic => {
+            if (graphic === undefined || graphic.length == 0) return;
+            graphic.forEach(shape => {
+                let contour = []
+                shape.forEach(cp => {
+                    contour.push(new Point(cp[0][0], cp[0][1]))
+                });
+                contours.push(contour)
+            });
+        });
+        // draw graphics
+        contours.forEach(cps => {
+            cps.push(cps[0].copy())
+            let freepen = new FreepenContainer(this.myStage)
+            freepen.cps = cps
+            freepen.update()
+        });
     }
 }

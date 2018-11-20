@@ -18,8 +18,8 @@
         </div>
     </div>
 
-    <canvas id="{{ id }}-image" class="imageCanvas"></canvas>
-    <canvas id="{{ id }}-cross" class="crossCanvas"></canvas>
-    <canvas id="{{ id }}-overlay" class="overlayCanvas" overlay-canvas [name]='tag'></canvas>
+    <canvas id="{{ id }}-image" class="imageCanvas" image-canvas [name]='tag' [data]='imageData'></canvas>
+    <canvas id="{{ id }}-overlay" class="overlayCanvas" overlay-canvas [name]='tag' [graphics]='graphics'></canvas>
     <canvas id="{{ id }}-action" class="actionCanvas" action-canvas [name]='tag'></canvas>
+    <canvas id="{{ id }}-cross" class="crossCanvas" cross-canvas [name]='tag' [point]='crossPosition'></canvas>
 </div>

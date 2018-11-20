@@ -21,8 +21,8 @@ export class ContouringTopBarComponent implements OnInit {
     @Output() hideList: EventEmitter<any> = new EventEmitter<any>();
     @Output() setcenter: EventEmitter<any> = new EventEmitter<any>();
     @Input() seriesList: string[];
-    @Output() newroi: EventEmitter<any> = new EventEmitter<any>();
-    @Output() manageroi: EventEmitter<any> = new EventEmitter<any>();
+    @Output() onAddRoi: EventEmitter<any> = new EventEmitter<any>();
+    @Output() onManageRoi: EventEmitter<any> = new EventEmitter<any>();
     @Output() autoroi: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(
@@ -38,7 +38,7 @@ export class ContouringTopBarComponent implements OnInit {
         this.ROIItems = [
             {
                 label: 'Manage', icon: 'pi pi-refresh', command: () => {
-                    this.manageroi.emit();
+                    this.onManageRoi.emit();
                 }
             },
         ];
@@ -76,11 +76,11 @@ export class ContouringTopBarComponent implements OnInit {
     }
 
     OnNewROI() {
-        this.newroi.emit();
+        this.onAddRoi.emit();
     }
 
     OnManageROI() {
-        this.manageroi.emit();
+        this.onManageRoi.emit();
     }
 
     loadMPR() {

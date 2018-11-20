@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { EventAggregator } from '../../shared/common/event_aggregator';
 import { LazyExcuteHandler } from './lazy_excute_handler';
-import { ContourDto } from './shared/dtos/contour_dto';
+import { ContourModel } from './shared/model/contour.model';
 import { ROIConfig } from './shared/model/ROIConfig.model';
 import { ConMessageService } from './shared/service/conMessage.service';
 import { ContouringService } from './shared/service/contouring.service';
@@ -21,22 +21,8 @@ declare var actions: any;
 })
 export class ContouringComponent implements OnInit {
     patientId: any = '';
-    imageX: any;
-    imageY: any;
-    imageZ: any;
-    wl: any;
-    ww: any;
-    spacingX: any;
-    spacingY: any;
-    spacingZ: any;
-    pixelRepresentation: any;
-    rescaleSlope: any;
-    rescaleIntercept: any;
-    firstImagePosition: any;
-    lastImagePosition: any;
     seriList: any;
     actionInfo: any;
-    display = false;
     seriesList: any;
     hasLoadVolume = false;
     seriesId: any;
@@ -47,6 +33,7 @@ export class ContouringComponent implements OnInit {
     newROIDisplay: any = false;
     manageROIDisplay: any = false;
     editROIDisplay: any = false;
+    defaultROIConfig: ROIConfig = { ROIId: '', ROIName: '', ROIColor: '#FFFF00' };
     editROIConfig: ROIConfig = { ROIId: '', ROIName: '', ROIColor: '' };
     activeROIConfig: ROIConfig = { ROIId: '', ROIName: '', ROIColor: '' };
     sliceIndex: any;
@@ -136,9 +123,9 @@ export class ContouringComponent implements OnInit {
         this.seriesHttpService.UnLoadVolume(this.seriesId).subscribe();
     }
 
-    mainNewROI() {
+    handleAddRoi() {
         const seriesuid = $("#seriesSelect").val();
-        if (seriesuid != '' && seriesuid != null && seriesuid != undefined) {
+        if (seriesuid != '' && seriesuid !== undefined) {
             this.newROIDisplay = true;
         } else {
             this.priMessageService.add({ severity: 'error', detail: 'Please select series first.' });
@@ -170,7 +157,7 @@ export class ContouringComponent implements OnInit {
         })
     }
 
-    mainManageROI() {
+    handleManageRoi() {
         let seriesuid = $("#seriesSelect").val();
         if (seriesuid != '' && seriesuid != null && seriesuid != undefined) {
             this.manageROIDisplay = true;
@@ -345,14 +332,6 @@ export class ContouringComponent implements OnInit {
         EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.clear));
     }
 
-    showDialog() {
-        this.display = true;
-    }
-
-    hideDialog() {
-        this.display = false;
-    }
-
     aCross(event: any) {
         if (!this.lazyExcuteHandler.canExcute(new Date().getTime(), 'a')
             || !this.hasLoadVolume) {
@@ -400,10 +379,6 @@ export class ContouringComponent implements OnInit {
         }, (error) => {
             console.log(error);
         });
-    }
-
-    mainQuitDraw() {
-
     }
 
     getCanvasSize() {
@@ -487,7 +462,7 @@ export class ContouringComponent implements OnInit {
     getSeriesList(patientId: any) {
         this.seriesHttpService.getSeriesList(patientId).subscribe(data => {
             this.seriesList = data;
-        })
+        });
     }
 
     loadSeries() {
@@ -560,7 +535,7 @@ export class ContouringComponent implements OnInit {
         if (data.length > 0) {
             console.log('begin save contour');
 
-            const dto = new ContourDto();
+            const dto = new ContourModel();
             dto.roi_uid = data[0];
             dto.slice_index = data[1];
             dto.contours = data[2];
@@ -575,7 +550,7 @@ export class ContouringComponent implements OnInit {
         if (data.length > 0) {
             console.log('begin delete contour');
 
-            const dto = new ContourDto();
+            const dto = new ContourModel();
             dto.roi_uid = data[0];
             dto.slice_index = data[1];
 

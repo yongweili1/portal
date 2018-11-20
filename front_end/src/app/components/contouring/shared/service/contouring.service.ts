@@ -7,7 +7,7 @@ import { AppConfigService } from '../../../../app.config';
 import { AuthHttp } from '../../../../core/auth-http';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { HttpParams } from "@angular/common/http";
-import { ContourDto } from '../dtos/contour_dto';
+import { ContourModel } from '../model/contour.model';
 
 
 @Injectable()
@@ -40,11 +40,11 @@ export class ContouringService {
     return this.http.post<any>(`${this.appConfig.apiUrl}/image/size/`, canvasSize, this.options);
   }
 
-  saveContour(dto: ContourDto): Observable<any> {
-    return this.http.post<ContourDto>(`${this.appConfig.apiUrl}/contour/contour/`, dto, this.options);
+  saveContour(dto: ContourModel): Observable<any> {
+    return this.http.post<ContourModel>(`${this.appConfig.apiUrl}/contour/contour/`, dto, this.options);
   }
 
-  deleteContours(dto: ContourDto): Observable<any> {
+  deleteContours(dto: ContourModel): Observable<any> {
     const getParams = new HttpParams()
       .set('roi_uid', dto['roi_uid'])
       .set('slice_index', dto['slice_index']);

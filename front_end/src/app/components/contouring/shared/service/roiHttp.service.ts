@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpResponse, HttpRequest ,HttpParams} from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse, HttpRequest, HttpParams } from '@angular/common/http';
 import { SecurityService } from '../../../../services/security.service';
 import { Observable } from 'rxjs/Observable';
 import { StorageService } from './storage.service';
@@ -8,7 +8,7 @@ import { AppConfigService } from '../../../../app.config';
 
 @Injectable()
 
-export class RoiHttpService{
+export class RoiHttpService {
     headers: HttpHeaders
     options: any
 
@@ -19,10 +19,10 @@ export class RoiHttpService{
         this.headers = new HttpHeaders();
         this.headers.append('Content-Type', 'application/json');
         this.headers.append('Accept', 'application/json');
-    
+
         this.options = {
-          headers: this.headers,
-          observe: "response",
+            headers: this.headers,
+            observe: "response",
         }
     }
 
@@ -42,27 +42,27 @@ export class RoiHttpService{
     //     });
     // }
 
-    PostCreateNewROI(roiData:any):Observable<any>{
+    PostCreateNewROI(roiData: any): Observable<any> {
         return this.http.post<any>(`${this.appConfig.apiUrl}/roi/roidata/`, roiData, this.options);
     }
 
-    GetROIConfig(seriesid:any):Observable<any>{
+    GetROIConfig(seriesid: any): Observable<any> {
         const getParams = new HttpParams()
-        .set('seriesuid', seriesid);
+            .set('seriesuid', seriesid);
         return this.http.get<any>(`${this.appConfig.apiUrl}/roi/roidata/`, { params: getParams });
     }
 
-    UpdateROIConfig(roiData:any):Observable<any>{
+    UpdateROIConfig(roiData: any): Observable<any> {
         return this.http.put<any>(`${this.appConfig.apiUrl}/roi/roidata/`, roiData, this.options);
     }
 
-    DeleteROIConfig(roiId:any):Observable<any>{
+    DeleteROIConfig(roiId: any): Observable<any> {
         const getParams = new HttpParams()
-        .set('ROIId', roiId);
+            .set('ROIId', roiId);
         return this.http.delete<any>(`${this.appConfig.apiUrl}/roi/roidata/`, { params: getParams });
     }
 
-    CreateNewSegROI(roiData:any):Observable<any>{
+    CreateNewSegROI(roiData: any): Observable<any> {
         return this.http.post<any>(`${this.appConfig.apiUrl}/algproxy/results/`, roiData, this.options);
     }
 }

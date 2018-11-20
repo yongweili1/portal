@@ -1,7 +1,7 @@
 <div class="my-page">
     <div class="top_Button">
-        <mpt-contouring-top-bar (loadSeries)="loadSeries()" (onClearGraphics)="handleClearGraphics()" (newroi)="mainNewROI()"
-            (manageroi)="mainManageROI()" (autoroi)="mainautoroi()" (onReset)="handleReset()" (setcenter)="mainSetCenterPro()"
+        <mpt-contouring-top-bar (loadSeries)="loadSeries()" (onClearGraphics)="handleClearGraphics()" (onAddRoi)="handleAddRoi()"
+            (onManageRoi)="handleManageRoi()" (autoroi)="mainautoroi()" (onReset)="handleReset()" (setcenter)="mainSetCenterPro()"
             [seriesList]="seriesList"></mpt-contouring-top-bar>
     </div>
 
@@ -36,7 +36,7 @@
         </div>
     </div>
 
-
+    <!-- Create New ROI Dialog -->
     <p-dialog header="Create New ROI" [modal]="true" [(visible)]="newROIDisplay" [width]="300" [style]="{'border':'none'}"
         [contentStyle]="{'border':'none','overflow':'visible'}" (onHide)="hideNewROIDia()">
         <div class="roi-name roi-input-group">
@@ -53,6 +53,8 @@
             <p-button label="Cancel" icon="fa fa-times" iconPos="left" (onClick)="newROIDisplay=false"></p-button>
         </p-footer>
     </p-dialog>
+
+    <!-- Manage ROI Dialog -->
     <p-dialog header="Manage ROI" [(visible)]="manageROIDisplay" [width]="250" [style]="{'border':'none'}"
         [contentStyle]="{'border':'none','overflow':'visible'}" (onHide)="hideManageROIDia()">
         <table class="roi-table" style="border-collapse:collapse" cellspacing="5">
@@ -87,6 +89,8 @@
             <p-button label="Del All" icon="fa fa-trash" iconPos="left" (onClick)="deleteAllROI()"></p-button>
         </p-footer>
     </p-dialog>
+
+    <!-- Edit ROI Dialog -->
     <p-dialog header="Edit ROI" [modal]="true" [(visible)]="editROIDisplay" [width]="300" [style]="{'border':'none'}"
         [contentStyle]="{'border':'none','overflow':'visible'}">
         <div class="roi-name roi-input-group">
