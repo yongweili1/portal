@@ -9,7 +9,7 @@ from django.shortcuts import render
 # Create your views here.
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from serve.DBAccess.upload_script_to_db import script
+# from serve.ORM.Script.upload_script_to_db import script
 from serve.DBAccess.models import Series
 from serve.util.connectImageServe import load_volume, get_image
 from serve.util.macroRecording import Macro
@@ -19,6 +19,7 @@ from serve.util.buildVolume import DicomToVolume
 from serve.DBAccess.upload_vol_to_db import UploadVolume
 from serve.static_parameters.setFilePath import file_path_ferry
 from serve.DBAccess.models import Series, Contour
+from serve.DBAccess.contour_crud import ContourCrud
 
 
 class Home(APIView):
@@ -403,32 +404,25 @@ class TurnPage(APIView):
         if rst.success is False:
             return Response(rst.comment)
 
+        img_server_rsp = rst.kwargs
+        img_server_rsp_json = json.loads(img_server_rsp)
 
-
-
-
-        a = rst.kwargs
-        b = json.loads(a)
-
-        slice_index = b['0']['slice_index']
-        cps = None
-        try:
-            cps = Contour.objects.filter(imageuid=slice_index)
-        except Exception as ex:
-            print ex.message
-        pps = []
+        slice_index = img_server_rsp_json['0']['slice_index']
+        contour_crud = ContourCrud()
+        cps = contour_crud.Retrieve(slice_index)
+        slice_contours = []
         for cp in cps:
             file_path = cp.cpspath
             with open(file_path, 'rb') as f:
-                pp = f.read()
-                p = json.loads(pp)
-                pps.append(p)
+                contour = f.read()
+                contour_json = json.loads(contour)
+                slice_contours.append(contour_json)
                 f.close()
             break
-        kk = [pps]
-        b.get('0')[u'graphic']['contours'] = kk
-        c = json.dumps(b)
-        return Response(c)
+        kk = [slice_contours]
+        img_server_rsp_json.get('0')[u'graphic']['contours'] = kk
+        img_rsp = json.dumps(img_server_rsp_json)
+        return Response(img_rsp)
 
 
 class Pan(APIView):
