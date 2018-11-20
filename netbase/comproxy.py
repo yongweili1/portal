@@ -1,7 +1,7 @@
 import sys
 import time
 
-from c_log import log_inst
+from c_log import log
 
 if sys.platform == 'win32':
     import netbase_win32 as c_net_base
@@ -117,7 +117,7 @@ def func_cb(result):
 
 
 if __name__ == '__main__':
-    log_inst.create_log()
+    log.create_log()
     fe = PyCommProxy("proxy_fe", "10.9.19.153:10000")
     be = PyCommProxy("proxy_be", "10.9.19.153:10000")
     be.register_cmd_handler_ex(10, MyCommandHandler())
