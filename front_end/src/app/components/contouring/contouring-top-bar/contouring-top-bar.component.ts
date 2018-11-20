@@ -14,16 +14,16 @@ declare var shapes: any;
 })
 export class ContouringTopBarComponent implements OnInit {
     @Output() onReset: EventEmitter<any> = new EventEmitter<any>();
-    @Output() loadSeries: EventEmitter<any> = new EventEmitter<any>();
+    @Output() onLoadSeries: EventEmitter<any> = new EventEmitter<any>();
     @Output() auto: EventEmitter<any> = new EventEmitter<any>();
     @Output() measure: EventEmitter<any> = new EventEmitter<any>();
     @Output() onClearGraphics: EventEmitter<any> = new EventEmitter<any>();
-    @Output() hideList: EventEmitter<any> = new EventEmitter<any>();
     @Output() setcenter: EventEmitter<any> = new EventEmitter<any>();
-    @Input() seriesList: string[];
     @Output() onAddRoi: EventEmitter<any> = new EventEmitter<any>();
     @Output() onManageRoi: EventEmitter<any> = new EventEmitter<any>();
     @Output() autoroi: EventEmitter<any> = new EventEmitter<any>();
+
+    @Input() seriesList: string[];
 
     constructor(
         private conService: ContouringService
@@ -84,15 +84,11 @@ export class ContouringTopBarComponent implements OnInit {
     }
 
     loadMPR() {
-        this.loadSeries.emit(this.seriesId);
+        this.onLoadSeries.emit(this.seriesId);
     }
 
     OnClearAllClick() {
         this.onClearGraphics.emit();
-    }
-
-    OnHideList() {
-        this.hideList.emit();
     }
 
     OnSelect() {

@@ -12,9 +12,10 @@ declare var actions: any;
 })
 export class CellComponent {
     id: string;
+
     container: any; imageCanvas: any; crossCanvas: any; actionCanvas: any; overlayCanvas: any;
 
-    @Input() tag: any;
+    // Data model of cell
     @Input() model: CellModel = new CellModel();
 
     @Output() onLocate: EventEmitter<any> = new EventEmitter<any>();
@@ -24,11 +25,9 @@ export class CellComponent {
     @Output() onRotate: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
     @Output() onChangeWwwl: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
 
-    windowLevel: any = 0;
-    windowWidth: any = 2000;
-
     constructor() {
         this.id = 'cell';
+
         this.model = new CellModel();
 
         EventAggregator.Instance().pageDelta.subscribe(value => {
@@ -36,7 +35,7 @@ export class CellComponent {
         });
 
         EventAggregator.Instance().crossPoint.subscribe(value => {
-            if (value[0] !== this.tag) {
+            if (value[0] !== this.model.tag) {
                 return;
             }
             const p = new Point(value[1].x, value[1].y);
@@ -66,9 +65,9 @@ export class CellComponent {
                     this.onRotate.emit(data);
                     break;
                 case actions.window:
-                    const level = Math.round(this.windowLevel + this.windowWidth * data[1]);
-                    const width = Math.round(this.windowWidth * data[0]);
-                    if (level == this.windowLevel && width == this.windowWidth) {
+                    const level = Math.round(this.model.imageM.windowLevel + this.model.imageM.windowWidth * data[1]);
+                    const width = Math.round(this.model.imageM.windowWidth * data[0]);
+                    if (level == this.model.imageM.windowLevel && width == this.model.imageM.windowWidth) {
                         return;
                     }
                     this.onChangeWwwl.emit([width, level]);
@@ -79,7 +78,16 @@ export class CellComponent {
         });
     }
 
+    //#region life-cycle hook methods
+    ngOnInit() {
+        let that = this;
+        window.addEventListener("resize", function () { that.changeSize(); });
+        this.model.imageM.windowWidth = 2000;
+        this.model.imageM.windowLevel = 0;
+    }
+
     ngAfterViewInit() {
+        // Set id for all canvas and their container
         this.container = $('#' + this.id + '-container').get(0);
         this.imageCanvas = $('#' + this.id + '-image').get(0);
         this.crossCanvas = $('#' + this.id + '-cross').get(0);
@@ -87,15 +95,10 @@ export class CellComponent {
         this.actionCanvas = $('#' + this.id + '-action').get(0);
 
         this.changeSize();
+
         this.attachMouseWheelEvent();
     }
-
-    ngOnInit() {
-        let that = this;
-        window.addEventListener("resize", function () { that.changeSize(); });
-        this.windowWidth = 2000;
-        this.windowLevel = 0;
-    }
+    //#endregion
 
     /**
      * 置顶指定类型的canvas
@@ -132,11 +135,11 @@ export class CellComponent {
         const that = this;
         const scrollFunc = function (e) {
             e = e || window.event;
-            let delt = e.wheelDelta / 120;
+            let delta = e.wheelDelta / 120;
             if (that.model.actionInfo.key() === actions.nudge) {
-                EventAggregator.Instance().scrollInfo.publish(delt);
+                EventAggregator.Instance().faderRadiusDelta.publish(delta);
             } else {
-                that.page(delt);
+                that.page(delta);
             }
         };
         this.container.onmousewheel = scrollFunc;
@@ -151,31 +154,12 @@ export class CellComponent {
     }
 
     inputWl(wl) {
-        this.windowLevel = Number(wl);
-        this.onChangeWwwl.emit([this.windowWidth, this.windowLevel]);
+        this.model.imageM.windowLevel = Number(wl);
+        this.onChangeWwwl.emit([this.model.imageM.windowWidth, this.model.imageM.windowLevel]);
     }
 
     inputWw(ww) {
-        this.windowWidth = Number(ww);
-        this.onChangeWwwl.emit([this.windowWidth, this.windowLevel]);
-    }
-
-    update(imageData, crossPoint, graphics = null, wwwl = null) {
-        if (imageData !== undefined) {
-            this.model.imageM.imageData = imageData;
-        }
-        if (crossPoint !== undefined) {
-            this.model.crossM.point = new Point(crossPoint[0], crossPoint[1]);
-        }
-        this.model.graphics = graphics;
-        this.updateWWWL(wwwl);
-    }
-
-    private updateWWWL(wwwl) {
-        if (wwwl === undefined || !Array.isArray(wwwl)) {
-            return;
-        }
-        this.windowWidth = Math.round(wwwl[0]);
-        this.windowLevel = Math.round(wwwl[1]);
+        this.model.imageM.windowWidth = Number(ww);
+        this.onChangeWwwl.emit([this.model.imageM.windowWidth, this.model.imageM.windowLevel]);
     }
 }

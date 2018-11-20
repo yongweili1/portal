@@ -1,7 +1,7 @@
 declare var delta_time: number;
 declare var delta_count: number;
 
-export class LazyExcuteHandler {
+export class ExcuteHelper {
     recordTimeA: any;
     recordTimeB: any;
     recordTimeC: any;

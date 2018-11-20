@@ -22,6 +22,14 @@ export class ImageModel {
     imageData: string;
     windowLevel: any = 0;
     windowWidth: any = 2000;
+
+    setWwwl(wwwl) {
+        if (wwwl === undefined || !Array.isArray(wwwl)) {
+            return;
+        }
+        this.windowWidth = Math.round(wwwl[0]);
+        this.windowLevel = Math.round(wwwl[1]);
+    }
 }
 
 export class CrossModel {
