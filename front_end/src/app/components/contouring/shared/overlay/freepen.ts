@@ -18,7 +18,7 @@ export class Freepen extends Overlay {
         for (let index = 1; index < cps.length; index++) {
             const start = cps[index - 1];
             const end = cps[index];
-            this.graphics.beginStroke(this._color).moveTo(start.x, start.y).lineTo(end.x, end.y);
+            this.graphics.beginStroke('#FFFF00').moveTo(start.x, start.y).lineTo(end.x, end.y);
             const hit = new Hitbar();
             hit.graphics.moveTo(start.x, start.y).lineTo(end.x, end.y);
         }

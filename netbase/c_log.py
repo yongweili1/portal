@@ -15,7 +15,12 @@ class PyLogInstance(object):
         self._frame_switch = 0
 
         try:
-            self._lib = ctypes.cdll.LoadLibrary('libMcsfLogger.so' if platform.system() == 'Linux' else 'McsfLogger.dll')
+            bin_dir = os.path.dirname(os.path.abspath(os.path.realpath(__file__)))
+            if platform.system() == 'Linux':
+                lib_name = os.path.join(bin_dir, 'libMcsfLogger.so')
+            else:
+                lib_name = os.path.join(bin_dir, 'McsfLogger.dll')
+            self._lib = ctypes.cdll.LoadLibrary(lib_name)
         except Exception as e:
             print e
 
@@ -78,13 +83,13 @@ class PyLogInstance(object):
         self._lib.GLogWriteToBuffer(log_content)
 
 
-log_inst = PyLogInstance()
+log = PyLogInstance()
 
 
 def test():
-    log_inst.create_log()
+    log.create_log()
     for i in range(100):
-        log_inst.dev_info('give me a number {0}'.format(i))
+        log.dev_info('give me a number {0}'.format(i))
         time.sleep(1)
 
 
