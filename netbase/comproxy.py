@@ -1,21 +1,17 @@
 import sys
 import time
-import os
+
+from c_log import log_inst
 
 if sys.platform == 'win32':
-    import McsfNetBase
+    import netbase_win32 as c_net_base
 else:
-    path = os.path.dirname(os.path.abspath(__file__)) + '/linux/'
-    """
-    Remember to export LD_LIBRARY_PATH environment path must contains this #path 
-    """
-    sys.path.append(path)
-    from linux import McsfNetBase
+    import netbase_unix as c_net_base
 
 
-class PyBaseCmdHandlerEx(McsfNetBase.ICLRCommandHandlerEx):
+class PyBaseCmdHandlerEx(c_net_base.ICLRCommandHandlerEx):
     def __init__(self):
-        McsfNetBase.ICLRCommandHandlerEx.__init__(self)
+        c_net_base.ICLRCommandHandlerEx.__init__(self)
 
     def handle_command(self, p_context):
         pass
@@ -24,20 +20,21 @@ class PyBaseCmdHandlerEx(McsfNetBase.ICLRCommandHandlerEx):
         return self.handle_command(pContext)
 
 
-class PyBaseEventHandler(McsfNetBase.IEventHandler):
+class PyBaseEventHandler(c_net_base.IEventHandler):
     def __init__(self):
-        McsfNetBase.IEventHandler.__init__(self)
+        c_net_base.IEventHandler.__init__(self)
 
     def handle_event(self, sender, event_id, s_event):
         pass
 
     def HandleEvent(self, sSender, iChannelId, iEventId, sEvent):
+        print iChannelId
         return self.handle_event(sSender, iEventId, sEvent)
 
 
-class PyASyncCmdCallbackHandler(McsfNetBase.ICommandCallbackHandler):
+class PyASyncCmdCallbackHandler(c_net_base.ICommandCallbackHandler):
     def __init__(self, p_callback_func, async_callbacks):
-        McsfNetBase.ICommandCallbackHandler.__init__(self)
+        c_net_base.ICommandCallbackHandler.__init__(self)
         self._p_callback_func = p_callback_func
         self._async_callbacks = async_callbacks
         self._async_callbacks.append(self)
@@ -54,7 +51,7 @@ class PyCommProxy:
         self.cmd_handlers = {}
         self.event_handlers = {}
         self.callbacks = []
-        self.proxy = McsfNetBase.CommunicationProxy()
+        self.proxy = c_net_base.CommunicationProxy()
         self.proxy.SetName(name)
         if 0 != self.proxy.CheckCastToSystemDispatcher(dispatcher_address):
             raise Exception(name, " CheckCastToSystemDispatcher failed.")
@@ -63,7 +60,7 @@ class PyCommProxy:
 
     def register_cmd_handler_ex(self, cmd_id, p_cmd_handler_ex):
         self.cmd_handlers[cmd_id] = p_cmd_handler_ex
-        p_cmd_handler_boost = McsfNetBase.SwigSharedCharArrayUtil_New(p_cmd_handler_ex)
+        p_cmd_handler_boost = c_net_base.SwigSharedCharArrayUtil_New(p_cmd_handler_ex)
         return self.proxy.RegisterCommandHandlerEx(cmd_id, p_cmd_handler_boost)
 
     def unregister_cmd_handler_ex(self, cmd_id):
@@ -81,7 +78,7 @@ class PyCommProxy:
             del self.event_handlers[id]
 
     def sync_send_command(self, data, cmd_id, receiver, timeout=0):
-        cx = McsfNetBase.CommandContext()
+        cx = c_net_base.CommandContext()
         cx.iCommandId = cmd_id
         cx.sReceiver = receiver
         cx.sSerializeObject = data
@@ -90,7 +87,7 @@ class PyCommProxy:
         return sync_ret.GetSerializedObject()
 
     def async_send_command(self, data, cmd_id, receiver, p_callback_func):
-        cx = McsfNetBase.CommandContext()
+        cx = c_net_base.CommandContext()
         cx.iCommandId = cmd_id
         cx.sReceiver = receiver
         cx.sSerializeObject = data
@@ -112,6 +109,7 @@ class MyCommandHandler(PyBaseCmdHandlerEx):
 class MyEventHandler(PyBaseEventHandler):
     def handle_event(self, sender, event_id, s_event):
         print 'handle_event, ' + s_event
+        return 0
 
 
 def func_cb(result):
@@ -119,6 +117,7 @@ def func_cb(result):
 
 
 if __name__ == '__main__':
+    log_inst.create_log()
     fe = PyCommProxy("proxy_fe", "10.9.19.153:10000")
     be = PyCommProxy("proxy_be", "10.9.19.153:10000")
     be.register_cmd_handler_ex(10, MyCommandHandler())

@@ -1,5 +1,6 @@
 import os
 import ctypes
+import platform
 import sys
 import threading
 import time
@@ -12,14 +13,9 @@ class PyLogInstance(object):
     def __init__(self):
         self._source_name = ''
         self._frame_switch = 0
-        path = os.path.dirname(os.path.abspath(__file__))
-        if sys.platform == 'win32':
-            path = os.path.join(path, "McsfLogger.dll")
-        else:
-            path = os.path.join(path, "linux/libMcsfLogger.so")
 
         try:
-            self._lib = ctypes.cdll.LoadLibrary(path)
+            self._lib = ctypes.cdll.LoadLibrary('libMcsfLogger.so' if platform.system() == 'Linux' else 'McsfLogger.dll')
         except Exception as e:
             print e
 
@@ -82,15 +78,16 @@ class PyLogInstance(object):
         self._lib.GLogWriteToBuffer(log_content)
 
 
+log_inst = PyLogInstance()
+
+
 def test():
-    log_inst = PyLogInstance()
     log_inst.create_log()
     for i in range(100):
         log_inst.dev_info('give me a number {0}'.format(i))
         time.sleep(1)
 
-    time.sleep(1000)
-
 
 if __name__ == '__main__':
     test()
+

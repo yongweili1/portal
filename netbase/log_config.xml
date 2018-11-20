@@ -3,7 +3,7 @@
   <!-- Config Logger Server -->
   <!-- The ServerIP is the log server IP, not support hostname -->
   <!-- The LogServerPort is the log server Port -->
-  <ServerIP>127.0.0.1</ServerIP>
+  <ServerIP>10.9.19.153</ServerIP>
   <LogServerPort>9998</LogServerPort>
   <!-- End of Config Logger Server -->
 
