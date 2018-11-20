@@ -1,14 +1,14 @@
 <div class="my-page">
     <div class="top_Button">
-        <mpt-contouring-top-bar (loadSeries)="loadSeries()" (onClearGraphics)="handleClearGraphics()" (newroi)="mainNewROI()"
-            (manageroi)="mainManageROI()" (autoroi)="mainautoroi()" (onReset)="handleReset()" (setcenter)="mainSetCenterPro()"
+        <mpt-contouring-top-bar (loadSeries)="loadSeries()" (onClearGraphics)="handleClearGraphics()" (onAddRoi)="handleAddRoi()"
+            (onManageRoi)="handleManageRoi()" (autoroi)="mainautoroi()" (onReset)="handleReset()" (setcenter)="mainSetCenterPro()"
             [seriesList]="seriesList"></mpt-contouring-top-bar>
     </div>
 
     <div id="threebmp" class="viewport">
         <div class='cell_group u-3of5 horizontal'>
             <div class='main_cell'>
-                <mpt-cell #cell1 id='{{ cell1.id }}' [tag]="'transverse'" (onLocate)="transverseChange($event)"
+                <mpt-cell #cell1 id='{{ cell1.id }}' [tag]="'transverse'" [model]='data.cell1' (onLocate)="transverseChange($event)"
                     (onScroll)="aCross($event)" (onZoom)="handleZoom($event)" (onPan)="handlePan($event)" (onRotate)="handleRotate($event)"
                     (onChangeWwwl)="handleWwwl($event)">
                 </mpt-cell>
@@ -21,46 +21,48 @@
 
         <div class='cell_group u-2of5'>
             <div class='cell'>
-                <mpt-cell #cell2 id='{{ cell2.id }}' [tag]="'coronal'" (onLocate)="coronalChange($event)" (onScroll)="bCross($event)"
-                    (onZoom)="handleZoom($event)" (onPan)="handlePan($event)" (onRotate)="handleRotate($event)"
+                <mpt-cell #cell2 id='{{ cell2.id }}' [tag]="'coronal'" [model]='data.cell2' (onLocate)="coronalChange($event)"
+                    (onScroll)="bCross($event)" (onZoom)="handleZoom($event)" (onPan)="handlePan($event)" (onRotate)="handleRotate($event)"
                     (onChangeWwwl)="handleWwwl($event)">
                 </mpt-cell>
             </div>
 
             <div class='cell'>
-                <mpt-cell #cell3 id='{{ cell3.id }}' [tag]="'saggital'" (onLocate)="saggitalChange($event)" (onScroll)="cCross($event)"
-                    (onZoom)="handleZoom($event)" (onPan)="handlePan($event)" (onRotate)="handleRotate($event)"
+                <mpt-cell #cell3 id='{{ cell3.id }}' [tag]="'saggital'" [model]='data.cell3' (onLocate)="saggitalChange($event)"
+                    (onScroll)="cCross($event)" (onZoom)="handleZoom($event)" (onPan)="handlePan($event)" (onRotate)="handleRotate($event)"
                     (onChangeWwwl)="handleWwwl($event)">
                 </mpt-cell>
             </div>
         </div>
     </div>
 
-
+    <!-- Create New ROI Dialog -->
     <p-dialog header="Create New ROI" [modal]="true" [(visible)]="newROIDisplay" [width]="300" [style]="{'border':'none'}"
         [contentStyle]="{'border':'none','overflow':'visible'}" (onHide)="hideNewROIDia()">
         <div class="roi-name roi-input-group">
             <label for="">Name:</label>
-            <input type="text" pInputText spellcheck=false [(ngModel)]="ROIName">
+            <input type="text" pInputText spellcheck=false [(ngModel)]="data.activeRoi.ROIName">
         </div>
         <div class="roi-color roi-input-group">
             <label for="">Color:</label>
-            <p-colorPicker [(ngModel)]="ROIColor"></p-colorPicker>
-            <input type='text' pInputText style="padding-left:10px;border:none;" spellcheck=false [(ngModel)]="ROIColor">
+            <p-colorPicker [(ngModel)]="data.activeRoi.ROIColor"></p-colorPicker>
+            <input type='text' pInputText style="padding-left:10px;border:none;" spellcheck=false [(ngModel)]="data.activeRoi.ROIColor">
         </div>
         <p-footer [style]="{'border':'none'}">
             <p-button label="Save" icon="fa fa-check" iconPos="left" (onClick)="saveROI()"></p-button>
             <p-button label="Cancel" icon="fa fa-times" iconPos="left" (onClick)="newROIDisplay=false"></p-button>
         </p-footer>
     </p-dialog>
+
+    <!-- Manage ROI Dialog -->
     <p-dialog header="Manage ROI" [(visible)]="manageROIDisplay" [width]="250" [style]="{'border':'none'}"
-        [contentStyle]="{'border':'none','overflow':'visible'}" (onHide)="hideManageROIDia()">
+        [contentStyle]="{'border':'none','overflow':'visible'}">
         <table class="roi-table" style="border-collapse:collapse" cellspacing="5">
             <tbody>
-                <div *ngIf="ROIListLength == 0">
+                <div *ngIf="data.roiList.length == 0">
                     <span>Empty</span>
                 </div>
-                <tr *ngFor="let item of ROIList">
+                <tr *ngFor="let item of data.roiList" [class.roi-select-tr]="item === data.selectedRoi">
                     <td>
                         <button (click)="changeROIVisible($event)" class="fa fa-eye fa-lg" style="background: none;border: none">
                         </button>
@@ -69,34 +71,36 @@
                     <td>
                         <div class="roi-color-div" [ngStyle]="{'width':'20px','height':'20px','background-color':item.ROIColor}"></div>
                     </td>
-                    <td class="select-td" (click)="onClickROIItem($event)">
+                    <td class="select-td" (click)="onSelectRoi(item)">
                         <span>{{item.ROIName}}</span>
                     </td>
                     <td class="delete-td">
-                        <button (click)="deleteROI($event)" class="fa fa-trash fa-lg" style="background: none;border: none">
+                        <button (click)="handleDeleteRoi(item)" class="fa fa-trash fa-lg" style="background: none;border: none">
                         </button>
                     </td>
                     <td class="edit-td">
-                        <button (click)="editROI($event)" class="fa fa-edit fa-lg" style="background: none;border: none">
+                        <button (click)="handleEditRoi(item)" class="fa fa-edit fa-lg" style="background: none;border: none">
                         </button>
                     </td>
                 </tr>
             </tbody>
         </table>
-        <p-footer [style]="{'border':'none'}" *ngIf="ROIListLength > 2">
+        <p-footer [style]="{'border':'none'}" *ngIf="data.roiList.length > 2">
             <p-button label="Del All" icon="fa fa-trash" iconPos="left" (onClick)="deleteAllROI()"></p-button>
         </p-footer>
     </p-dialog>
+
+    <!-- Edit ROI Dialog -->
     <p-dialog header="Edit ROI" [modal]="true" [(visible)]="editROIDisplay" [width]="300" [style]="{'border':'none'}"
         [contentStyle]="{'border':'none','overflow':'visible'}">
         <div class="roi-name roi-input-group">
             <label for="">Name:</label>
-            <input type="text" pInputText spellcheck=false [(ngModel)]="editROIConfig.ROIName">
+            <input type="text" pInputText spellcheck=false [(ngModel)]="data.activeRoi.ROIName">
         </div>
         <div class="roi-color roi-input-group">
             <label for="">Color:</label>
-            <p-colorPicker [(ngModel)]="editROIConfig.ROIColor"></p-colorPicker>
-            <input type='text' pInputText style="padding-left:10px;border:none;" spellcheck=false [(ngModel)]="editROIConfig.ROIColor">
+            <p-colorPicker [(ngModel)]="data.activeRoi.ROIColor"></p-colorPicker>
+            <input type='text' pInputText style="padding-left:10px;border:none;" spellcheck=false [(ngModel)]="data.activeRoi.ROIColor">
         </div>
         <p-footer [style]="{'border':'none'}">
             <p-button label="Save" icon="fa fa-check" iconPos="left" (onClick)="updateROI()"></p-button>

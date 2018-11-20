@@ -3,7 +3,7 @@ import { Rectangle } from '../overlay/rectangle'
 import { ControlPoint } from '../overlay/controlpoint'
 import { Point } from '../tools/point'
 import { Text } from '../overlay/text'
-import { ROIConfig } from '../model/ROIConfig.model';
+import { RoiModel } from '../model/roi.model';
 
 export class RectangleContainer extends BaseContainer {
     rectangle: Rectangle;
@@ -29,13 +29,13 @@ export class RectangleContainer extends BaseContainer {
         this.bottom_right = new ControlPoint(stage)
         this.rectangle = new Rectangle(stage)
         this.text = new Text(stage, 'Length: * mm')
-        this.addChild(this.rectangle, this.top_left, this.top_center, 
-                      this.top_right, this.left_center, this.right_center, 
-                      this.bottom_left, this.bottom_center, this.bottom_right, this.text)
+        this.addChild(this.rectangle, this.top_left, this.top_center,
+            this.top_right, this.left_center, this.right_center,
+            this.bottom_left, this.bottom_center, this.bottom_right, this.text)
         this.initCps(8)
     }
 
-    public setRoi(roi: ROIConfig) {
+    public setRoi(roi: RoiModel) {
         super.setRoi(roi)
         this.rectangle.color = roi.ROIColor;
     }
@@ -106,7 +106,7 @@ export class RectangleContainer extends BaseContainer {
         let delta_y = evt.stageY - this._tempPoint.y;
         this._tempPoint.x = evt.stageX;
         this._tempPoint.y = evt.stageY;
-        
+
         if (evt.target == this.top_left) {
             this.cps[0].offset(delta_x, delta_y)
         } else if (evt.target == this.top_center) {

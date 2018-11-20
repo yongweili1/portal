@@ -33,8 +33,10 @@ import { PatientHttpService } from './shared/service/patientHttp.service';
 import { RoiHttpService } from './shared/service/roiHttp.service';
 import { SeriesHttpService } from './shared/service/seriesHttp.service';
 import { StorageService } from './shared/service/storage.service';
+import { ImageCanvasDirective } from './shared/directives/imageCanvas.directive';
 import { OverlayCanvasDirective } from './shared/directives/overlayCanvas.directive';
 import { ActionCanvasDirective } from './shared/directives/actionCanvas.directive';
+import { CrossCanvasDirective } from './shared/directives/crossCanvas.directive';
 import { SeriesListComponent } from './series-list/series-list.component';
 import { SliderBarComponent } from './slider-bar/slider-bar.component';
 
@@ -73,6 +75,8 @@ import { SliderBarComponent } from './slider-bar/slider-bar.component';
     ContouringTopBarComponent,
     OverlayCanvasDirective,
     ActionCanvasDirective,
+    ImageCanvasDirective,
+    CrossCanvasDirective,
     SeriesListComponent,
     SliderBarComponent,
   ],

@@ -31,14 +31,23 @@ export class Action {
     }
 
     mouseDown(evt) {
+        if (this._action === undefined) {
+            return;
+        }
         this._action.handleMouseDown(evt);
     }
 
     mouseMove(evt) {
+        if (this._action === undefined) {
+            return;
+        }
         this._action.handleMouseMove(evt);
     }
 
     mouseUp(evt) {
+        if (this._action === undefined) {
+            return;
+        }
         this._action.handleMouseUp(evt);
     }
 }

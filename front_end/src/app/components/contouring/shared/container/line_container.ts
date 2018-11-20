@@ -3,7 +3,7 @@ import { Line } from '../overlay/line'
 import { ControlPoint } from '../overlay/controlpoint'
 import { Text } from '../overlay/text'
 import { Point } from '../tools/point';
-import { ROIConfig } from '../model/ROIConfig.model';
+import { RoiModel } from '../model/roi.model';
 
 export class LineContainer extends BaseContainer {
     start: ControlPoint;
@@ -11,7 +11,7 @@ export class LineContainer extends BaseContainer {
     end: ControlPoint;
     text: Text;
     cps: Array<Point>;
-    
+
     constructor(stage) {
         super(stage, 'line');
         this.initCps(2)
@@ -22,7 +22,7 @@ export class LineContainer extends BaseContainer {
         this.addChild(this.line, this.start, this.end, this.text)
     }
 
-    public setRoi(roi: ROIConfig) {
+    public setRoi(roi: RoiModel) {
         super.setRoi(roi)
         this.line.color = roi.ROIColor;
     }
@@ -76,7 +76,7 @@ export class LineContainer extends BaseContainer {
         let delta_y = evt.stageY - this._tempPoint.y;
         this._tempPoint.x = evt.stageX;
         this._tempPoint.y = evt.stageY;
-        
+
         if (evt.target == this.line || evt.target == this.text) {
             this.cps[0].offset(delta_x, delta_y)
             this.cps[1].offset(delta_x, delta_y)

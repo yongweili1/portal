@@ -1,6 +1,5 @@
-import { Directive, ElementRef, HostListener, Input, OnInit } from '@angular/core';
+import { Directive, ElementRef, HostListener, Input, OnInit, SimpleChanges } from '@angular/core';
 import { KeyValuePair } from '../../../../shared/common/keyvaluepair';
-import { EventAggregator } from '../../../../shared/common/event_aggregator';
 import { Action } from '../actions/action';
 import { LazyExcuteHandler } from "../../../contouring/lazy_excute_handler";
 
@@ -11,11 +10,11 @@ declare var actions: any;
 })
 export class ActionCanvasDirective implements OnInit {
     lazyExcuteHandler: LazyExcuteHandler;
-    actionInfo: KeyValuePair;
     action: Action;
     isMouseDown: boolean;
 
-    @Input() name;
+    @Input() tag;
+    @Input() actionInfo: KeyValuePair;
 
     constructor(private el: ElementRef) { }
 
@@ -23,18 +22,18 @@ export class ActionCanvasDirective implements OnInit {
         console.log('[action-canvas]ngOnInit');
         this.lazyExcuteHandler = new LazyExcuteHandler();
         this.actionInfo = new KeyValuePair(actions.locate);
-        this.action = new Action(this.name);
+        this.action = new Action(this.tag);
+    }
 
-        EventAggregator.Instance().actionInfo.subscribe(actionInfo => {
-            if (actionInfo == null) {
-                console.log('ActionInfo is wrong.')
-                return;
-            }
-            console.log('[action-canvas]Current action is ' + actionInfo.key());
-            this.actionInfo = actionInfo;
-
+    ngOnChanges(changes: SimpleChanges) {
+        if (this.actionInfo === undefined) {
+            console.log('ActionInfo is wrong.')
+            return;
+        }
+        console.log('[action-canvas]Current action is ' + this.actionInfo.key());
+        if (this.action !== undefined) {
             this.action.set(this.actionInfo.key());
-        });
+        }
     }
 
     @HostListener('mousedown', ['$event']) onMouseDown(event: MouseEvent) {

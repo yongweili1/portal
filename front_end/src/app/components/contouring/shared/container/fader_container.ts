@@ -1,7 +1,7 @@
 import { BaseContainer } from "./base_container";
 import { Fader } from "../overlay/fader";
 import { Point } from "../tools/point";
-import { ROIConfig } from "../model/ROIConfig.model";
+import { RoiModel } from "../model/roi.model";
 import { Line } from "../overlay/line";
 
 export class FaderContainer extends BaseContainer {
@@ -23,7 +23,7 @@ export class FaderContainer extends BaseContainer {
         this.addChild(this.horizontal, this.vertical, this.fader);
     }
 
-    public setRoi(roi: ROIConfig) {
+    public setRoi(roi: RoiModel) {
         if (roi === undefined) return;
         super.setRoi(roi)
            this.fader.color = roi.ROIColor;

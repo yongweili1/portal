@@ -2,8 +2,7 @@ import { BaseContainer } from '../container/base_container'
 import { Freepen } from '../overlay/freepen'
 import { Point } from '../tools/point';
 import { Text } from '../overlay/text';
-import { EventAggregator } from '../../../../shared/common/event_aggregator';
-import { ROIConfig } from '../model/ROIConfig.model';
+import { RoiModel } from '../model/roi.model';
 
 export class FreepenContainer extends BaseContainer {
     shape: Freepen;
@@ -21,12 +20,12 @@ export class FreepenContainer extends BaseContainer {
         this.extendShape = new Freepen(stage);
         this.addChild(this.extendShape)
         this.initCps()
-        this.extendCps =new Array();
+        this.extendCps = new Array();
         this.text = new Text(stage, '* cps')
         this.addChild(this.shape, this.text);
     }
 
-    public setRoi(roi: ROIConfig) {
+    public setRoi(roi: RoiModel) {
         super.setRoi(roi)
         this.shape.color = roi.ROIColor;
         this.extendShape.color = roi.ROIColor;
@@ -45,7 +44,7 @@ export class FreepenContainer extends BaseContainer {
     setCps(cps) {
         this.cps = cps;
     }
-    
+
     clearPaint() {
         this.extendCps = new Array()
         this.extendShape.update(this.extendCps)
@@ -57,14 +56,14 @@ export class FreepenContainer extends BaseContainer {
         let distance = this.getDistance(p, nearestCp)
         for (let i = 0; i < this.cps.length; i++) {
             const cp = this.cps[i];
-            let dis = Math.sqrt((cp.x - p.x)**2 + (cp.y - p.y)**2)
+            let dis = Math.sqrt((cp.x - p.x) ** 2 + (cp.y - p.y) ** 2)
             if (dis < distance) {
                 index = i;
                 distance = dis;
                 nearestCp = cp;
             }
         }
-        
+
         return [index, nearestCp];
     }
 
@@ -76,8 +75,8 @@ export class FreepenContainer extends BaseContainer {
         return length
     }
 
-    getDistance(p1:Point, p2:Point) {
-        return Math.sqrt((p1.x - p2.x)**2 + (p1.y - p2.y)**2);
+    getDistance(p1: Point, p2: Point) {
+        return Math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2);
     }
 
     updateText() {
@@ -154,8 +153,8 @@ export class FreepenContainer extends BaseContainer {
             this.extendCps.push(this.nearestStartCp[1])
             this.extendCps.push(point)
         } else {
-            if (evt.target.type != 'freepen' 
-                && evt.target.type != 'controlpoint' 
+            if (evt.target.type != 'freepen'
+                && evt.target.type != 'controlpoint'
                 && evt.target.type != 'text') {
                 this.cps.push(new Point(evt.offsetX, evt.offsetY));
             }
@@ -165,7 +164,7 @@ export class FreepenContainer extends BaseContainer {
         if (this.isMousedown) {
             console.log('[freepen]handle MouseMove')
             this.isPaint = true;
-            
+
             if (this.editable) {
                 const point = new Point(evt.stageX, evt.stageY)
                 this.extendCps.push(point)
@@ -186,7 +185,7 @@ export class FreepenContainer extends BaseContainer {
 
                 this.nearestEndCp = this.getNearestCp(point)
                 this.extendCps.push(this.nearestEndCp)
-                
+
                 this.modifyShape()
                 this.update();
             } else {
