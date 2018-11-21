@@ -27,8 +27,8 @@ export class ImageModel {
         if (wwwl === undefined || !Array.isArray(wwwl)) {
             return;
         }
-        this.windowWidth = Math.round(wwwl[0]);
-        this.windowLevel = Math.round(wwwl[1]);
+        this.windowWidth = wwwl[0];
+        this.windowLevel = wwwl[1];
     }
 }
 

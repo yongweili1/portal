@@ -15,9 +15,9 @@ export class Pan extends BaseAction {
             return;
         }
         let curPos = [e.clientX, e.clientY];
-        const data = []
+        const data = [];
         data[0] = actions.pan;
-        data[1] = [this.tag, this.prePos, curPos]
+        data[1] = [this.tag, this.prePos, curPos];
         EventAggregator.Instance().eventData.publish(data);
         this.prePos = curPos;
     }
