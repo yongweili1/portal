@@ -175,13 +175,19 @@ export class ContouringComponent implements OnInit {
         })
     }
 
-    handleManageRoi() {
+    handleManageRoi(showDialog = true) {
         let seriesuid = $("#seriesSelect").val();
         if (seriesuid != '' && seriesuid != null && seriesuid != undefined) {
-            this.manageROIDisplay = true;
+            if (showDialog) {
+                this.manageROIDisplay = true;
+            }
             this.roiHttp.GetROIConfig(seriesuid).subscribe(result => {
                 if (result.code = '200') {
                     this.data.roiList = result['data'];
+                    if (this.data.roiList.length > 0) {
+                        console.log('set default roi')
+                        this.onSelectRoi(this.data.roiList[0]);
+                    }
                 }
             });
         } else {
@@ -438,6 +444,7 @@ export class ContouringComponent implements OnInit {
         this.seriesHttpService.LoadVolume(seriesId).subscribe(value => {
             value = JSON.parse(value);
             if (value.length === 3) {
+                this.handleManageRoi(false);
                 EventAggregator.Instance().volumnSize.publish(value);
                 this.conService.noticeSize(canvasSize).subscribe(result => {
                     if (result.body === "success") {
@@ -460,6 +467,7 @@ export class ContouringComponent implements OnInit {
                 this.seriesHttpService.ReLoadVolume(seriesId).subscribe(value => {
                     value = JSON.parse(value);
                     if (value.length === 3) {
+                        this.handleManageRoi(false);
                         this.conService.noticeSize(canvasSize).subscribe(result => {
                             if (result.body == "success") {
                                 this.seriesHttpService.GetSeries(seriesId, '', 'all', this.cell1.imageCanvas.width,

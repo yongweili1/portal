@@ -52,6 +52,9 @@ export class CellComponent {
             }
             const action = value[0];
             const data = value[1];
+            if (data[0] !== this.model.tag) {
+                return;
+            }
             switch (action) {
                 case actions.locate:
                     break;
@@ -65,11 +68,13 @@ export class CellComponent {
                     this.onRotate.emit(data);
                     break;
                 case actions.window:
-                    const level = Math.round(this.model.imageM.windowLevel + this.model.imageM.windowWidth * data[1]);
-                    const width = Math.round(this.model.imageM.windowWidth * data[0]);
+                    const level = Math.round(this.model.imageM.windowLevel + this.model.imageM.windowWidth * data[2]);
+                    const width = Math.round(this.model.imageM.windowWidth * data[1]);
                     if (level == this.model.imageM.windowLevel && width == this.model.imageM.windowWidth) {
                         return;
                     }
+                    console.log(data, 'old wwwl', this.model.imageM.windowWidth, this.model.imageM.windowLevel, 'new wwwl', width, level)
+                    this.model.imageM.setWwwl([width, level]);
                     this.onChangeWwwl.emit([width, level]);
                     break;
                 default:
