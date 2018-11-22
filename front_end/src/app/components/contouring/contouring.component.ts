@@ -12,6 +12,8 @@ import { ContouringService } from './shared/service/contouring.service';
 import { RoiHttpService } from './shared/service/roiHttp.service';
 import { SeriesHttpService } from './shared/service/seriesHttp.service';
 import { Point } from './shared/tools/point';
+import { RoiDto } from './shared/dto/roi.dto';
+import { ResponseDto } from './shared/dto/response.dto';
 
 declare var $: any;
 declare var actions: any;
@@ -139,8 +141,8 @@ export class ContouringComponent implements OnInit {
         this.data.activeRoi = roi;
     }
 
-    handleDeleteRoi(roi: RoiModel) {
-        this.roiHttp.DeleteROIConfig(roi.ROIId).subscribe(result => {
+    handleDeleteRoi(id: string) {
+        this.roiHttp.delete(id).subscribe(result => {
             if (result.code == '200') {
                 this.toastService.success('Delete succeed.');
                 this.data.roiList = result.data;
@@ -154,21 +156,14 @@ export class ContouringComponent implements OnInit {
     mainautoroi() {
         const ROIData = {
             seriesuid: $("#seriesSelect").val(),
-            ROIName: 'heart',
-            ROIColor: '#FFFF00'
+            name: 'heart',
+            color: '#FFFF00'
         };
         this.roiHttp.CreateNewSegROI(ROIData).subscribe(result => {
             if (result.body.code == '200') {
                 this.toastService.success('Save succeed.');
                 this.data.roiList = result.body.data;
                 this.newROIDisplay = false;
-                // this.data.roiList.forEach(element => {
-                //     // if (element.ROIId > 0) {
-                //     //     this.activeROIConfig = element;
-                //     // }
-                // });
-
-                // this.conMessage.SetActiveRoi(this.activeROIConfig);
             } else {
                 this.toastService.error(result.msg);
             }
@@ -177,17 +172,21 @@ export class ContouringComponent implements OnInit {
 
     handleManageRoi(showDialog = true) {
         let seriesuid = $("#seriesSelect").val();
-        if (seriesuid != '' && seriesuid != null && seriesuid != undefined) {
+        if (seriesuid != '' && seriesuid != undefined) {
             if (showDialog) {
                 this.manageROIDisplay = true;
             }
-            this.roiHttp.GetROIConfig(seriesuid).subscribe(result => {
-                if (result.code = '200') {
-                    this.data.roiList = result['data'];
+            this.roiHttp.get(seriesuid).subscribe(response => {
+                if (response.success) {
+                    this.data.roiList = new Array();
+                    response.data.forEach(roi => {
+                        this.data.roiList.push(new RoiModel(roi));
+                    });
                     if (this.data.roiList.length > 0) {
-                        console.log('set default roi')
                         this.onSelectRoi(this.data.roiList[0]);
                     }
+                } else {
+                    this.toastService.error(response.message);
                 }
             });
         } else {
@@ -200,34 +199,27 @@ export class ContouringComponent implements OnInit {
     }
 
     saveROI() {
-        if (this.data.activeRoi.ROIName == '') {
+        if (this.data.activeRoi.name == '') {
             this.toastService.error('Illegal input.');
             return;
         }
-        this.roiHttp.PostCreateNewROI(this.data.activeRoi).subscribe(result => {
-            if (result.body.code == '200') {
-                this.toastService.success('Save succeed.');
-                this.data.roiList = result.body.data;
-                this.newROIDisplay = false;
-                // this.data.roiList.forEach(element => {
-                //     // if (element.ROIId > 0) {
-                //     //     this.activeROIConfig = element;
-                //     // }
-                // });
-
-                // this.conMessage.SetActiveRoi(this.activeROIConfig);
-            } else {
-                this.toastService.error(result.msg);
-            }
+        const dto = new RoiDto(this.data.activeRoi);
+        dto.seriesuid = $("#seriesSelect").val();
+        this.roiHttp.create(dto).subscribe(result => {
+            this.toastService.success('Save succeed.');
+            this.data.activeRoi.id = result.body
+            this.data.roiList.push(this.data.activeRoi);
+            this.newROIDisplay = false;
         });
     }
 
     updateROI() {
-        if (this.data.activeRoi.ROIName == '') {
+        if (this.data.activeRoi.name == '') {
             this.toastService.error('Illegal input.');
             return;
         }
-        this.roiHttp.UpdateROIConfig(this.data.activeRoi).subscribe(result => {
+        const dto = new RoiDto(this.data.activeRoi);
+        this.roiHttp.update(dto).subscribe(result => {
             if (result.body.code == '200') {
                 this.toastService.success('Save succeed.');
                 this.data.roiList = result.body.data;
@@ -241,9 +233,9 @@ export class ContouringComponent implements OnInit {
     deleteAllROI() {
         const ROIIdArray = [];
         this.data.roiList.forEach(element => {
-            ROIIdArray.push(element.ROIId);
+            ROIIdArray.push(element.id);
         });
-        this.roiHttp.DeleteROIConfig(ROIIdArray).subscribe(result => {
+        this.roiHttp.delete(ROIIdArray).subscribe(result => {
             if (result.code == '200') {
                 this.toastService.success(`Delete succeed.`);
                 this.data.roiList = result.data;

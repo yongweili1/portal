@@ -26,9 +26,9 @@ export class FaderContainer extends BaseContainer {
     public setRoi(roi: RoiModel) {
         if (roi === undefined) return;
         super.setRoi(roi)
-           this.fader.color = roi.ROIColor;
-        this.horizontal.color = roi.ROIColor;
-        this.vertical.color = roi.ROIColor;
+           this.fader.color = roi.color;
+        this.horizontal.color = roi.color;
+        this.vertical.color = roi.color;
     }
 
     update() {

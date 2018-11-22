@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { AppConfigService } from '../../../../app.config';
 import { RoiModel } from '../model/roi.model';
+import { RoiDto } from '../dto/roi.dto';
 
 
 @Injectable()
@@ -25,25 +26,23 @@ export class RoiHttpService {
         }
     }
 
-    PostCreateNewROI(roiData: RoiModel): Observable<any> {
-        let data = { ROIId: roiData.ROIId, ROIName: roiData.ROIName, ROIColor: roiData.ROIColor };
-        return this.http.post<any>(`${this.appConfig.apiUrl}/roi/roidata/`, data, this.options);
+    create(dto: RoiDto): Observable<any> {
+        return this.http.post<any>(`${this.appConfig.apiUrl}/roi/roidata/`, dto, this.options);
     }
 
-    GetROIConfig(seriesid: any): Observable<any> {
+    get(seriesuid: string): Observable<any> {
         const getParams = new HttpParams()
-            .set('seriesuid', seriesid);
+            .set('seriesuid', seriesuid);
         return this.http.get<any>(`${this.appConfig.apiUrl}/roi/roidata/`, { params: getParams });
     }
 
-    UpdateROIConfig(roiData: RoiModel): Observable<any> {
-        let data = { ROIId: roiData.ROIId, ROIName: roiData.ROIName, ROIColor: roiData.ROIColor };
-        return this.http.put<any>(`${this.appConfig.apiUrl}/roi/roidata/`, data, this.options);
+    update(dto: RoiDto): Observable<any> {
+        return this.http.put<any>(`${this.appConfig.apiUrl}/roi/roidata/`, dto, this.options);
     }
 
-    DeleteROIConfig(roiId: any): Observable<any> {
+    delete(ids: any): Observable<any> {
         const getParams = new HttpParams()
-            .set('ROIId', roiId);
+            .set('ids', ids);
         return this.http.delete<any>(`${this.appConfig.apiUrl}/roi/roidata/`, { params: getParams });
     }
 

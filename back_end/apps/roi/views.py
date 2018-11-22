@@ -19,14 +19,14 @@ class RoiAPIView(APIView):
         roi_list = []
         for roi in roi_query:
             roi_dict = {}
-            roi_dict['ROIId'] = roi.roiuid
-            roi_dict['ROIName'] = roi.roiname
-            roi_dict['ROIColor'] = roi.roicolor
+            roi_dict['id'] = roi.roiuid
+            roi_dict['name'] = roi.roiname
+            roi_dict['color'] = roi.roicolor
             roi_list.append(roi_dict)
 
         rsp = {
-            'code': '200',
-            'msg': 'success',
+            'success': True,
+            'message': 'ok',
             'data': roi_list
         }
 
@@ -34,8 +34,8 @@ class RoiAPIView(APIView):
 
     def post(self, request):
         seriesuid = request.data.get('seriesuid', None)
-        roiname = request.data.get('ROIName', None)
-        roicolor = request.data.get('ROIColor', None)
+        roiname = request.data.get('name', None)
+        roicolor = request.data.get('color', None)
 
         if seriesuid is None or roiname is None or roicolor is None:
             return Response('请携带完整的有效参数')
@@ -44,7 +44,7 @@ class RoiAPIView(APIView):
             return Response('ROI命名重复')
 
         generateUid = GenerateUid()
-        roiuid = generateUid.RoiUid()
+        roiuid = generateUid.roi_uid()
         params = {
             'seriesuid': seriesuid,
             'roiname': roiname,
@@ -60,27 +60,12 @@ class RoiAPIView(APIView):
             print ex.message
             return Response('ROI save failed')
 
-        roi_query = Roi.objects.filter(seriesuid=seriesuid)
-        roi_list = []
-        for roi in roi_query:
-            roi_dict = {}
-            roi_dict['ROIId'] = roi.roiuid
-            roi_dict['ROIName'] = roi.roiname
-            roi_dict['ROIColor'] = roi.roicolor
-            roi_list.append(roi_dict)
-
-        rsp = {
-            'code': '200',
-            'msg': 'success',
-            'data': roi_list,
-        }
-
-        return Response(rsp)
+        return Response(roiuid)
 
     def put(self, request):
-        roiuid = request.data.get('ROIId', None)
-        roiname = request.data.get('ROIName', None)
-        roicolor = request.data.get('ROIColor', None)
+        roiuid = request.data.get('id', None)
+        roiname = request.data.get('name', None)
+        roicolor = request.data.get('color', None)
 
         if roiuid is None or roiname is None or roicolor is None:
             return Response('请携带完整的有效参数')
@@ -107,9 +92,9 @@ class RoiAPIView(APIView):
         roi_list = []
         for roi in roi_query:
             roi_dict = {}
-            roi_dict['ROIId'] = roi.roiuid
-            roi_dict['ROIName'] = roi.roiname
-            roi_dict['ROIColor'] = roi.roicolor
+            roi_dict['id'] = roi.roiuid
+            roi_dict['name'] = roi.roiname
+            roi_dict['color'] = roi.roicolor
             roi_list.append(roi_dict)
 
         rsp = {
@@ -121,7 +106,7 @@ class RoiAPIView(APIView):
         return Response(rsp)
 
     def delete(self, request):
-        pids = request.GET.get('ROIId', None)
+        pids = request.GET.get('ids', None)
         if not pids:
             return Response('请携带有效参数')
 
@@ -143,9 +128,9 @@ class RoiAPIView(APIView):
         roi_query = Roi.objects.filter(seriesuid=seruid)
         for roi in roi_query:
             roi_dict = {}
-            roi_dict['ROIId'] = roi.roiuid
-            roi_dict['ROIName'] = roi.roiname
-            roi_dict['ROIColor'] = roi.roicolor
+            roi_dict['id'] = roi.roiuid
+            roi_dict['name'] = roi.roiname
+            roi_dict['color'] = roi.roicolor
             roi_list.append(roi_dict)
 
         rsp = {

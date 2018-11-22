@@ -68,7 +68,7 @@ export class OverlayCanvasDirective implements OnInit {
             console.log('[overlay-canvas]Current action is ' + this.actionInfo.key());
             if (this.actionInfo.key() == actions.clear) {
                 if (this.myStage.children.length > 0) {
-                    let roi_uid = this.activeROI.ROIId;
+                    let roi_uid = this.activeROI.id;
                     let slice_index = this.sliceIndex;
                     EventAggregator.Instance().removeCps.publish([roi_uid, slice_index])
                     this.myStage.removeAllChildren()
@@ -144,7 +144,7 @@ export class OverlayCanvasDirective implements OnInit {
         });
 
         if (contours.length > 0) {
-            let roi_uid = this.activeROI.ROIId;
+            let roi_uid = this.activeROI.id;
             let slice_index = this.sliceIndex;
             EventAggregator.Instance().contourCps.publish([roi_uid, slice_index, contours])
         }
