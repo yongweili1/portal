@@ -158,7 +158,7 @@ class LoadVolume(APIView):
         try:
             rst = load_volume(**params)
         except IOError:
-            return Response('rebuild')
+            return Response('rebuild', 400)
 
         if rst.success is False:
             return Response(rst.comment)

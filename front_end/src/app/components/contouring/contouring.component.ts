@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { MessageService } from 'primeng/api';
+import { ToastService } from './shared/service/toast.service';
 import { EventAggregator } from '../../shared/common/event_aggregator';
 import { KeyValuePair } from '../../shared/common/keyvaluepair';
 import { ExcuteHelper } from "./shared/tools/excute_helper";
@@ -45,7 +45,7 @@ export class ContouringComponent implements OnInit {
         public roiHttp: RoiHttpService,
         private seriesHttpService: SeriesHttpService,
         private conService: ContouringService,
-        private priMessageService: MessageService
+        private toastService: ToastService
     ) {
         this.excuteHelper = new ExcuteHelper();
         this.data = new ContouringModel();
@@ -111,7 +111,7 @@ export class ContouringComponent implements OnInit {
 
     ngAfterViewInit() {
         if (this.patientId === '' || this.patientId === undefined || this.patientId == null) {
-            this.priMessageService.add({ severity: 'error', detail: 'Please select the patient first.' });
+            this.toastService.error('Please select the patient first.');
         } else {
             this.getSeriesList(this.patientId);
         }
@@ -130,7 +130,7 @@ export class ContouringComponent implements OnInit {
             this.newROIDisplay = true;
             this.data.activeRoi = new RoiModel();
         } else {
-            this.priMessageService.add({ severity: 'error', detail: 'Please select series first.' });
+            this.toastService.error('Please select series first.');
         }
     }
 
@@ -139,14 +139,14 @@ export class ContouringComponent implements OnInit {
         this.data.activeRoi = roi;
     }
 
-    handleDeleteRoi(roi: RoiModel) {
-        this.roiHttp.DeleteROIConfig(roi.ROIId).subscribe(result => {
+    handleDeleteRoi(id: string) {
+        this.roiHttp.delete(id).subscribe(result => {
             if (result.code == '200') {
-                this.priMessageService.add({ severity: 'success', detail: `Delete succeed.` });
+                this.toastService.success('Delete succeed.');
                 this.data.roiList = result.data;
                 this.editROIDisplay = false;
             } else {
-                this.priMessageService.add({ severity: 'error', detail: `${result.msg}` });
+                this.toastService.error(result.msg);
             }
         });
     }
@@ -154,44 +154,38 @@ export class ContouringComponent implements OnInit {
     mainautoroi() {
         const ROIData = {
             seriesuid: $("#seriesSelect").val(),
-            ROIName: 'heart',
-            ROIColor: '#FFFF00'
+            name: 'heart',
+            color: '#FFFF00'
         };
         this.roiHttp.CreateNewSegROI(ROIData).subscribe(result => {
             if (result.body.code == '200') {
-                this.priMessageService.add({ severity: 'success', detail: `Save succeed.` });
+                this.toastService.success('Save succeed.');
                 this.data.roiList = result.body.data;
                 this.newROIDisplay = false;
-                // this.data.roiList.forEach(element => {
-                //     // if (element.ROIId > 0) {
-                //     //     this.activeROIConfig = element;
-                //     // }
-                // });
-
-                // this.conMessage.SetActiveRoi(this.activeROIConfig);
             } else {
-                this.priMessageService.add({ severity: 'error', detail: `${result.msg}` });
+                this.toastService.error(result.msg);
             }
         })
     }
 
     handleManageRoi(showDialog = true) {
         let seriesuid = $("#seriesSelect").val();
-        if (seriesuid != '' && seriesuid != null && seriesuid != undefined) {
+        if (seriesuid != '' && seriesuid != undefined) {
             if (showDialog) {
                 this.manageROIDisplay = true;
             }
-            this.roiHttp.GetROIConfig(seriesuid).subscribe(result => {
-                if (result.code = '200') {
-                    this.data.roiList = result['data'];
+            this.roiHttp.get(seriesuid).subscribe(response => {
+                if (response.success) {
+                    this.data.roiList = response.data;
                     if (this.data.roiList.length > 0) {
-                        console.log('set default roi')
                         this.onSelectRoi(this.data.roiList[0]);
                     }
+                } else {
+                    this.toastService.error(response.message);
                 }
             });
         } else {
-            this.priMessageService.add({ severity: 'error', detail: 'Please select series first.' });
+            this.toastService.error('Please select series first.');
         }
     }
 
@@ -200,40 +194,31 @@ export class ContouringComponent implements OnInit {
     }
 
     saveROI() {
-        if (this.data.activeRoi.ROIName == '') {
-            this.priMessageService.add({ severity: 'error', detail: `Illegal input.` });
+        if (this.data.activeRoi.name == '') {
+            this.toastService.error('Illegal input.');
             return;
         }
-        this.roiHttp.PostCreateNewROI(this.data.activeRoi).subscribe(result => {
-            if (result.body.code == '200') {
-                this.priMessageService.add({ severity: 'success', detail: `Save succeed.` });
-                this.data.roiList = result.body.data;
-                this.newROIDisplay = false;
-                // this.data.roiList.forEach(element => {
-                //     // if (element.ROIId > 0) {
-                //     //     this.activeROIConfig = element;
-                //     // }
-                // });
-
-                // this.conMessage.SetActiveRoi(this.activeROIConfig);
-            } else {
-                this.priMessageService.add({ severity: 'error', detail: `${result.msg}` });
-            }
+        this.data.activeRoi.seriesuid = $("#seriesSelect").val();
+        this.roiHttp.create(this.data.activeRoi).subscribe(result => {
+            this.toastService.success('Save succeed.');
+            this.data.activeRoi.id = result.body
+            this.data.roiList.push(this.data.activeRoi);
+            this.newROIDisplay = false;
         });
     }
 
     updateROI() {
-        if (this.data.activeRoi.ROIName == '') {
-            this.priMessageService.add({ severity: 'error', detail: `Illegal input.` });
+        if (this.data.activeRoi.name == '') {
+            this.toastService.error('Illegal input.');
             return;
         }
-        this.roiHttp.UpdateROIConfig(this.data.activeRoi).subscribe(result => {
-            if (result.body.code == '200') {
-                this.priMessageService.add({ severity: 'success', detail: `Save succeed.` });
+        this.roiHttp.update(this.data.activeRoi).subscribe(result => {
+            if (result.body.success) {
+                this.toastService.success('Save succeed.');
                 this.data.roiList = result.body.data;
                 this.editROIDisplay = false;
             } else {
-                this.priMessageService.add({ severity: 'error', detail: `${result.msg}` });
+                this.toastService.error(result.body.message);
             }
         });
     }
@@ -241,14 +226,14 @@ export class ContouringComponent implements OnInit {
     deleteAllROI() {
         const ROIIdArray = [];
         this.data.roiList.forEach(element => {
-            ROIIdArray.push(element.ROIId);
+            ROIIdArray.push(element.id);
         });
-        this.roiHttp.DeleteROIConfig(ROIIdArray).subscribe(result => {
+        this.roiHttp.delete(ROIIdArray).subscribe(result => {
             if (result.code == '200') {
-                this.priMessageService.add({ severity: 'success', detail: `Delete succeed.` });
+                this.toastService.success(`Delete succeed.`);
                 this.data.roiList = result.data;
             } else {
-                this.priMessageService.add({ severity: 'error', detail: `${result.msg}` });
+                this.toastService.error(result.msg);
             }
         });
     }
@@ -437,10 +422,10 @@ export class ContouringComponent implements OnInit {
         console.log(canvasSize);
         const that = this;
         if (seriesId === '' || seriesId == null || seriesId === undefined) {
-            this.priMessageService.add({ severity: 'error', detail: 'No series selected.' });
+            this.toastService.error('No series selected.');
             return;
         }
-        this.priMessageService.add({ severity: 'info', detail: 'Loading now, please wait.' });
+        this.toastService.info('Loading now, please wait.');
         this.seriesHttpService.LoadVolume(seriesId).subscribe(value => {
             value = JSON.parse(value);
             if (value.length === 3) {
@@ -453,9 +438,9 @@ export class ContouringComponent implements OnInit {
                                 const data = JSON.parse(value);
                                 that.updateCells(data, true);
                                 this.updateSliceIndex(data['0']['slice_index']);
-                                this.priMessageService.add({ severity: 'success', detail: 'Load succeed.' });
+                                this.toastService.success('Load succeed.');
                             }, (error) => {
-                                this.priMessageService.add({ severity: 'error', detail: 'Load failed.' });
+                                this.toastService.error('Load failed.');
                                 console.log(error);
                             });
                         this.hasLoadVolume = true;
@@ -463,33 +448,9 @@ export class ContouringComponent implements OnInit {
                     }
                 });
             } else if (value === "rebuild") {
-                this.priMessageService.add({ severity: 'error', detail: 'Load failed, rebuiding now, please wait' });
-                this.seriesHttpService.ReLoadVolume(seriesId).subscribe(value => {
-                    value = JSON.parse(value);
-                    if (value.length === 3) {
-                        this.handleManageRoi(false);
-                        this.conService.noticeSize(canvasSize).subscribe(result => {
-                            if (result.body == "success") {
-                                this.seriesHttpService.GetSeries(seriesId, '', 'all', this.cell1.imageCanvas.width,
-                                    this.cell1.imageCanvas.height).subscribe((value) => {
-                                        const data = JSON.parse(value);
-                                        that.updateCells(data, true);
-                                        this.updateSliceIndex(data['0']['slice_index']);
-                                        this.priMessageService.add({ severity: 'success', detail: 'Load succeed.' });
-                                    }, (error) => {
-                                        this.priMessageService.add({ severity: 'error', detail: 'Load failed.' });
-                                        console.log(error);
-                                    });
-                                this.hasLoadVolume = true;
-                                this.seriesId = seriesId;
-                            }
-                        });
-                    } else {
-                        this.priMessageService.add({ severity: 'error', detail: `Rebuild failed. ${value}` });
-                    }
-                });
+                this.toastService.error('Load failed, rebuiding now, please wait');
             } else {
-                this.priMessageService.add({ severity: 'error', detail: 'Load failed.' });
+                this.toastService.error('Load failed.');
             }
         });
     }

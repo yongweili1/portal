@@ -24,7 +24,7 @@ export class LineContainer extends BaseContainer {
 
     public setRoi(roi: RoiModel) {
         super.setRoi(roi)
-        this.line.color = roi.ROIColor;
+        this.line.color = roi.color;
     }
 
     update() {

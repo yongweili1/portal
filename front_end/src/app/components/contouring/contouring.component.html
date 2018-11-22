@@ -41,12 +41,12 @@
         [contentStyle]="{'border':'none','overflow':'visible'}" (onHide)="hideNewROIDia()">
         <div class="roi-name roi-input-group">
             <label for="">Name:</label>
-            <input type="text" pInputText spellcheck=false [(ngModel)]="data.activeRoi.ROIName">
+            <input type="text" pInputText spellcheck=false [(ngModel)]="data.activeRoi.name">
         </div>
         <div class="roi-color roi-input-group">
             <label for="">Color:</label>
-            <p-colorPicker [(ngModel)]="data.activeRoi.ROIColor"></p-colorPicker>
-            <input type='text' pInputText style="padding-left:10px;border:none;" spellcheck=false [(ngModel)]="data.activeRoi.ROIColor">
+            <p-colorPicker [(ngModel)]="data.activeRoi.color"></p-colorPicker>
+            <input type='text' pInputText style="padding-left:10px;border:none;" spellcheck=false [(ngModel)]="data.activeRoi.color">
         </div>
         <p-footer [style]="{'border':'none'}">
             <p-button label="Save" icon="fa fa-check" iconPos="left" (onClick)="saveROI()"></p-button>
@@ -67,15 +67,15 @@
                         <button (click)="changeROIVisible($event)" class="fa fa-eye fa-lg" style="background: none;border: none">
                         </button>
                     </td>
-                    <td class='roi-id-td' hidden='true'>{{item.ROIId}}</td>
+                    <td class='roi-id-td' hidden='true'>{{ item.id }}</td>
                     <td>
-                        <div class="roi-color-div" [ngStyle]="{'width':'20px','height':'20px','background-color':item.ROIColor}"></div>
+                        <div class="roi-color-div" [ngStyle]="{'width':'20px','height':'20px','background-color':item.color}"></div>
                     </td>
                     <td class="select-td" (click)="onSelectRoi(item)">
-                        <span>{{item.ROIName}}</span>
+                        <span>{{ item.name }}</span>
                     </td>
                     <td class="delete-td">
-                        <button (click)="handleDeleteRoi(item)" class="fa fa-trash fa-lg" style="background: none;border: none">
+                        <button (click)="handleDeleteRoi(item.id)" class="fa fa-trash fa-lg" style="background: none;border: none">
                         </button>
                     </td>
                     <td class="edit-td">
@@ -95,12 +95,12 @@
         [contentStyle]="{'border':'none','overflow':'visible'}">
         <div class="roi-name roi-input-group">
             <label for="">Name:</label>
-            <input type="text" pInputText spellcheck=false [(ngModel)]="data.activeRoi.ROIName">
+            <input type="text" pInputText spellcheck=false [(ngModel)]="data.activeRoi.name">
         </div>
         <div class="roi-color roi-input-group">
             <label for="">Color:</label>
-            <p-colorPicker [(ngModel)]="data.activeRoi.ROIColor"></p-colorPicker>
-            <input type='text' pInputText style="padding-left:10px;border:none;" spellcheck=false [(ngModel)]="data.activeRoi.ROIColor">
+            <p-colorPicker [(ngModel)]="data.activeRoi.color"></p-colorPicker>
+            <input type='text' pInputText style="padding-left:10px;border:none;" spellcheck=false [(ngModel)]="data.activeRoi.color">
         </div>
         <p-footer [style]="{'border':'none'}">
             <p-button label="Save" icon="fa fa-check" iconPos="left" (onClick)="updateROI()"></p-button>

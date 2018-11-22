@@ -37,7 +37,7 @@ export class RectangleContainer extends BaseContainer {
 
     public setRoi(roi: RoiModel) {
         super.setRoi(roi)
-        this.rectangle.color = roi.ROIColor;
+        this.rectangle.color = roi.color;
     }
 
     update() {

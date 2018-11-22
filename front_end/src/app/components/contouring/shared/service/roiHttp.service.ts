@@ -1,8 +1,6 @@
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpResponse, HttpRequest, HttpParams } from '@angular/common/http';
-import { SecurityService } from '../../../../services/security.service';
 import { Observable } from 'rxjs/Observable';
-import { StorageService } from './storage.service';
 import { AppConfigService } from '../../../../app.config';
 import { RoiModel } from '../model/roi.model';
 
@@ -27,25 +25,31 @@ export class RoiHttpService {
         }
     }
 
-    PostCreateNewROI(roiData: RoiModel): Observable<any> {
-        let data = { ROIId: roiData.ROIId, ROIName: roiData.ROIName, ROIColor: roiData.ROIColor };
-        return this.http.post<any>(`${this.appConfig.apiUrl}/roi/roidata/`, data, this.options);
+    create(dto: RoiModel): Observable<any> {
+        return this.http.post<any>(`${this.appConfig.apiUrl}/roi/roidata/`, dto, this.options);
     }
 
-    GetROIConfig(seriesid: any): Observable<any> {
+    get(seriesuid: string): Observable<any> {
         const getParams = new HttpParams()
-            .set('seriesuid', seriesid);
-        return this.http.get<any>(`${this.appConfig.apiUrl}/roi/roidata/`, { params: getParams });
+            .set('seriesuid', seriesuid);
+        return this.http.get<any>(`${this.appConfig.apiUrl}/roi/roidata/`, { params: getParams })
+            .map(response => {
+                const rois = new Array();
+                response.data.forEach(roi => {
+                    rois.push(new RoiModel(roi));
+                });
+                response.data = rois;
+                return response;
+            });
     }
 
-    UpdateROIConfig(roiData: RoiModel): Observable<any> {
-        let data = { ROIId: roiData.ROIId, ROIName: roiData.ROIName, ROIColor: roiData.ROIColor };
-        return this.http.put<any>(`${this.appConfig.apiUrl}/roi/roidata/`, data, this.options);
+    update(dto: RoiModel): Observable<any> {
+        return this.http.put<any>(`${this.appConfig.apiUrl}/roi/roidata/`, dto, this.options);
     }
 
-    DeleteROIConfig(roiId: any): Observable<any> {
+    delete(ids: any): Observable<any> {
         const getParams = new HttpParams()
-            .set('ROIId', roiId);
+            .set('ids', ids);
         return this.http.delete<any>(`${this.appConfig.apiUrl}/roi/roidata/`, { params: getParams });
     }
 
@@ -53,33 +57,3 @@ export class RoiHttpService {
         return this.http.post<any>(`${this.appConfig.apiUrl}/algproxy/results/`, roiData, this.options);
     }
 }
-
-// interface IRoiDto {
-//     roiGeometry: {};
-//     roiProperties: {};
-// }
-
-// class RoiDto implements IRoiDto {
-//     roiGeometry: {};
-//     roiProperties: {};
-
-//     constructor(data?: any) {
-//         if (data) {
-//             for (var property in data) {
-//                 if (data.hasOwnProperty(property))
-//                     (<any>this)[property] = (<any>data)[property];
-//             }
-//         }
-//     }
-
-//     init(data?: any) {
-//         this.roiGeometry = data["roiGeometry"];
-//         this.roiProperties = data["roiProperties"];
-//     }
-
-//     static fromJS(data: any): RoiDto {
-//         let result = new RoiDto();
-//         result.init(data);
-//         return result;
-//     }
-// }

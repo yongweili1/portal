@@ -22,7 +22,7 @@ export class CircleContainer extends BaseContainer {
 
     public setRoi(roi: RoiModel) {
         super.setRoi(roi)
-        this.circle.color = roi.ROIColor;
+        this.circle.color = roi.color;
     }
 
     update() {

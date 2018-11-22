@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { AppConfigService } from '../../../../app.config';
 import { AjaxService } from "../../../../services/ajax.service";
+import { retry } from 'rxjs/operators';
 
 @Injectable()
 export class SeriesHttpService {
@@ -28,15 +29,7 @@ export class SeriesHttpService {
     LoadVolume(seriesId: any): Observable<any> {
         const getParams = new HttpParams()
             .set('seriesuid', seriesId);
-        return this.http.get(`${this.appConfig.apiUrl}/image/volumes/`, { params: getParams });
-
-    }
-
-    ReLoadVolume(seriesId: any): Observable<any> {
-        const getParams = new HttpParams()
-            .set('seriesuid', seriesId);
-        return this.http.put(`${this.appConfig.apiUrl}/image/volumes/`, { params: getParams });
-
+        return this.http.get(`${this.appConfig.apiUrl}/image/volumes/`, { params: getParams }).pipe(retry());
     }
 
     UnLoadVolume(seriesId: any): Observable<any> {

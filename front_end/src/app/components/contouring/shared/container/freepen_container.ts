@@ -27,8 +27,8 @@ export class FreepenContainer extends BaseContainer {
 
     public setRoi(roi: RoiModel) {
         super.setRoi(roi)
-        this.shape.color = roi.ROIColor;
-        this.extendShape.color = roi.ROIColor;
+        this.shape.color = roi.color;
+        this.extendShape.color = roi.color;
     }
 
     update() {
