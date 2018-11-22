@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { TooltipService } from './shared/service/tooltip.service';
+import { ToastService } from './shared/service/toast.service';
 import { EventAggregator } from '../../shared/common/event_aggregator';
 import { KeyValuePair } from '../../shared/common/keyvaluepair';
 import { ExcuteHelper } from "./shared/tools/excute_helper";
@@ -45,7 +45,7 @@ export class ContouringComponent implements OnInit {
         public roiHttp: RoiHttpService,
         private seriesHttpService: SeriesHttpService,
         private conService: ContouringService,
-        private tooltipService: TooltipService
+        private toastService: ToastService
     ) {
         this.excuteHelper = new ExcuteHelper();
         this.data = new ContouringModel();
@@ -111,7 +111,7 @@ export class ContouringComponent implements OnInit {
 
     ngAfterViewInit() {
         if (this.patientId === '' || this.patientId === undefined || this.patientId == null) {
-            this.tooltipService.error('Please select the patient first.');
+            this.toastService.error('Please select the patient first.');
         } else {
             this.getSeriesList(this.patientId);
         }
@@ -130,7 +130,7 @@ export class ContouringComponent implements OnInit {
             this.newROIDisplay = true;
             this.data.activeRoi = new RoiModel();
         } else {
-            this.tooltipService.error('Please select series first.');
+            this.toastService.error('Please select series first.');
         }
     }
 
@@ -142,11 +142,11 @@ export class ContouringComponent implements OnInit {
     handleDeleteRoi(roi: RoiModel) {
         this.roiHttp.DeleteROIConfig(roi.ROIId).subscribe(result => {
             if (result.code == '200') {
-                this.tooltipService.success('Delete succeed.');
+                this.toastService.success('Delete succeed.');
                 this.data.roiList = result.data;
                 this.editROIDisplay = false;
             } else {
-                this.tooltipService.error('result.msg');
+                this.toastService.error(result.msg);
             }
         });
     }
@@ -159,7 +159,7 @@ export class ContouringComponent implements OnInit {
         };
         this.roiHttp.CreateNewSegROI(ROIData).subscribe(result => {
             if (result.body.code == '200') {
-                this.tooltipService.success('Save succeed.');
+                this.toastService.success('Save succeed.');
                 this.data.roiList = result.body.data;
                 this.newROIDisplay = false;
                 // this.data.roiList.forEach(element => {
@@ -170,7 +170,7 @@ export class ContouringComponent implements OnInit {
 
                 // this.conMessage.SetActiveRoi(this.activeROIConfig);
             } else {
-                this.tooltipService.error(result.msg);
+                this.toastService.error(result.msg);
             }
         })
     }
@@ -191,7 +191,7 @@ export class ContouringComponent implements OnInit {
                 }
             });
         } else {
-            this.tooltipService.error('Please select series first.');
+            this.toastService.error('Please select series first.');
         }
     }
 
@@ -201,12 +201,12 @@ export class ContouringComponent implements OnInit {
 
     saveROI() {
         if (this.data.activeRoi.ROIName == '') {
-            this.tooltipService.error('Illegal input.');
+            this.toastService.error('Illegal input.');
             return;
         }
         this.roiHttp.PostCreateNewROI(this.data.activeRoi).subscribe(result => {
             if (result.body.code == '200') {
-                this.tooltipService.success('Save succeed.');
+                this.toastService.success('Save succeed.');
                 this.data.roiList = result.body.data;
                 this.newROIDisplay = false;
                 // this.data.roiList.forEach(element => {
@@ -217,23 +217,23 @@ export class ContouringComponent implements OnInit {
 
                 // this.conMessage.SetActiveRoi(this.activeROIConfig);
             } else {
-                this.tooltipService.error(result.msg);
+                this.toastService.error(result.msg);
             }
         });
     }
 
     updateROI() {
         if (this.data.activeRoi.ROIName == '') {
-            this.tooltipService.error('Illegal input.');
+            this.toastService.error('Illegal input.');
             return;
         }
         this.roiHttp.UpdateROIConfig(this.data.activeRoi).subscribe(result => {
             if (result.body.code == '200') {
-                this.tooltipService.success('Save succeed.');
+                this.toastService.success('Save succeed.');
                 this.data.roiList = result.body.data;
                 this.editROIDisplay = false;
             } else {
-                this.tooltipService.error(result.msg);
+                this.toastService.error(result.msg);
             }
         });
     }
@@ -245,10 +245,10 @@ export class ContouringComponent implements OnInit {
         });
         this.roiHttp.DeleteROIConfig(ROIIdArray).subscribe(result => {
             if (result.code == '200') {
-                this.tooltipService.success(`Delete succeed.`);
+                this.toastService.success(`Delete succeed.`);
                 this.data.roiList = result.data;
             } else {
-                this.tooltipService.error(result.msg);
+                this.toastService.error(result.msg);
             }
         });
     }
@@ -437,10 +437,10 @@ export class ContouringComponent implements OnInit {
         console.log(canvasSize);
         const that = this;
         if (seriesId === '' || seriesId == null || seriesId === undefined) {
-            this.tooltipService.error('No series selected.');
+            this.toastService.error('No series selected.');
             return;
         }
-        this.tooltipService.info('Loading now, please wait.');
+        this.toastService.info('Loading now, please wait.');
         this.seriesHttpService.LoadVolume(seriesId).subscribe(value => {
             value = JSON.parse(value);
             if (value.length === 3) {
@@ -453,9 +453,9 @@ export class ContouringComponent implements OnInit {
                                 const data = JSON.parse(value);
                                 that.updateCells(data, true);
                                 this.updateSliceIndex(data['0']['slice_index']);
-                                this.tooltipService.success('Load succeed.');
+                                this.toastService.success('Load succeed.');
                             }, (error) => {
-                                this.tooltipService.error('Load failed.');
+                                this.toastService.error('Load failed.');
                                 console.log(error);
                             });
                         this.hasLoadVolume = true;
@@ -463,7 +463,7 @@ export class ContouringComponent implements OnInit {
                     }
                 });
             } else if (value === "rebuild") {
-                this.tooltipService.error('Load failed, rebuiding now, please wait');
+                this.toastService.error('Load failed, rebuiding now, please wait');
                 this.seriesHttpService.ReLoadVolume(seriesId).subscribe(value => {
                     value = JSON.parse(value);
                     if (value.length === 3) {
@@ -475,9 +475,9 @@ export class ContouringComponent implements OnInit {
                                         const data = JSON.parse(value);
                                         that.updateCells(data, true);
                                         this.updateSliceIndex(data['0']['slice_index']);
-                                        this.tooltipService.success('Load succeed.');
+                                        this.toastService.success('Load succeed.');
                                     }, (error) => {
-                                        this.tooltipService.error('Load failed.');
+                                        this.toastService.error('Load failed.');
                                         console.log(error);
                                     });
                                 this.hasLoadVolume = true;
@@ -485,11 +485,11 @@ export class ContouringComponent implements OnInit {
                             }
                         });
                     } else {
-                        this.tooltipService.error(`Rebuild failed. ${value}`);
+                        this.toastService.error(`Rebuild failed. ${value}`);
                     }
                 });
             } else {
-                this.tooltipService.error('Load failed.');
+                this.toastService.error('Load failed.');
             }
         });
     }

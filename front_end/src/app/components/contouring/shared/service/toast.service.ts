@@ -3,7 +3,7 @@ import { MessageService } from 'primeng/api';
 
 @Injectable()
 
-export class TooltipService {
+export class ToastService {
 
     constructor(private _svc: MessageService) {
     }

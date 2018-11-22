@@ -33,7 +33,7 @@ import { PatientHttpService } from './shared/service/patientHttp.service';
 import { RoiHttpService } from './shared/service/roiHttp.service';
 import { SeriesHttpService } from './shared/service/seriesHttp.service';
 import { StorageService } from './shared/service/storage.service';
-import { TooltipService } from './shared/service/tooltip.service';
+import { ToastService } from './shared/service/toast.service';
 import { ImageCanvasDirective } from './shared/directives/imageCanvas.directive';
 import { OverlayCanvasDirective } from './shared/directives/overlayCanvas.directive';
 import { ActionCanvasDirective } from './shared/directives/actionCanvas.directive';
@@ -92,7 +92,7 @@ import { SliderBarComponent } from './slider-bar/slider-bar.component';
     RoiHttpService,
     SeriesHttpService,
     StorageService,
-    TooltipService]
+    ToastService]
 })
 
 export class ContouringModule {
