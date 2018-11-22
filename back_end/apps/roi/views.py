@@ -98,8 +98,8 @@ class RoiAPIView(APIView):
             roi_list.append(roi_dict)
 
         rsp = {
-            'code': '200',
-            'msg': 'success',
+            'success': True,
+            'message': 'ok',
             'data': roi_list,
         }
 

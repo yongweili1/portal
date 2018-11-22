@@ -12,8 +12,6 @@ import { ContouringService } from './shared/service/contouring.service';
 import { RoiHttpService } from './shared/service/roiHttp.service';
 import { SeriesHttpService } from './shared/service/seriesHttp.service';
 import { Point } from './shared/tools/point';
-import { RoiDto } from './shared/dto/roi.dto';
-import { ResponseDto } from './shared/dto/response.dto';
 
 declare var $: any;
 declare var actions: any;
@@ -178,10 +176,7 @@ export class ContouringComponent implements OnInit {
             }
             this.roiHttp.get(seriesuid).subscribe(response => {
                 if (response.success) {
-                    this.data.roiList = new Array();
-                    response.data.forEach(roi => {
-                        this.data.roiList.push(new RoiModel(roi));
-                    });
+                    this.data.roiList = response.data;
                     if (this.data.roiList.length > 0) {
                         this.onSelectRoi(this.data.roiList[0]);
                     }
@@ -203,9 +198,8 @@ export class ContouringComponent implements OnInit {
             this.toastService.error('Illegal input.');
             return;
         }
-        const dto = new RoiDto(this.data.activeRoi);
-        dto.seriesuid = $("#seriesSelect").val();
-        this.roiHttp.create(dto).subscribe(result => {
+        this.data.activeRoi.seriesuid = $("#seriesSelect").val();
+        this.roiHttp.create(this.data.activeRoi).subscribe(result => {
             this.toastService.success('Save succeed.');
             this.data.activeRoi.id = result.body
             this.data.roiList.push(this.data.activeRoi);
@@ -218,14 +212,13 @@ export class ContouringComponent implements OnInit {
             this.toastService.error('Illegal input.');
             return;
         }
-        const dto = new RoiDto(this.data.activeRoi);
-        this.roiHttp.update(dto).subscribe(result => {
-            if (result.body.code == '200') {
+        this.roiHttp.update(this.data.activeRoi).subscribe(result => {
+            if (result.body.success) {
                 this.toastService.success('Save succeed.');
                 this.data.roiList = result.body.data;
                 this.editROIDisplay = false;
             } else {
-                this.toastService.error(result.msg);
+                this.toastService.error(result.body.message);
             }
         });
     }
@@ -456,30 +449,6 @@ export class ContouringComponent implements OnInit {
                 });
             } else if (value === "rebuild") {
                 this.toastService.error('Load failed, rebuiding now, please wait');
-                this.seriesHttpService.ReLoadVolume(seriesId).subscribe(value => {
-                    value = JSON.parse(value);
-                    if (value.length === 3) {
-                        this.handleManageRoi(false);
-                        this.conService.noticeSize(canvasSize).subscribe(result => {
-                            if (result.body == "success") {
-                                this.seriesHttpService.GetSeries(seriesId, '', 'all', this.cell1.imageCanvas.width,
-                                    this.cell1.imageCanvas.height).subscribe((value) => {
-                                        const data = JSON.parse(value);
-                                        that.updateCells(data, true);
-                                        this.updateSliceIndex(data['0']['slice_index']);
-                                        this.toastService.success('Load succeed.');
-                                    }, (error) => {
-                                        this.toastService.error('Load failed.');
-                                        console.log(error);
-                                    });
-                                this.hasLoadVolume = true;
-                                this.seriesId = seriesId;
-                            }
-                        });
-                    } else {
-                        this.toastService.error(`Rebuild failed. ${value}`);
-                    }
-                });
             } else {
                 this.toastService.error('Load failed.');
             }

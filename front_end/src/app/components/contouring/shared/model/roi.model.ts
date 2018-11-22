@@ -2,6 +2,7 @@ export class RoiModel {
     id: string;
     name: string;
     color: string;
+    seriesuid: string;
 
     constructor(data = undefined) {
         if (data !== undefined) {

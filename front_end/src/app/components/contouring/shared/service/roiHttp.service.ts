@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { AppConfigService } from '../../../../app.config';
 import { RoiModel } from '../model/roi.model';
-import { RoiDto } from '../dto/roi.dto';
 
 
 @Injectable()
@@ -26,17 +25,25 @@ export class RoiHttpService {
         }
     }
 
-    create(dto: RoiDto): Observable<any> {
+    create(dto: RoiModel): Observable<any> {
         return this.http.post<any>(`${this.appConfig.apiUrl}/roi/roidata/`, dto, this.options);
     }
 
     get(seriesuid: string): Observable<any> {
         const getParams = new HttpParams()
             .set('seriesuid', seriesuid);
-        return this.http.get<any>(`${this.appConfig.apiUrl}/roi/roidata/`, { params: getParams });
+        return this.http.get<any>(`${this.appConfig.apiUrl}/roi/roidata/`, { params: getParams })
+            .map(response => {
+                const rois = new Array();
+                response.data.forEach(roi => {
+                    rois.push(new RoiModel(roi));
+                });
+                response.data = rois;
+                return response;
+            });
     }
 
-    update(dto: RoiDto): Observable<any> {
+    update(dto: RoiModel): Observable<any> {
         return this.http.put<any>(`${this.appConfig.apiUrl}/roi/roidata/`, dto, this.options);
     }
 
