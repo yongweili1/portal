@@ -1,8 +1,6 @@
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpResponse, HttpRequest, HttpParams } from '@angular/common/http';
-import { SecurityService } from '../../../../services/security.service';
 import { Observable } from 'rxjs/Observable';
-import { StorageService } from './storage.service';
 import { AppConfigService } from '../../../../app.config';
 import { RoiModel } from '../model/roi.model';
 
@@ -53,33 +51,3 @@ export class RoiHttpService {
         return this.http.post<any>(`${this.appConfig.apiUrl}/algproxy/results/`, roiData, this.options);
     }
 }
-
-// interface IRoiDto {
-//     roiGeometry: {};
-//     roiProperties: {};
-// }
-
-// class RoiDto implements IRoiDto {
-//     roiGeometry: {};
-//     roiProperties: {};
-
-//     constructor(data?: any) {
-//         if (data) {
-//             for (var property in data) {
-//                 if (data.hasOwnProperty(property))
-//                     (<any>this)[property] = (<any>data)[property];
-//             }
-//         }
-//     }
-
-//     init(data?: any) {
-//         this.roiGeometry = data["roiGeometry"];
-//         this.roiProperties = data["roiProperties"];
-//     }
-
-//     static fromJS(data: any): RoiDto {
-//         let result = new RoiDto();
-//         result.init(data);
-//         return result;
-//     }
-// }

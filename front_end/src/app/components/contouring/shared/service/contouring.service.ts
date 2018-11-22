@@ -1,12 +1,7 @@
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { URLSearchParams } from '@angular/http';
 import { Observable } from 'rxjs';
-import { Subject } from 'rxjs/Subject';
-
 import { AppConfigService } from '../../../../app.config';
-import { AuthHttp } from '../../../../core/auth-http';
-import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
-import { HttpParams } from "@angular/common/http";
 import { ContourModel } from '../model/contour.model';
 
 
