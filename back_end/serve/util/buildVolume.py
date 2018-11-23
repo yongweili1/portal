@@ -4,7 +4,7 @@ import os
 # from md.image3d.python.image3d_io import BuildVolume
 from md.image3d.python.image3d_io import write_image, read_dicom_series
 
-from serve.static_parameters.setFilePath import file_path_ferry
+from config.path_cfg import file_path_ferry
 
 
 class DicomToVolume(object):

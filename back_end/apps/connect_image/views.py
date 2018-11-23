@@ -19,7 +19,7 @@ from back_end.settings import STATIC_ROOT
 from serve.db_access.models import Study
 from serve.util.buildVolume import DicomToVolume
 from serve.db_access.upload_vol_to_db import UploadVolume
-from serve.static_parameters.setFilePath import file_path_ferry
+from config.path_cfg import file_path_ferry
 from serve.db_access.models import Series, Contour
 from serve.db_access.contour_crud import ContourCrud
 

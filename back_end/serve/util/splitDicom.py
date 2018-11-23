@@ -1,7 +1,7 @@
 # -*-coding:utf-8-*-
 import os
 
-from serve.static_parameters.setFilePath import file_path_ferry
+from config.path_cfg import file_path_ferry
 from serve.util.readDcm import DcmSeries
 
 

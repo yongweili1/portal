@@ -1,8 +1,8 @@
 # -*-coding:utf-8-*-
 import os
 
-from serve.static_parameters.setPacs import pacsconf
-from serve.static_parameters.setFilePath import file_path_ferry
+from config.pacs_cfg import pacsconf
+from config.path_cfg import file_path_ferry
 from serve.md_dicoms.dicom_service import DicomService
 
 

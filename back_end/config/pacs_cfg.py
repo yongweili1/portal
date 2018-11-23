@@ -1,5 +1,5 @@
 # -*-coding:utf-8-*-
-from serve.static_parameters.setFilePath import file_path_ferry
+from config.path_cfg import file_path_ferry
 
 class PacsConf(object):
 
