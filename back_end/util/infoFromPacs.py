@@ -3,7 +3,7 @@ import os
 
 from config.pacs_cfg import pacsconf
 from config.path_cfg import file_path_ferry
-from serve.md_dicoms.dicom_service import DicomService
+from md_dicoms.dicom_service import DicomService
 
 
 class ConnectPacsERROR(Exception):

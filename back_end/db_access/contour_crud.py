@@ -1,9 +1,9 @@
 import os
 import json
 
-from serve.db_access.models import Contour
-from serve.util.generate_uid import GenerateUid
-from serve.db_access.serializer import ContourSerializer
+from db_access.models import Contour
+from util.generate_uid import GenerateUid
+from db_access.serializer import ContourSerializer
 
 
 class ContourCrud(object):

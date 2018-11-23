@@ -6,7 +6,7 @@ import math
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from serve.util.PAInformation import InfoList
+from util.PAInformation import InfoList
 # from dwebsocket import require_websocket, accept_websocket
 
 

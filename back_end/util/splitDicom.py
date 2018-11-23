@@ -2,7 +2,7 @@
 import os
 
 from config.path_cfg import file_path_ferry
-from serve.util.readDcm import DcmSeries
+from util.readDcm import DcmSeries
 
 
 class SplitDicoms(object):

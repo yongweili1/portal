@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import copy
 import os
 import platform
-import sys
 
 import pydicom
 
@@ -12,16 +10,17 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from config.path_cfg import file_path_ferry
-from serve.util.splitDicom import SplitDicoms
-from serve.db_access.upload_dcm_to_db import UploadDcm
-from serve.db_access.upload_vol_to_db import UploadVolume
-from serve.util.buildVolume import DicomToVolume
+from util.splitDicom import SplitDicoms
+from db_access.upload_dcm_to_db import UploadDcm
+from db_access.upload_vol_to_db import UploadVolume
+from util.buildVolume import DicomToVolume
 from netbase import data_checker
 
 if platform.system() == 'Windows':
     import win32file
 
-    win32file._setmaxstdio(2048)  # 如果要部署到linux，更改linux /etc/security/limitd.conf的配置文件，修改最大打开文件数量
+    # 如果要部署到linux，更改linux /etc/security/limitd.conf的配置文件，修改最大打开文件数量
+    win32file._setmaxstdio(2048)
 
 
 class Patinfo(APIView):

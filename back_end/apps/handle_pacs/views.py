@@ -8,11 +8,11 @@ import os
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from serve.util.infoFromPacs import pacsinfo
-from serve.util.infoFromPacs import ConnectPacsERROR
-from serve.db_access.upload_dcm_to_db import UploadDcm
-from serve.db_access.upload_vol_to_db import UploadVolume
-from serve.util.buildVolume import DicomToVolume
+from util.infoFromPacs import pacsinfo
+from util.infoFromPacs import ConnectPacsERROR
+from db_access.upload_dcm_to_db import UploadDcm
+from db_access.upload_vol_to_db import UploadVolume
+from util.buildVolume import DicomToVolume
 
 
 class SavePatient():
