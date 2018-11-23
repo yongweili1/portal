@@ -38,7 +38,7 @@ class MacroRecorder(object):
             if self.macro_status:
                 file_path = sys._getframe().f_code.co_filename
                 file_name = os.path.splitext(os.path.basename(file_path))[0]
-                self.__write_line('from apps.connect_image.view_model import %s' % func.__name__)
+                self.__write_line('from apps.render.view_model import %s' % func.__name__)
 
                 data_str = ''
                 data_str += '('

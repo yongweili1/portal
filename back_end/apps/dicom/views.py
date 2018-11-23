@@ -10,10 +10,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from config.path_cfg import file_path_ferry
-from util.dcm_sorter import DcmSorter
+from utils.dcm_sorter import DcmSorter
 from db_access.upload_dcm_to_db import UploadDcm
 from db_access.upload_vol_to_db import UploadVolume
-from util.volume_builder import VolumeBuilder
+from utils.volume_builder import VolumeBuilder
 from netbase import data_checker
 
 if platform.system() == 'Windows':

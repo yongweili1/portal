@@ -2,7 +2,7 @@ import os
 import json
 
 from db_access.models import Contour
-from util.uid_generator import UidGenerator
+from utils.uid_generator import UidGenerator
 from db_access.serializer import ContourSerializer
 
 

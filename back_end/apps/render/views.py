@@ -12,12 +12,12 @@ from rest_framework.views import APIView
 # from serve.ORM.Script.upload_script_to_db import script
 from db_access.models import Roi
 from db_access.serializer import RoiSerializer
-from util.img_svr_connector import load_volume, get_image
-from util.uid_generator import UidGenerator
-from util.macro_recorder import MacroRecorder
+from utils.img_svr_connector import load_volume, get_image
+from utils.uid_generator import UidGenerator
+from utils.macro_recorder import MacroRecorder
 from back_end.settings import STATIC_ROOT
 from db_access.models import Study
-from util.volume_builder import VolumeBuilder
+from utils.volume_builder import VolumeBuilder
 from db_access.upload_vol_to_db import UploadVolume
 from config.path_cfg import file_path_ferry
 from db_access.models import Series

@@ -8,11 +8,11 @@ import os
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from util.pacs_connector import pacs_conn
-from util.pacs_connector import PacsConnectError
+from utils.pacs_connector import pacs_conn
+from utils.pacs_connector import PacsConnectError
 from db_access.upload_dcm_to_db import UploadDcm
 from db_access.upload_vol_to_db import UploadVolume
-from util.volume_builder import VolumeBuilder
+from utils.volume_builder import VolumeBuilder
 
 
 class SavePatient():
@@ -164,45 +164,3 @@ class DownloadSeries(APIView):
                 return Response('Volume入库失败')
 
         return Response('Download Success')
-
-
-# class SavePacsImageByPatient(APIView):
-#     """
-#     input: a patient id list
-#     save images to database
-#     """
-#
-#     def get(self, request):
-#         try:
-#             patient_id_str = str(request.GET.get('patient_id_list'))
-#             patient_id_list = []
-#             if ',' not in patient_id_str:
-#                 patient_id_list.append(patient_id_str)
-#             else:
-#                 patient_id_all = patient_id_str.split(',')
-#                 patient_id_list = map(str, patient_id_all)
-#         except Exception as e:
-#             return Response('patient id is not valid')
-#
-#         try:
-#             access_dicom = pacs_conn.connectpacs()
-#             access_dicom.set_need_save_file(1)
-#
-#             series_path = SaveDicomFilePath.location_3
-#             access_dicom.set_dcm_file_path(series_path)
-#             for patient_id in patient_id_list:
-#                 patient_studies = access_dicom.find_studies_by_patient_id(patient_id)
-#                 for patient_study in patient_studies:
-#                     patient_series, _ = access_dicom.find_series_by_study_uid(patient_study)
-#                     # patient_series = access_dicom.find_series_by_study_uid(patient_study)
-#                     for series_uid in patient_series:
-#                         dataset_list = access_dicom.get_series_by_uid(series_uid)
-#                         upload_dcm = UploadDcm()
-#                         upload_dcm.upload_dcm(datasetlist=dataset_list)
-#                         # pool = threadpool.ThreadPool(10)
-#                         # requests = threadpool.makeRequests(upload_dcm.upload_dcm, dataset_list)
-#                         # [pool.putRequest(req) for req in requests]
-#         except Exception as e:
-#             return Response('download failed')
-#
-#         return Response('OK')

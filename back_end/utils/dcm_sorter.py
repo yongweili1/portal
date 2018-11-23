@@ -2,7 +2,7 @@
 import os
 
 from config.path_cfg import file_path_ferry
-from util.dcm_reader import DcmSeries
+from utils.dcm_reader import DcmSeries
 
 
 class DcmSorter(object):

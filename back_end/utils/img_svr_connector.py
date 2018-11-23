@@ -3,8 +3,8 @@
 import json
 import time
 
-from util import image_msg_pb2 as msg
-from util.macro_recorder import MacroRecorder
+from utils import image_msg_pb2 as msg
+from utils.macro_recorder import MacroRecorder
 from be_proxy import proxy
 
 
