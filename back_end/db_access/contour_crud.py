@@ -2,7 +2,7 @@ import os
 import json
 
 from db_access.models import Contour
-from util.generate_uid import GenerateUid
+from util.uid_generator import UidGenerator
 from db_access.serializer import ContourSerializer
 
 
@@ -20,7 +20,7 @@ class ContourCrud(object):
         return 0
 
     def Insert(self, image_uid, roi_uid, contour):
-        contour_uid = GenerateUid.contour_uid()
+        contour_uid = UidGenerator.contour_uid()
         file_name = contour_uid
         cpspath = os.path.join(self.filepath, file_name)
         with open(cpspath, 'wb') as f:

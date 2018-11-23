@@ -7,7 +7,7 @@ reload(sys)
 sys.setdefaultencoding('gbk')
 
 
-class Macro(object):
+class MacroRecorder(object):
     macro_status = False
     code = ''
     code_header = """# -*- coding: utf-8 -*-\r\n
@@ -27,7 +27,7 @@ class Macro(object):
         pass
 
     def __write_line(self, line, level=0):
-        Macro.code += '    ' * level + line + '\r\n'
+        MacroRecorder.code += '    ' * level + line + '\r\n'
 
     def __call__(self, func):
         self.func = func

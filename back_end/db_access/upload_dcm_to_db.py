@@ -7,7 +7,7 @@ from django.db import transaction
 from rest_framework import serializers
 from db_access.models import Patient, Study, Series, Image
 from db_access.serializer import PerInfoSerializer, StudySerializer, SeriesSerializer, ImageSerializer
-from util.readDcm import DcmPatient, DcmStudy, DcmSeries, DcmImage
+from util.dcm_reader import DcmPatient, DcmStudy, DcmSeries, DcmImage
 
 reload(sys)
 sys.setdefaultencoding('utf8')

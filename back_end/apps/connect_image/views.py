@@ -12,12 +12,12 @@ from rest_framework.views import APIView
 # from serve.ORM.Script.upload_script_to_db import script
 from db_access.models import Roi
 from db_access.serializer import RoiSerializer
-from util.connectImageServe import load_volume, get_image
-from util.generate_uid import GenerateUid
-from util.macroRecording import Macro
+from util.img_svr_connector import load_volume, get_image
+from util.uid_generator import UidGenerator
+from util.macro_recorder import MacroRecorder
 from back_end.settings import STATIC_ROOT
 from db_access.models import Study
-from util.buildVolume import DicomToVolume
+from util.volume_builder import VolumeBuilder
 from db_access.upload_vol_to_db import UploadVolume
 from config.path_cfg import file_path_ferry
 from db_access.models import Series
@@ -68,7 +68,7 @@ class MacroRecording(APIView):
         macro_status = request.GET.get('macro_status', None)
         user_name = request.user
         if macro_status == 'start':
-            Macro.macro_status = True
+            MacroRecorder.macro_status = True
         elif macro_status == 'finish':
             macro_name = str(user_name) + str(time.time())
             scriptname = '{}.py'.format(macro_name)
@@ -76,13 +76,13 @@ class MacroRecording(APIView):
 
             try:
                 with open(scriptpath, 'a+') as f:
-                    f.write(Macro.code_header + Macro.code)
+                    f.write(MacroRecorder.code_header + MacroRecorder.code)
             except:
-                Macro.code = Macro.code
+                MacroRecorder.code = MacroRecorder.code
                 return Response('脚本写入失败')
 
-            Macro.macro_status = False
-            Macro.code = ''
+            MacroRecorder.macro_status = False
+            MacroRecorder.code = ''
 
             data = {
                 'scriptname': scriptname,
@@ -184,8 +184,8 @@ class LoadVolume(APIView):
             return Response('series下的dicom文件单一，无法build volume')
 
         try:
-            buildvol = DicomToVolume()
-            volfilepath, seriesuid = buildvol.dicom_to_volume(seriespath)
+            builder = VolumeBuilder()
+            volfilepath, seriesuid = builder.build(seriespath)
         except Exception as e:
             return Response('dicom文件不符合规范,创建volume失败')
 
@@ -766,8 +766,7 @@ class RoiAPIView(APIView):
         if Roi.objects.filter(seriesuid=seriesuid, roiname=roiname):
             return Response('ROI命名重复')
 
-        generateUid = GenerateUid()
-        roiuid = generateUid.roi_uid()
+        roiuid = UidGenerator.roi_uid()
         params = {
             'seriesuid': seriesuid,
             'roiname': roiname,

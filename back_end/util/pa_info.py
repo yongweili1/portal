@@ -3,7 +3,7 @@ import copy
 from db_access.models import Study, Series, Patient, Image
 
 
-class InfoList(object):
+class PaInfo(object):
 
     def __init__(self):
         self.patinfos_list = []

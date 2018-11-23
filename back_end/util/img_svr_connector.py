@@ -4,7 +4,7 @@ import json
 import time
 
 from util import image_msg_pb2 as msg
-from util.macroRecording import Macro
+from util.macro_recorder import MacroRecorder
 from be_proxy import proxy
 
 
@@ -31,7 +31,7 @@ class ResponseData(object):
             return None
 
 
-@Macro()
+@MacroRecorder()
 def load_volume(*args, **kwargs):
     try:
         f = open(kwargs['volumepath'], 'rb')
@@ -54,7 +54,7 @@ def load_volume(*args, **kwargs):
     return rst
 
 
-@Macro()
+@MacroRecorder()
 def get_image(*args, **kwargs):
     data = msg.RequestMsg()
     data.session = kwargs['user_ip']
