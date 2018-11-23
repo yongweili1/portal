@@ -6,7 +6,7 @@ import math
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from util.PAInformation import InfoList
+from utils.pa_info import PaInfo
 # from dwebsocket import require_websocket, accept_websocket
 
 
@@ -23,8 +23,8 @@ class Patinfolist(APIView):
         page = int(request.GET.get('page', 0))
 
         # 调用自定义类，创建对象，获取信息列表
-        infolist = InfoList()
-        pats_list = infolist.get_infolist()
+        pa_info = PaInfo()
+        pats_list = pa_info.get_infolist()
         totalelements = len(pats_list)
 
         if totalelements == 0:
@@ -59,7 +59,7 @@ class Patinfolist(APIView):
         patientidarray = request.GET.get('patientId').split(',')
 
         # 调用自定义类，创建对象，获取信息列表
-        infolist = InfoList()
+        infolist = PaInfo()
         infolist.delete_info(patientidarray, studyidarray, seriesidarray)
         pats_list = infolist.get_infolist()
         totalelements = len(pats_list)

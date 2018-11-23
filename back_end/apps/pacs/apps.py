@@ -4,5 +4,5 @@ from __future__ import unicode_literals
 from django.apps import AppConfig
 
 
-class UploadDcmConfig(AppConfig):
-    name = 'upload_dcm'
+class PacsConfig(AppConfig):
+    name = 'pacs'

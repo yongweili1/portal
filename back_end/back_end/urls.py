@@ -19,10 +19,10 @@ from django.contrib import admin
 
 
 urlpatterns = [
-    url(r'^image/', include('connect_image.urls')),
+    url(r'^image/', include('render.urls')),
     url(r'^admin/', admin.site.urls),
-    url(r'^patientinformations/', include('patientinformations.urls')),
-    url(r'^dicom/', include('upload_dcm.urls')),
+    url(r'^patient/', include('patient.urls')),
+    url(r'^dicom/', include('dicom.urls')),
     url(r'^algproxy/', include('alg_proxy.urls')),
-    url(r'^pacs/', include('handle_pacs.urls')),
+    url(r'^pacs/', include('pacs.urls')),
 ]

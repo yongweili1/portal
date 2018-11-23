@@ -8,11 +8,11 @@ import os
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from util.infoFromPacs import pacsinfo
-from util.infoFromPacs import ConnectPacsERROR
+from utils.pacs_connector import pacs_conn
+from utils.pacs_connector import PacsConnectError
 from db_access.upload_dcm_to_db import UploadDcm
 from db_access.upload_vol_to_db import UploadVolume
-from util.buildVolume import DicomToVolume
+from utils.volume_builder import VolumeBuilder
 
 
 class SavePatient():
@@ -67,7 +67,7 @@ class GetPatient(APIView):
             modality = ""
 
         try:
-            patients_list = pacsinfo.getinformations(patient_id=patient_id, patient_name=patient_name,
+            patients_list = pacs_conn.getinformations(patient_id=patient_id, patient_name=patient_name,
                                                      patient_age=patient_age,
                                                      patient_sex=patient_sex, modality=modality)
             SavePatient.patients_list = patients_list
@@ -77,7 +77,7 @@ class GetPatient(APIView):
             SavePatient.patient_sex = patient_sex
             SavePatient.modality = modality
 
-        except ConnectPacsERROR as e:
+        except PacsConnectError as e:
             return Response('PACS连接失败')
 
         totalelements = len(SavePatient.patients_list)
@@ -139,7 +139,7 @@ class DownloadSeries(APIView):
             return Response('请传入有效的patientID')
         patients_list = patients_str.split(',')
         try:
-            datasets_list, patient_series_dict = pacsinfo.getimage(patients_list)
+            datasets_list, patient_series_dict = pacs_conn.getimage(patients_list)
         except Exception as e:
             return Response('从PACS获取数据过程出错，请重试')
 
@@ -154,8 +154,8 @@ class DownloadSeries(APIView):
             if len(os.listdir(seriespath)) <= 1:
                 return Response('series下的dicom文件单一，无法build volume')
             try:
-                buildvol = DicomToVolume()
-                volfilepath, seriesuid = buildvol.dicom_to_volume(seriespath)
+                builder = VolumeBuilder()
+                volfilepath, seriesuid = builder.build(seriespath)
             except Exception as e:
                 return Response('dicom文件不符合规范,创建volume失败')
             try:
@@ -164,45 +164,3 @@ class DownloadSeries(APIView):
                 return Response('Volume入库失败')
 
         return Response('Download Success')
-
-
-# class SavePacsImageByPatient(APIView):
-#     """
-#     input: a patient id list
-#     save images to database
-#     """
-#
-#     def get(self, request):
-#         try:
-#             patient_id_str = str(request.GET.get('patient_id_list'))
-#             patient_id_list = []
-#             if ',' not in patient_id_str:
-#                 patient_id_list.append(patient_id_str)
-#             else:
-#                 patient_id_all = patient_id_str.split(',')
-#                 patient_id_list = map(str, patient_id_all)
-#         except Exception as e:
-#             return Response('patient id is not valid')
-#
-#         try:
-#             access_dicom = pacsinfo.connectpacs()
-#             access_dicom.set_need_save_file(1)
-#
-#             series_path = SaveDicomFilePath.location_3
-#             access_dicom.set_dcm_file_path(series_path)
-#             for patient_id in patient_id_list:
-#                 patient_studies = access_dicom.find_studies_by_patient_id(patient_id)
-#                 for patient_study in patient_studies:
-#                     patient_series, _ = access_dicom.find_series_by_study_uid(patient_study)
-#                     # patient_series = access_dicom.find_series_by_study_uid(patient_study)
-#                     for series_uid in patient_series:
-#                         dataset_list = access_dicom.get_series_by_uid(series_uid)
-#                         upload_dcm = UploadDcm()
-#                         upload_dcm.upload_dcm(datasetlist=dataset_list)
-#                         # pool = threadpool.ThreadPool(10)
-#                         # requests = threadpool.makeRequests(upload_dcm.upload_dcm, dataset_list)
-#                         # [pool.putRequest(req) for req in requests]
-#         except Exception as e:
-#             return Response('download failed')
-#
-#         return Response('OK')

@@ -2,15 +2,10 @@ import random
 import datetime as Time
 
 
-class GenerateUid(object):
+class UidGenerator(object):
     @classmethod
-    def __generate_uid(cls, uid_type):
+    def __generate_uid(cls, type_value):
         org_root = '1.2.156.112605.'
-        type_value = ''
-        if uid_type == 'roi':
-            type_value = '21.'
-        elif uid_type == 'contour':
-            type_value = '22.'
         time_stamp = Time.datetime.now().strftime('%Y%m%d.%H%M%S.')
         rdm = str(random.randint(0, 1000))
         _uid = org_root + type_value + time_stamp + rdm
@@ -18,8 +13,8 @@ class GenerateUid(object):
 
     @classmethod
     def roi_uid(cls):
-        return cls.__generate_uid('roi')
+        return cls.__generate_uid('21.')
 
     @classmethod
     def contour_uid(cls):
-        return cls.__generate_uid('contour')
+        return cls.__generate_uid('22.')

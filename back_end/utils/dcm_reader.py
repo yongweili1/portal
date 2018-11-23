@@ -13,9 +13,16 @@ class DateTimeType(Enum):
     DateTime = 3
 
 
-# 根据时间类型将输入数据转成数据库能够识别的格式
 def get_date_time(type, inputdatetime):
-    if (type == DateTimeType.Date.value or type == DateTimeType.Time.value or type == DateTimeType.DateTime.value) \
+    '''
+    根据时间类型将输入数据转成数据库能够识别的格式
+    :param type:
+    :param inputdatetime:
+    :return:
+    '''
+    if (type == DateTimeType.Date.value
+        or type == DateTimeType.Time.value
+        or type == DateTimeType.DateTime.value) \
             and len(inputdatetime) != 0:
 
         if type == DateTimeType.Date.value:
@@ -54,7 +61,9 @@ def get_date_time(type, inputdatetime):
                 outputdatetime = None
                 logging.error('the format of %s is wrong' % inputdatetime)
 
-    elif (type == DateTimeType.Date.value or type == DateTimeType.Time.value or type == DateTimeType.DateTime.value) \
+    elif (type == DateTimeType.Date.value
+          or type == DateTimeType.Time.value
+          or type == DateTimeType.DateTime.value) \
             and len(inputdatetime) == 0:
         outputdatetime = None
 
@@ -282,6 +291,7 @@ class DcmSeries(object):
         if 'SOPInstanceUID' in ds:
             image_uid = ds.data_element("SOPInstanceUID").value
         return image_uid
+
 
 class DcmImage(object):
     def __init__(self):

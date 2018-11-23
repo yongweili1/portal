@@ -2,10 +2,10 @@
 import os
 
 from config.path_cfg import file_path_ferry
-from util.readDcm import DcmSeries
+from utils.dcm_reader import DcmSeries
 
 
-class SplitDicoms(object):
+class DcmSorter(object):
 
     def split_series(self, file_name, dataset):
 

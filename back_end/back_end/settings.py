@@ -46,12 +46,12 @@ INSTALLED_APPS = [
     'channels',
     'back_end',
 
-    'connect_image.apps.ConnectImageConfig',
-    'patientinformations.apps.PatientinformationsConfig',
+    'render.apps.RenderConfig',
+    'patient.apps.PatientConfig',
     'alg_proxy.apps.AlgProxyConfig',
-    'handle_pacs.apps.HandlePacsConfig',
-    'upload_dcm.apps.UploadDcmConfig',
-    'sessionmiddle.apps.MiddleConfig',
+    'pacs.apps.PacsConfig',
+    'dicom.apps.DicomConfig',
+    'session.apps.SessionConfig',
 ]
 
 MIDDLEWARE = [
@@ -63,7 +63,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'sessionmiddle.sessionmiddleware.MySessionMiddleware',
+    'session.sessionmiddleware.MySessionMiddleware',
 ]
 
 # --------------------------------------------------------------------------------
@@ -112,7 +112,7 @@ ROOT_URLCONF = 'back_end.urls'  # 总路由
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'serve/templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -227,7 +227,7 @@ SESSION_COOKIE_SAMESITE = 'Lax'
 SESSION_FILE_PATH = None
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
-DJANGO_SESSION_MODEL = 'sessionmiddle.DjangoSession'
+DJANGO_SESSION_MODEL = 'session.DjangoSession'
 # =========================================================================================
 # channels
 ASGI_APPLICATION = "back_end.routing.application"

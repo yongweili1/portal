@@ -7,14 +7,13 @@ from md.image3d.python.image3d_io import write_image, read_dicom_series
 from config.path_cfg import file_path_ferry
 
 
-class DicomToVolume(object):
-
-    def dicom_to_volume(self, seriespath):
+class VolumeBuilder(object):
+    def build(self, series_path):
         """
         dicom to volume and upload volume to DB
         :return:volume file path
         """
-        vol, tags = read_dicom_series(seriespath)
+        vol, tags = read_dicom_series(series_path)
         seriesuid = tags['0020|000e']
         volume_name = seriesuid + '.nii.gz'
 
