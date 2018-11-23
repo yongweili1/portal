@@ -1,6 +1,6 @@
 # -*-coding:utf-8-*-
 import copy
-from serve.db_access.models import Study, Series, Patient, Image
+from db_access.models import Study, Series, Patient, Image
 
 
 class InfoList(object):

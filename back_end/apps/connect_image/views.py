@@ -10,18 +10,18 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
 # from serve.ORM.Script.upload_script_to_db import script
-from serve.db_access.models import Series, Roi
-from serve.db_access.serializer import RoiSerializer
-from serve.util.connectImageServe import load_volume, get_image
-from serve.util.generate_uid import GenerateUid
-from serve.util.macroRecording import Macro
+from db_access.models import Roi
+from db_access.serializer import RoiSerializer
+from util.connectImageServe import load_volume, get_image
+from util.generate_uid import GenerateUid
+from util.macroRecording import Macro
 from back_end.settings import STATIC_ROOT
-from serve.db_access.models import Study
-from serve.util.buildVolume import DicomToVolume
-from serve.db_access.upload_vol_to_db import UploadVolume
+from db_access.models import Study
+from util.buildVolume import DicomToVolume
+from db_access.upload_vol_to_db import UploadVolume
 from config.path_cfg import file_path_ferry
-from serve.db_access.models import Series, Contour
-from serve.db_access.contour_crud import ContourCrud
+from db_access.models import Series
+from db_access.contour_crud import ContourCrud
 
 
 class Home(APIView):
