@@ -10,16 +10,16 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
 # from serve.ORM.Script.upload_script_to_db import script
-from serve.DBAccess.models import Series
+from serve.db_access.models import Series
 from serve.util.connectImageServe import load_volume, get_image
 from serve.util.macroRecording import Macro
 from back_end.settings import STATIC_ROOT
-from serve.DBAccess.models import Study
+from serve.db_access.models import Study
 from serve.util.buildVolume import DicomToVolume
-from serve.DBAccess.upload_vol_to_db import UploadVolume
+from serve.db_access.upload_vol_to_db import UploadVolume
 from serve.static_parameters.setFilePath import file_path_ferry
-from serve.DBAccess.models import Series, Contour
-from serve.DBAccess.contour_crud import ContourCrud
+from serve.db_access.models import Series, Contour
+from serve.db_access.contour_crud import ContourCrud
 
 
 class Home(APIView):

@@ -13,8 +13,8 @@ from rest_framework.views import APIView
 
 from serve.static_parameters.setFilePath import file_path_ferry
 from serve.util.splitDicom import SplitDicoms
-from serve.DBAccess.upload_dcm_to_db import UploadDcm
-from serve.DBAccess.upload_vol_to_db import UploadVolume
+from serve.db_access.upload_dcm_to_db import UploadDcm
+from serve.db_access.upload_vol_to_db import UploadVolume
 from serve.util.buildVolume import DicomToVolume
 from netbase import data_checker
 

@@ -1,5 +1,5 @@
 # -*-coding:utf-8-*-
-from serve.DBAccess.models import Script
+from serve.db_access.models import Script
 
 
 class UploadScript(object):

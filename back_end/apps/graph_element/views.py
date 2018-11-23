@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from serve.DBAccess.contour_crud import ContourCrud
+from serve.db_access.contour_crud import ContourCrud
 
 
 class GraphElement(APIView):

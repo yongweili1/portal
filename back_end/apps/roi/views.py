@@ -4,8 +4,8 @@ from __future__ import unicode_literals
 from rest_framework.response import Response
 
 from rest_framework.views import APIView
-from serve.DBAccess.models import Roi, Series
-from serve.DBAccess.serializer import RoiSerializer
+from serve.db_access.models import Roi, Series
+from serve.db_access.serializer import RoiSerializer
 from serve.util.generate_uid import GenerateUid
 
 
