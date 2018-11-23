@@ -51,9 +51,7 @@ INSTALLED_APPS = [
     'alg_proxy.apps.AlgProxyConfig',
     'handle_pacs.apps.HandlePacsConfig',
     'upload_dcm.apps.UploadDcmConfig',
-    'graph_element.apps.GraphElementConfig',
     'sessionmiddle.apps.MiddleConfig',
-    'roi.apps.RoiConfig',
 ]
 
 MIDDLEWARE = [
@@ -146,7 +144,7 @@ DATABASES = {
         # 数据库登陆密码
         'PASSWORD': '111111',
         # 主机名
-        'HOST': '10.9.19.150',
+        'HOST': '10.9.19.148',
         # 端口号
         'PORT': '3306',
         # 编码格式
@@ -238,7 +236,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "asgi_redis.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [os.environ.get('REDIS_URL', 'redis://10.9.19.150:6379')],
+            "hosts": [os.environ.get('REDIS_URL', 'redis://10.9.19.148:6379')],
         },
         "ROUTING": "back_end.routing.channel_routing",
     },

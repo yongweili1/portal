@@ -22,4 +22,6 @@ urlpatterns = [
     url(r'^cross/$', views.CrossLineLocation.as_view(), name='cross'),
     url(r'^script/$', views.RunSript.as_view(), name='script'),
     url(r'^center/$', views.SetCenter.as_view(), name='center'),
+    url(r'^contour/$', views.GraphElement.as_view(), name='contour'),
+    url(r'^roidata/$', views.RoiAPIView.as_view(), name='roidata'),
 ]

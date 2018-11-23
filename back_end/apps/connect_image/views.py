@@ -10,8 +10,10 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
 # from serve.ORM.Script.upload_script_to_db import script
-from serve.db_access.models import Series
+from serve.db_access.models import Series, Roi
+from serve.db_access.serializer import RoiSerializer
 from serve.util.connectImageServe import load_volume, get_image
+from serve.util.generate_uid import GenerateUid
 from serve.util.macroRecording import Macro
 from back_end.settings import STATIC_ROOT
 from serve.db_access.models import Study
@@ -695,3 +697,169 @@ class SetCenter(APIView):
             return Response(rst.comment)
 
         return Response(rst.kwargs)
+
+
+class GraphElement(APIView):
+    def __init__(self):
+        self.contour_crud = ContourCrud()
+
+    def get(self, request):
+        roi_uid = request.GET.get('roi_uid', None)
+        slice_index = request.GET.get('slice_index', None)
+        cps = self.contour_crud.Retrieve(slice_index, roi_uid)
+        rsp = {
+            'code': '200',
+            'msg': 'success',
+            'data': cps,
+        }
+        return Response(rsp)
+
+    def post(self, request):
+        roi_uid = request.data.get('roi_uid', None)
+        slice_index = request.data.get('slice_index', None)
+        contours = request.data.get('contours', None)
+        if len(contours) > 0:
+            self.contour_crud.Delete(slice_index, roi_uid)
+            for cps in contours:
+                self.contour_crud.Insert(slice_index, roi_uid, cps)
+        return Response('Update exist contour succeed.')
+
+    def delete(self, request):
+        roi_uid = request.GET.get('roi_uid', None)
+        slice_index = request.GET.get('slice_index', None)
+
+        self.contour_crud.Delete(slice_index, roi_uid)
+        return Response('delete exist contour succeed.')
+
+
+class RoiAPIView(APIView):
+
+    def get(self, request):
+        seriesuid = request.GET.get('seriesuid', None)
+        if not seriesuid:
+            return Response('参数不全')
+        roi_query = Roi.objects.filter(seriesuid=seriesuid)
+        roi_list = []
+        for roi in roi_query:
+            roi_dict = {}
+            roi_dict['id'] = roi.roiuid
+            roi_dict['name'] = roi.roiname
+            roi_dict['color'] = roi.roicolor
+            roi_list.append(roi_dict)
+
+        rsp = {
+            'success': True,
+            'message': 'ok',
+            'data': roi_list
+        }
+
+        return Response(rsp)
+
+    def post(self, request):
+        seriesuid = request.data.get('seriesuid', None)
+        roiname = request.data.get('name', None)
+        roicolor = request.data.get('color', None)
+
+        if seriesuid is None or roiname is None or roicolor is None:
+            return Response('请携带完整的有效参数')
+
+        if Roi.objects.filter(seriesuid=seriesuid, roiname=roiname):
+            return Response('ROI命名重复')
+
+        generateUid = GenerateUid()
+        roiuid = generateUid.roi_uid()
+        params = {
+            'seriesuid': seriesuid,
+            'roiname': roiname,
+            'roicolor': roicolor,
+            'roiuid': roiuid
+        }
+
+        try:
+            roi = RoiSerializer(data=params)
+            roi.is_valid(raise_exception=True)
+            roi.save()
+        except Exception as ex:
+            print ex.message
+            return Response('ROI save failed')
+
+        return Response(roiuid)
+
+    def put(self, request):
+        roiuid = request.data.get('id', None)
+        roiname = request.data.get('name', None)
+        roicolor = request.data.get('color', None)
+
+        if roiuid is None or roiname is None or roicolor is None:
+            return Response('请携带完整的有效参数')
+
+        params = {
+            'roiname': roiname,
+            'roicolor': roicolor
+        }
+
+        rois = Roi.objects.filter(roiuid=roiuid)
+        if len(rois) == 0:
+            return Response('该pid无对应的ROI')
+        seriesuid = rois[0].seriesuid
+
+        if Roi.objects.filter(seriesuid=seriesuid, roiname=roiname):
+            return Response('ROI命名重复')
+
+        try:
+            Roi.objects.filter(roiuid=roiuid).update(**params)
+        except Exception as e:
+            return Response('ROI 更新失败')
+
+        roi_query = Roi.objects.filter(seriesuid=seriesuid)
+        roi_list = []
+        for roi in roi_query:
+            roi_dict = {}
+            roi_dict['id'] = roi.roiuid
+            roi_dict['name'] = roi.roiname
+            roi_dict['color'] = roi.roicolor
+            roi_list.append(roi_dict)
+
+        rsp = {
+            'success': True,
+            'message': 'ok',
+            'data': roi_list,
+        }
+
+        return Response(rsp)
+
+    def delete(self, request):
+        pids = request.GET.get('ids', None)
+        if not pids:
+            return Response('请携带有效参数')
+
+        pids = pids.split(',')
+        roi_list = []
+        seruid = ''
+
+        for pid in pids:
+            rois = Roi.objects.filter(roiuid=pid)
+            if len(rois) == 0:
+                return Response('该pid无对应的ROI')
+            seruid = rois[0].seriesuid
+
+            try:
+                Roi.objects.filter(roiuid=pid).delete()
+            except Exception as e:
+                return Response('ROI 删除失败')
+
+        roi_query = Roi.objects.filter(seriesuid=seruid)
+        for roi in roi_query:
+            roi_dict = {}
+            roi_dict['id'] = roi.roiuid
+            roi_dict['name'] = roi.roiname
+            roi_dict['color'] = roi.roicolor
+            roi_list.append(roi_dict)
+
+        rsp = {
+            'code': '200',
+            'msg': 'success',
+            'data': roi_list,
+        }
+
+        return Response(rsp)
