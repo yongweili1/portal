@@ -36,20 +36,20 @@ export class ContouringService {
   }
 
   saveContour(dto: ContourModel): Observable<any> {
-    return this.http.post<ContourModel>(`${this.appConfig.apiUrl}/contour/contour/`, dto, this.options);
+    return this.http.post<ContourModel>(`${this.appConfig.apiUrl}/image/contour/`, dto, this.options);
   }
 
   deleteContours(dto: ContourModel): Observable<any> {
     const getParams = new HttpParams()
       .set('roi_uid', dto['roi_uid'])
       .set('slice_index', dto['slice_index']);
-    return this.http.delete(`${this.appConfig.apiUrl}/contour/contour/`, { params: getParams });
+    return this.http.delete(`${this.appConfig.apiUrl}/image/contour/`, { params: getParams });
   }
 
   getContours(roi_uid, slice_index): Observable<any> {
     const getParams = new HttpParams()
       .set('roi_uid', roi_uid)
       .set('slice_index', slice_index);
-    return this.http.get(`${this.appConfig.apiUrl}/contour/contour/`, { params: getParams })
+    return this.http.get(`${this.appConfig.apiUrl}/image/contour/`, { params: getParams })
   }
 }
