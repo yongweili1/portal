@@ -7,7 +7,8 @@ from md.image3d.python.image3d_io import read_image, write_image
 # Create your views here.
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from db_context.models import Series, Roi
+from service import series_svc, roi_svc
+from utils.response_dto import ResponseDto
 
 
 class LoadAlg(APIView):
@@ -16,14 +17,12 @@ class LoadAlg(APIView):
         if serid is None:
             return Response('请输入序列UID')
 
-        seriesobject = Series.objects.filter(seriesuid=serid)
-        if len(seriesobject) == 0:
-            return Response('请输入正确的序列ID')
+        series, msg = series_svc.get_series_by_uid(serid)
+        if series is None:
+            return ResponseDto(success=False, message=msg)
 
-        volumepath = seriesobject[0].seriespixeldatafilepath
-
+        volumepath = series.seriespixeldatafilepath
         resp = None  # resp: Load succeed
-
         return Response(resp)
 
 
@@ -42,11 +41,11 @@ class GetAlgResult(APIView):
         if series_uid is None:
             return Response('请输入序列UID')
 
-        series_object = Series.objects.filter(seriesuid=series_uid)
-        if len(series_object) == 0:
-            return Response('请输入正确的序列ID')
+        series, msg = series_svc.get_series_by_uid(series_uid)
+        if series is None:
+            return ResponseDto(success=False, message=msg)
 
-        volume_path = series_object[0].seriespixeldatafilepath
+        volume_path = series.seriespixeldatafilepath
 
         im = read_image(volume_path)
         try:
@@ -56,36 +55,7 @@ class GetAlgResult(APIView):
         except Exception as ex:
             print ex.message
 
-
-        # resp = volume_path  # resp: Load succeed
-        #
-        # return Response(resp)
-
-
-
-        # if seriesuid is None or roiname is None or roicolor is None:
-        #     return Response('请携带完整的有效参数')
-        # try:
-        #     seriesobj = Series.objects.get(seriesuid=seriesuid)
-        # except Exception as e:
-        #     return Response('外键seriesuid无对应的数据对象')
-        #
-        # if Roi.objects.filter(seriesuid=seriesuid, roiname=roiname):
-        #     return Response('ROI命名重复')
-        #
-        # params = {
-        #     'seriesuid': seriesobj,
-        #     'roiname': roiname,
-        #     'roicolor': roicolor
-        # }
-        #
-        # try:
-        #     roiobj = Roi.objects.create(**params)
-        #     roiobj.save()
-        # except Exception as e:
-        #     return Response('ROI 提交失败')
-
-        roi_query = Roi.objects.filter(seriesuid=seriesuid)
+        roi_query = roi_svc.retrieve(series_uid)
         roi_list = []
         for roi in roi_query:
             roi_dict = {}

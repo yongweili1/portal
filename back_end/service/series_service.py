@@ -33,7 +33,7 @@ class SeriesService(object):
             else:
                 return query[0], None
         except Exception as e:
-            return False, e.message
+            return None, e.message
 
     def upload_volume(self, vol_file_path, series_uid):
         try:
