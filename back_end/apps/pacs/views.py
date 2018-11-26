@@ -8,10 +8,9 @@ import os
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from utils.pacs_connector import pacs_conn
-from utils.pacs_connector import PacsConnectError
-from db_access.upload_dcm_to_db import UploadDcm
-from db_access.upload_vol_to_db import UploadVolume
+from utils.pacs_connector import pacs_conn, PacsConnectError
+from db_context.upload_dcm_to_db import UploadDcm
+from db_context.upload_vol_to_db import UploadVolume
 from utils.volume_builder import VolumeBuilder
 
 
@@ -68,8 +67,8 @@ class GetPatient(APIView):
 
         try:
             patients_list = pacs_conn.getinformations(patient_id=patient_id, patient_name=patient_name,
-                                                     patient_age=patient_age,
-                                                     patient_sex=patient_sex, modality=modality)
+                                                      patient_age=patient_age,
+                                                      patient_sex=patient_sex, modality=modality)
             SavePatient.patients_list = patients_list
             SavePatient.patient_id = patient_id
             SavePatient.patient_name = patient_name

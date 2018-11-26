@@ -40,7 +40,7 @@ export class PatientTemplateService {
             .set('studyDate', pageRequest.studyDate.toString());
         console.log(this.headers);
         return this.http
-            .get<Page<PatientTemplateInfo>>(`${this.appConfig.apiUrl}/patientinformations/patinfolist/`, { headers: this.headers, params: searchParams });
+            .get<Page<PatientTemplateInfo>>(`${this.appConfig.apiUrl}/patient/patinfolist/`, { headers: this.headers, params: searchParams });
     }
 
     public deletePatientTemplate(deleteRequest: PatientPageDeleteRequest): Observable<any> {
@@ -51,7 +51,7 @@ export class PatientTemplateService {
             .set('studyId', deleteRequest.studyId)
             .set('seriesId', deleteRequest.seriesId);
         return this.http
-            .delete<any>(`${this.appConfig.apiUrl}/patientinformations/patinfolist/`, { headers: this.headers, params: searchParams });
+            .delete<any>(`${this.appConfig.apiUrl}/patient/patinfolist/`, { headers: this.headers, params: searchParams });
     }
 
 

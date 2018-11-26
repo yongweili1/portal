@@ -1,9 +1,9 @@
 import os
 import json
 
-from db_access.models import Contour
+from db_context.models import Contour
 from utils.uid_generator import UidGenerator
-from db_access.serializer import ContourSerializer
+from db_context.serializer import ContourSerializer
 
 
 class ContourCrud(object):
@@ -11,7 +11,7 @@ class ContourCrud(object):
         self.filepath = r'D:\volume'
         pass
 
-    def Delete(self, image_uid, roi_uid):
+    def delete(self, image_uid, roi_uid):
         try:
             Contour.objects.filter(imageuid=image_uid, roiuid=roi_uid).delete()
         except Exception as ex:
@@ -19,7 +19,7 @@ class ContourCrud(object):
             return 1
         return 0
 
-    def Insert(self, image_uid, roi_uid, contour):
+    def insert(self, image_uid, roi_uid, contour):
         contour_uid = UidGenerator.contour_uid()
         file_name = contour_uid
         cpspath = os.path.join(self.filepath, file_name)
@@ -41,7 +41,7 @@ class ContourCrud(object):
             return 1
         return 0
 
-    def Retrieve(self, image_uid, roi_uid):
+    def retrieve(self, image_uid, roi_uid):
         cps = None
         try:
             cps = Contour.objects.filter(imageuid=image_uid, roiuid=roi_uid)
@@ -49,7 +49,7 @@ class ContourCrud(object):
             print ex.message
         return cps
 
-    def Retrieve(self, image_uid):
+    def retrieve(self, image_uid):
         cps = None
         try:
             cps = Contour.objects.filter(imageuid=image_uid)

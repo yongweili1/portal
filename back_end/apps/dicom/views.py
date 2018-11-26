@@ -11,8 +11,8 @@ from rest_framework.views import APIView
 
 from config.path_cfg import file_path_ferry
 from utils.dcm_sorter import DcmSorter
-from db_access.upload_dcm_to_db import UploadDcm
-from db_access.upload_vol_to_db import UploadVolume
+from db_context.upload_dcm_to_db import UploadDcm
+from db_context.upload_vol_to_db import UploadVolume
 from utils.volume_builder import VolumeBuilder
 from netbase import data_checker
 
