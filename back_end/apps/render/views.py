@@ -9,9 +9,8 @@ from django.shortcuts import render
 # Create your views here.
 from rest_framework.response import Response
 from rest_framework.views import APIView
-# from serve.ORM.Script.upload_script_to_db import script
 
-from service import contour_svc, roi_svc, series_svc
+from service import contour_svc, roi_svc, series_svc, macro_svc
 
 from utils.img_svr_connector import load_volume, get_image
 from utils.response_dto import ResponseDto
@@ -51,7 +50,6 @@ class GetSeriesUidList(APIView):
 
 
 class MacroRecording(APIView):
-
     def get(self, request):
         """
         Opening and closing macro recording, save script
@@ -83,13 +81,11 @@ class MacroRecording(APIView):
                 'scriptpath': scriptpath
             }
 
-            result = script.uploadscript(**data)
+            success, msg = macro_svc.create(data)
+            if not success:
+                return ResponseDto(success=success, message=msg)
 
-            if result is 'fail':
-                return Response('upload script fail ！')
-
-            return Response(macro_name)
-
+            return ResponseDto(macro_name)
         else:
             pass
 
@@ -125,7 +121,6 @@ class WindowSize(APIView):
 
 
 class LoadVolume(APIView):
-
     def get(self, request):
         """
         the client request loads a series
@@ -642,7 +637,6 @@ class CrossLineLocation(APIView):
 
 
 class RunSript(APIView):
-
     def get(self, request):
         seriesuid = request.GET.get('seriesuid', '1.3.12.2.1107.5.1.4.64606.30000018051006052134700006373')
         scriptname = request.GET.get('scriptname', 'AnonymousUser1540275438.76')

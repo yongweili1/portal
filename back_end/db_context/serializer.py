@@ -2,7 +2,7 @@
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
-from models import Patient, Image, Study, Series,  Roi, Contour
+from models import Patient, Image, Study, Series, Roi, Contour, Script
 
 
 class PerInfoSerializer(ModelSerializer):
@@ -48,4 +48,10 @@ class ContourSerializer(ModelSerializer):
 
     class Meta:
         model = Contour
+        fields = '__all__'
+
+
+class ScriptSerializer(ModelSerializer):
+    class Meta:
+        model = Script
         fields = '__all__'
