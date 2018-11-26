@@ -7,7 +7,7 @@ import os
 from django.db import transaction
 
 from db_context.models import Series, Study, Patient, Image
-from db_context.serializer import PerInfoSerializer, StudySerializer, SeriesSerializer, ImageSerializer
+from db_context.serializer import PatientSerializer, StudySerializer, SeriesSerializer, ImageSerializer
 from utils.dcm_reader import DcmPatient, DcmStudy, DcmSeries, DcmImage
 from rest_framework import serializers
 
@@ -121,7 +121,7 @@ class PatientService(object):
                             updatetime=datetime.datetime.now())
                     else:
                         # 创建序列化器对象，验证信息并保存到数据库
-                        ser = PerInfoSerializer(data=patient_dic)
+                        ser = PatientSerializer(data=patient_dic)
                         # 数据验证失败，回滚到保存点并抛出序列化器验证错误
                         if not ser.is_valid(raise_exception=True):
                             transaction.savepoint_rollback(save_id)

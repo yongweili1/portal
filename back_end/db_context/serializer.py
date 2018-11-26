@@ -5,7 +5,7 @@ from rest_framework.serializers import ModelSerializer
 from models import Patient, Image, Study, Series, Roi, Contour, Script
 
 
-class PerInfoSerializer(ModelSerializer):
+class PatientSerializer(ModelSerializer):
     class Meta:
         model = Patient
         fields = '__all__'
