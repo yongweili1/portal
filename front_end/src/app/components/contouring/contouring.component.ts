@@ -141,10 +141,10 @@ export class ContouringComponent implements OnInit {
 
     handleDeleteRoi(id: string) {
         this.roiHttp.delete(id).subscribe(result => {
-            if (result.code == '200') {
+            if (result.success) {
                 this.toastService.success('Delete succeed.');
-                this.data.roiList = result.data;
-                this.editROIDisplay = false;
+                const index = this.data.roiList.findIndex(x => x.id == id);
+                this.data.roiList.splice(index, 1);
             } else {
                 this.toastService.error(result.msg);
             }
@@ -199,10 +199,15 @@ export class ContouringComponent implements OnInit {
             return;
         }
         this.data.activeRoi.seriesuid = $("#seriesSelect").val();
-        this.roiHttp.create(this.data.activeRoi).subscribe(result => {
-            this.toastService.success('Save succeed.');
-            this.data.activeRoi.id = result.body
-            this.data.roiList.push(this.data.activeRoi);
+        this.roiHttp.create(this.data.activeRoi).subscribe(response => {
+            response = response.body;
+            if (response.success) {
+                this.toastService.success('Save succeed.');
+                this.data.activeRoi.id = response.data;
+                this.data.roiList.push(this.data.activeRoi);
+            } else {
+                this.toastService.success(response.message);
+            }
             this.newROIDisplay = false;
         });
     }
@@ -215,7 +220,6 @@ export class ContouringComponent implements OnInit {
         this.roiHttp.update(this.data.activeRoi).subscribe(result => {
             if (result.body.success) {
                 this.toastService.success('Save succeed.');
-                this.data.roiList = result.body.data;
                 this.editROIDisplay = false;
             } else {
                 this.toastService.error(result.body.message);

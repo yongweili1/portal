@@ -1,5 +1,5 @@
 # -*-coding:utf-8-*-
-from db_access import Script
+from db_context import Script
 
 
 class UploadScript(object):

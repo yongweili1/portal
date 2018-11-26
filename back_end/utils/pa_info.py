@@ -1,6 +1,6 @@
 # -*-coding:utf-8-*-
 import copy
-from db_access.models import Study, Series, Patient, Image
+from db_context.models import Study, Series, Patient, Image
 
 
 class PaInfo(object):

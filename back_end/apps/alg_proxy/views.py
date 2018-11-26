@@ -7,7 +7,7 @@ from md.image3d.python.image3d_io import read_image, write_image
 # Create your views here.
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from db_access.models import Series, Roi
+from db_context.models import Series, Roi
 
 
 class LoadAlg(APIView):

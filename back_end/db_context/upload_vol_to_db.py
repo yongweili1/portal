@@ -1,6 +1,6 @@
 # -*-coding:utf-8-*-
 
-from db_access.models import Series
+from db_context.models import Series
 
 
 class DBError(Exception):

@@ -5,8 +5,8 @@ import os
 
 from django.db import transaction
 from rest_framework import serializers
-from db_access.models import Patient, Study, Series, Image
-from db_access.serializer import PerInfoSerializer, StudySerializer, SeriesSerializer, ImageSerializer
+from db_context.models import Patient, Study, Series, Image
+from db_context.serializer import PerInfoSerializer, StudySerializer, SeriesSerializer, ImageSerializer
 from utils.dcm_reader import DcmPatient, DcmStudy, DcmSeries, DcmImage
 
 reload(sys)

@@ -2,7 +2,7 @@
 import time
 
 from django.utils.deprecation import MiddlewareMixin
-from db_access.models import NewDjangoSession, DjangoSession
+from db_context.models import NewDjangoSession, DjangoSession
 
 
 class MySessionMiddleware(MiddlewareMixin):
