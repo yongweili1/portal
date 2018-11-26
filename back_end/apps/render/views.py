@@ -10,21 +10,16 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
 # from serve.ORM.Script.upload_script_to_db import script
-from service.roi_service import RoiService
+
+from service import contour_svc, roi_svc, series_svc
+
 from utils.img_svr_connector import load_volume, get_image
 from utils.response_dto import ResponseDto
 from utils.uid_generator import UidGenerator
 from utils.macro_recorder import MacroRecorder
 from back_end.settings import STATIC_ROOT
-from db_context.models import Study
 from utils.volume_builder import VolumeBuilder
-from db_context.upload_vol_to_db import UploadVolume
 from config.path_cfg import file_path_ferry
-from db_context.models import Series
-from db_context.contour_crud import ContourCrud
-
-
-roi_svc = RoiService()
 
 
 class Home(APIView):
@@ -47,17 +42,12 @@ class GetSeriesUidList(APIView):
         """
         patientid = request.GET.get('patientid', None)
         if patientid is None:
-            return Response('请输入patientid')
-        studylist = Study.objects.filter(patientid=patientid)
-        serieslist = []
-        for study in studylist:
-            series_list = Series.objects.filter(studyuid=study.studyuid)
-            serieslist += series_list
-        # serieslist = Series.objects.all()
-        seriesuidlist = []
-        for ser in serieslist:
-            seriesuidlist.append(ser.seriesuid)
-        return Response(seriesuidlist)
+            return ResponseDto(success=False, message='patientid is None')
+        data, msg = series_svc.get_series_uids(patientid)
+        if data:
+            return ResponseDto(data)
+        else:
+            return ResponseDto(success=False, message=msg)
 
 
 class MacroRecording(APIView):
@@ -145,13 +135,13 @@ class LoadVolume(APIView):
         seriesuid = request.GET.get('seriesuid', None)
         user_ip = request.META.get('REMOTE_ADDR', None)
 
-        series_query = Series.objects.filter(seriesuid=seriesuid)
-        if len(series_query) == 0:
-            return Response('数据库无此seriesuid')
-        volumepath = series_query[0].seriespixeldatafilepath
+        series, msg = series_svc.get_series_by_uid(seriesuid)
+        if not series:
+            return ResponseDto(success=False, message=msg)
 
+        volumepath = series.seriespixeldatafilepath
         if not volumepath:
-            return Response('rebuild')
+            return ResponseDto(success=False, message='volumepath error')
 
         params = {
             'seriesuid': seriesuid,
@@ -162,13 +152,9 @@ class LoadVolume(APIView):
         }
         try:
             rst = load_volume(**params)
-        except IOError:
-            return Response('rebuild', 400)
-
-        if rst.success is False:
-            return Response(rst.comment)
-
-        return Response(rst.kwargs)
+            return ResponseDto(data=rst.kwargs, success=rst.success, message=rst.comment)
+        except Exception as e:
+            return ResponseDto(success=False, message=e.message)
 
     def put(self, request):
 
@@ -192,10 +178,9 @@ class LoadVolume(APIView):
         except Exception as e:
             return Response('dicom文件不符合规范,创建volume失败')
 
-        try:
-            UploadVolume(volfilepath, seriesuid)
-        except Exception as e:
-            return Response('Volume入库失败')
+        success, msg = series_svc.upload_volume(volfilepath, seriesuid)
+        if not success:
+            return ResponseDto(success=success, message=msg)
 
         params = {
             'seriesuid': seriesuid,
@@ -378,8 +363,7 @@ class TurnPage(APIView):
         img_server_rsp_json = json.loads(img_server_rsp)
 
         slice_index = img_server_rsp_json['0']['slice_index']
-        contour_crud = ContourCrud()
-        cps = contour_crud.retrieve(slice_index)
+        cps = contour_svc.retrieve(slice_index)
         slice_contours = []
         for cp in cps:
             file_path = cp.cpspath
@@ -665,11 +649,10 @@ class RunSript(APIView):
         if not seriesuid or not scriptname:
             return Response('请输入有效的参数')
 
-        series_query = Series.objects.filter(seriesuid=seriesuid)
-        if len(series_query) == 0:
-            return Response('数据库无此seriesuid')
-        volumepath = series_query[0].seriespixeldatafilepath
-
+        series, msg = series_svc.get_series_by_uid(seriesuid)
+        if not series:
+            return ResponseDto(success=False, message=msg)
+        volumepath = series.seriespixeldatafilepath
         try:
             command = 'python static/macro/{}.py {} {}'.format(scriptname, seriesuid, volumepath)
             r = os.popen(command)
@@ -702,40 +685,34 @@ class SetCenter(APIView):
         return Response(rst.kwargs)
 
 
-class GraphElement(APIView):
+class Contour(APIView):
     def __init__(self):
-        self.contour_crud = ContourCrud()
+        pass
 
     def get(self, request):
         roi_uid = request.GET.get('roi_uid', None)
         slice_index = request.GET.get('slice_index', None)
-        cps = self.contour_crud.retrieve(slice_index, roi_uid)
-        rsp = {
-            'code': '200',
-            'msg': 'success',
-            'data': cps,
-        }
-        return Response(rsp)
+        cps, msg = contour_svc.retrieve(slice_index, roi_uid)
+        if cps:
+            return ResponseDto(cps)
+        else:
+            return ResponseDto(success=False, message=msg)
 
     def post(self, request):
         roi_uid = request.data.get('roi_uid', None)
         slice_index = request.data.get('slice_index', None)
         contours = request.data.get('contours', None)
-        if len(contours) > 0:
-            self.contour_crud.delete(slice_index, roi_uid)
-            for cps in contours:
-                self.contour_crud.insert(slice_index, roi_uid, cps)
-        return Response('Update exist contour succeed.')
+        success, msg = contour_svc.create(slice_index, roi_uid, contours)
+        return ResponseDto(success=success, message=msg)
 
     def delete(self, request):
         roi_uid = request.GET.get('roi_uid', None)
         slice_index = request.GET.get('slice_index', None)
+        success, msg = contour_svc.delete(slice_index, roi_uid)
+        return ResponseDto(success=success, message=msg)
 
-        self.contour_crud.delete(slice_index, roi_uid)
-        return Response('delete exist contour succeed.')
 
-
-class RoiAPIView(APIView):
+class Roi(APIView):
     def __init__(self):
         pass
 

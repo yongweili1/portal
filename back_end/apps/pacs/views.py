@@ -8,9 +8,9 @@ import os
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from service import series_svc
 from utils.pacs_connector import pacs_conn, PacsConnectError
 from db_context.upload_dcm_to_db import UploadDcm
-from db_context.upload_vol_to_db import UploadVolume
 from utils.volume_builder import VolumeBuilder
 
 
@@ -158,7 +158,7 @@ class DownloadSeries(APIView):
             except Exception as e:
                 return Response('dicom文件不符合规范,创建volume失败')
             try:
-                UploadVolume(volfilepath, seriesuid)
+                series_svc.upload_volume(volfilepath, seriesuid)
             except Exception as e:
                 return Response('Volume入库失败')
 

@@ -10,9 +10,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from config.path_cfg import file_path_ferry
+from service import series_svc
 from utils.dcm_sorter import DcmSorter
 from db_context.upload_dcm_to_db import UploadDcm
-from db_context.upload_vol_to_db import UploadVolume
 from utils.volume_builder import VolumeBuilder
 from netbase import data_checker
 
@@ -87,7 +87,7 @@ class Patinfo(APIView):
                 return Response('创建volume异常')
 
             try:
-                UploadVolume(volfilepath, seriesuid)
+                series_svc.upload_volume(volfilepath, seriesuid)
             except Exception as e:
                 return Response('Volume入库失败')
 
