@@ -1,4 +1,3 @@
-# -*-coding:utf-8-*-
 import os
 
 from config.pacs_cfg import pacsconf
@@ -6,12 +5,7 @@ from config.path_cfg import file_path_ferry
 from md_dicoms.dicom_service import DicomService
 
 
-class PacsConnectError(Exception):
-    pass
-
-
-class PacsConnector(object):
-
+class PacsService(object):
     def __init__(self):
         pass
 
@@ -23,7 +17,7 @@ class PacsConnector(object):
                                         dcm_file_path=pacsconf.dcm_file_path)
             access_dicom.connect()
         except:
-            raise PacsConnectError
+            pass
         return access_dicom
 
     def getinformations(self, patient_id, patient_name, patient_age, patient_sex, modality):
@@ -71,6 +65,3 @@ class PacsConnector(object):
                 patient_series_dict[patientid] = seriespath
 
         return datasets_list, patient_series_dict
-
-
-pacs_conn = PacsConnector()

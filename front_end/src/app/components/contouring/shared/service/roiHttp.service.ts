@@ -26,13 +26,13 @@ export class RoiHttpService {
     }
 
     create(dto: RoiModel): Observable<any> {
-        return this.http.post<any>(`${this.appConfig.apiUrl}/image/roidata/`, dto, this.options);
+        return this.http.post<any>(`${this.appConfig.apiUrl}/image/roi/`, dto, this.options);
     }
 
     get(seriesuid: string): Observable<any> {
         const getParams = new HttpParams()
             .set('seriesuid', seriesuid);
-        return this.http.get<any>(`${this.appConfig.apiUrl}/image/roidata/`, { params: getParams })
+        return this.http.get<any>(`${this.appConfig.apiUrl}/image/roi/`, { params: getParams })
             .map(response => {
                 const rois = new Array();
                 response.data.forEach(roi => {
@@ -44,13 +44,13 @@ export class RoiHttpService {
     }
 
     update(dto: RoiModel): Observable<any> {
-        return this.http.put<any>(`${this.appConfig.apiUrl}/image/roidata/`, dto, this.options);
+        return this.http.put<any>(`${this.appConfig.apiUrl}/image/roi/`, dto, this.options);
     }
 
     delete(ids: any): Observable<any> {
         const getParams = new HttpParams()
             .set('ids', ids);
-        return this.http.delete<any>(`${this.appConfig.apiUrl}/image/roidata/`, { params: getParams });
+        return this.http.delete<any>(`${this.appConfig.apiUrl}/image/roi/`, { params: getParams });
     }
 
     CreateNewSegROI(roiData): Observable<any> {

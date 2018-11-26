@@ -1,6 +1,4 @@
-from db_context.roi_context import RoiContext
-
-roi_context = RoiContext()
+from db_context import roi_ctx
 
 
 class RoiService(object):
@@ -8,31 +6,31 @@ class RoiService(object):
         pass
 
     def create(self, data):
-        duplicate = roi_context.duplicate(data['seriesuid'], data['roiname'])
+        duplicate = roi_ctx.duplicate(data['seriesuid'], data['roiname'])
         if duplicate:
             return duplicate, 'duplicated'
 
-        return roi_context.create(data)
+        return roi_ctx.create(data)
 
     def update(self, data):
         try:
-            roi = roi_context.single(data['roiuid'])
+            roi = roi_ctx.single(data['roiuid'])
             if not roi:
                 return False, 'Can not find roi'
 
             series_uid = roi['seriesuid']
-            duplicate = roi_context.duplicate(series_uid, data['roiname'])
+            duplicate = roi_ctx.duplicate(series_uid, data['roiname'])
             if duplicate:
                 return False, 'duplicated'
             data['seriesuid'] = series_uid
-            return roi_context.update(data)
+            return roi_ctx.update(data)
         except Exception as e:
             return False, e.message
 
     def delete(self, uids):
         try:
             for uid in uids:
-                success, msg = roi_context.delete(uid)
+                success, msg = roi_ctx.delete(uid)
                 if not success:
                     return success, msg
             return True, None
@@ -40,5 +38,5 @@ class RoiService(object):
             return False, e.message
 
     def retrieve(self, series_uid):
-        dtos = roi_context.retrieve(series_uid)
+        dtos = roi_ctx.retrieve(series_uid)
         return dtos

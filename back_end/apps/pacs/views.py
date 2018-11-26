@@ -8,9 +8,7 @@ import os
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from utils.pacs_connector import pacs_conn, PacsConnectError
-from db_context.upload_dcm_to_db import UploadDcm
-from db_context.upload_vol_to_db import UploadVolume
+from service import series_svc, pacs_svc, patient_svc
 from utils.volume_builder import VolumeBuilder
 
 
@@ -66,17 +64,16 @@ class GetPatient(APIView):
             modality = ""
 
         try:
-            patients_list = pacs_conn.getinformations(patient_id=patient_id, patient_name=patient_name,
-                                                      patient_age=patient_age,
-                                                      patient_sex=patient_sex, modality=modality)
+            patients_list = pacs_svc.getinformations(patient_id=patient_id, patient_name=patient_name,
+                                                     patient_age=patient_age,
+                                                     patient_sex=patient_sex, modality=modality)
             SavePatient.patients_list = patients_list
             SavePatient.patient_id = patient_id
             SavePatient.patient_name = patient_name
             SavePatient.patient_age = patient_age
             SavePatient.patient_sex = patient_sex
             SavePatient.modality = modality
-
-        except PacsConnectError as e:
+        except Exception as e:
             return Response('PACS连接失败')
 
         totalelements = len(SavePatient.patients_list)
@@ -138,14 +135,13 @@ class DownloadSeries(APIView):
             return Response('请传入有效的patientID')
         patients_list = patients_str.split(',')
         try:
-            datasets_list, patient_series_dict = pacs_conn.getimage(patients_list)
+            datasets_list, patient_series_dict = pacs_svc.getimage(patients_list)
         except Exception as e:
             return Response('从PACS获取数据过程出错，请重试')
 
         for dataset_list in datasets_list:
             try:
-                uploaddcm = UploadDcm()
-                uploaddcm.upload_dcm(dataset_list)
+                patient_svc.upload_dcm(dataset_list)
             except Exception as e:
                 return Response('DCM数据入库失败，请检查DCM数据是否符合DB字段约束')
 
@@ -158,7 +154,7 @@ class DownloadSeries(APIView):
             except Exception as e:
                 return Response('dicom文件不符合规范,创建volume失败')
             try:
-                UploadVolume(volfilepath, seriesuid)
+                series_svc.upload_volume(volfilepath, seriesuid)
             except Exception as e:
                 return Response('Volume入库失败')
 

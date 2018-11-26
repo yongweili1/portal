@@ -414,8 +414,12 @@ export class ContouringComponent implements OnInit {
     }
 
     getSeriesList(patientId: any) {
-        this.seriesHttpService.getSeriesList(patientId).subscribe(data => {
-            this.seriesList = data;
+        this.seriesHttpService.getSeriesList(patientId).subscribe(response => {
+            if (response['success']) {
+                this.seriesList = response['data'];
+            } else {
+                this.toastService.error(response['message'])
+            }
         });
     }
 
@@ -430,11 +434,10 @@ export class ContouringComponent implements OnInit {
             return;
         }
         this.toastService.info('Loading now, please wait.');
-        this.seriesHttpService.LoadVolume(seriesId).subscribe(value => {
-            value = JSON.parse(value);
-            if (value.length === 3) {
+        this.seriesHttpService.LoadVolume(seriesId).subscribe(response => {
+            if (response.success) {
                 this.handleManageRoi(false);
-                EventAggregator.Instance().volumnSize.publish(value);
+                EventAggregator.Instance().volumnSize.publish(response.data);
                 this.conService.noticeSize(canvasSize).subscribe(result => {
                     if (result.body === "success") {
                         this.seriesHttpService.GetSeries(seriesId, '', 'all', this.cell1.imageCanvas.width, this.cell1.imageCanvas.height)
@@ -451,10 +454,8 @@ export class ContouringComponent implements OnInit {
                         this.seriesId = seriesId;
                     }
                 });
-            } else if (value === "rebuild") {
-                this.toastService.error('Load failed, rebuiding now, please wait');
             } else {
-                this.toastService.error('Load failed.');
+                this.toastService.error(response.message);
             }
         });
     }

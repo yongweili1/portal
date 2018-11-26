@@ -2,7 +2,8 @@
 import time
 
 from django.utils.deprecation import MiddlewareMixin
-from db_context.models import NewDjangoSession, DjangoSession
+
+from service import session_svc
 
 
 class MySessionMiddleware(MiddlewareMixin):
@@ -21,35 +22,19 @@ class MySessionMiddleware(MiddlewareMixin):
         except:
             besessionid = None
 
-        if besessionid:
-            session_queryset = DjangoSession.objects.filter(session_key=besessionid)
-            session_obj = session_queryset[0]
-            session_value = session_obj.session_data
-            expire_date = session_obj.expire_date
-            user_ip = request.META.get('REMOTE_ADDR', None)
+        user_ip = request.META.get('REMOTE_ADDR', None)
 
-            newsession_obj = NewDjangoSession.objects.filter(session_key=besessionid)
-            if not newsession_obj:
-                data = {
-                    'client_ip': user_ip,
-                    'session_key': besessionid,
-                    'session_data': session_value,
-                    'expire_date': expire_date
-                }
-                NewDjangoSession.objects.create(**data)
+        if besessionid:
+            session_svc.process_session(user_ip, besessionid)
 
         sess = request.session._session
-
         print(sess)
+
         if not sess:
             now_time = time.time()
             session_k = str(now_time)
             session_v = 'back_end'
 
             request.session[session_k] = session_v
-            # response.set_cookie('besessionid', session_v)
-        # response['Access-Control-Allow-Credentials'] = 'true'
-        # print(request.GET.get('Origin'))
-        # response['Access-Control-Allow-Origin'] = request.META.get('Origin')
 
         return response
