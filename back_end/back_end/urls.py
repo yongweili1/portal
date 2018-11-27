@@ -25,4 +25,5 @@ urlpatterns = [
     url(r'^dicom/', include('dicom.urls')),
     url(r'^algproxy/', include('alg_proxy.urls')),
     url(r'^pacs/', include('pacs.urls')),
+    url(r'^macro/', include('macro.urls')),
 ]
