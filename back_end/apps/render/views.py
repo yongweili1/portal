@@ -196,8 +196,6 @@ class GetImage(APIView):
         height = request.GET.get('height', None)
         display_view = request.GET.get('display_view', 'all')
         user_ip = request.META.get('REMOTE_ADDR', None)
-        # request_server = request.path
-        # request_server = request_server.split("/")[-2]
 
         if width is None or height is None:
             return Response('请输入完整的请求数据')
@@ -286,8 +284,7 @@ class TurnPage(APIView):
         height = request.GET.get('height', None)
         focus_view = request.GET.get('focus_view', None)
         user_ip = request.META.get('REMOTE_ADDR', None)
-        request_server = request.path
-        request_server = request_server.split("/")[-2]
+
         if width is None or height is None:
             return Response('请输入完整的请求数据')
 
@@ -313,7 +310,7 @@ class TurnPage(APIView):
         img_server_rsp_json = json.loads(img_server_rsp)
 
         slice_index = img_server_rsp_json['0']['slice_index']
-        cps = contour_svc.retrieve(slice_index)
+        cps, msg = contour_svc.retrieve(slice_index)
         slice_contours = []
         for cp in cps:
             file_path = cp.cpspath

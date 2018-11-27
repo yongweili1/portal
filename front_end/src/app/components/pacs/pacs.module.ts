@@ -28,7 +28,7 @@ const routes: Routes = [
 @NgModule({
   imports: [
     CommonModule,
-    RouterModule.forChild(routes),    
+    RouterModule.forChild(routes),
     FormsModule,
     SharedModule,
     TableModule,
@@ -42,6 +42,6 @@ const routes: Routes = [
     ToastModule
   ],
   declarations: [PacsComponent],
-  providers:[PacsService]
+  providers: [PacsService]
 })
 export class PacsModule { }

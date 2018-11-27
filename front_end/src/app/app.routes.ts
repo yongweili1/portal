@@ -10,8 +10,8 @@ import { NoContentComponent } from './base/no-content/no-content.component';
 import { FullLayoutComponent } from './layouts/full-layout.component';
 import { SimpleLayoutComponent } from './layouts/simple-layout.component';
 import { RenewPasswordComponent } from './base/renew-password/renew-password.component';
-import {ContouringComponent } from './components/contouring/contouring.component'
-import {HomeComponent} from './components/home/home.component'
+import { ContouringComponent } from './components/contouring/contouring.component'
+import { HomeComponent } from './components/home/home.component'
 
 /* tslint:disable:max-line-length */
 export const ROUTES: Routes = [
@@ -56,7 +56,7 @@ export const ROUTES: Routes = [
           {
             path: 'pacs',
             loadChildren: './components/pacs/pacs.module#PacsModule',
-          },          
+          },
           {
             path: 'patient-template',
             loadChildren: './components/patient-template/patient-template.module#PaListModule',

@@ -1,27 +1,18 @@
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { URLSearchParams } from '@angular/http';
-import { Observable, of } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { HttpParams } from "@angular/common/http";
-
+import { Observable } from 'rxjs';
 import { AppConfigService } from '../app.config';
-import { AuthHttp } from '../core/auth-http';
-import { Page, PageRequest } from '../shared/models/pagination';
-import {
-    PatientPageRequest,
-    PatientTemplateInfoRequest,
-    PatientPageDeleteRequest,
-    PatientTemplateInfo
-} from '../components/patient-template/shared/patient-template.model';
-import { ToastService } from '../core/toast.service';
+import { PatientPageDeleteRequest, PatientPageRequest, PatientTemplateInfo }
+    from '../components/patient-template/shared/patient-template.model';
+import { Page } from '../shared/models/pagination';
+
 
 @Injectable()
 export class PatientTemplateService {
     headers: HttpHeaders;
     constructor(
         private http: HttpClient,
-        private appConfig: AppConfigService,
-        private messageService: ToastService,
+        private appConfig: AppConfigService
     ) {
         this.headers = new HttpHeaders({
             'Content-Type': 'application/json',
@@ -40,7 +31,8 @@ export class PatientTemplateService {
             .set('studyDate', pageRequest.studyDate.toString());
         console.log(this.headers);
         return this.http
-            .get<Page<PatientTemplateInfo>>(`${this.appConfig.apiUrl}/patient/patinfolist/`, { headers: this.headers, params: searchParams });
+            .get<Page<PatientTemplateInfo>>(`${this.appConfig.apiUrl}/patient/patinfolist/`,
+                { headers: this.headers, params: searchParams });
     }
 
     public deletePatientTemplate(deleteRequest: PatientPageDeleteRequest): Observable<any> {
@@ -53,11 +45,4 @@ export class PatientTemplateService {
         return this.http
             .delete<any>(`${this.appConfig.apiUrl}/patient/patinfolist/`, { headers: this.headers, params: searchParams });
     }
-
-
-
 }
-const httpOptions = {
-    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-};
-
