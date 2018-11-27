@@ -1,6 +1,6 @@
+import logging
 import os
 import time
-import logging
 
 from pydicom.dataset import Dataset, FileDataset
 from pynetdicom3 import (
@@ -12,7 +12,6 @@ from pynetdicom3 import (
 )
 
 from c_find_scu import CFindScu
-
 
 logger = logging.getLogger(__name__)
 logger.setLevel(level=logging.INFO)
@@ -35,7 +34,9 @@ def log_enter_and_exit(arg=True):
             result = func(*args, **kwargs)
             logger.info("exit %s" % func.__name__)
             return result
+
         return inner_wrapper
+
     return wrapper
 
 

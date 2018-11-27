@@ -1,22 +1,21 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import json
 import os
 import time
-import json
 
 from django.shortcuts import render
 # Create your views here.
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from config.path_cfg import file_path_ferry
 from service import contour_svc, roi_svc, series_svc
-
 from utils.img_svr_connector import load_volume, get_image
 from utils.response_dto import ResponseDto
 from utils.uid_generator import UidGenerator
 from utils.volume_builder import VolumeBuilder
-from config.path_cfg import file_path_ferry
 
 
 class Home(APIView):
@@ -344,7 +343,7 @@ class Pan(APIView):
         pos_cur = request.GET.get('pos_cur', None)
         focus_view = request.GET.get('focus_view', None)
         user_ip = request.META.get('REMOTE_ADDR', None)
-        if pos_pre  is None or pos_cur is None:
+        if pos_pre is None or pos_cur is None:
             return Response('请输入完整的请求数据')
 
         params = {

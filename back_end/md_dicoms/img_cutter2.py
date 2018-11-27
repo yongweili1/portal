@@ -1,12 +1,12 @@
-from PIL import Image, ImageDraw
-import pydicom
-from StringIO import StringIO
-import base64
-import numpy as np
-from md.image3d.python.image3d_vis import slice_to_bytes, bytes_to_colors
 import ConfigParser
-import md.image3d.python.image3d_io as cio
+import base64
 import os
+from StringIO import StringIO
+
+import md.image3d.python.image3d_io as cio
+import numpy as np
+from PIL import Image, ImageDraw
+from md.image3d.python.image3d_vis import slice_to_bytes, bytes_to_colors
 
 Config = ConfigParser.ConfigParser()
 Config.read('config.ini')
@@ -22,7 +22,7 @@ class ImgCutter(object):
         min_box_voxel = slice_info[0]['min_voxel']
         max_box_voxel = slice_info[0]['max_voxel']
 
-        for i in range(int(min_box_voxel[2]), int(max_box_voxel[2])+1):
+        for i in range(int(min_box_voxel[2]), int(max_box_voxel[2]) + 1):
 
             pixels = img_array[i, :, :]
             pixels = slice_to_bytes(pixels, -450, 1050)  # CT Bone
@@ -38,7 +38,7 @@ class ImgCutter(object):
                         'pixel_data': pixels,
                         'min_box_position': min_box_voxel,
                         'max_box_position': max_box_voxel
-                        })
+                    })
 
     def __get_colormap(self):
         colormap = np.zeros((256 * 3,), dtype=np.int32)
@@ -102,17 +102,16 @@ class ImgCutter(object):
 
 if __name__ == '__main__':
     slice_info = [{'instance_num': 634,
-                         'best_instance_num': 634,
-                         'voxel_slice_num':75,
-                         'image_uid': '1.2.840.113704.1.111.1888.1508053946.10640',
-                         'rectangle_patient': (12,25,34,65),
-                         'rectangle_pixel': (15,24,65,87),
-                         'probability': 1,
-                         'rib_class': 1,
-                         'rib_location': 1,
-                         'min_voxel': (1, 2, 3),
-                         'max_voxel': (4, 5, 6)}]
+                   'best_instance_num': 634,
+                   'voxel_slice_num': 75,
+                   'image_uid': '1.2.840.113704.1.111.1888.1508053946.10640',
+                   'rectangle_patient': (12, 25, 34, 65),
+                   'rectangle_pixel': (15, 24, 65, 87),
+                   'probability': 1,
+                   'rib_class': 1,
+                   'rib_location': 1,
+                   'min_voxel': (1, 2, 3),
+                   'max_voxel': (4, 5, 6)}]
     images, tag = cio.read_dicom_series(r'/home/lyw/rxl5/1.2.840.113704.1.111.12164.1508053864.7/')
     cutter = ImgCutter(slice_info, images)
     a = cutter.handle()
-

@@ -62,6 +62,5 @@ class MacroRecorder(object):
 
         return wrapper
 
-
 # reactor.connectTCP('127.0.0.1', 8001, be_factory)\r\n
 # thread.start_new_thread(reactor.run, (0,))\r\n

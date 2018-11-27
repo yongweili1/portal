@@ -1,6 +1,6 @@
+import datetime
 import os
 import socket
-import datetime
 import sys
 import time
 
@@ -17,6 +17,8 @@ from pynetdicom3 import (
     PYNETDICOM_IMPLEMENTATION_UID,
     PYNETDICOM_IMPLEMENTATION_VERSION
 )
+
+
 # from anonymize import Anonymize
 # from parsedicom.anonymize import Anonymize
 

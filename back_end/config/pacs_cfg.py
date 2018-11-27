@@ -1,6 +1,7 @@
 # -*-coding:utf-8-*-
 from config.path_cfg import file_path_ferry
 
+
 class PacsConf(object):
 
     def __init__(self):

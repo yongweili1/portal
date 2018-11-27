@@ -1,16 +1,10 @@
-import json
 import threading
+import time
 
 from command import command as cmd
 from message import RequestData
-
-import struct
-from netbase.c_log import log
-
 from netbase import comproxy
-
-
-import time
+from netbase.c_log import log
 
 
 class MyCommandHandler(comproxy.PyBaseCmdHandlerEx):
@@ -36,4 +30,3 @@ if __name__ == '__main__':
     proxy.register_cmd_handler_ex(100, x)
     e = threading.Event()
     e.wait()
-

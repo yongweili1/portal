@@ -2,12 +2,10 @@ import datetime
 import time
 
 from pydicom.dataset import Dataset
-
 from pynetdicom3 import (
     AE,
     QueryRetrievePresentationContexts,
 )
-from dicom_service_bak import DicomService
 
 
 class CMoveScu(object):
@@ -87,8 +85,8 @@ class CMoveScu(object):
             self.move_image_by_uid(study_uid, series_uid, image)
             time.sleep(retrieve_interval)
 
-if __name__ == '__main__':
 
+if __name__ == '__main__':
     # a = DicomService(pacs_ae_title='UIHPACSSERVER', pacs_ip='10.9.19.150', pacs_port=3333,
     #                  client_ae_title='WQ', client_port=3333
     #                  )
@@ -113,10 +111,8 @@ if __name__ == '__main__':
     # for e in e1:
     #     print e
 
-
     # kk = CMoveScu('UIHPACSSERVER', '10.9.19.150', 3333, 'SGXQ2', 104, '10.9.19.150')
     kk = CMoveScu('UIHPACSSERVER', '10.9.19.150', 3333, 'WQ2', 104, 'WQ')
     kk.move_series_by_uid('1.2.840.113704.1.111.12164.1508053864.7')
 
     print 'ok'
-

@@ -1,4 +1,3 @@
-
 class RefreshType(object):
     Image = 'image'
     Graphic = 'graphic'

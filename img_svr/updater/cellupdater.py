@@ -1,8 +1,9 @@
 from model.imagemodel import VolumeInfo, GraphicModel
 from model.workflow import GET_CLASS_NAME
 from router.routerargs import GraphicType
-from scene.coord import translate_from_world_to_screen
 from updater.baseupdater import BaseUpdater
+
+from scene.coord import translate_from_world_to_screen
 from updater.args import RefreshType
 from utilities import convert_rgba_to_base64
 

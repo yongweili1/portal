@@ -1,9 +1,9 @@
-from pydicom.uid import (ExplicitVRLittleEndian, ImplicitVRLittleEndian, ExplicitVRBigEndian)
+import logging
 
+from pydicom.uid import (ExplicitVRLittleEndian, ImplicitVRLittleEndian, ExplicitVRBigEndian)
+from pynetdicom3 import AE
 from pynetdicom3 import Association
 from pynetdicom3.sop_class import VerificationSOPClass
-from pynetdicom3 import AE
-import logging
 
 """
 conntet client AE to PACS
@@ -30,7 +30,9 @@ def log_enter_and_exit(arg=True):
             result = func(*args, **kwargs)
             logger.info("exit %s" % func.__name__)
             return result
+
         return inner_wrapper
+
     return wrapper
 
 
@@ -66,7 +68,8 @@ class CEchoScu(object):
             logger.error("c_echo association failed")
             return 1
 
+
 if __name__ == '__main__':
     a = CEchoScu(pacs_ae_title='med_imFIR', pacs_ip='192.168.231.18', pacs_port=104,
-                client_ae_title='ceshi', client_port=3333)
+                 client_ae_title='ceshi', client_port=3333)
     a.ping()
