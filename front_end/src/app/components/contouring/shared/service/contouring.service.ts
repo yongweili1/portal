@@ -28,7 +28,7 @@ export class ContouringService {
   Macro(macro_status: any) {
     const getParams = new HttpParams()
       .set('macro_status', macro_status);
-    return this.http.get(`${this.appConfig.apiUrl}/image/macro/`, { params: getParams });
+    return this.http.get(`${this.appConfig.apiUrl}/macro/macro/`, { params: getParams });
   }
 
   noticeSize(canvasSize): Observable<any> {

@@ -25,3 +25,17 @@ class SeriesContext(object):
             return True, None
         except Exception as e:
             raise False, e.message
+
+    def delete(self, uids):
+        try:
+            if uids is None:
+                return False, 'uids is None'
+
+            if isinstance(uids, list):
+                for uid in uids:
+                    Series.objects.filter(seriesuid=uid).delete()
+            else:
+                Series.objects.filter(seriesuid=uids).delete()
+            return True, None
+        except Exception as e:
+            return False, e.message

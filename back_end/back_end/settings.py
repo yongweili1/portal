@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'pacs.apps.PacsConfig',
     'dicom.apps.DicomConfig',
     'session.apps.SessionConfig',
+    'macro.apps.MacroConfig'
 ]
 
 MIDDLEWARE = [
