@@ -57,7 +57,7 @@ class GetPatient(APIView):
         if modality == "undefined":
             modality = ""
         elif len(modality) > 10:
-            modality = modality[10: len(modality)-2]
+            modality = modality[10: len(modality) - 2]
             if modality == "All":
                 modality = ""
         else:

@@ -1,15 +1,15 @@
 import numpy as np
-
-from updater.args import RefreshType
 from model.cellmodel import CellModel, CellsInfo
 from model.imagemodel import VolumeInfo, GraphicModel
 from model.workflow import GET_CLASS_NAME
 from router.routerargs import GraphicState
 from router.routerentity import RouterEntity
 from scene.camera import SceneCamera
-from scene.coord import translate_from_screen_to_world
 from scene.scene import SliceScene, SceneType
 from updater.cellupdater import CellUpdater
+
+from scene.coord import translate_from_screen_to_world
+from updater.args import RefreshType
 
 
 class CellEntity(RouterEntity):
@@ -40,7 +40,7 @@ class CellEntity(RouterEntity):
         self._scene.volume = vol
         self._scene.init_camera(cam_pos, np.array(vol.center()), cam_fov)
         self._scene.set_window_level(ww, wl)
-        #TODO temp fixed page spacing
+        # TODO temp fixed page spacing
         self._scene.set_page_spacing(vol.spacing()[2])
 
         cell_model = CellModel()
@@ -133,4 +133,3 @@ class CellEntity(RouterEntity):
     def resize_(self, index, width, height):
         if self._scene is not None:
             self._scene.set_display_size(width, height)
-

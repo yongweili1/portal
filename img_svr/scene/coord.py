@@ -19,7 +19,7 @@ def translate_from_world_to_screen(scene, pt3d):
     pt3d_plane = project_point3d_on_plane(plane, pt3d)
     origin3d_plane = _get_scene_world_origin(scene)
     axes = np.array([np.array(camera.right), np.array(camera.up)])
-    point2d = np.matmul(axes, pt3d_plane - origin3d_plane)/scene.get_spacing()
+    point2d = np.matmul(axes, pt3d_plane - origin3d_plane) / scene.get_spacing()
     return point2d
 
 

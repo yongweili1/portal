@@ -198,4 +198,3 @@ class NewDjangoSession(models.Model):
         app_label = 'NewDjangoSession'
         managed = False
         db_table = 'new_django_session'
-

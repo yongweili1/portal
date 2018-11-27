@@ -128,7 +128,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'back_end.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
@@ -151,7 +150,7 @@ DATABASES = {
         # 编码格式
         'default-character-set': 'utf8',
         'OPTIONS': {
-         "init_command": "SET foreign_key_checks = 0;",
+            "init_command": "SET foreign_key_checks = 0;",
         },
         # 'isolation_level': 'read committed'
     }
@@ -176,7 +175,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
@@ -215,14 +213,14 @@ REST_FRAMEWORK = {
 # session
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # 引擎（默认）
 
-SESSION_COOKIE_NAME = "besessionid"       # Session的cookie保存在浏览器上时的key，即：besessionid＝随机字符串（默认）
-SESSION_COOKIE_PATH = "/"                 # Session的cookie保存的路径（默认）
-SESSION_COOKIE_DOMAIN = None              # Session的cookie保存的域名（默认）
-SESSION_COOKIE_SECURE = False             # 是否Https传输cookie（默认）
-SESSION_COOKIE_HTTPONLY = True            # 是否Session的cookie只支持http传输（默认）
-SESSION_COOKIE_AGE = 600                  # Session的cookie失效日期（2周）（默认）
-SESSION_EXPIRE_AT_BROWSER_CLOSE = False   # 是否关闭浏览器使得Session过期（默认）
-SESSION_SAVE_EVERY_REQUEST = False        # 是否每次请求都保存Session，默认修改之后才保存（默认）
+SESSION_COOKIE_NAME = "besessionid"  # Session的cookie保存在浏览器上时的key，即：besessionid＝随机字符串（默认）
+SESSION_COOKIE_PATH = "/"  # Session的cookie保存的路径（默认）
+SESSION_COOKIE_DOMAIN = None  # Session的cookie保存的域名（默认）
+SESSION_COOKIE_SECURE = False  # 是否Https传输cookie（默认）
+SESSION_COOKIE_HTTPONLY = True  # 是否Session的cookie只支持http传输（默认）
+SESSION_COOKIE_AGE = 600  # Session的cookie失效日期（2周）（默认）
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # 是否关闭浏览器使得Session过期（默认）
+SESSION_SAVE_EVERY_REQUEST = False  # 是否每次请求都保存Session，默认修改之后才保存（默认）
 SESSION_CACHE_ALIAS = 'default'
 SESSION_COOKIE_SAMESITE = 'Lax'
 SESSION_FILE_PATH = None
@@ -242,4 +240,3 @@ CHANNEL_LAYERS = {
         "ROUTING": "back_end.routing.channel_routing",
     },
 }
-

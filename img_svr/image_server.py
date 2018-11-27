@@ -1,11 +1,12 @@
 import numpy as np
+from md.image3d.python.image3d_io import read_image
 from md.image3d.python.image3d_tools import slice_nn
 from md.image3d.python.image3d_vis import slice_to_bytes, bytes_to_colors
-from md.image3d.python.image3d_io import read_image
 from md.mdmath.python.rotation3d import axis_angle_to_rotation_matrix
-from utilities import get_axis, get_orthogonal_axis, get_two_spacing, get_orthogonal_spacing, ViewEnum, \
-    convert_rgba_to_base64, get_view_size, get_view_string, get_view_index
+
 from scene.temp import translate_from_screen_to_world, translate_from_world_to_screen
+from utilities import get_axis, get_orthogonal_axis, get_two_spacing, get_orthogonal_spacing, ViewEnum, \
+    convert_rgba_to_base64, get_view_string, get_view_index
 
 
 class ImageServer(object):
@@ -287,19 +288,22 @@ class ImageServer(object):
         if trans_para['trans_direct_flag'] == "world2screen":
             point_2d = {}
             point_2d['transPosition'] = translate_from_world_to_screen(self.cfg['transverse_axis'][0],
-                                                                        self.cfg['transverse_axis'][1], self.look_at['transverse'],
-                                                                        self.view_size['transverse'],
-                                                                        1,
+                                                                       self.cfg['transverse_axis'][1],
+                                                                       self.look_at['transverse'],
+                                                                       self.view_size['transverse'],
+                                                                       1,
                                                                        trans_para['point_3d']).tolist()
             point_2d['cronPosition'] = translate_from_world_to_screen(self.cfg['coronal_axis'][0],
-                                                                       self.cfg['coronal_axis'][1], self.look_at['coronal'],
-                                                                       self.view_size['coronal'],
-                                                                       self.cfg['spacing'][0],
+                                                                      self.cfg['coronal_axis'][1],
+                                                                      self.look_at['coronal'],
+                                                                      self.view_size['coronal'],
+                                                                      self.cfg['spacing'][0],
                                                                       trans_para['point_3d']).tolist()
             point_2d['sagPosition'] = translate_from_world_to_screen(self.cfg['saggital_axis'][0],
-                                                                      self.cfg['saggital_axis'][1], self.look_at['saggital'],
-                                                                      self.view_size['saggital'],
-                                                                      self.cfg['spacing'][1],
+                                                                     self.cfg['saggital_axis'][1],
+                                                                     self.look_at['saggital'],
+                                                                     self.view_size['saggital'],
+                                                                     self.cfg['spacing'][1],
                                                                      trans_para['point_3d']).tolist()
 
             return point_2d
@@ -338,5 +342,3 @@ class ImageServer(object):
             data.update(img)
 
         return data
-
-

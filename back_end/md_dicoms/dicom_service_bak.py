@@ -1,9 +1,10 @@
+import ConfigParser
+import logging
+
+from build_volume import BuildVolume
 from c_echo_scu import CEchoScu
 from c_find_scu import CFindScu
 from c_get_scu import CGetScu
-from build_volume import BuildVolume
-import logging
-import ConfigParser
 
 logger = logging.getLogger(__name__)
 logger.setLevel(level=logging.INFO)
@@ -26,7 +27,9 @@ def log_enter_and_exit(arg=True):
             result = func(*args, **kwargs)
             logger.info("exit %s" % func.__name__)
             return result
+
         return inner_wrapper
+
     return wrapper
 
 

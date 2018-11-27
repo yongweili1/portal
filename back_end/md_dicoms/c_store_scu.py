@@ -1,13 +1,13 @@
+import logging
 import os
 import sys
-import logging
 from os import listdir
+
 from pydicom import dcmread
 from pydicom.uid import (
     ExplicitVRLittleEndian, ImplicitVRLittleEndian,
     ExplicitVRBigEndian, DeflatedExplicitVRLittleEndian
 )
-
 from pynetdicom3 import AE, StoragePresentationContexts
 
 logger = logging.getLogger(__name__)
@@ -58,7 +58,6 @@ class CStoreScu(object):
             logger.error("failed to setup store association")
 
 
-
 if __name__ == '__main__':
     a = CStoreScu(pacs_ae_title='ceshi', pacs_ip='192.168.232.78', pacs_port=3333,
                   client_ae_title='ceshi', client_port=3333)
@@ -69,4 +68,3 @@ if __name__ == '__main__':
     # a.store(r'D:\dcm\c_get\1.2.840.113704.1.111.12164.1508053864.7')
 
     print 'completed'
-

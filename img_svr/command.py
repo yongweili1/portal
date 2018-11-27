@@ -1,20 +1,19 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import time
+import json
 import os
-from entity.cellentity import CellEntity
-from image_server import ImageServer
-from scene.coord import translate_from_screen_to_world, translate_from_world_to_screen
-from message import response
-from updater.args import RefreshType
-from utilities import get_view_index, get_orthogonal_spacing, ViewEnum, get_view_index, get_page_filter_view, \
-    view_filter, string_int_trans, cal_angle
-from entity.imageentity import ImageEntity
+
 import md.image3d.python.image3d_io as cio
 
-import json
-import datetime
+from entity.cellentity import CellEntity
+from entity.imageentity import ImageEntity
+from image_server import ImageServer
+from message import response
+from scene.coord import translate_from_screen_to_world, translate_from_world_to_screen
+from updater.args import RefreshType
+from utilities import get_view_index, get_page_filter_view, \
+    view_filter, string_int_trans, cal_angle
 
 
 class Command(object):
@@ -23,16 +22,17 @@ class Command(object):
 
     def register(self, command):
         print('Register command {} succeed.'.format(command))
+
         def wrapper(func):
             self.commands[command] = func
             print('inner command {} succeed.'.format(command))
             return func
+
         return wrapper
 
 
 # single instance of Command
 command = Command()
-
 
 # single instance of ImageServer
 server = ImageServer()
@@ -251,7 +251,6 @@ def pan(**kwargs):
         return response(json.dumps(result))
     except Exception as e:
         return response(success=False, message='pan failed')
-
 
 
 @command.register('roll')

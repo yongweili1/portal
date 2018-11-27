@@ -3,142 +3,136 @@
 from google.protobuf import descriptor
 from google.protobuf import message
 from google.protobuf import reflection
-from google.protobuf import descriptor_pb2
+
 # @@protoc_insertion_point(imports)
 
 
-
 DESCRIPTOR = descriptor.FileDescriptor(
-  name='image_msg.proto',
-  package='',
-  serialized_pb='\n\x0fimage_msg.proto\")\n\x07\x43ontent\x12\x0e\n\x06params\x18\x01 \x01(\t\x12\x0e\n\x06volume\x18\x02 \x01(\x0c\"^\n\nRequestMsg\x12\x0f\n\x07session\x18\x01 \x02(\t\x12\x13\n\x0bserver_name\x18\x02 \x02(\t\x12\x0f\n\x07\x63ommand\x18\x03 \x02(\t\x12\x19\n\x07\x63ontent\x18\x04 \x02(\x0b\x32\x08.Content\"@\n\x0bResponseMsg\x12\x0f\n\x07success\x18\x01 \x02(\x08\x12\x0f\n\x07\x63omment\x18\x02 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x03 \x01(\t')
-
-
-
+    name='image_msg.proto',
+    package='',
+    serialized_pb='\n\x0fimage_msg.proto\")\n\x07\x43ontent\x12\x0e\n\x06params\x18\x01 \x01(\t\x12\x0e\n\x06volume\x18\x02 \x01(\x0c\"^\n\nRequestMsg\x12\x0f\n\x07session\x18\x01 \x02(\t\x12\x13\n\x0bserver_name\x18\x02 \x02(\t\x12\x0f\n\x07\x63ommand\x18\x03 \x02(\t\x12\x19\n\x07\x63ontent\x18\x04 \x02(\x0b\x32\x08.Content\"@\n\x0bResponseMsg\x12\x0f\n\x07success\x18\x01 \x02(\x08\x12\x0f\n\x07\x63omment\x18\x02 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x03 \x01(\t')
 
 _CONTENT = descriptor.Descriptor(
-  name='Content',
-  full_name='Content',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    descriptor.FieldDescriptor(
-      name='params', full_name='Content.params', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=unicode("", "utf-8"),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-    descriptor.FieldDescriptor(
-      name='volume', full_name='Content.volume', index=1,
-      number=2, type=12, cpp_type=9, label=1,
-      has_default_value=False, default_value="",
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  options=None,
-  is_extendable=False,
-  extension_ranges=[],
-  serialized_start=19,
-  serialized_end=60,
+    name='Content',
+    full_name='Content',
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    fields=[
+        descriptor.FieldDescriptor(
+            name='params', full_name='Content.params', index=0,
+            number=1, type=9, cpp_type=9, label=1,
+            has_default_value=False, default_value=unicode("", "utf-8"),
+            message_type=None, enum_type=None, containing_type=None,
+            is_extension=False, extension_scope=None,
+            options=None),
+        descriptor.FieldDescriptor(
+            name='volume', full_name='Content.volume', index=1,
+            number=2, type=12, cpp_type=9, label=1,
+            has_default_value=False, default_value="",
+            message_type=None, enum_type=None, containing_type=None,
+            is_extension=False, extension_scope=None,
+            options=None),
+    ],
+    extensions=[
+    ],
+    nested_types=[],
+    enum_types=[
+    ],
+    options=None,
+    is_extendable=False,
+    extension_ranges=[],
+    serialized_start=19,
+    serialized_end=60,
 )
-
 
 _REQUESTMSG = descriptor.Descriptor(
-  name='RequestMsg',
-  full_name='RequestMsg',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    descriptor.FieldDescriptor(
-      name='session', full_name='RequestMsg.session', index=0,
-      number=1, type=9, cpp_type=9, label=2,
-      has_default_value=False, default_value=unicode("", "utf-8"),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-    descriptor.FieldDescriptor(
-      name='server_name', full_name='RequestMsg.server_name', index=1,
-      number=2, type=9, cpp_type=9, label=2,
-      has_default_value=False, default_value=unicode("", "utf-8"),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-    descriptor.FieldDescriptor(
-      name='command', full_name='RequestMsg.command', index=2,
-      number=3, type=9, cpp_type=9, label=2,
-      has_default_value=False, default_value=unicode("", "utf-8"),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-    descriptor.FieldDescriptor(
-      name='content', full_name='RequestMsg.content', index=3,
-      number=4, type=11, cpp_type=10, label=2,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  options=None,
-  is_extendable=False,
-  extension_ranges=[],
-  serialized_start=62,
-  serialized_end=156,
+    name='RequestMsg',
+    full_name='RequestMsg',
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    fields=[
+        descriptor.FieldDescriptor(
+            name='session', full_name='RequestMsg.session', index=0,
+            number=1, type=9, cpp_type=9, label=2,
+            has_default_value=False, default_value=unicode("", "utf-8"),
+            message_type=None, enum_type=None, containing_type=None,
+            is_extension=False, extension_scope=None,
+            options=None),
+        descriptor.FieldDescriptor(
+            name='server_name', full_name='RequestMsg.server_name', index=1,
+            number=2, type=9, cpp_type=9, label=2,
+            has_default_value=False, default_value=unicode("", "utf-8"),
+            message_type=None, enum_type=None, containing_type=None,
+            is_extension=False, extension_scope=None,
+            options=None),
+        descriptor.FieldDescriptor(
+            name='command', full_name='RequestMsg.command', index=2,
+            number=3, type=9, cpp_type=9, label=2,
+            has_default_value=False, default_value=unicode("", "utf-8"),
+            message_type=None, enum_type=None, containing_type=None,
+            is_extension=False, extension_scope=None,
+            options=None),
+        descriptor.FieldDescriptor(
+            name='content', full_name='RequestMsg.content', index=3,
+            number=4, type=11, cpp_type=10, label=2,
+            has_default_value=False, default_value=None,
+            message_type=None, enum_type=None, containing_type=None,
+            is_extension=False, extension_scope=None,
+            options=None),
+    ],
+    extensions=[
+    ],
+    nested_types=[],
+    enum_types=[
+    ],
+    options=None,
+    is_extendable=False,
+    extension_ranges=[],
+    serialized_start=62,
+    serialized_end=156,
 )
 
-
 _RESPONSEMSG = descriptor.Descriptor(
-  name='ResponseMsg',
-  full_name='ResponseMsg',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    descriptor.FieldDescriptor(
-      name='success', full_name='ResponseMsg.success', index=0,
-      number=1, type=8, cpp_type=7, label=2,
-      has_default_value=False, default_value=False,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-    descriptor.FieldDescriptor(
-      name='comment', full_name='ResponseMsg.comment', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=unicode("", "utf-8"),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-    descriptor.FieldDescriptor(
-      name='content', full_name='ResponseMsg.content', index=2,
-      number=3, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=unicode("", "utf-8"),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  options=None,
-  is_extendable=False,
-  extension_ranges=[],
-  serialized_start=158,
-  serialized_end=222,
+    name='ResponseMsg',
+    full_name='ResponseMsg',
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    fields=[
+        descriptor.FieldDescriptor(
+            name='success', full_name='ResponseMsg.success', index=0,
+            number=1, type=8, cpp_type=7, label=2,
+            has_default_value=False, default_value=False,
+            message_type=None, enum_type=None, containing_type=None,
+            is_extension=False, extension_scope=None,
+            options=None),
+        descriptor.FieldDescriptor(
+            name='comment', full_name='ResponseMsg.comment', index=1,
+            number=2, type=9, cpp_type=9, label=1,
+            has_default_value=False, default_value=unicode("", "utf-8"),
+            message_type=None, enum_type=None, containing_type=None,
+            is_extension=False, extension_scope=None,
+            options=None),
+        descriptor.FieldDescriptor(
+            name='content', full_name='ResponseMsg.content', index=2,
+            number=3, type=9, cpp_type=9, label=1,
+            has_default_value=False, default_value=unicode("", "utf-8"),
+            message_type=None, enum_type=None, containing_type=None,
+            is_extension=False, extension_scope=None,
+            options=None),
+    ],
+    extensions=[
+    ],
+    nested_types=[],
+    enum_types=[
+    ],
+    options=None,
+    is_extendable=False,
+    extension_ranges=[],
+    serialized_start=158,
+    serialized_end=222,
 )
 
 _REQUESTMSG.fields_by_name['content'].message_type = _CONTENT
@@ -146,22 +140,25 @@ DESCRIPTOR.message_types_by_name['Content'] = _CONTENT
 DESCRIPTOR.message_types_by_name['RequestMsg'] = _REQUESTMSG
 DESCRIPTOR.message_types_by_name['ResponseMsg'] = _RESPONSEMSG
 
+
 class Content(message.Message):
-  __metaclass__ = reflection.GeneratedProtocolMessageType
-  DESCRIPTOR = _CONTENT
-  
-  # @@protoc_insertion_point(class_scope:Content)
+    __metaclass__ = reflection.GeneratedProtocolMessageType
+    DESCRIPTOR = _CONTENT
+
+    # @@protoc_insertion_point(class_scope:Content)
+
 
 class RequestMsg(message.Message):
-  __metaclass__ = reflection.GeneratedProtocolMessageType
-  DESCRIPTOR = _REQUESTMSG
-  
-  # @@protoc_insertion_point(class_scope:RequestMsg)
+    __metaclass__ = reflection.GeneratedProtocolMessageType
+    DESCRIPTOR = _REQUESTMSG
+
+    # @@protoc_insertion_point(class_scope:RequestMsg)
+
 
 class ResponseMsg(message.Message):
-  __metaclass__ = reflection.GeneratedProtocolMessageType
-  DESCRIPTOR = _RESPONSEMSG
-  
-  # @@protoc_insertion_point(class_scope:ResponseMsg)
+    __metaclass__ = reflection.GeneratedProtocolMessageType
+    DESCRIPTOR = _RESPONSEMSG
+
+    # @@protoc_insertion_point(class_scope:ResponseMsg)
 
 # @@protoc_insertion_point(module_scope)

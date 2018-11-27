@@ -6,6 +6,7 @@ class RouterEntity:
     an entity which send/receive command through router, such as cellview, imageview and multimageview
 
     """
+
     def __init__(self, router_id):
         self._uid = router_id
         self._router = DuplexRouter(router_id, self)
@@ -89,4 +90,3 @@ class RouterEntity:
 
     def resize_(self, index, width, height):
         pass
-

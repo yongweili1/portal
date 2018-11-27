@@ -5,6 +5,7 @@ def cellview_cfg(x_axis, y_axis, o_axis, group, enable_text):
     return {'type': 'view2', 'x_axis': x_axis, 'y_axis': y_axis, 'o_axis': o_axis, 'group': group,
             'enable_text': enable_text}
 
+
 def get_value(dic, key, default):
     return dic[key] if key in dic else default
 

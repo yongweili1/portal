@@ -1,8 +1,7 @@
+import logging
+
 from pydicom.dataset import Dataset
 from pynetdicom3 import AE, QueryRetrievePresentationContexts
-import logging
-import datetime
-import string
 
 from patient import Patient
 
@@ -27,7 +26,9 @@ def log_enter_and_exit(arg=True):
             result = func(*args, **kwargs)
             logger.info("exit %s" % func.__name__)
             return result
+
         return inner_wrapper
+
     return wrapper
 
 
@@ -237,4 +238,3 @@ if __name__ == '__main__':
     # print 'series uid', b[0]
     # c = a.find_images_by_series_uid(b[0])
     # print 'image uid', c[0]
-

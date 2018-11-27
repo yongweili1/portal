@@ -1,6 +1,7 @@
 import json
-from msg import image_msg_pb2 as msg
 import os
+
+from msg import image_msg_pb2 as msg
 
 
 class RequestData(object):
@@ -51,4 +52,3 @@ class ResponseData(object):
 
 # single instance of ResponseData
 response = ResponseData()
-

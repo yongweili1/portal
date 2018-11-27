@@ -1,5 +1,5 @@
 # -*-coding:utf-8-*-
-from channels.handler import AsgiHandler
+
 
 # message.reply_channel    一个客户端通道的对象
 # message.reply_channel.send(chunk)  用来唯一返回这个客户端

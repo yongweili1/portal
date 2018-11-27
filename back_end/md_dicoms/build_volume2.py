@@ -1,15 +1,16 @@
-#-*-coding:utf-8-*-
-import os
-from os import listdir
-from pydicom import dcmread
-import numpy as np
-import md
-import logging
-from md.viewer.xviewer import *
-import numpy.linalg as lina
-import md.image3d.python.image3d_io as cio
-import shutil
+# -*-coding:utf-8-*-
 import ConfigParser
+import logging
+import os
+import shutil
+from os import listdir
+
+import md
+import md.image3d.python.image3d_io as cio
+import numpy as np
+import numpy.linalg as lina
+from md.viewer.xviewer import *
+from pydicom import dcmread
 
 logger = logging.getLogger(__name__)
 logger.setLevel(level=logging.INFO)
@@ -35,7 +36,9 @@ def log_enter_and_exit(arg=True):
             result = func(*args, **kwargs)
             logger.info("exit %s" % func.__name__)
             return result
+
         return inner_wrapper
+
     return wrapper
 
 
@@ -117,17 +120,17 @@ class BuildVolume(object):
 
             # ensure the InstanceNumber is continuous
             par_list = self.instance_pixels_position
-            for i in range(len(par_list)-1):
-                if par_list[i+1][0] - par_list[i][0] != 1:
+            for i in range(len(par_list) - 1):
+                if par_list[i + 1][0] - par_list[i][0] != 1:
                     raise ValueError("Dicom InstanceNumber is not continuous, volume will not be built")
                 else:
                     logger.info("InstanceNumber is continuous, volume can be built!")
 
             # ensure the z direction slice spacing identical
             # attention: here ,we keep two digits after the decimal point
-            for i in range(len(par_list)-2):
-                if np.around(lina.norm(par_list[i+1][2]-par_list[i][2]), decimals=2) != \
-                        np.around(lina.norm(par_list[i+2][2] - par_list[i+1][2]), decimals=2):
+            for i in range(len(par_list) - 2):
+                if np.around(lina.norm(par_list[i + 1][2] - par_list[i][2]), decimals=2) != \
+                        np.around(lina.norm(par_list[i + 2][2] - par_list[i + 1][2]), decimals=2):
                     raise ValueError("z direction slice spacing are not equal, volume will not be built")
             self.pixels = [data[1] for data in self.instance_pixels_position]
             return flag
@@ -215,15 +218,17 @@ class BuildVolume(object):
         x_spacing = datasets[0].PixelSpacing[0]
         y_spacing = datasets[0].PixelSpacing[1]
         z_spacing = lina.norm(np.array(self.instance_pixels_position[-1][2])
-                              - np.array(self.instance_pixels_position[0][2]))/(len(self.instance_pixels_position)-1)
+                              - np.array(self.instance_pixels_position[0][2])) / (
+                                len(self.instance_pixels_position) - 1)
         im.set_spacing([x_spacing, y_spacing, z_spacing])
 
         # set the axes of Image3D Volume
         orientation = datasets[0].ImageOrientationPatient
         axis_x = np.array([orientation[0], orientation[1], orientation[2]], np.float32)
         axis_y = np.array([orientation[3], orientation[4], orientation[5]], np.float32)
-        axis_z = np.array(self.instance_pixels_position[1][2])-np.array(self.instance_pixels_position[0][2], np.float32)
-        axis_z = axis_z/(lina.norm(axis_z))
+        axis_z = np.array(self.instance_pixels_position[1][2]) - np.array(self.instance_pixels_position[0][2],
+                                                                          np.float32)
+        axis_z = axis_z / (lina.norm(axis_z))
         axes = [axis_x, axis_y, axis_z]
         axes = np.reshape(axes, (3, 3))
         im.set_axes(axes)
@@ -265,7 +270,7 @@ class BuildVolume(object):
 
 if __name__ == '__main__':
     # mypath = r'D:\dcm\1.3.12.2.1107.5.1.4.64606.30000018051006052134700006373' #CT files
-    mypath = r'D:\dcm\c_get\1.2.840.113704.1.111.12164.1508053864.7' #MR files
+    mypath = r'D:\dcm\c_get\1.2.840.113704.1.111.12164.1508053864.7'  # MR files
     dslist = []
     for f in listdir(mypath):
         file_path = os.path.join(mypath, f)

@@ -1,5 +1,5 @@
-import random
 import datetime as Time
+import random
 
 
 class UidGenerator(object):

@@ -8,7 +8,6 @@ from utils.dcm_reader import DcmSeries
 class DcmSorter(object):
 
     def split_series(self, file_name, dataset):
-
         dcmseries = DcmSeries()
         series_uid = dcmseries.get_series_uid(dataset)
         image_uid = dcmseries.get_image_uid(dataset)
@@ -36,4 +35,3 @@ class DcmSorter(object):
             filedata = f.read()
         with open(new_file_name, 'wb+') as r:
             r.write(filedata)
-

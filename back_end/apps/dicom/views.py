@@ -5,15 +5,14 @@ import os
 import platform
 
 import pydicom
-
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from config.path_cfg import file_path_ferry
+from netbase import data_checker
 from service import series_svc, patient_svc
 from utils.dcm_sorter import DcmSorter
 from utils.volume_builder import VolumeBuilder
-from netbase import data_checker
 
 if platform.system() == 'Windows':
     import win32file
@@ -90,4 +89,3 @@ class Patinfo(APIView):
                 return Response('Volume入库失败')
 
         return Response('success')
-

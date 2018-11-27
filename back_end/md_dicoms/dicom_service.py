@@ -1,18 +1,14 @@
+import ConfigParser
+import logging
+from threading import *
+
+from build_volume import BuildVolume
 from c_echo_scu import CEchoScu
 from c_find_scu import CFindScu
 from c_get_scu import CGetScu
-from c_store_scu import CStoreScu
-from build_volume import BuildVolume
-from cmovescu_dcmtk import CMoveScu
-
 from c_store_scp import CStoreScp
-
-import logging
-import time
-
-import ConfigParser
-from threading import *
-
+from c_store_scu import CStoreScu
+from cmovescu_dcmtk import CMoveScu
 
 logger = logging.getLogger(__name__)
 logger.setLevel(level=logging.INFO)
@@ -35,7 +31,9 @@ def log_enter_and_exit(arg=True):
             result = func(*args, **kwargs)
             logger.info("exit %s" % func.__name__)
             return result
+
         return inner_wrapper
+
     return wrapper
 
 
@@ -196,6 +194,3 @@ if __name__ == '__main__':
 
     a.move_by_image_uid(b[0], c[0], d)
     # a.move_by_series_uid(b[0], '1.3.12.2.1107.5.1.4.73787.30000018102300334331000076307')
-
-
-

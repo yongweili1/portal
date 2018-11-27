@@ -1,10 +1,11 @@
 # -*-coding:utf-8-*-
-import time
-import pydicom
 import datetime
-import re
-from enum import Enum
 import logging
+import re
+import time
+
+import pydicom
+from enum import Enum
 
 
 class DateTimeType(Enum):

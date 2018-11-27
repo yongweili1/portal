@@ -1,11 +1,11 @@
-from PIL import Image, ImageDraw
-import pydicom
-from StringIO import StringIO
-import base64
-import numpy as np
-from md.image3d.python.image3d_vis import slice_to_bytes, bytes_to_colors
 import ConfigParser
-import md.image3d.python.image3d_io as cio
+import base64
+from StringIO import StringIO
+
+import numpy as np
+import pydicom
+from PIL import Image, ImageDraw
+from md.image3d.python.image3d_vis import slice_to_bytes, bytes_to_colors
 
 Config = ConfigParser.ConfigParser()
 Config.read('config.ini')
@@ -80,10 +80,10 @@ class ImgCutter(object):
 
             draw_im = ImageDraw.Draw(im)
 
-            x1 = (box_position[0] - patient_position_x)/item['pixel_spacing'][0]
-            y1 = (box_position[1] - patient_position_y)/item['pixel_spacing'][1]
-            x2 = (box_position[2] - patient_position_x)/item['pixel_spacing'][0]
-            y2 = (box_position[3] - patient_position_y)/item['pixel_spacing'][1]
+            x1 = (box_position[0] - patient_position_x) / item['pixel_spacing'][0]
+            y1 = (box_position[1] - patient_position_y) / item['pixel_spacing'][1]
+            x2 = (box_position[2] - patient_position_x) / item['pixel_spacing'][0]
+            y2 = (box_position[3] - patient_position_y) / item['pixel_spacing'][1]
             x1 = x1 if x1 > 0 else 0
             y1 = y1 if y1 > 0 else 0
             x2 = x2 if x2 < item['size'][0] * item['pixel_spacing'][0] else item['size'][0] * item['pixel_spacing'][0]
@@ -122,8 +122,9 @@ class ImgCutter(object):
 
 
 if __name__ == '__main__':
-    slice_info = [[634,'1.2.840.113704.1.111.1888.1508053946.10640', [(22,23),(27,23),(22,28),(72,103)], 1, '','']]
-    images = [pydicom.read_file(r'E:\data\1.2.840.113704.1.111.12164.1508053864.7\1.2.840.113704.1.111.1888.1508053946.10640.dcm')]
+    slice_info = [
+        [634, '1.2.840.113704.1.111.1888.1508053946.10640', [(22, 23), (27, 23), (22, 28), (72, 103)], 1, '', '']]
+    images = [pydicom.read_file(
+        r'E:\data\1.2.840.113704.1.111.12164.1508053864.7\1.2.840.113704.1.111.1888.1508053946.10640.dcm')]
     cutter = ImgCutter(slice_info, images)
     cutter.handle()
-

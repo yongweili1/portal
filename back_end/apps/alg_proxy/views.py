@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from md_segmentation3d.impl.vseg_cimpl import autoseg_load_model, autoseg_volume
+
 from md.image3d.python.image3d_io import read_image, write_image
-
-
+from md_segmentation3d.impl.vseg_cimpl import autoseg_load_model, autoseg_volume
 # Create your views here.
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
 from service import series_svc, roi_svc
 from utils.response_dto import ResponseDto
 
