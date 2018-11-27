@@ -1,9 +1,31 @@
 from db_context.models import Series
+from db_context.serializer import SeriesSerializer
 
 
 class SeriesContext(object):
     def __init__(self):
         pass
+
+    def exist(self, seriesuid):
+        if len(Series.objects.filter(seriesuid=seriesuid)) != 0:
+            return True
+        else:
+            return False
+
+    def create(self, data):
+        try:
+            model = SeriesSerializer(data=data)
+            model.is_valid(raise_exception=True)
+            return model.save(), None
+        except Exception as ex:
+            return False, ex.message
+
+    def update(self, seriesuid, data):
+        try:
+            Series.objects.filter(seriesuid=seriesuid).update(data)
+            return True, None
+        except Exception as e:
+            return False, e.message
 
     def retrieve(self, series_uid=None, study_uid=None):
         try:

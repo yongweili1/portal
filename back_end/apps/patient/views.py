@@ -28,8 +28,8 @@ class Patinfolist(APIView):
         if totalelements == 0:
             return Response('数据库无数据')
 
-        totalpages = int(math.ceil(float(totalelements)/float(size)))
-        totalpatients = pats_list[size*page:size*(page+1)]
+        totalpages = int(math.ceil(float(totalelements) / float(size)))
+        totalpatients = pats_list[size * page:size * (page + 1)]
         numberofelements = len(totalpatients)
 
         data = {
@@ -52,12 +52,12 @@ class Patinfolist(APIView):
         """
         size = int(request.GET.get('size', 15))
         page = int(request.GET.get('page', 0))
-        seriesidarray = request.GET.get('seriesId').split(',')
-        studyidarray = request.GET.get('studyId').split(',')
-        patientidarray = request.GET.get('patientId').split(',')
+        seriesids = request.GET.get('seriesId').split(',')
+        studyids = request.GET.get('studyId').split(',')
+        patientids = request.GET.get('patientId').split(',')
 
         # 调用自定义类，创建对象，获取信息列表
-        patient_svc.delete_info(patientidarray, studyidarray, seriesidarray)
+        patient_svc.delete_info(patientids, studyids, seriesids)
         pats_list = patient_svc.get_infolist()
         totalelements = len(pats_list)
 
@@ -69,8 +69,8 @@ class Patinfolist(APIView):
             }
             return Response(response)
 
-        totalpages = int(math.ceil(float(totalelements)/float(size)))
-        totalpatients = pats_list[size*page:size*(page+1)]
+        totalpages = int(math.ceil(float(totalelements) / float(size)))
+        totalpatients = pats_list[size * page:size * (page + 1)]
         numberofelements = len(totalpatients)
 
         rsp = {
