@@ -6,6 +6,7 @@ import os
 
 from django.db import transaction
 
+from db_context import patient_ctx, study_ctx, series_ctx, image_ctx
 from db_context.models import Series, Study, Patient, Image
 from db_context.serializer import PatientSerializer, StudySerializer, SeriesSerializer, ImageSerializer
 from utils.dcm_reader import DcmPatient, DcmStudy, DcmSeries, DcmImage
@@ -34,7 +35,7 @@ class PatientService(object):
         :return:patinfos_list:information list
         """
 
-        queryset = Patient.objects.all()
+        queryset = patient_ctx.all()
 
         if len(queryset) != 0:
             for pat in queryset:
@@ -44,24 +45,23 @@ class PatientService(object):
                 pat_dict['patientName'] = pat.patientname
                 pat_dict['gender'] = pat.patientsex
 
-                stu = Study.objects.filter(patientid=pat.patientid)
+                study_list, msg = study_ctx.retrieve(pat.patientid)
 
                 ser_list = copy.deepcopy(self.series_list)
 
-                if len(stu) != 0:
-                    for st in stu:
-                        ser = Series.objects.filter(studyuid=st.studyuid)
+                if len(study_list) != 0:
+                    for st in study_list:
+                        series_list, msg = series_ctx.retrieve(study_uid=st.studyuid)
 
-                        if len(ser) != 0:
-                            for se in ser:
+                        if len(series_list) != 0:
+                            for se in series_list:
                                 series_dict = copy.deepcopy(self.series_dict)
                                 series_dict['seriesuid'] = se.seriesuid
-                                image_number = Image.objects.filter(seriesuid=se.seriesuid).count()
+                                image_number = image_ctx.count(se.seriesuid)
                                 series_dict['imagequantity'] = str(image_number)
                                 series_dict['seriesdescription'] = se.seriesdescription
                                 ser_list.append(series_dict)
                             pat_dict['seriesInfo'] = ser_list
-
                         else:
                             pat_dict['seriesInfo'] = ser_list
 
@@ -80,21 +80,9 @@ class PatientService(object):
         :param seriesidarray: array of seriesid
         :return:
         """
-        if isinstance(seriesidarray, list):
-            for seriesId in seriesidarray:
-                Series.objects.filter(seriesuid=seriesId).delete()
-        else:
-            Series.objects.filter(seriesuid=seriesidarray).delete()
-        if isinstance(studyidarray, list):
-            for studyId in studyidarray:
-                Study.objects.filter(studyuid=studyId).delete()
-        else:
-            Study.objects.filter(studyuid=studyidarray).delete()
-        if isinstance(patientidarray, list):
-            for patientId in patientidarray:
-                Patient.objects.filter(patientid=patientId).delete()
-        else:
-            Patient.objects.filter(patientid=patientidarray).delete()
+        series_ctx.delete(seriesidarray)
+        study_ctx.delete(studyidarray)
+        patient_ctx.delete(patientidarray)
 
     def upload_dcm(self, datasetlist=None, filepath=None):
         """
