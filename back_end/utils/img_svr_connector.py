@@ -38,7 +38,7 @@ def load_volume(*args, **kwargs):
         vol = f.read()
         f.close()
     except Exception as e:
-        print('请检查volume路径或文件格式是否正确:{}'.format(kwargs['volumepath']))
+        print(e.message)
         raise IOError
 
     data = msg.RequestMsg()
@@ -72,6 +72,7 @@ def get_image(*args, **kwargs):
     return rst
 
 
+@MacroRecorder()
 def request(*args, **kwargs):
     data = msg.RequestMsg()
     data.session = kwargs['user_ip']

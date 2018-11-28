@@ -21,7 +21,7 @@ if platform.system() == 'Windows':
     win32file._setmaxstdio(2048)
 
 
-class Patinfo(APIView):
+class Upload(APIView):
 
     def post(self, request):
         """
@@ -29,7 +29,7 @@ class Patinfo(APIView):
         :param request: a django rest framework request object
         :return: boolean true for success, false for failure
         """
-        print('正在上传，loading...')
+        print('uploading...')
         file_name_list = []
 
         files = request.FILES.getlist('a')
@@ -80,12 +80,11 @@ class Patinfo(APIView):
                 builder = VolumeBuilder()
                 volfilepath, seriesuid = builder.build(seriespath)
             except Exception as ex:
-                print ex.message
-                return Response('创建volume异常')
+                return Response(ex.message)
 
             try:
                 series_svc.upload_volume(volfilepath, seriesuid)
             except Exception as e:
-                return Response('Volume入库失败')
+                return Response(e.message)
 
         return Response('success')

@@ -1,5 +1,5 @@
-import { Point } from "../tools/point";
-import { KeyValuePair } from "../../../../shared/common/keyvaluepair";
+import { Point } from '../tools/point';
+import { KeyValuePair } from '../../../../shared/common/keyvaluepair';
 declare var actions: any;
 
 export class CellModel {

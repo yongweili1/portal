@@ -4,8 +4,9 @@ export class EventAggregator {
     private static _aggregator: EventAggregator;
 
     public static Instance() {
-        if (this._aggregator == null)
-            this._aggregator = new EventAggregator()
+        if (this._aggregator == null) {
+            this._aggregator = new EventAggregator();
+        }
         return this._aggregator;
     }
 
@@ -19,6 +20,7 @@ export class EventAggregator {
     pageDelta = new ObservableObject();
     crossPoint = new ObservableObject();
     eventData = new ObservableObject();
+    roi = new ObservableObject();
     //#endregion
 
     private constructor() { }
@@ -26,11 +28,11 @@ export class EventAggregator {
 
 export class ObservableObject extends Subject<any> {
     constructor() {
-        super()
+        super();
         this.asObservable();
     }
 
     publish(data) {
-        this.next(data)
+        this.next(data);
     }
 }

@@ -1,4 +1,4 @@
-import { Point } from '../tools/point'
+import { Point } from '../tools/point';
 declare var createjs: any;
 
 export class Overlay extends createjs.Shape {
@@ -12,8 +12,8 @@ export class Overlay extends createjs.Shape {
         super();
         this.overlayStage = stage;
         this._is_hover = false;
-        this.addEventListener("mouseover", this.handleMouseOver.bind(this));
-        this.addEventListener("mouseout", this.handleMouseOut.bind(this));
+        this.addEventListener('mouseover', this.handleMouseOver.bind(this));
+        this.addEventListener('mouseout', this.handleMouseOut.bind(this));
     }
 
     setStartPoint(p) {
@@ -25,11 +25,11 @@ export class Overlay extends createjs.Shape {
     }
 
     handleMouseOver(evt) {
-        console.log(evt.currentTarget.type + ': handle MouseOver')
+        console.log(evt.currentTarget.type + ': handle MouseOver');
         this._is_hover = true;
     }
     handleMouseOut(evt) {
-        console.log(evt.currentTarget.type + ': handle MouseOut')
+        console.log(evt.currentTarget.type + ': handle MouseOut');
         this._is_hover = false;
     }
     public set color(color) {

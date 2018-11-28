@@ -6,10 +6,9 @@ import { RoiModel } from '../model/roi.model';
 
 
 @Injectable()
-
 export class RoiHttpService {
-    headers: HttpHeaders
-    options: any
+    headers: HttpHeaders;
+    options: any;
 
     constructor(
         private http: HttpClient,
@@ -21,8 +20,8 @@ export class RoiHttpService {
 
         this.options = {
             headers: this.headers,
-            observe: "response",
-        }
+            observe: 'response',
+        };
     }
 
     create(dto: RoiModel): Observable<any> {

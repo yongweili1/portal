@@ -1,16 +1,15 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ToastService } from './shared/service/toast.service';
 import { EventAggregator } from '../../shared/common/event_aggregator';
 import { KeyValuePair } from '../../shared/common/keyvaluepair';
-import { ExcuteHelper } from "./shared/tools/excute_helper";
 import { ContourModel } from './shared/model/contour.model';
 import { ContouringModel } from './shared/model/contouring.model';
 import { RoiModel } from './shared/model/roi.model';
-import { ConMessageService } from './shared/service/conMessage.service';
 import { ContouringService } from './shared/service/contouring.service';
 import { RoiHttpService } from './shared/service/roiHttp.service';
 import { SeriesHttpService } from './shared/service/seriesHttp.service';
+import { ToastService } from './shared/service/toast.service';
+import { ExcuteHelper } from './shared/tools/excute_helper';
 import { Point } from './shared/tools/point';
 
 declare var $: any;
@@ -21,9 +20,8 @@ declare var actions: any;
     templateUrl: './contouring.component.html',
     styleUrls: ['./contouring.component.less'],
 })
-export class ContouringComponent implements OnInit {
+export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     patientId: any = '';
-    seriList: any;
     seriesList: any;
     hasLoadVolume = false;
     seriesId: any;
@@ -41,7 +39,6 @@ export class ContouringComponent implements OnInit {
 
     constructor(
         public activeRoute: ActivatedRoute,
-        private conMessage: ConMessageService,
         public roiHttp: RoiHttpService,
         private seriesHttpService: SeriesHttpService,
         private conService: ContouringService,
@@ -60,13 +57,6 @@ export class ContouringComponent implements OnInit {
         this.cell1.id = 'cell-1';
         this.cell2.id = 'cell-2';
         this.cell3.id = 'cell-3';
-
-        if (this.conMessage.seriList != undefined) {
-            this.seriList = this.conMessage.seriList[0];
-        }
-        this.conMessage.seriList$.subscribe(value => {
-            this.seriList = value;
-        });
 
         EventAggregator.Instance().actionInfo.subscribe(value => {
             this.data.setActionInfo(value);
@@ -98,7 +88,7 @@ export class ContouringComponent implements OnInit {
                 canvasSize['view_size'] = that.getCanvasSize();
                 that.conService.noticeSize(canvasSize).subscribe(result => {
                     if (result.body === "success" && that.hasLoadVolume) {
-                        that.seriesHttpService.GetSeries("", "", "all", "", "").subscribe(data => {
+                        that.seriesHttpService.GetSeries('', '', "all", '', '').subscribe(data => {
                             data = JSON.parse(data);
                             that.updateCells(data);
                             this.updateSliceIndex(data['0']['slice_index']);
@@ -125,8 +115,8 @@ export class ContouringComponent implements OnInit {
 
     //#region Roi
     handleAddRoi() {
-        const seriesuid = $("#seriesSelect").val();
-        if (seriesuid != '' && seriesuid !== undefined) {
+        const seriesuid = $('#seriesSelect').val();
+        if (seriesuid !== '' && seriesuid !== undefined) {
             this.newROIDisplay = true;
             this.data.activeRoi = new RoiModel();
         } else {
@@ -143,7 +133,7 @@ export class ContouringComponent implements OnInit {
         this.roiHttp.delete(id).subscribe(result => {
             if (result.success) {
                 this.toastService.success('Delete succeed.');
-                const index = this.data.roiList.findIndex(x => x.id == id);
+                const index = this.data.roiList.findIndex(x => x.id === id);
                 this.data.roiList.splice(index, 1);
             } else {
                 this.toastService.error(result.msg);
@@ -153,7 +143,7 @@ export class ContouringComponent implements OnInit {
 
     mainautoroi() {
         const ROIData = {
-            seriesuid: $("#seriesSelect").val(),
+            seriesuid: $('#seriesSelect').val(),
             name: 'heart',
             color: '#FFFF00'
         };
@@ -165,12 +155,12 @@ export class ContouringComponent implements OnInit {
             } else {
                 this.toastService.error(result.msg);
             }
-        })
+        });
     }
 
     handleManageRoi(showDialog = true) {
-        let seriesuid = $("#seriesSelect").val();
-        if (seriesuid != '' && seriesuid != undefined) {
+        const seriesuid = $('#seriesSelect').val();
+        if (seriesuid !== '' && seriesuid !== undefined) {
             if (showDialog) {
                 this.manageROIDisplay = true;
             }
@@ -198,7 +188,7 @@ export class ContouringComponent implements OnInit {
             this.toastService.error('Illegal input.');
             return;
         }
-        this.data.activeRoi.seriesuid = $("#seriesSelect").val();
+        this.data.activeRoi.seriesuid = $('#seriesSelect').val();
         this.roiHttp.create(this.data.activeRoi).subscribe(response => {
             response = response.body;
             if (response.success) {
@@ -243,12 +233,12 @@ export class ContouringComponent implements OnInit {
     }
 
     changeROIVisible(evt) {
-        evt.target.classList.toggle("fa-eye-slash");
+        evt.target.classList.toggle('fa-eye-slash');
     }
 
     onSelectRoi(roi) {
         this.data.selectedRoi = roi;
-        this.conMessage.SetActiveRoi(this.data.selectedRoi);
+        EventAggregator.Instance().roi.publish(this.data.selectedRoi);
     }
     //#endregion
 

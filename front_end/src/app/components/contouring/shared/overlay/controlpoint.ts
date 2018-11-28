@@ -1,11 +1,11 @@
 import { Point } from '../tools/point';
-import { Hitbar } from '../overlay/hitbar'
+import { Hitbar } from '../overlay/hitbar';
 
 declare var createjs: any;
 declare var showcps: any;
 
 export class ControlPoint extends createjs.Shape {
-    type: string = 'controlpoint';
+    type = 'controlpoint';
     overlayStage: any;
     host: any;
     index: string;
@@ -20,8 +20,8 @@ export class ControlPoint extends createjs.Shape {
         this._tempPoint = new Point(0, 0);
         this._is_hover = false;
         this._color = 'yellow';
-        this.addEventListener("mouseover", this.handleMouseOver.bind(this));
-        this.addEventListener("mouseout", this.handleMouseOut.bind(this));
+        this.addEventListener('mouseover', this.handleMouseOver.bind(this));
+        this.addEventListener('mouseout', this.handleMouseOut.bind(this));
         this.overlayStage.addChild(this);
     }
 
@@ -31,8 +31,8 @@ export class ControlPoint extends createjs.Shape {
             this.overlayStage.clear();
             this.graphics.clear();
             this.graphics.beginStroke(this._color)
-                         .rect(point.x - 2, point.y - 2, 4, 4);
-            let hit = new Hitbar();
+                .rect(point.x - 2, point.y - 2, 4, 4);
+            const hit = new Hitbar();
             hit.graphics.rect(point.x - 3, point.y - 3, 6, 6);
             this.hitArea = hit;
             this.overlayStage.update();
@@ -40,15 +40,15 @@ export class ControlPoint extends createjs.Shape {
     }
 
     handleMouseOver(evt) {
-        console.log('handle MouseOver', evt.currentTarget.type)
+        console.log('handle MouseOver', evt.currentTarget.type);
         this._is_hover = true;
         this._color = 'red';
-        this.update(this._center)
+        this.update(this._center);
     }
     handleMouseOut(evt) {
-        console.log('handle MouseOut', evt.currentTarget.type)
+        console.log('handle MouseOut', evt.currentTarget.type);
         this._is_hover = false;
         this._color = 'yellow';
-        this.update(this._center)
+        this.update(this._center);
     }
 }

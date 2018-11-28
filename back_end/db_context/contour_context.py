@@ -5,12 +5,12 @@ from db_context.serializer import ContourSerializer
 
 class ContourContext(object):
     def __init__(self):
-        self.filepath = r'D:\volume'
         pass
 
     def delete(self, image_uid, roi_uid):
         try:
-            return Contour.objects.filter(imageuid=image_uid, roiuid=roi_uid).delete(), None
+            Contour.objects.filter(imageuid=image_uid, roiuid=roi_uid).delete()
+            return True, None
         except Exception as ex:
             return False, ex.message
 

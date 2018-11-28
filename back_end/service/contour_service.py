@@ -7,7 +7,7 @@ from utils.uid_generator import UidGenerator
 
 class ContourService(object):
     def __init__(self):
-        pass
+        self.filepath = r'D:\volume'
 
     def delete(self, image_uid, roi_uid):
         return contour_ctx.delete(image_uid, roi_uid)

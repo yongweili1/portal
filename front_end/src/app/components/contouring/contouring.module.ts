@@ -28,7 +28,6 @@ import { ContouringComponent } from './contouring.component';
 import { ContouringService } from './shared/service/contouring.service';
 import { CellComponent } from './cell/cell.component';
 import { ContouringTopBarComponent } from './contouring-top-bar/contouring-top-bar.component';
-import { ConMessageService } from './shared/service/conMessage.service';
 import { PatientHttpService } from './shared/service/patientHttp.service';
 import { RoiHttpService } from './shared/service/roiHttp.service';
 import { SeriesHttpService } from './shared/service/seriesHttp.service';
@@ -87,7 +86,6 @@ import { SliderBarComponent } from './slider-bar/slider-bar.component';
   providers: [
     ContouringService,
     ConfirmationService,
-    ConMessageService,
     PatientHttpService,
     RoiHttpService,
     SeriesHttpService,
