@@ -1,4 +1,4 @@
-from db_context import roi_ctx
+from db_context import roi_ctx, contour_ctx
 
 
 class RoiService(object):
@@ -31,6 +31,10 @@ class RoiService(object):
         try:
             for uid in uids:
                 success, msg = roi_ctx.delete(uid)
+                if not success:
+                    return success, msg
+                # Delete all contours of this roi
+                success, msg = contour_ctx.delete(roi_uid=uid)
                 if not success:
                     return success, msg
             return True, None

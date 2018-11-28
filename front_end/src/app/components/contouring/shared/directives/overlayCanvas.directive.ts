@@ -24,7 +24,9 @@ export class OverlayCanvasDirective implements OnInit, OnChanges {
     fader: FaderContainer;
     nudgeHelper: NudgeHelper;
     preFaderPos: Point;
+    rois: Array<RoiModel>;
     roi: RoiModel;
+    graphicChanged = true;
 
     @Input() sliceIndex: any;
     @Input() tag;
@@ -43,6 +45,24 @@ export class OverlayCanvasDirective implements OnInit, OnChanges {
         this.stage.mouseMoveOutside = true;
         this.stage.autoClear = false;
         this.stage.name = this.tag;
+
+        EventAggregator.Instance().rois.subscribe(rois => {
+            this.rois = rois;
+
+            // delete exilic contours
+            const exilicContours = [];
+            this.stage.children.forEach(contour => {
+                const roiuid = contour.roiConfig.id;
+                if (contour.type === shapes.freepen && this.rois.findIndex(x => x.id === roiuid) === -1) {
+                    exilicContours.push(contour);
+                }
+            });
+            exilicContours.forEach(freepen => {
+                this.stage.removeChild(freepen);
+            });
+            this.stage.clear();
+            this.stage.update();
+        });
 
         EventAggregator.Instance().roi.subscribe(roi => {
             this.roi = roi;
@@ -87,7 +107,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges {
             this.fader = this.getFader();
             this.fader.handleMouseDown(event);
             this.preFaderPos = this.fader.getCenter();
-            this.nudgeHelper.setMode(this.fader.getCenter(), this.getAllFreepenCps());
+            this.nudgeHelper.setMode(this.fader.getCenter(), this.getFreepenCps(this.roi.id));
         }
 
         this.shape = this.getShapeContainerInstance();
@@ -112,7 +132,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges {
                 this.preFaderPos = curFaderPos;
                 this.clip([bridge]);
             } else {
-                this.nudgeHelper.setMode(this.fader.getCenter(), this.getAllFreepenCps());
+                this.nudgeHelper.setMode(this.fader.getCenter(), this.getFreepenCps(this.roi.id));
                 this.nudgeHelper.setState();
             }
         }
@@ -129,14 +149,8 @@ export class OverlayCanvasDirective implements OnInit, OnChanges {
             this.fader.handleMouseUp(event);
         }
 
-        const contours = [];
-        this.stage.children.forEach(contour => {
-            if (contour.type === shapes.freepen) {
-                contours.push(contour.cps);
-            }
-        });
-
-        if (contours.length > 0) {
+        const contours = this.getFreepenCps(this.roi.id);
+        if (contours.length > 0 && this.graphicChanged) {
             const roi_uid = this.roi.id;
             const slice_index = this.sliceIndex;
             EventAggregator.Instance().contourCps.publish([roi_uid, slice_index, contours]);
@@ -186,9 +200,9 @@ export class OverlayCanvasDirective implements OnInit, OnChanges {
     }
 
     clip(bridgeCps: Array<Array<Point>>) {
-        const result = this.nudgeHelper.Push(this.getAllFreepenCps(), bridgeCps);
+        const result = this.nudgeHelper.Push(this.getFreepenCps(this.roi.id), bridgeCps);
 
-        this.removeAllFreepens();
+        this.removeFreepens(this.roi.id);
 
         result.forEach(contour => {
             const cps = new Array();
@@ -204,20 +218,20 @@ export class OverlayCanvasDirective implements OnInit, OnChanges {
         });
     }
 
-    getAllFreepenCps(): Array<Array<Point>> {
+    getFreepenCps(roiuid): Array<Array<Point>> {
         const cps = new Array();
         this.stage.children.forEach(contour => {
-            if (contour.type === shapes.freepen) {
+            if (contour.type === shapes.freepen && contour.roiConfig.id === roiuid) {
                 cps.push(contour.cps);
             }
         });
         return cps;
     }
 
-    removeAllFreepens() {
+    removeFreepens(roiuid) {
         const freepens = [];
         this.stage.children.forEach(contour => {
-            if (contour.type === shapes.freepen) {
+            if (contour.type === shapes.freepen && contour.roiConfig.id === roiuid) {
                 freepens.push(contour);
             }
         });
@@ -265,17 +279,21 @@ export class OverlayCanvasDirective implements OnInit, OnChanges {
             }
             graphic.forEach(shape => {
                 const contour = [];
-                shape.forEach(cp => {
+                const roiuid = shape.roiuid;
+                const cps = shape.cps;
+                cps.forEach(cp => {
                     contour.push(new Point(cp.x, cp.y));
                 });
-                contours.push(contour);
+                contours.push([roiuid, contour]);
             });
         });
         // draw graphics
-        contours.forEach(cps => {
+        contours.forEach(contour => {
+            const roiuid = contour[0];
+            const cps = contour[1];
             cps.push(cps[0].copy());
             const freepen = new FreepenContainer(this.stage);
-            freepen.setRoi(this.roi);
+            freepen.setRoi(this.rois.find(x => x.id === roiuid));
             freepen.cps = cps;
             freepen.update();
         });
