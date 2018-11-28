@@ -88,7 +88,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
                 canvasSize['view_size'] = that.getCanvasSize();
                 that.conService.noticeSize(canvasSize).subscribe(result => {
                     if (result.body === "success" && that.hasLoadVolume) {
-                        that.seriesHttpService.GetSeries('', '', "all", '', '').subscribe(data => {
+                        that.seriesHttpService.GetSeries().subscribe(data => {
                             data = JSON.parse(data);
                             that.updateCells(data);
                             this.updateSliceIndex(data['0']['slice_index']);
@@ -273,10 +273,14 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private handleLocate(focus: any, display: any, crossPoint: any) {
-        this.seriesHttpService.GetLocatePic(focus, display, crossPoint).subscribe((value) => {
-            const data = JSON.parse(value);
-            this.updateCells(data, false, display);
-            this.updateSliceIndex(data['0']['slice_index']);
+        this.seriesHttpService.GetLocatePic(focus, crossPoint).subscribe((value) => {
+            if (value.success) {
+                const data = JSON.parse(value.data);
+                this.updateCells(data, false, display);
+                this.updateSliceIndex(data['0']['slice_index']);
+            } else {
+                this.toastService.error(value.message);
+            }
         });
     }
     //#endregion
@@ -313,10 +317,14 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private handleScroll(focus: any, delta: any) {
-        this.seriesHttpService.GetSeriesPic(focus, focus, delta, '', '').subscribe((value) => {
-            const data = JSON.parse(value);
-            this.updateCells(data, false);
-            this.updateSliceIndex(data['0']['slice_index']);
+        this.seriesHttpService.GetSeriesPic(focus, delta).subscribe((value) => {
+            if (value.success) {
+                const data = JSON.parse(value.data);
+                this.updateCells(data, false);
+                this.updateSliceIndex(data['0']['slice_index']);
+            } else {
+                this.toastService.error(value.message);
+            }
         }, (error) => {
             console.log(error);
         });
@@ -339,8 +347,12 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         const that = this;
         this.seriesHttpService.GetZoomPic(e[0], e[1]).subscribe(result => {
-            result = JSON.parse(result);
-            that.updateCells(result);
+            if (result.success) {
+                result = JSON.parse(result.data);
+                that.updateCells(result);
+            } else {
+                this.toastService.error(result.message);
+            }
         });
     }
     //#endregion
@@ -352,8 +364,12 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         const that = this;
         this.seriesHttpService.GetWindowPic(evt[0], evt[1]).subscribe(result => {
-            result = JSON.parse(result);
-            that.updateCells(result, true);
+            if (result.success) {
+                result = JSON.parse(result.data);
+                that.updateCells(result);
+            } else {
+                this.toastService.error(result.message);
+            }
         });
     }
     //#endregion
@@ -366,8 +382,12 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         const that = this;
         this.seriesHttpService.GetPanPic(e[0], e[1], e[2]).subscribe(result => {
-            result = JSON.parse(result);
-            that.updateCells(result);
+            if (result.success) {
+                result = JSON.parse(result.data);
+                that.updateCells(result);
+            } else {
+                this.toastService.error(result.message);
+            }
         });
     }
     //#endregion
@@ -380,8 +400,12 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         const that = this;
         this.seriesHttpService.GetRotatePic(e[0], e[1], e[2]).subscribe(result => {
-            result = JSON.parse(result);
-            that.updateCells(result);
+            if (result.success) {
+                result = JSON.parse(result.data);
+                that.updateCells(result);
+            } else {
+                this.toastService.error(result.message);
+            }
         });
     }
     //#endregion
@@ -392,8 +416,12 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         const that = this;
         this.seriesHttpService.GetCenterPic().subscribe(result => {
-            result = JSON.parse(result);
-            that.updateCells(result);
+            if (result.success) {
+                result = JSON.parse(result.data);
+                that.updateCells(result);
+            } else {
+                this.toastService.error(result.message);
+            }
         });
     }
 
@@ -403,8 +431,12 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         const that = this;
         this.seriesHttpService.GetResetPic().subscribe(result => {
-            result = JSON.parse(result);
-            that.updateCells(result);
+            if (result.success) {
+                result = JSON.parse(result.data);
+                that.updateCells(result);
+            } else {
+                this.toastService.error(result.message);
+            }
         });
     }
 
@@ -413,7 +445,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             if (response['success']) {
                 this.seriesList = response['data'];
             } else {
-                this.toastService.error(response['message'])
+                this.toastService.error(response['message']);
             }
         });
     }
@@ -434,19 +466,24 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.handleManageRoi(false);
                 EventAggregator.Instance().volumnSize.publish(response.data);
                 this.conService.noticeSize(canvasSize).subscribe(result => {
-                    if (result.body === "success") {
-                        this.seriesHttpService.GetSeries(seriesId, '', 'all', this.cell1.imageCanvas.width, this.cell1.imageCanvas.height)
-                            .subscribe((value) => {
-                                const data = JSON.parse(value);
+                    if (result.body.success) {
+                        this.seriesHttpService.GetSeries().subscribe((value) => {
+                            if (value.success) {
+                                const data = JSON.parse(value.data);
                                 that.updateCells(data, true);
                                 this.updateSliceIndex(data['0']['slice_index']);
                                 this.toastService.success('Load succeed.');
-                            }, (error) => {
-                                this.toastService.error('Load failed.');
-                                console.log(error);
-                            });
+                            } else {
+                                this.toastService.success(value.message);
+                            }
+                        }, (error) => {
+                            this.toastService.error('Load failed.');
+                            console.log(error);
+                        });
                         this.hasLoadVolume = true;
                         this.seriesId = seriesId;
+                    } else {
+                        this.toastService.error(result.body.message);
                     }
                 });
             } else {

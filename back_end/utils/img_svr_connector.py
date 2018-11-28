@@ -1,8 +1,8 @@
 # -*-coding:utf-8-*-
 
 import json
-import time
 
+from utils.response_dto import ResponseDto
 from be_proxy import proxy
 from utils import image_msg_pb2 as msg
 from utils.macro_recorder import MacroRecorder
@@ -12,7 +12,7 @@ class ResponseData(object):
     def __init__(self, response_data):
         self.success = True
         self.comment = ''
-        self.kwargs = ''
+        self.content = ''
 
         data = msg.ResponseMsg()
         data.ParseFromString(response_data)
@@ -20,66 +20,25 @@ class ResponseData(object):
         self.comment = data.comment
 
         if data.content:
-            self.kwargs = data.content
+            self.content = data.content
 
     def arg(self, key=None):
         if key is None:
-            return self.kwargs
-        if key in self.kwargs:
-            return self.kwargs[key]
+            return self.content
+        if key in self.content:
+            return self.content[key]
         else:
             return None
 
 
 @MacroRecorder()
-def load_volume(*args, **kwargs):
-    try:
-        f = open(kwargs['volumepath'], 'rb')
-        vol = f.read()
-        f.close()
-    except Exception as e:
-        print(e.message)
-        raise IOError
-
+def handle_command(command, **kwargs):
     data = msg.RequestMsg()
-    data.session = kwargs['user_ip']
-    data.server_name = kwargs['server_name']
-    data.command = kwargs['command']
-    data.content.params = json.dumps({'seriesuid': kwargs['seriesuid']})
-    data.content.volume = vol
+    data.command = command
+    data.content = json.dumps(kwargs)
     data = data.SerializeToString()
     rst = proxy.sync_send_command(data, 100, 'img_srv')
-    rst = ResponseData(rst)
 
-    return rst
-
-
-@MacroRecorder()
-def get_image(*args, **kwargs):
-    data = msg.RequestMsg()
-    data.session = kwargs['user_ip']
-    data.server_name = kwargs['server_name']
-    data.command = kwargs['command']
-    data.content.params = json.dumps(kwargs)
-    data = data.SerializeToString()
-    b = time.time()
-
-    rst = proxy.sync_send_command(data, 100, 'img_srv')
-    c = time.time()
-    rst = ResponseData(rst)
-
-    print('req&resp use {} ms'.format(str((c - b) * 1000)))
-    return rst
-
-
-@MacroRecorder()
-def request(*args, **kwargs):
-    data = msg.RequestMsg()
-    data.session = kwargs['user_ip']
-    data.server_name = kwargs['server_name']
-    data.command = kwargs['command']
-    data.content.params = json.dumps(kwargs)
-    data = data.SerializeToString()
-
-    rst = proxy.sync_send_command(data, 100, 'img_srv')
-    return ResponseData(rst)
+    data = msg.ResponseMsg()
+    data.ParseFromString(rst)
+    return ResponseDto(success=data.success, message=data.comment, data=data.content)

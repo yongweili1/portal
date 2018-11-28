@@ -1,13 +1,6 @@
-message Content {
-    optional string params = 1;
-    optional bytes volume = 2;
-}
-
 message RequestMsg {
-    required string session = 1;
-    required string server_name = 2;
-    required string command = 3;
-    required Content content = 4;
+    required string command = 1;
+    optional string content = 2;
 }
 
 message ResponseMsg {
