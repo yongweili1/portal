@@ -68,7 +68,7 @@ def load(**kwargs):
     :return:
     """
     try:
-        volume_path = kwargs['volume_path']
+        volume_path = kwargs['volumepath']
     except Exception as err:
         return response(success=False, message=err.message)
 

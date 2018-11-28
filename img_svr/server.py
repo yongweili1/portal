@@ -16,7 +16,7 @@ class MyCommandHandler(comproxy.PyBaseCmdHandlerEx):
         data = RequestData(current_package_data)
         b = time.time()
 
-        rsp = cmd.commands[data.command](**data.kwargs)
+        rsp = cmd.commands[data.command](**data.content)
         c = time.time()
         p_context.Reply(rsp)
         print('handler use{} ms'.format(str((c - b) * 1000)))

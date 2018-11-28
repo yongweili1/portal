@@ -6,10 +6,8 @@ from msg import image_msg_pb2 as msg
 
 class RequestData(object):
     def __init__(self, request_data):
-        self.session = ''
-        self.server_name = ''
         self.command = ''
-        self.kwargs = {}
+        self.content = {}
         root = os.path.dirname(os.path.abspath(__file__)).split('portal')[0]
         root = os.path.join(root, 'portal_ferry')
         self.dir_path = os.path.join(root, 'srv/volume')
@@ -18,24 +16,16 @@ class RequestData(object):
 
         data = msg.RequestMsg()
         data.ParseFromString(request_data)
-        self.session = data.session
-        self.server_name = data.server_name
         self.command = data.command
 
-        if data.content and data.content.params:
-            self.kwargs = json.loads(data.content.params)
-        if data.content and data.content.volume:
-            volume_path = r'{0}/{1}.nii.gz'.format(self.dir_path, self.kwargs['seriesuid'])
-            f = open(volume_path, 'wb')
-            f.write(data.content.volume)
-            f.close()
-            self.kwargs['volume_path'] = volume_path
+        if data.content:
+            self.content = json.loads(data.content)
 
     def arg(self, key=None):
         if key is None:
-            return self.kwargs
-        if key in self.kwargs:
-            return self.kwargs[key]
+            return self.content
+        if key in self.content:
+            return self.content[key]
         else:
             return None
 
