@@ -20,6 +20,7 @@ export class EventAggregator {
     pageDelta = new ObservableObject();
     crossPoint = new ObservableObject();
     eventData = new ObservableObject();
+    rois = new ObservableObject();
     roi = new ObservableObject();
     //#endregion
 

@@ -135,6 +135,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.toastService.success('Delete succeed.');
                 const index = this.data.roiList.findIndex(x => x.id === id);
                 this.data.roiList.splice(index, 1);
+                EventAggregator.Instance().rois.publish(this.data.roiList);
             } else {
                 this.toastService.error(result.msg);
             }
@@ -151,6 +152,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             if (result.body.code == '200') {
                 this.toastService.success('Save succeed.');
                 this.data.roiList = result.body.data;
+                EventAggregator.Instance().rois.publish(this.data.roiList);
                 this.newROIDisplay = false;
             } else {
                 this.toastService.error(result.msg);
@@ -167,6 +169,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             this.roiHttp.get(seriesuid).subscribe(response => {
                 if (response.success) {
                     this.data.roiList = response.data;
+                    EventAggregator.Instance().rois.publish(this.data.roiList);
                     if (this.data.roiList.length > 0) {
                         this.onSelectRoi(this.data.roiList[0]);
                     }
@@ -195,6 +198,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.toastService.success('Save succeed.');
                 this.data.activeRoi.id = response.data;
                 this.data.roiList.push(this.data.activeRoi);
+                EventAggregator.Instance().rois.publish(this.data.roiList);
             } else {
                 this.toastService.success(response.message);
             }
@@ -226,6 +230,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             if (result.code == '200') {
                 this.toastService.success(`Delete succeed.`);
                 this.data.roiList = result.data;
+                EventAggregator.Instance().rois.publish(this.data.roiList);
             } else {
                 this.toastService.error(result.msg);
             }

@@ -309,16 +309,20 @@ class TurnPage(APIView):
         img_server_rsp_json = json.loads(img_server_rsp)
 
         slice_index = img_server_rsp_json['0']['slice_index']
-        cps, msg = contour_svc.retrieve(slice_index)
+        graphics, msg = contour_svc.retrieve(slice_index)
         slice_contours = []
-        for cp in cps:
-            file_path = cp.cpspath
+        for graphic in graphics:
+            file_path = graphic.cpspath
             if not os.path.isfile(file_path):
                 continue
             with open(file_path, 'rb') as f:
-                contour = f.read()
-                contour_json = json.loads(contour)
-                slice_contours.append(contour_json)
+                cps = f.read()
+                cps = json.loads(cps)
+                contour = {
+                    'roiuid': graphic.roiuid.roiuid,
+                    'cps': cps
+                }
+                slice_contours.append(contour)
                 f.close()
         kk = [slice_contours]
         img_server_rsp_json.get('0')[u'graphic']['contours'] = kk
