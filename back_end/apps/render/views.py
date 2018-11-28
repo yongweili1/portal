@@ -313,12 +313,13 @@ class TurnPage(APIView):
         slice_contours = []
         for cp in cps:
             file_path = cp.cpspath
+            if not os.path.isfile(file_path):
+                continue
             with open(file_path, 'rb') as f:
                 contour = f.read()
                 contour_json = json.loads(contour)
                 slice_contours.append(contour_json)
                 f.close()
-            break
         kk = [slice_contours]
         img_server_rsp_json.get('0')[u'graphic']['contours'] = kk
         img_rsp = json.dumps(img_server_rsp_json)
@@ -609,8 +610,6 @@ class SetCenter(APIView):
 
 
 class Contour(APIView):
-    def __init__(self):
-        pass
 
     def get(self, request):
         roi_uid = request.GET.get('roi_uid', None)
@@ -636,8 +635,6 @@ class Contour(APIView):
 
 
 class Roi(APIView):
-    def __init__(self):
-        pass
 
     def get(self, request):
         series_uid = request.GET.get('seriesuid', None)

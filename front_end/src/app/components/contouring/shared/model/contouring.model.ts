@@ -1,5 +1,5 @@
-import { CellModel } from "./cell.model";
-import { RoiModel } from "./roi.model";
+import { CellModel } from './cell.model';
+import { RoiModel } from './roi.model';
 
 export class ContouringModel {
     cell1: CellModel;
@@ -31,12 +31,12 @@ export class ContouringModel {
     }
 
     setCrossLineColor() {
-        this.cell1.crossM.hColor = '#2196F3'
-        this.cell1.crossM.vColor = '#CDDC39'
-        this.cell2.crossM.hColor = '#F44336'
-        this.cell2.crossM.vColor = '#CDDC39'
-        this.cell3.crossM.hColor = '#F44336'
-        this.cell3.crossM.vColor = '#2196F3'
+        this.cell1.crossM.hColor = '#2196F3';
+        this.cell1.crossM.vColor = '#CDDC39';
+        this.cell2.crossM.hColor = '#F44336';
+        this.cell2.crossM.vColor = '#CDDC39';
+        this.cell3.crossM.hColor = '#F44336';
+        this.cell3.crossM.vColor = '#2196F3';
     }
 
     setActionInfo(value) {
