@@ -5,7 +5,7 @@ import time
 from rest_framework.views import APIView
 
 from service import macro_svc, series_svc
-from settings import STATIC_ROOT
+from back_end.settings import STATIC_ROOT
 from utils.macro_recorder import MacroRecorder
 from utils.response_dto import ResponseDto
 
