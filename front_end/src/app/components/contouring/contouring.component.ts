@@ -88,7 +88,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
                 canvasSize['view_size'] = that.getCanvasSize();
                 that.conService.noticeSize(canvasSize).subscribe(result => {
                     if (result.body === "success" && that.hasLoadVolume) {
-                        that.seriesHttpService.GetSeries('', '', "all", '', '').subscribe(data => {
+                        that.seriesHttpService.GetSeries().subscribe(data => {
                             data = JSON.parse(data);
                             that.updateCells(data);
                             this.updateSliceIndex(data['0']['slice_index']);
@@ -273,7 +273,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private handleLocate(focus: any, display: any, crossPoint: any) {
-        this.seriesHttpService.GetLocatePic(focus, display, crossPoint).subscribe((value) => {
+        this.seriesHttpService.GetLocatePic(focus, crossPoint).subscribe((value) => {
             const data = JSON.parse(value);
             this.updateCells(data, false, display);
             this.updateSliceIndex(data['0']['slice_index']);
@@ -313,7 +313,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private handleScroll(focus: any, delta: any) {
-        this.seriesHttpService.GetSeriesPic(focus, focus, delta, '', '').subscribe((value) => {
+        this.seriesHttpService.GetSeriesPic(focus, delta).subscribe((value) => {
             const data = JSON.parse(value);
             this.updateCells(data, false);
             this.updateSliceIndex(data['0']['slice_index']);
@@ -435,16 +435,15 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
                 EventAggregator.Instance().volumnSize.publish(response.data);
                 this.conService.noticeSize(canvasSize).subscribe(result => {
                     if (result.body === "success") {
-                        this.seriesHttpService.GetSeries(seriesId, '', 'all', this.cell1.imageCanvas.width, this.cell1.imageCanvas.height)
-                            .subscribe((value) => {
-                                const data = JSON.parse(value);
-                                that.updateCells(data, true);
-                                this.updateSliceIndex(data['0']['slice_index']);
-                                this.toastService.success('Load succeed.');
-                            }, (error) => {
-                                this.toastService.error('Load failed.');
-                                console.log(error);
-                            });
+                        this.seriesHttpService.GetSeries().subscribe((value) => {
+                            const data = JSON.parse(value);
+                            that.updateCells(data, true);
+                            this.updateSliceIndex(data['0']['slice_index']);
+                            this.toastService.success('Load succeed.');
+                        }, (error) => {
+                            this.toastService.error('Load failed.');
+                            console.log(error);
+                        });
                         this.hasLoadVolume = true;
                         this.seriesId = seriesId;
                     }

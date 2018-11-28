@@ -53,7 +53,7 @@ def status(**kwargs):
     try:
         seriesuid = kwargs['seriesuid']
     except Exception as err:
-        return response(success=False, message='Invalid parameters.')
+        return response(success=False, message=err.message)
 
     rst = server.check_volume_status(seriesuid)
     return response(str(rst))
@@ -69,9 +69,8 @@ def load(**kwargs):
     """
     try:
         volume_path = kwargs['volume_path']
-        seriesuid = kwargs['seriesuid']
     except Exception as err:
-        return response(success=False, message='Invalid parameters.')
+        return response(success=False, message=err.message)
 
     try:
         vol = cio.read_image(volume_path)
@@ -113,7 +112,7 @@ def unload(**kwargs):
     try:
         seriesuid = kwargs['seriesuid']
     except Exception as err:
-        return response(success=False, message='Invalid parameters.')
+        return response(success=False, message=err.message)
 
     print(seriesuid)
     rst, msg = server.unload_volume(seriesuid)
@@ -147,7 +146,7 @@ def show(**kwargs):
         result = imageentity.updater().get_result()
         return response(json.dumps(result))
     except Exception as err:
-        return response(success=False, message='show image failed')
+        return response(success=False, message=err.message)
 
 
 @command.register('page')
@@ -162,8 +161,8 @@ def page(**kwargs):
     try:
         delta = int(kwargs['delta'])
         focus_view = get_view_index(kwargs['focus_view'])
-    except:
-        return response(success=False, message='Invalid parameters.')
+    except Exception as err:
+        return response(success=False, message=err.message)
 
     imageentity.page(focus_view, delta)
     imageentity.updater().update(RefreshType.All)
@@ -184,8 +183,8 @@ def zoom(**kwargs):
     try:
         zoom_factor = kwargs['zoom_factor']
         focus_view = get_view_index(kwargs['focus_view'])
-    except:
-        return response(success=False, message='Invalid parameters.')
+    except Exception as err:
+        return response(success=False, message=err.message)
 
     try:
         zoom_factor = float(zoom_factor)
@@ -212,8 +211,8 @@ def rotate(**kwargs):
         pos_cur = string_int_trans(kwargs['pos_cur'].split(','), 's2i')
         focus_view = get_view_index(kwargs['focus_view'])
         print("=== enter rotate ===")
-    except:
-        return response(success=False, message='Invalid parameters.')
+    except Exception as err:
+        return response(success=False, message=err.message)
 
     try:
         views = imageentity.get_children_views()
@@ -241,8 +240,8 @@ def pan(**kwargs):
         pos_pre = string_int_trans(kwargs['pos_pre'].split(','), 's2i')
         pos_cur = string_int_trans(kwargs['pos_cur'].split(','), 's2i')
         focus_view = get_view_index(kwargs['focus_view'])
-    except:
-        return response(success=False, message='Invalid parameters.')
+    except Exception as err:
+        return response(success=False, message=err.message)
 
     try:
         imageentity.pan(focus_view, pos_pre, pos_cur)
@@ -273,8 +272,8 @@ def roll(**kwargs):
         height = int(kwargs['height'])
         focus_view = get_view_index(kwargs['focus_view'])
         display_view = get_view_index(kwargs['display_view'])
-    except:
-        return response(success=False, message='Invalid parameters.')
+    except Exception as err:
+        return response(success=False, message=err.message)
 
     server.set_cursor(cursor)
     imgs = server.get_images(display_view, width, height)
@@ -300,8 +299,8 @@ def color(**kwargs):
         height = int(kwargs['height'])
         focus_view = get_view_index(kwargs['focus_view'])
         display_view = get_view_index(kwargs['display_view'])
-    except:
-        return response(success=False, message='Invalid parameters.')
+    except Exception as err:
+        return response(success=False, message=err.message)
 
     server.set_colormode(colormode)
     imgs = server.get_images(display_view, width, height)
@@ -317,8 +316,8 @@ def resize(**kwargs):
     """
     try:
         size = kwargs['view_size']
-    except:
-        return response(success=False, message='Invalid parameters.')
+    except Exception as err:
+        return response(success=False, message=err.message)
 
     size = dict(size)
     children_views = imageentity.get_children_views()
@@ -333,8 +332,8 @@ def locate(**kwargs):
     try:
         focus_view = get_view_index(kwargs['focus_view'])
         cursor_2D = kwargs['cross_point'].split(",")
-    except:
-        return response(success=False, message='Invalid parameters.')
+    except Exception as err:
+        return response(success=False, message=err.message)
 
     try:
         imageentity.locate(focus_view, cursor_2D)

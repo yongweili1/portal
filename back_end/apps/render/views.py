@@ -181,29 +181,11 @@ class GetImage(APIView):
     def get(self, request):
         """
         the client request loads a series and get images
-        :param seriesuid: series uid
-        :param width: width of viewport
-        :param height: height of viewport
-        :param focus_view: current focused view, 'transverse' for transverse,
-              'saggital' for saggital, 'coronal' for coronal
-        :param display_view: need to displayed on screen, 'transverse' for transverse,
-              'saggital' for saggital, 'coronal' for coronal, 'all' for all view
         :return: rgb image data
         """
-        seriesuid = request.GET.get('seriesuid', None)
-        width = request.GET.get('width', None)
-        height = request.GET.get('height', None)
-        display_view = request.GET.get('display_view', 'all')
         user_ip = request.META.get('REMOTE_ADDR', None)
 
-        if width is None or height is None:
-            return Response('请输入完整的请求数据')
-
         params = {
-            'seriesuid': seriesuid,
-            'width': width,
-            'height': height,
-            'display_view': display_view,
             'user_ip': user_ip,
             'server_name': 'image',
             'command': 'show',
@@ -226,27 +208,16 @@ class ChangeColor(APIView):
         """
         Change the color of the image
         :param colormode: 0 for grayscale, 1 for red, 2 for green, 3 for blue, 4 for jet color, 5 for color config
-        :param width: width of viewport
-        :param height: height of viewport
-        :param focus_view: current focused view, 'transverse' for transverse,
-              'saggital' for saggital, 'coronal' for coronal
         :param display_view: need to displayed on screen, 'transverse' for transverse,
               'saggital' for saggital, 'coronal' for coronal, 'all' for all view
         :return: rgb image data
         """
         colormode = request.GET.get('colormode', '0')
-        width = request.GET.get('width', None)
-        height = request.GET.get('height', None)
-        focus_view = request.GET.get('focus_view', None)
         display_view = request.GET.get('display_view', 'all')
         user_ip = request.META.get('REMOTE_ADDR', None)
-        if width is None or height is None:
-            return Response('请输入完整的请求数据')
 
         params = {
             'colormode': colormode,
-            'width': width,
-            'height': height,
             'display_view': display_view,
             'user_ip': user_ip,
             'server_name': 'image',
@@ -270,8 +241,6 @@ class TurnPage(APIView):
         """
         Page turning
         :param delta: cursor delta
-        :param width: width of viewport
-        :param height: height of viewport
         :param focus_view: current focused view, 'transverse' for transverse,
               'saggital' for saggital, 'coronal' for coronal
         :param display_view: need to displayed on screen, 'transverse' for transverse,
@@ -279,18 +248,11 @@ class TurnPage(APIView):
         :return: rgb image data
         """
         delta = request.GET.get('delta', '0')
-        width = request.GET.get('width', None)
-        height = request.GET.get('height', None)
         focus_view = request.GET.get('focus_view', None)
         user_ip = request.META.get('REMOTE_ADDR', None)
 
-        if width is None or height is None:
-            return Response('请输入完整的请求数据')
-
         params = {
             'delta': delta,
-            'width': width,
-            'height': height,
             'focus_view': focus_view,
             'user_ip': user_ip,
             'server_name': 'image',
@@ -336,8 +298,6 @@ class Pan(APIView):
         """
         translation
         :param shift: center shift, like [1,1,2], you should pass it like `'1,1,2'`
-        :param width: width of viewport
-        :param height: height of viewport
         :param focus_view: current focused view, 'transverse' for transverse,
               'saggital' for saggital, 'coronal' for coronal
         :param display_view: need to displayed on screen, 'transverse' for transverse,
@@ -377,27 +337,16 @@ class Roll(APIView):
         """
         roll
         :param cursor: the 3d world coordinate of a cursor, like [1,1,2], you should pass it like `'1,1,2'`
-        :param width: width of viewport
-        :param height: height of viewport
         :param focus_view: current focused view, 'transverse' for transverse,
               'saggital' for saggital, 'coronal' for coronal
-        :param display_view: need to displayed on screen, 'transverse' for transverse,
-              'saggital' for saggital, 'coronal' for coronal, 'all' for all view
         :return: rgb image data
         """
         cursor = request.GET.get('cursor', '0')
-        width = request.GET.get('width', None)
-        height = request.GET.get('height', None)
         focus_view = request.GET.get('focus_view', None)
-        display_view = request.GET.get('display_view', 'all')
         user_ip = request.META.get('REMOTE_ADDR', None)
-        if width is None or height is None:
-            return Response('请输入完整的请求数据')
 
         params = {
             'cursor': cursor,
-            'width': width,
-            'height': height,
             'focus_view': focus_view,
             'user_ip': user_ip,
             'server_name': 'image',
@@ -421,12 +370,8 @@ class Rotate(APIView):
         """
         Rotate
         :param angle: rotate angle
-        :param width: width of viewport
-        :param height: height of viewport
         :param focus_view: current focused view, 'transverse' for transverse,
               'saggital' for saggital, 'coronal' for coronal
-        :param display_view: need to displayed on screen, 'transverse' for transverse,
-              'saggital' for saggital, 'coronal' for coronal, 'all' for all view
         :return: rgb image data
         """
         pos_pre = request.GET.get('pos_pre', None)
@@ -462,8 +407,6 @@ class Zoom(APIView):
         """
         Zoom
         :param shift: zoom factor shift
-        :param width: width of viewport
-        :param height: height of viewport
         :param focus_view: current focused view, 'transverse' for transverse,
               'saggital' for saggital, 'coronal' for coronal
         :param display_view: need to displayed on screen, 'transverse' for transverse,
@@ -500,8 +443,6 @@ class ReSetVolume(APIView):
     def get(self, request):
         """
         Reset voulme data
-        :param width: width of viewport
-        :param height: height of viewport
         :param focus_view: current focused view, 'transverse' for transverse,
               'saggital' for saggital, 'coronal' for coronal
         :param display_view: need to displayed on screen, 'transverse' for transverse,
@@ -569,13 +510,12 @@ class CrossLineLocation(APIView):
         display_view = request.GET.get('display_view', None)
         user_ip = request.META.get('REMOTE_ADDR', None)
 
-        if not cross_point or not focus_view or not user_ip or not display_view:
+        if not cross_point or not focus_view or not user_ip:
             return Response('请求参数不完整')
 
         params = {
             'cross_point': cross_point,
             'focus_view': focus_view,
-            'display_view': display_view,
             'user_ip': user_ip,
             'server_name': 'image',
             'command': 'locate',
