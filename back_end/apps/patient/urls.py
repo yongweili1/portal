@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from . import views
 
 urlpatterns = [
-    url(r'^patinfolist/$', csrf_exempt(views.Patinfolist.as_view()), name='patinfolist'),
+    url(r'^patinfolist/$', csrf_exempt(views.Patient.as_view()), name='patinfolist'),
     # url(r'^websocket', views.websocket, name='websocket'),
 ]
 

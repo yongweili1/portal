@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from service import patient_svc
 
 
-class Patinfolist(APIView):
+class Patient(APIView):
 
     def get(self, request):
         """
