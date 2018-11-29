@@ -6,7 +6,7 @@ import { ContourModel } from '../model/contour.model';
 
 
 @Injectable()
-export class ContouringService {
+export class ContourService {
 
     headers: HttpHeaders;
     options: any;

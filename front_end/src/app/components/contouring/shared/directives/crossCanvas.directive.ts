@@ -1,14 +1,14 @@
-import { Directive, ElementRef, Input, OnInit, SimpleChanges } from '@angular/core';
-import { Point } from '../tools/point';
-import { Hitbar } from '../overlay/hitbar';
+import { Directive, ElementRef, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { EventAggregator } from '../../../../shared/common/event_aggregator';
-import { ExcuteHelper } from "../../../contouring/shared/tools/excute_helper";
+import { ExcuteHelper } from '../../../contouring/shared/tools/excute_helper';
+import { Hitbar } from '../overlay/hitbar';
+import { Point } from '../tools/point';
 declare var createjs: any;
 
 @Directive({
     selector: '[cross-canvas]'
 })
-export class CrossCanvasDirective implements OnInit {
+export class CrossCanvasDirective implements OnInit, OnChanges {
     @Input() tag;
     @Input() point: Point;
     @Input() hColor: string;
@@ -52,12 +52,12 @@ export class CrossCanvasDirective implements OnInit {
         this.stage.addChild(this.horizontal, this.vertical, this.crossPoint);
 
         this.canvas.addEventListener('mouseup', this.handleMouseUp.bind(this))
-        this.horizontal.addEventListener("pressmove", this.handlePressMove.bind(this));
-        this.vertical.addEventListener("pressmove", this.handlePressMove.bind(this));
-        this.crossPoint.addEventListener("pressmove", this.handlePressMove.bind(this));
-        this.horizontal.addEventListener("pressup", this.handlePressUp.bind(this));
-        this.vertical.addEventListener("pressup", this.handlePressUp.bind(this));
-        this.crossPoint.addEventListener("pressup", this.handlePressUp.bind(this));
+        this.horizontal.addEventListener('pressmove', this.handlePressMove.bind(this));
+        this.vertical.addEventListener('pressmove', this.handlePressMove.bind(this));
+        this.crossPoint.addEventListener('pressmove', this.handlePressMove.bind(this));
+        this.horizontal.addEventListener('pressup', this.handlePressUp.bind(this));
+        this.vertical.addEventListener('pressup', this.handlePressUp.bind(this));
+        this.crossPoint.addEventListener('pressup', this.handlePressUp.bind(this));
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -81,8 +81,8 @@ export class CrossCanvasDirective implements OnInit {
     private updateHorizontal() {
         this.horizontal.graphics.clear();
         this.horizontal.graphics.beginStroke(this.hColor)
-            .setStrokeStyle(1, "round").moveTo(0, this.point.y).lineTo(this.canvas.width, this.point.y);
-        let horizontalHitbar = new Hitbar();
+            .setStrokeStyle(1, 'round').moveTo(0, this.point.y).lineTo(this.canvas.width, this.point.y);
+        const horizontalHitbar = new Hitbar();
         horizontalHitbar.graphics.moveTo(0, this.point.y).lineTo(this.canvas.width, this.point.y);
         this.horizontal.hitArea = horizontalHitbar;
     }
@@ -90,15 +90,15 @@ export class CrossCanvasDirective implements OnInit {
     private updateVertical() {
         this.vertical.graphics.clear();
         this.vertical.graphics.beginStroke(this.vColor)
-            .setStrokeStyle(1, "round").moveTo(this.point.x, 0).lineTo(this.point.x, this.canvas.height);
-        let verticalHitbar = new Hitbar();
+            .setStrokeStyle(1, 'round').moveTo(this.point.x, 0).lineTo(this.point.x, this.canvas.height);
+        const verticalHitbar = new Hitbar();
         verticalHitbar.graphics.moveTo(this.point.x, 0).lineTo(this.point.x, this.canvas.height);
         this.vertical.hitArea = verticalHitbar;
     }
 
     private updateCrossPoint() {
         this.crossPoint.graphics.clear();
-        this.crossPoint.graphics.beginFill("white").drawCircle(this.point.x, this.point.y, 8);
+        this.crossPoint.graphics.beginFill('white').drawCircle(this.point.x, this.point.y, 8);
     }
 
     setCrossPoint(point: Point) {
@@ -114,26 +114,28 @@ export class CrossCanvasDirective implements OnInit {
     }
 
     handlePressMove(evt) {
-        if (evt.currentTarget == this.vertical) {
+        if (evt.currentTarget === this.vertical) {
             this.setCrossPoint(new Point(evt.stageX, this.point.y));
-        } else if (evt.currentTarget == this.horizontal) {
+        } else if (evt.currentTarget === this.horizontal) {
             this.setCrossPoint(new Point(this.point.x, evt.stageY));
-        } else if (evt.currentTarget == this.crossPoint) {
+        } else if (evt.currentTarget === this.crossPoint) {
             this.setCrossPoint(new Point(evt.stageX, evt.stageY));
         }
         this.update();
-        console.log('move')
-        if (!this.excuteHelper.canExcuteByCount()) return;
-        console.log('excute')
+        console.log('move');
+        if (!this.excuteHelper.canExcuteByCount()) {
+            return;
+        }
+        console.log('excute');
         EventAggregator.Instance().crossPoint.publish([this.tag, this.point]);
     }
 
     handlePressUp(evt) {
-        if (evt.currentTarget == this.vertical) {
+        if (evt.currentTarget === this.vertical) {
             this.setCrossPoint(new Point(evt.stageX, this.point.y));
-        } else if (evt.currentTarget == this.horizontal) {
+        } else if (evt.currentTarget === this.horizontal) {
             this.setCrossPoint(new Point(this.point.x, evt.stageY));
-        } else if (evt.currentTarget == this.crossPoint) {
+        } else if (evt.currentTarget === this.crossPoint) {
             this.setCrossPoint(new Point(evt.stageX, evt.stageY));
         }
         this.update();

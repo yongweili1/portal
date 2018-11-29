@@ -5,9 +5,9 @@ import { KeyValuePair } from '../../shared/common/keyvaluepair';
 import { ContourModel } from './shared/model/contour.model';
 import { ContouringModel } from './shared/model/contouring.model';
 import { RoiModel } from './shared/model/roi.model';
-import { ContouringService } from './shared/service/contouring.service';
-import { RoiHttpService } from './shared/service/roiHttp.service';
-import { SeriesHttpService } from './shared/service/seriesHttp.service';
+import { ContourService } from './shared/service/contour.service';
+import { RoiService } from './shared/service/roi.service';
+import { ImageService } from './shared/service/image.service';
 import { ToastService } from './shared/service/toast.service';
 import { ExcuteHelper } from './shared/tools/excute_helper';
 import { Point } from './shared/tools/point';
@@ -39,9 +39,9 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
 
     constructor(
         public activeRoute: ActivatedRoute,
-        public roiHttp: RoiHttpService,
-        private seriesHttpService: SeriesHttpService,
-        private conService: ContouringService,
+        private roiSvc: RoiService,
+        private imageSvc: ImageService,
+        private contourSvc: ContourService,
         private toastService: ToastService
     ) {
         this.excuteHelper = new ExcuteHelper();
@@ -101,7 +101,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
 
     ngOnDestroy() {
         this.hasLoadVolume = false;
-        this.seriesHttpService.unloadVolume(this.seriesId).subscribe();
+        this.imageSvc.unloadVolume(this.seriesId).subscribe();
     }
     //#endregion
 
@@ -122,7 +122,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     handleDeleteRoi(id: string) {
-        this.roiHttp.delete(id).subscribe(result => {
+        this.roiSvc.delete(id).subscribe(result => {
             if (result.success) {
                 this.toastService.success('Delete succeed.');
                 const index = this.data.roiList.findIndex(x => x.id === id);
@@ -140,14 +140,14 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             name: 'heart',
             color: '#FFFF00'
         };
-        this.roiHttp.CreateNewSegROI(ROIData).subscribe(result => {
-            if (result.body.code == '200') {
+        this.roiSvc.CreateNewSegROI(ROIData).subscribe(result => {
+            if (result.success) {
                 this.toastService.success('Save succeed.');
-                this.data.roiList = result.body.data;
+                this.data.roiList = result.data;
                 EventAggregator.Instance().rois.publish(this.data.roiList);
                 this.newROIDisplay = false;
             } else {
-                this.toastService.error(result.msg);
+                this.toastService.error(result.message);
             }
         });
     }
@@ -158,7 +158,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             if (showDialog) {
                 this.manageROIDisplay = true;
             }
-            this.roiHttp.get(seriesuid).subscribe(response => {
+            this.roiSvc.get(seriesuid).subscribe(response => {
                 if (response.success) {
                     this.data.roiList = response.data;
                     EventAggregator.Instance().rois.publish(this.data.roiList);
@@ -180,7 +180,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
 
     saveROI() {
         this.data.activeRoi.seriesuid = $('#seriesSelect').val();
-        this.roiHttp.create(this.data.activeRoi).subscribe(response => {
+        this.roiSvc.create(this.data.activeRoi).subscribe(response => {
             response = response.body;
             if (response.success) {
                 this.toastService.success('Save succeed.');
@@ -195,12 +195,12 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     updateROI() {
-        this.roiHttp.update(this.data.activeRoi).subscribe(result => {
-            if (result.body.success) {
+        this.roiSvc.update(this.data.activeRoi).subscribe(result => {
+            if (result.success) {
                 this.toastService.success('Save succeed.');
                 this.editROIDisplay = false;
             } else {
-                this.toastService.error(result.body.message);
+                this.toastService.error(result.message);
             }
         });
     }
@@ -210,13 +210,13 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         this.data.roiList.forEach(element => {
             ROIIdArray.push(element.id);
         });
-        this.roiHttp.delete(ROIIdArray).subscribe(result => {
-            if (result.code == '200') {
+        this.roiSvc.delete(ROIIdArray).subscribe(result => {
+            if (result.success) {
                 this.toastService.success(`Delete succeed.`);
                 this.data.roiList = result.data;
                 EventAggregator.Instance().rois.publish(this.data.roiList);
             } else {
-                this.toastService.error(result.msg);
+                this.toastService.error(result.message);
             }
         });
     }
@@ -257,7 +257,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private handleLocate(focus: any, display: any, crossPoint: any) {
-        this.seriesHttpService.locate(focus, crossPoint).subscribe((value) => {
+        this.imageSvc.locate(focus, crossPoint).subscribe((value) => {
             if (value.success) {
                 const data = JSON.parse(value.data);
                 this.updateCells(data, false, display);
@@ -303,7 +303,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private handleScroll(focus: any, delta: any) {
-        this.seriesHttpService.page(focus, delta).subscribe((value) => {
+        this.imageSvc.page(focus, delta).subscribe((value) => {
             if (value.success) {
                 const data = JSON.parse(value.data);
                 this.updateCells(data, false);
@@ -332,7 +332,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             return;
         }
         const that = this;
-        this.seriesHttpService.zoom(e[0], e[1]).subscribe(result => {
+        this.imageSvc.zoom(e[0], e[1]).subscribe(result => {
             if (result.success) {
                 result = JSON.parse(result.data);
                 that.updateCells(result);
@@ -349,7 +349,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             return;
         }
         const that = this;
-        this.seriesHttpService.wwwl(evt[0], evt[1]).subscribe(result => {
+        this.imageSvc.wwwl(evt[0], evt[1]).subscribe(result => {
             if (result.success) {
                 result = JSON.parse(result.data);
                 that.updateCells(result);
@@ -365,7 +365,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         if (!this.hasLoadVolume) {
             return;
         }
-        this.seriesHttpService.pan(e[0], e[1], e[2]).subscribe(result => {
+        this.imageSvc.pan(e[0], e[1], e[2]).subscribe(result => {
             if (result.success) {
                 result = JSON.parse(result.data);
                 this.updateCells(result);
@@ -383,7 +383,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             return;
         }
         const that = this;
-        this.seriesHttpService.rotate(e[0], e[1], e[2]).subscribe(result => {
+        this.imageSvc.rotate(e[0], e[1], e[2]).subscribe(result => {
             if (result.success) {
                 result = JSON.parse(result.data);
                 that.updateCells(result);
@@ -400,7 +400,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             return;
         }
         const that = this;
-        this.seriesHttpService.center().subscribe(result => {
+        this.imageSvc.center().subscribe(result => {
             if (result.success) {
                 result = JSON.parse(result.data);
                 that.updateCells(result);
@@ -417,7 +417,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             return;
         }
         const that = this;
-        this.seriesHttpService.reset().subscribe(result => {
+        this.imageSvc.reset().subscribe(result => {
             if (result.success) {
                 result = JSON.parse(result.data);
                 that.updateCells(result);
@@ -429,7 +429,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     //#endregion
 
     private getSeriesList(patientId: any) {
-        this.seriesHttpService.getSeriesList(patientId).subscribe(response => {
+        this.imageSvc.getSeriesList(patientId).subscribe(response => {
             if (response['success']) {
                 this.seriesList = response['data'];
             } else {
@@ -449,7 +449,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             return;
         }
         this.toastService.info('Loading now, please wait.');
-        this.seriesHttpService.loadVolume(seriesId).subscribe(response => {
+        this.imageSvc.loadVolume(seriesId).subscribe(response => {
             if (response.success) {
                 this.hasLoadVolume = true;
                 this.seriesId = seriesId;
@@ -464,7 +464,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     //#endregion
 
     private updateCanvasSize(canvasSize) {
-        this.seriesHttpService.updateCanvasSize(canvasSize).subscribe(result => {
+        this.imageSvc.updateCanvasSize(canvasSize).subscribe(result => {
             if (result.success) {
                 this.getImages();
             } else {
@@ -474,7 +474,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private getImages() {
-        this.seriesHttpService.GetSeries().subscribe((value) => {
+        this.imageSvc.GetSeries().subscribe((value) => {
             if (value.success) {
                 const data = JSON.parse(value.data);
                 this.updateCells(data, true);
@@ -498,7 +498,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             dto.slice_index = data[1];
             dto.contours = data[2];
 
-            this.conService.save(dto).subscribe(response => {
+            this.contourSvc.save(dto).subscribe(response => {
                 console.log(response);
             });
         }
@@ -507,7 +507,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     private deleteContours(data: any) {
         if (data.length > 0) {
             console.log('begin delete contour');
-            this.conService.delete(data[0], data[1]).subscribe(response => {
+            this.contourSvc.delete(data[0], data[1]).subscribe(response => {
                 console.log(response);
             });
         }

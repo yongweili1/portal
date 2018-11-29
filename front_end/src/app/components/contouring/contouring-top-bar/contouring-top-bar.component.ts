@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@
 import { MenuItem } from 'primeng/api';
 import { EventAggregator } from '../../../shared/common/event_aggregator';
 import { KeyValuePair } from '../../../shared/common/keyvaluepair';
-import { ContouringService } from '../shared/service/contouring.service';
+import { ContourService } from '../shared/service/contour.service';
 
 declare var actions: any;
 declare var shapes: any;
@@ -26,7 +26,7 @@ export class ContouringTopBarComponent implements OnInit {
     @Input() seriesList: string[];
 
     constructor(
-        private conService: ContouringService
+        private contourSvc: ContourService
     ) {
     }
     seriesId: any;
@@ -100,7 +100,7 @@ export class ContouringTopBarComponent implements OnInit {
     }
 
     OnStartMacro() {
-        this.conService.Macro("start").subscribe(result => {
+        this.contourSvc.Macro("start").subscribe(result => {
             if (result == "ok") {
                 console.log("start macro transcribe");
             }
@@ -109,10 +109,10 @@ export class ContouringTopBarComponent implements OnInit {
         });
     }
     OnEndMacro() {
-        this.conService.Macro("finish").subscribe();
+        this.contourSvc.Macro("finish").subscribe();
     }
     OnRunMacro() {
-        this.conService.Macro("run").subscribe();
+        this.contourSvc.Macro("run").subscribe();
     }
 
     OnSegmentation() {

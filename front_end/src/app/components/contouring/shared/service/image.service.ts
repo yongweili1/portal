@@ -5,7 +5,7 @@ import { AppConfigService } from '../../../../app.config';
 import { retry } from 'rxjs/operators';
 
 @Injectable()
-export class SeriesHttpService {
+export class ImageService {
     headers: HttpHeaders;
     options: any;
 

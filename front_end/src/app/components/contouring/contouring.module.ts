@@ -25,11 +25,11 @@ import { SharedModule } from '../../shared/shared.module';
 import { EasyUIModule } from 'ng-easyui/components/easyui/easyui.module';
 
 import { ContouringComponent } from './contouring.component';
-import { ContouringService } from './shared/service/contouring.service';
+import { ContourService } from './shared/service/contour.service';
 import { CellComponent } from './cell/cell.component';
 import { ContouringTopBarComponent } from './contouring-top-bar/contouring-top-bar.component';
-import { RoiHttpService } from './shared/service/roiHttp.service';
-import { SeriesHttpService } from './shared/service/seriesHttp.service';
+import { RoiService } from './shared/service/roi.service';
+import { ImageService } from './shared/service/image.service';
 import { StorageService } from './shared/service/storage.service';
 import { ToastService } from './shared/service/toast.service';
 import { ImageCanvasDirective } from './shared/directives/imageCanvas.directive';
@@ -83,10 +83,10 @@ import { SliderBarComponent } from './slider-bar/slider-bar.component';
         ContouringComponent,
     ],
     providers: [
-        ContouringService,
+        ContourService,
         ConfirmationService,
-        RoiHttpService,
-        SeriesHttpService,
+        RoiService,
+        ImageService,
         StorageService,
         ToastService
     ]

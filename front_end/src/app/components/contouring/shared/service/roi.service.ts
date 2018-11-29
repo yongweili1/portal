@@ -6,7 +6,7 @@ import { RoiModel } from '../model/roi.model';
 
 
 @Injectable()
-export class RoiHttpService {
+export class RoiService {
     headers: HttpHeaders;
     options: any;
 
@@ -43,7 +43,8 @@ export class RoiHttpService {
     }
 
     update(dto: RoiModel): Observable<any> {
-        return this.http.put<any>(`${this.appConfig.apiUrl}/image/roi/`, dto, this.options);
+        return this.http.put<any>(`${this.appConfig.apiUrl}/image/roi/`, dto, this.options)
+            .map(x => x['body']);
     }
 
     delete(ids: any): Observable<any> {
@@ -53,6 +54,7 @@ export class RoiHttpService {
     }
 
     CreateNewSegROI(roiData): Observable<any> {
-        return this.http.post<any>(`${this.appConfig.apiUrl}/algproxy/results/`, roiData, this.options);
+        return this.http.post<any>(`${this.appConfig.apiUrl}/algproxy/results/`, roiData, this.options)
+            .map(x => x['body']);
     }
 }

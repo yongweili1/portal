@@ -1,9 +1,9 @@
-import { Directive, ElementRef, Input, OnInit, SimpleChanges } from '@angular/core';
+import { Directive, ElementRef, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 
 @Directive({
     selector: '[image-canvas]'
 })
-export class ImageCanvasDirective implements OnInit {
+export class ImageCanvasDirective implements OnInit, OnChanges {
     @Input() tag;
     @Input() base64;
     canvas: any;
@@ -14,7 +14,7 @@ export class ImageCanvasDirective implements OnInit {
     ngOnInit() {
         console.log('[image-canvas]ngOnInit');
         this.canvas = this.el.nativeElement;
-        this.context = this.el.nativeElement.getContext("2d");
+        this.context = this.el.nativeElement.getContext('2d');
     }
 
     ngOnChanges(changes: SimpleChanges) {
