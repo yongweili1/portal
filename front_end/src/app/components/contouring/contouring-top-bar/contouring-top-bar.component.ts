@@ -1,8 +1,8 @@
-import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, OnChanges } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { EventAggregator } from '../../../shared/common/event_aggregator';
 import { KeyValuePair } from '../../../shared/common/keyvaluepair';
-import { ContourService } from '../shared/service/contour.service';
+import { MacroService } from '../shared/service/macro.service';
 
 declare var actions: any;
 declare var shapes: any;
@@ -12,9 +12,9 @@ declare var shapes: any;
     templateUrl: './contouring-top-bar.component.html',
     styleUrls: ['./contouring-top-bar.component.less']
 })
-export class ContouringTopBarComponent implements OnInit {
+export class ContouringTopBarComponent implements OnInit, OnChanges {
     @Output() onReset: EventEmitter<any> = new EventEmitter<any>();
-    @Output() onLoadSeries: EventEmitter<any> = new EventEmitter<any>();
+    @Output() onLoadVolume: EventEmitter<any> = new EventEmitter<any>();
     @Output() auto: EventEmitter<any> = new EventEmitter<any>();
     @Output() measure: EventEmitter<any> = new EventEmitter<any>();
     @Output() onClearGraphics: EventEmitter<any> = new EventEmitter<any>();
@@ -26,7 +26,7 @@ export class ContouringTopBarComponent implements OnInit {
     @Input() seriesList: string[];
 
     constructor(
-        private contourSvc: ContourService
+        private macroSvc: MacroService
     ) {
     }
     seriesId: any;
@@ -47,9 +47,6 @@ export class ContouringTopBarComponent implements OnInit {
     ngOnChanges(changes: SimpleChanges) {
 
     }
-
-    display: boolean = false;
-    addPlanDisplay: boolean = false;
 
     onImgZoom() {
         EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.zoom));
@@ -84,7 +81,7 @@ export class ContouringTopBarComponent implements OnInit {
     }
 
     loadMPR() {
-        this.onLoadSeries.emit(this.seriesId);
+        this.onLoadVolume.emit(this.seriesId);
     }
 
     OnClearAllClick() {
@@ -100,19 +97,19 @@ export class ContouringTopBarComponent implements OnInit {
     }
 
     OnStartMacro() {
-        this.contourSvc.Macro("start").subscribe(result => {
-            if (result == "ok") {
-                console.log("start macro transcribe");
+        this.macroSvc.macro('start').subscribe(response => {
+            if (response.success) {
+                console.log('start macro transcribe');
+            } else {
+                console.error(response.message);
             }
-        }, (error) => {
-            console.log("start macro transcribe failed")
         });
     }
     OnEndMacro() {
-        this.contourSvc.Macro("finish").subscribe();
+        this.macroSvc.macro('finish').subscribe();
     }
     OnRunMacro() {
-        this.contourSvc.Macro("run").subscribe();
+        this.macroSvc.macro('run').subscribe();
     }
 
     OnSegmentation() {

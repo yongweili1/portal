@@ -25,14 +25,9 @@ export class ContourService {
         };
     }
 
-    Macro(macro_status: any) {
-        const getParams = new HttpParams()
-            .set('macro_status', macro_status);
-        return this.http.get(`${this.appConfig.apiUrl}/macro/macro/`, { params: getParams });
-    }
-
     save(dto: ContourModel): Observable<any> {
-        return this.http.post<ContourModel>(`${this.appConfig.apiUrl}/image/contour/`, dto, this.options);
+        return this.http.post<ContourModel>(`${this.appConfig.apiUrl}/image/contour/`, dto, this.options)
+            .map(response => response['body']);
     }
 
     delete(roi_uid, slice_index): Observable<any> {

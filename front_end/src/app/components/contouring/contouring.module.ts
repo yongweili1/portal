@@ -32,6 +32,7 @@ import { RoiService } from './shared/service/roi.service';
 import { ImageService } from './shared/service/image.service';
 import { StorageService } from './shared/service/storage.service';
 import { ToastService } from './shared/service/toast.service';
+import { MacroService } from './shared/service/macro.service';
 import { ImageCanvasDirective } from './shared/directives/imageCanvas.directive';
 import { OverlayCanvasDirective } from './shared/directives/overlayCanvas.directive';
 import { ActionCanvasDirective } from './shared/directives/actionCanvas.directive';
@@ -88,7 +89,8 @@ import { SliderBarComponent } from './slider-bar/slider-bar.component';
         RoiService,
         ImageService,
         StorageService,
-        ToastService
+        ToastService,
+        MacroService,
     ]
 })
 

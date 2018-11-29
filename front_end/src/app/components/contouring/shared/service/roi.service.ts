@@ -25,7 +25,8 @@ export class RoiService {
     }
 
     create(dto: RoiModel): Observable<any> {
-        return this.http.post<any>(`${this.appConfig.apiUrl}/image/roi/`, dto, this.options);
+        return this.http.post<any>(`${this.appConfig.apiUrl}/image/roi/`, dto, this.options)
+            .map(response => response['body']);
     }
 
     get(seriesuid: string): Observable<any> {

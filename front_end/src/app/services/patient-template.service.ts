@@ -2,8 +2,11 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AppConfigService } from '../app.config';
-import { PatientPageDeleteRequest, PatientPageRequest, PatientTemplateInfo }
-    from '../components/patient-template/shared/patient-template.model';
+import {
+    PatientPageDeleteRequest,
+    PatientPageRequest,
+    PatientTemplateInfo
+} from '../components/patient-template/shared/patient-template.model';
 import { Page } from '../shared/models/pagination';
 
 
@@ -17,10 +20,10 @@ export class PatientTemplateService {
         this.headers = new HttpHeaders({
             'Content-Type': 'application/json',
             // 'withCredentials': 'true'
-        })
+        });
     }
 
-    public getPatientTemplate(pageRequest: PatientPageRequest): Observable<Page<PatientTemplateInfo>> {
+    public getPatientTemplate(pageRequest: PatientPageRequest): Observable<any> {
         const searchParams = new HttpParams()
             .set('size', pageRequest.size.toString())
             .set('page', pageRequest.page.toString())
@@ -30,8 +33,7 @@ export class PatientTemplateService {
             .set('modality', pageRequest.modality)
             .set('studyDate', pageRequest.studyDate.toString());
         console.log(this.headers);
-        return this.http
-            .get<Page<PatientTemplateInfo>>(`${this.appConfig.apiUrl}/patient/patinfolist/`,
+        return this.http.get<any>(`${this.appConfig.apiUrl}/patient/patinfolist/`,
                 { headers: this.headers, params: searchParams });
     }
 
