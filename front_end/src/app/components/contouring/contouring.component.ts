@@ -86,7 +86,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
                     return;
                 }
                 canvasSize['view_size'] = that.getCanvasSize();
-                that.updateSize(canvasSize);
+                that.updateCanvasSize(canvasSize);
             }, 200);
         });
     }
@@ -362,17 +362,15 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
 
     //#region handle Pan event
     handlePan(e) {
-        console.log(e);
         if (!this.hasLoadVolume) {
             return;
         }
-        const that = this;
         this.seriesHttpService.pan(e[0], e[1], e[2]).subscribe(result => {
             if (result.success) {
                 result = JSON.parse(result.data);
-                that.updateCells(result);
+                this.updateCells(result);
             } else {
-                that.toastService.error(result.message);
+                this.toastService.error(result.message);
             }
         });
     }
@@ -457,7 +455,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.seriesId = seriesId;
                 this.handleManageRoi(false);
                 EventAggregator.Instance().volumnSize.publish(response.data);
-                this.updateSize(canvasSize);
+                this.updateCanvasSize(canvasSize);
             } else {
                 this.toastService.error(response.message);
             }
@@ -465,12 +463,12 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     //#endregion
 
-    private updateSize(canvasSize) {
-        this.conService.noticeSize(canvasSize).subscribe(result => {
-            if (result.body.success) {
+    private updateCanvasSize(canvasSize) {
+        this.seriesHttpService.updateCanvasSize(canvasSize).subscribe(result => {
+            if (result.success) {
                 this.getImages();
             } else {
-                this.toastService.error(result.body.message);
+                this.toastService.error(result.message);
             }
         });
     }
@@ -500,7 +498,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             dto.slice_index = data[1];
             dto.contours = data[2];
 
-            this.conService.saveContour(dto).subscribe(response => {
+            this.conService.save(dto).subscribe(response => {
                 console.log(response);
             });
         }
@@ -509,12 +507,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     private deleteContours(data: any) {
         if (data.length > 0) {
             console.log('begin delete contour');
-
-            const dto = new ContourModel();
-            dto.roi_uid = data[0];
-            dto.slice_index = data[1];
-
-            this.conService.deleteContours(dto).subscribe(response => {
+            this.conService.delete(data[0], data[1]).subscribe(response => {
                 console.log(response);
             });
         }

@@ -1,21 +1,21 @@
 import { NgModule } from '@angular/core';
 import {
-  ButtonModule,
-  InputTextModule,
-  PasswordModule,
-  CheckboxModule,
-  DropdownModule,
-  DataTableModule,
-  PaginatorModule,
-  SharedModule as primengSharedModule,
-  ConfirmDialogModule,
-  ConfirmationService,
-  PanelModule,
-  TreeTableModule,
-  TreeModule,
-  ColorPickerModule,
-  DialogModule,
-  SplitButtonModule,
+    ButtonModule,
+    InputTextModule,
+    PasswordModule,
+    CheckboxModule,
+    DropdownModule,
+    DataTableModule,
+    PaginatorModule,
+    SharedModule as primengSharedModule,
+    ConfirmDialogModule,
+    ConfirmationService,
+    PanelModule,
+    TreeTableModule,
+    TreeModule,
+    ColorPickerModule,
+    DialogModule,
+    SplitButtonModule,
 } from 'primeng/primeng';
 
 
@@ -28,7 +28,6 @@ import { ContouringComponent } from './contouring.component';
 import { ContouringService } from './shared/service/contouring.service';
 import { CellComponent } from './cell/cell.component';
 import { ContouringTopBarComponent } from './contouring-top-bar/contouring-top-bar.component';
-import { PatientHttpService } from './shared/service/patientHttp.service';
 import { RoiHttpService } from './shared/service/roiHttp.service';
 import { SeriesHttpService } from './shared/service/seriesHttp.service';
 import { StorageService } from './shared/service/storage.service';
@@ -48,49 +47,49 @@ import { SliderBarComponent } from './slider-bar/slider-bar.component';
 // ];
 
 @NgModule({
-  imports: [
-    SharedModule,
-    ButtonModule,
-    InputTextModule,
-    PasswordModule,
-    CheckboxModule,
-    PaginatorModule,
-    DropdownModule,
-    ConfirmDialogModule,
-    primengSharedModule,
-    DataTableModule,
-    DialogModule,
-    PanelModule,
-    TreeTableModule,
-    EasyUIModule,
-    TreeModule,
-    ColorPickerModule,
-    ToastModule,
-    SplitButtonModule,
-    SliderModule,
-  ],
-  declarations: [
-    ContouringComponent,
-    CellComponent,
-    ContouringTopBarComponent,
-    OverlayCanvasDirective,
-    ActionCanvasDirective,
-    ImageCanvasDirective,
-    CrossCanvasDirective,
-    SeriesListComponent,
-    SliderBarComponent,
-  ],
-  exports: [
-    ContouringComponent,
-  ],
-  providers: [
-    ContouringService,
-    ConfirmationService,
-    PatientHttpService,
-    RoiHttpService,
-    SeriesHttpService,
-    StorageService,
-    ToastService]
+    imports: [
+        SharedModule,
+        ButtonModule,
+        InputTextModule,
+        PasswordModule,
+        CheckboxModule,
+        PaginatorModule,
+        DropdownModule,
+        ConfirmDialogModule,
+        primengSharedModule,
+        DataTableModule,
+        DialogModule,
+        PanelModule,
+        TreeTableModule,
+        EasyUIModule,
+        TreeModule,
+        ColorPickerModule,
+        ToastModule,
+        SplitButtonModule,
+        SliderModule,
+    ],
+    declarations: [
+        ContouringComponent,
+        CellComponent,
+        ContouringTopBarComponent,
+        OverlayCanvasDirective,
+        ActionCanvasDirective,
+        ImageCanvasDirective,
+        CrossCanvasDirective,
+        SeriesListComponent,
+        SliderBarComponent,
+    ],
+    exports: [
+        ContouringComponent,
+    ],
+    providers: [
+        ContouringService,
+        ConfirmationService,
+        RoiHttpService,
+        SeriesHttpService,
+        StorageService,
+        ToastService
+    ]
 })
 
 export class ContouringModule {

@@ -7,17 +7,31 @@ import { retry } from 'rxjs/operators';
 @Injectable()
 export class SeriesHttpService {
     headers: HttpHeaders;
+    options: any;
+
     constructor(
         private http: HttpClient,
         private appConfig: AppConfigService,
     ) {
-        const headers: HttpHeaders = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' })
+        this.headers = new HttpHeaders();
+        this.headers.append('Content-Type', 'application/json');
+        this.headers.append('Accept', 'application/json');
+
+        this.options = {
+            headers: this.headers,
+            observe: 'response',
+        };
     }
 
     getSeriesList(patientId: any): Observable<Array<any>> {
         const getParams = new HttpParams()
             .set('patientid', patientId);
         return this.http.get<Array<any>>(`${this.appConfig.apiUrl}/image/serids/`, { params: getParams });
+    }
+
+    updateCanvasSize(canvasSize): Observable<any> {
+        return this.http.post<any>(`${this.appConfig.apiUrl}/image/size/`, canvasSize, this.options)
+            .map(x => x['body']);
     }
 
     /**
@@ -45,7 +59,7 @@ export class SeriesHttpService {
         const getParams = new HttpParams()
             .set('delta', delta)
             .set('focus_view', focus);
-        return this.http.get(`${this.appConfig.apiUrl}/image/pages/`, { params: getParams });
+        return this.http.get(`${this.appConfig.apiUrl}/image/page/`, { params: getParams });
     }
 
     locate(focus: any, crossPoint: any): Observable<any> {
@@ -59,7 +73,7 @@ export class SeriesHttpService {
         const getParams = new HttpParams()
             .set('focus_view', focus)
             .set('zoom_factor', factor);
-        return this.http.get<any>(`${this.appConfig.apiUrl}/image/zooms/`, { params: getParams });
+        return this.http.get<any>(`${this.appConfig.apiUrl}/image/zoom/`, { params: getParams });
     }
 
     pan(focus: any, prePos: any, curPos: any): Observable<any> {
@@ -67,7 +81,7 @@ export class SeriesHttpService {
             .set('focus_view', focus)
             .set('pos_pre', prePos)
             .set('pos_cur', curPos);
-        return this.http.get<any>(`${this.appConfig.apiUrl}/image/seats/`, { params: getParams });
+        return this.http.get<any>(`${this.appConfig.apiUrl}/image/pan/`, { params: getParams });
     }
 
     rotate(focus: any, prePos: any, curPos: any): Observable<any> {
@@ -79,7 +93,7 @@ export class SeriesHttpService {
     }
 
     reset(): Observable<any> {
-        return this.http.get<any>(`${this.appConfig.apiUrl}/image/backs/`);
+        return this.http.get<any>(`${this.appConfig.apiUrl}/image/reset/`);
     }
 
     wwwl(ww: any, wl: any): Observable<any> {

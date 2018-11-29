@@ -1,4 +1,4 @@
-import { Point } from '../tools/point'
+import { Point } from '../tools/point';
 
 export class ContourModel {
     roi_uid: string;
