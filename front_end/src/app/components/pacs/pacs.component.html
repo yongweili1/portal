@@ -55,16 +55,17 @@
             </tr>
         </ng-template>
     </p-column>
-    <p-footer>
-        <div class="ui-helper-clearfix" *ngIf="pageModel?.totalElements>0">
-            <span class="paginator-text pull-left">{{ 'text.pagination-records' | translate: {size: pageModel?.numberOfElements, total: pageModel?.totalElements} }}</span>
-            <span class="paginator-buttons pull-right">
-                <p-paginator *ngIf="pageModel?.totalPages>0"  [(rows)]="tablePageRows[1]" [pageLinkSize]="5" [rowsPerPageOptions]="tablePageRows"
-                [totalRecords]="pageModel?.totalElements" (onPageChange)="pageTurning($event)"></p-paginator>
-            </span>
-        </div>
-    </p-footer>
-  </p-dataTable>
+
+</p-dataTable>
+<p-footer class="pacs-footer">
+    <div class="ui-helper-clearfix" *ngIf="pageModel?.totalElements>0">
+        <span class="paginator-text pull-left">{{ 'text.pagination-records' | translate: {size: pageModel?.numberOfElements, total: pageModel?.totalElements} }}</span>
+        <span class="paginator-buttons pull-right">
+            <p-paginator *ngIf="pageModel?.totalPages>0"  [(rows)]="tablePageRows[1]" [pageLinkSize]="5" [rowsPerPageOptions]="tablePageRows"
+            [totalRecords]="pageModel?.totalElements" (onPageChange)="pageTurning($event)"></p-paginator>
+        </span>
+    </div>
+</p-footer>
 </div>
 
 <p-toast position="bottom-right"></p-toast>
