@@ -2,7 +2,7 @@
     <div class="top_Button">
         <mpt-contouring-top-bar (onLoadSeries)="handleLoadSeries()" (onClearGraphics)="handleClearGraphics()"
             (onAddRoi)="handleAddRoi()" (onManageRoi)="handleManageRoi()" (autoroi)="mainautoroi()" (onReset)="handleReset()"
-            (setcenter)="mainSetCenterPro()" [seriesList]="seriesList"></mpt-contouring-top-bar>
+            (onCenter)="handleCenter()" [seriesList]="seriesList"></mpt-contouring-top-bar>
     </div>
 
     <div id="threebmp" class="viewport">

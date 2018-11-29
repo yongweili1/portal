@@ -18,7 +18,7 @@ export class ContouringTopBarComponent implements OnInit {
     @Output() auto: EventEmitter<any> = new EventEmitter<any>();
     @Output() measure: EventEmitter<any> = new EventEmitter<any>();
     @Output() onClearGraphics: EventEmitter<any> = new EventEmitter<any>();
-    @Output() setcenter: EventEmitter<any> = new EventEmitter<any>();
+    @Output() onCenter: EventEmitter<any> = new EventEmitter<any>();
     @Output() onAddRoi: EventEmitter<any> = new EventEmitter<any>();
     @Output() onManageRoi: EventEmitter<any> = new EventEmitter<any>();
     @Output() autoroi: EventEmitter<any> = new EventEmitter<any>();
@@ -72,7 +72,7 @@ export class ContouringTopBarComponent implements OnInit {
 
     onImgCenter() {
         EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.locate));
-        this.setcenter.emit();
+        this.onCenter.emit();
     }
 
     OnNewROI() {

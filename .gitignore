@@ -71,3 +71,5 @@ log.txt
 /3rd/Windows/redis/dump.rdb
 uwsgi.log
 uwsgi.pid
+
+.pytest_cache

@@ -8,31 +8,8 @@ from utils import image_msg_pb2 as msg
 from utils.macro_recorder import MacroRecorder
 
 
-class ResponseData(object):
-    def __init__(self, response_data):
-        self.success = True
-        self.comment = ''
-        self.content = ''
-
-        data = msg.ResponseMsg()
-        data.ParseFromString(response_data)
-        self.success = data.success
-        self.comment = data.comment
-
-        if data.content:
-            self.content = data.content
-
-    def arg(self, key=None):
-        if key is None:
-            return self.content
-        if key in self.content:
-            return self.content[key]
-        else:
-            return None
-
-
 @MacroRecorder()
-def handle_command(command, **kwargs):
+def sync_send_command(command, **kwargs):
     data = msg.RequestMsg()
     data.command = command
     data.content = json.dumps(kwargs)
