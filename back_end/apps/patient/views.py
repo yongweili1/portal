@@ -3,10 +3,9 @@ from __future__ import unicode_literals
 
 import math
 
-from rest_framework.response import Response
 from rest_framework.views import APIView
-
 from service import patient_svc
+from utils.response_dto import ResponseDto
 
 
 class Patient(APIView):
@@ -26,7 +25,7 @@ class Patient(APIView):
         totalelements = len(pats_list)
 
         if totalelements == 0:
-            return Response('数据库无数据')
+            return ResponseDto(success=False, message='数据库无数据')
 
         totalpages = int(math.ceil(float(totalelements) / float(size)))
         totalpatients = pats_list[size * page:size * (page + 1)]
@@ -41,7 +40,7 @@ class Patient(APIView):
             'numberOfElements': numberofelements
         }
 
-        return Response(data)
+        return ResponseDto(data)
 
     def delete(self, request):
         """
@@ -62,27 +61,18 @@ class Patient(APIView):
         totalelements = len(pats_list)
 
         if totalelements == 0:
-            response = {
-                'code': '201',
-                'message': '数据库无数据',
-                'data': ''
-            }
-            return Response(response)
+            return ResponseDto(success=False, message='数据库无数据')
 
         totalpages = int(math.ceil(float(totalelements) / float(size)))
         totalpatients = pats_list[size * page:size * (page + 1)]
         numberofelements = len(totalpatients)
 
-        rsp = {
-            'code': '200',
-            'msg': 'success',
-            'data': {
-                'content': totalpatients,
-                'totalPages': totalpages,
-                'totalElements': totalelements,
-                'size': size,
-                'number': page,
-                'numberOfElements': numberofelements
-            }
+        data = {
+            'content': totalpatients,
+            'totalPages': totalpages,
+            'totalElements': totalelements,
+            'size': size,
+            'number': page,
+            'numberOfElements': numberofelements
         }
-        return Response(rsp)
+        return ResponseDto(data)

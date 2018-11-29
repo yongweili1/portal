@@ -10,7 +10,7 @@ export class StorageService {
     }
 
     public retrieve(key: string): any {
-        let item = this.storage.getItem(key);
+        const item = this.storage.getItem(key);
         if (item && item !== 'undefined') {
             return JSON.parse(this.storage.getItem(key));
         }

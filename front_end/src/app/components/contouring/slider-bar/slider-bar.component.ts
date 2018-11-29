@@ -18,7 +18,6 @@ export class SliderBarComponent implements OnInit {
         this.progress = 100;
 
         EventAggregator.Instance().volumnSize.subscribe(value => {
-            value = JSON.parse(value);
             this.totalSliceCount = value[2];
         });
 

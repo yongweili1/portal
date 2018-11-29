@@ -5,9 +5,9 @@ import { KeyValuePair } from '../../shared/common/keyvaluepair';
 import { ContourModel } from './shared/model/contour.model';
 import { ContouringModel } from './shared/model/contouring.model';
 import { RoiModel } from './shared/model/roi.model';
-import { ContouringService } from './shared/service/contouring.service';
-import { RoiHttpService } from './shared/service/roiHttp.service';
-import { SeriesHttpService } from './shared/service/seriesHttp.service';
+import { ContourService } from './shared/service/contour.service';
+import { RoiService } from './shared/service/roi.service';
+import { ImageService } from './shared/service/image.service';
 import { ToastService } from './shared/service/toast.service';
 import { ExcuteHelper } from './shared/tools/excute_helper';
 import { Point } from './shared/tools/point';
@@ -39,16 +39,16 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
 
     constructor(
         public activeRoute: ActivatedRoute,
-        public roiHttp: RoiHttpService,
-        private seriesHttpService: SeriesHttpService,
-        private conService: ContouringService,
-        private toastService: ToastService
+        private roiSvc: RoiService,
+        private imageSvc: ImageService,
+        private contourSvc: ContourService,
+        private toastSvc: ToastService
     ) {
         this.excuteHelper = new ExcuteHelper();
         this.data = new ContouringModel();
         this.data.setTag();
         this.data.setCrossLineColor();
-        EventAggregator.Instance().contourCps.subscribe(data => { this.saveContour(data); });
+        EventAggregator.Instance().contourCps.subscribe(data => { this.saveContours(data); });
         EventAggregator.Instance().removeCps.subscribe(data => { this.deleteContours(data); });
     }
 
@@ -86,22 +86,18 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
                     return;
                 }
                 canvasSize['view_size'] = that.getCanvasSize();
-                that.updateSize(canvasSize);
+                that.updateCanvasSize(canvasSize);
             }, 200);
         });
     }
 
     ngAfterViewInit() {
-        if (this.patientId === '' || this.patientId === undefined || this.patientId == null) {
-            this.toastService.error('Please select the patient first.');
-        } else {
-            this.getSeriesList(this.patientId);
-        }
+        this.getSeriesList(this.patientId);
     }
 
     ngOnDestroy() {
         this.hasLoadVolume = false;
-        this.seriesHttpService.unloadVolume(this.seriesId).subscribe();
+        this.imageSvc.unloadVolume(this.seriesId).subscribe();
     }
     //#endregion
 
@@ -112,7 +108,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             this.newROIDisplay = true;
             this.data.activeRoi = new RoiModel();
         } else {
-            this.toastService.error('Please select series first.');
+            this.toastSvc.error('Please select series first.');
         }
     }
 
@@ -122,14 +118,14 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     handleDeleteRoi(id: string) {
-        this.roiHttp.delete(id).subscribe(result => {
-            if (result.success) {
-                this.toastService.success('Delete succeed.');
+        this.roiSvc.delete(id).subscribe(response => {
+            if (response.success) {
+                this.toastSvc.success('Delete succeed.');
                 const index = this.data.roiList.findIndex(x => x.id === id);
                 this.data.roiList.splice(index, 1);
                 EventAggregator.Instance().rois.publish(this.data.roiList);
             } else {
-                this.toastService.error(result.msg);
+                this.toastSvc.error(response.message);
             }
         });
     }
@@ -140,14 +136,14 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             name: 'heart',
             color: '#FFFF00'
         };
-        this.roiHttp.CreateNewSegROI(ROIData).subscribe(result => {
-            if (result.body.code == '200') {
-                this.toastService.success('Save succeed.');
-                this.data.roiList = result.body.data;
+        this.roiSvc.CreateNewSegROI(ROIData).subscribe(response => {
+            if (response.success) {
+                this.toastSvc.success('Save succeed.');
+                this.data.roiList = response.data;
                 EventAggregator.Instance().rois.publish(this.data.roiList);
                 this.newROIDisplay = false;
             } else {
-                this.toastService.error(result.msg);
+                this.toastSvc.error(response.message);
             }
         });
     }
@@ -158,7 +154,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             if (showDialog) {
                 this.manageROIDisplay = true;
             }
-            this.roiHttp.get(seriesuid).subscribe(response => {
+            this.roiSvc.get(seriesuid).subscribe(response => {
                 if (response.success) {
                     this.data.roiList = response.data;
                     EventAggregator.Instance().rois.publish(this.data.roiList);
@@ -166,11 +162,11 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
                         this.onSelectRoi(this.data.roiList[0]);
                     }
                 } else {
-                    this.toastService.error(response.message);
+                    this.toastSvc.error(response.message);
                 }
             });
         } else {
-            this.toastService.error('Please select series first.');
+            this.toastSvc.error('Please select series first.');
         }
     }
 
@@ -180,43 +176,42 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
 
     saveROI() {
         this.data.activeRoi.seriesuid = $('#seriesSelect').val();
-        this.roiHttp.create(this.data.activeRoi).subscribe(response => {
-            response = response.body;
+        this.roiSvc.create(this.data.activeRoi).subscribe(response => {
             if (response.success) {
-                this.toastService.success('Save succeed.');
+                this.toastSvc.success('Save succeed.');
                 this.data.activeRoi.id = response.data;
                 this.data.roiList.push(this.data.activeRoi);
                 EventAggregator.Instance().rois.publish(this.data.roiList);
                 this.newROIDisplay = false;
             } else {
-                this.toastService.success(response.message);
+                this.toastSvc.success(response.message);
             }
         });
     }
 
     updateROI() {
-        this.roiHttp.update(this.data.activeRoi).subscribe(result => {
-            if (result.body.success) {
-                this.toastService.success('Save succeed.');
+        this.roiSvc.update(this.data.activeRoi).subscribe(response => {
+            if (response.success) {
+                this.toastSvc.success('Save succeed.');
                 this.editROIDisplay = false;
             } else {
-                this.toastService.error(result.body.message);
+                this.toastSvc.error(response.message);
             }
         });
     }
 
     deleteAllROI() {
-        const ROIIdArray = [];
+        const ids = [];
         this.data.roiList.forEach(element => {
-            ROIIdArray.push(element.id);
+            ids.push(element.id);
         });
-        this.roiHttp.delete(ROIIdArray).subscribe(result => {
-            if (result.code == '200') {
-                this.toastService.success(`Delete succeed.`);
-                this.data.roiList = result.data;
+        this.roiSvc.delete(ids).subscribe(response => {
+            if (response.success) {
+                this.toastSvc.success(`Delete succeed.`);
+                this.data.roiList = response.data;
                 EventAggregator.Instance().rois.publish(this.data.roiList);
             } else {
-                this.toastService.error(result.msg);
+                this.toastSvc.error(response.message);
             }
         });
     }
@@ -257,13 +252,12 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private handleLocate(focus: any, display: any, crossPoint: any) {
-        this.seriesHttpService.locate(focus, crossPoint).subscribe((value) => {
-            if (value.success) {
-                const data = JSON.parse(value.data);
-                this.updateCells(data, false, display);
-                this.updateSliceIndex(data['0']['slice_index']);
+        this.imageSvc.locate(focus, crossPoint).subscribe(response => {
+            if (response.success) {
+                this.updateCells(response.data, false, display);
+                this.updateSliceIndex(response.data[0].slice_index);
             } else {
-                this.toastService.error(value.message);
+                this.toastSvc.error(response.message);
             }
         });
     }
@@ -303,16 +297,13 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private handleScroll(focus: any, delta: any) {
-        this.seriesHttpService.page(focus, delta).subscribe((value) => {
-            if (value.success) {
-                const data = JSON.parse(value.data);
-                this.updateCells(data, false);
-                this.updateSliceIndex(data['0']['slice_index']);
+        this.imageSvc.page(focus, delta).subscribe(response => {
+            if (response.success) {
+                this.updateCells(response.data, false);
+                this.updateSliceIndex(response.data[0].slice_index);
             } else {
-                this.toastService.error(value.message);
+                this.toastSvc.error(response.message);
             }
-        }, (error) => {
-            console.log(error);
         });
     }
     //#endregion
@@ -332,12 +323,11 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             return;
         }
         const that = this;
-        this.seriesHttpService.zoom(e[0], e[1]).subscribe(result => {
-            if (result.success) {
-                result = JSON.parse(result.data);
-                that.updateCells(result);
+        this.imageSvc.zoom(e[0], e[1]).subscribe(response => {
+            if (response.success) {
+                that.updateCells(response.data);
             } else {
-                that.toastService.error(result.message);
+                that.toastSvc.error(response.message);
             }
         });
     }
@@ -349,12 +339,11 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             return;
         }
         const that = this;
-        this.seriesHttpService.wwwl(evt[0], evt[1]).subscribe(result => {
-            if (result.success) {
-                result = JSON.parse(result.data);
-                that.updateCells(result);
+        this.imageSvc.wwwl(evt[0], evt[1]).subscribe(response => {
+            if (response.success) {
+                that.updateCells(response.data);
             } else {
-                that.toastService.error(result.message);
+                that.toastSvc.error(response.message);
             }
         });
     }
@@ -362,17 +351,14 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
 
     //#region handle Pan event
     handlePan(e) {
-        console.log(e);
         if (!this.hasLoadVolume) {
             return;
         }
-        const that = this;
-        this.seriesHttpService.pan(e[0], e[1], e[2]).subscribe(result => {
-            if (result.success) {
-                result = JSON.parse(result.data);
-                that.updateCells(result);
+        this.imageSvc.pan(e[0], e[1], e[2]).subscribe(response => {
+            if (response.success) {
+                this.updateCells(response.data);
             } else {
-                that.toastService.error(result.message);
+                this.toastSvc.error(response.message);
             }
         });
     }
@@ -385,12 +371,11 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             return;
         }
         const that = this;
-        this.seriesHttpService.rotate(e[0], e[1], e[2]).subscribe(result => {
-            if (result.success) {
-                result = JSON.parse(result.data);
-                that.updateCells(result);
+        this.imageSvc.rotate(e[0], e[1], e[2]).subscribe(response => {
+            if (response.success) {
+                that.updateCells(response.data);
             } else {
-                that.toastService.error(result.message);
+                that.toastSvc.error(response.message);
             }
         });
     }
@@ -402,12 +387,11 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             return;
         }
         const that = this;
-        this.seriesHttpService.center().subscribe(result => {
-            if (result.success) {
-                result = JSON.parse(result.data);
-                that.updateCells(result);
+        this.imageSvc.center().subscribe(response => {
+            if (response.success) {
+                that.updateCells(response.data);
             } else {
-                that.toastService.error(result.message);
+                that.toastSvc.error(response.message);
             }
         });
     }
@@ -419,105 +403,105 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             return;
         }
         const that = this;
-        this.seriesHttpService.reset().subscribe(result => {
-            if (result.success) {
-                result = JSON.parse(result.data);
-                that.updateCells(result);
+        this.imageSvc.reset().subscribe(response => {
+            if (response.success) {
+                that.updateCells(response.data);
             } else {
-                that.toastService.error(result.message);
+                that.toastSvc.error(response.message);
             }
         });
     }
     //#endregion
 
     private getSeriesList(patientId: any) {
-        this.seriesHttpService.getSeriesList(patientId).subscribe(response => {
-            if (response['success']) {
-                this.seriesList = response['data'];
-            } else {
-                this.toastService.error(response['message']);
-            }
-        });
+        if (this.patientId === '' || this.patientId === undefined) {
+            this.toastSvc.error('Please select patient firstly.');
+        } else {
+            this.imageSvc.getSeriesList(patientId).subscribe(response => {
+                if (response.success) {
+                    this.seriesList = response.data;
+                } else {
+                    this.toastSvc.error(response.message);
+                }
+            });
+        }
     }
 
-    //#region handle Load Volume event
-    handleLoadSeries() {
+    //#region handle Load volume event
+    handleLoadVolume() {
         const seriesId: any = $('#seriesSelect').val();
         const canvasSize: any = {};
         canvasSize['view_size'] = this.getCanvasSize();
         console.log(canvasSize);
-        if (seriesId === '' || seriesId == null || seriesId === undefined) {
-            this.toastService.error('No series selected.');
+        if (seriesId === '' || seriesId === undefined) {
+            this.toastSvc.error('No series selected.');
             return;
         }
-        this.toastService.info('Loading now, please wait.');
-        this.seriesHttpService.loadVolume(seriesId).subscribe(response => {
+        this.toastSvc.info('Loading now, please wait.');
+        this.imageSvc.loadVolume(seriesId).subscribe(response => {
             if (response.success) {
                 this.hasLoadVolume = true;
                 this.seriesId = seriesId;
                 this.handleManageRoi(false);
                 EventAggregator.Instance().volumnSize.publish(response.data);
-                this.updateSize(canvasSize);
+                this.updateCanvasSize(canvasSize);
             } else {
-                this.toastService.error(response.message);
+                this.toastSvc.error(response.message);
             }
         });
     }
     //#endregion
 
-    private updateSize(canvasSize) {
-        this.conService.noticeSize(canvasSize).subscribe(result => {
-            if (result.body.success) {
+    private updateCanvasSize(canvasSize) {
+        this.imageSvc.updateCanvasSize(canvasSize).subscribe(response => {
+            if (response.success) {
                 this.getImages();
             } else {
-                this.toastService.error(result.body.message);
+                this.toastSvc.error(response.message);
             }
         });
     }
 
     private getImages() {
-        this.seriesHttpService.GetSeries().subscribe((value) => {
-            if (value.success) {
-                const data = JSON.parse(value.data);
-                this.updateCells(data, true);
-                this.updateSliceIndex(data['0']['slice_index']);
-                this.toastService.success('succeed.');
+        this.imageSvc.GetSeries().subscribe(response => {
+            if (response.success) {
+                this.updateCells(response.data, true);
+                this.updateSliceIndex(response.data[0].slice_index);
+                this.toastSvc.success('succeed.');
             } else {
-                this.toastService.error(value.message);
+                this.toastSvc.error(response.message);
             }
-        }, (error) => {
-            this.toastService.error('failed.');
-            console.log(error);
         });
     }
 
-    private saveContour(data: any) {
-        if (data.length > 0) {
-            console.log('begin save contour');
-
-            const dto = new ContourModel();
-            dto.roi_uid = data[0];
-            dto.slice_index = data[1];
-            dto.contours = data[2];
-
-            this.conService.saveContour(dto).subscribe(response => {
-                console.log(response);
-            });
+    private saveContours(data: any) {
+        if (data === undefined || data.length === 0) {
+            return;
         }
+        const dto = new ContourModel();
+        dto.roi_uid = data[0];
+        dto.slice_index = data[1];
+        dto.contours = data[2];
+        this.contourSvc.save(dto).subscribe(response => {
+            if (response.success) {
+                this.toastSvc.success('Success.');
+            } else {
+                this.toastSvc.error(response.message);
+            }
+        });
     }
 
     private deleteContours(data: any) {
-        if (data.length > 0) {
-            console.log('begin delete contour');
-
-            const dto = new ContourModel();
-            dto.roi_uid = data[0];
-            dto.slice_index = data[1];
-
-            this.conService.deleteContours(dto).subscribe(response => {
-                console.log(response);
-            });
+        if (data === undefined || data.length === 0) {
+            return;
         }
+        this.contourSvc.delete(data[0], data[1]).subscribe(response => {
+            if (response.success) {
+                this.toastSvc.success('Success.');
+            } else {
+                this.toastSvc.error(response.message);
+            }
+        });
     }
 
     private updateSliceIndex(index) {

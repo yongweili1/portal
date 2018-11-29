@@ -1,13 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { MenuItem, PatientPageRequest, PatientTemplateInfo } from './shared/patient-template.model'
-import { AppConfigService } from '../../app.config';
-import { PatientTemplateService } from '../../services/patient-template.service';
-import { Page, PageRequest } from '../../shared/models/pagination';
-import { LazyLoadEvent } from 'primeng/primeng';
-import { SelectItem } from 'primeng/api';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { ToastService } from '../../core/toast.service'
+import { LazyLoadEvent } from 'primeng/primeng';
+import { PatientTemplateService } from '../../services/patient-template.service';
+import { Page } from '../../shared/models/pagination';
+import { MenuItem, PatientPageRequest, PatientTemplateInfo } from './shared/patient-template.model';
 
 @Component({
     selector: 'mpt-palist',
@@ -49,16 +46,16 @@ export class PaListComponent implements OnInit {
             { field: 'gender', header: 'GENDER' },
         ];
 
-        this.studycols=[
+        this.studycols = [
             { field: 'studyid', header: 'STUDY ID' },
             { field: 'studyuid', header: 'STUDY UID' },
-            { field: 'studydescription', header: 'STUDYDESCRIPTION'},
+            { field: 'studydescription', header: 'STUDYDESCRIPTION' },
         ];
 
-        this.seriescols=[
+        this.seriescols = [
             { field: 'seriesuid', header: 'SERIES ID' },
             { field: 'imagequantity', header: 'IMAGE QUANTITY' },
-            { field: 'seriesdescription', header: 'SERIESSCRIPTION'},
+            { field: 'seriesdescription', header: 'SERIESSCRIPTION' },
         ];
     }
 
@@ -77,7 +74,7 @@ export class PaListComponent implements OnInit {
         this.requestPatientTemplate(
             Math.floor(event.first / (event.rows || this.tablePageRows[1])),
             event.rows || this.tablePageRows[1]
-        )
+        );
     }
 
     private requestPatientTemplate(page: number = 0, size: number = this.tablePageRows[1]) {
@@ -90,19 +87,22 @@ export class PaListComponent implements OnInit {
             gender: this.patientParam.gender,
             modality: this.patientParam.modality,
             studyDate: this.rangeDate
-        }).subscribe((data) => {
-            this.pageModel = data;
-            for (let i = 0; i < this.pageModel.numberOfElements; i++) {
-                this.pageModel.content[i].no = i + 1;
-                this.patientId = this.pageModel.content[i].patientId;
+        }).subscribe(response => {
+            if (response.success) {
+                this.pageModel = response.data;
+                for (let i = 0; i < this.pageModel.numberOfElements; i++) {
+                    this.pageModel.content[i].no = i + 1;
+                    this.patientId = this.pageModel.content[i].patientId;
+                }
+            } else {
+                console.error(response.message);
             }
         });
-        return;
     }
 
     private setDateParams() {
         if (this.patientParam !== null && this.patientParam.studyDate) {
-            if (null !== this.patientParam.studyDate && undefined !== this.patientParam.studyDate && !this.patientParam.studyDate[1]) {
+            if (undefined !== this.patientParam.studyDate && !this.patientParam.studyDate[1]) {
                 this.rangeDate = [this.patientParam.studyDate[0].getTime(), this.patientParam.studyDate[0].getTime()];
             } else {
                 this.rangeDate = [this.patientParam.studyDate[0].getTime(), this.patientParam.studyDate[1].getTime()];
@@ -111,30 +111,30 @@ export class PaListComponent implements OnInit {
     }
 
     onDelete(page: number = 0, size: number = this.tablePageRows[1]) {
-        let patientIdArray = []
-        let patientIdString = "";
-        if(this.selectedPageModel.content != undefined){
+        const patientIds = [];
+        let patientIdString = '';
+        if (this.selectedPageModel.content !== undefined) {
             this.selectedPageModel.content.forEach(element => {
-                patientIdArray.push(element.patientId);
+                patientIds.push(element.patientId);
             });
-            patientIdString = patientIdArray.join(',');
+            patientIdString = patientIds.join(',');
         }
-        let studyIdArray = []
-        let studyIdString = "";
-        if(this.selectedStudyModel.content != undefined){
+        const studyIds = [];
+        let studyIdString = '';
+        if (this.selectedStudyModel.content !== undefined) {
             this.selectedStudyModel.content.forEach(element => {
-                studyIdArray.push(element.studyid);
+                studyIds.push(element.studyid);
             });
-            studyIdString = studyIdArray.join(',');
+            studyIdString = studyIds.join(',');
         }
 
-        let seriesIdArray = []
-        let seriesIdString = "";
-        if(this.selectedSeriesModel.content != undefined){
+        const seriesIds = [];
+        let seriesIdString = '';
+        if (this.selectedSeriesModel.content !== undefined) {
             this.selectedSeriesModel.content.forEach(element => {
-                seriesIdArray.push(element.seriesuid);
+                seriesIds.push(element.seriesuid);
             });
-            seriesIdString = seriesIdArray.join(',');
+            seriesIdString = seriesIds.join(',');
         }
         this.patientTemplateService.deletePatientTemplate({
             page,
@@ -142,20 +142,17 @@ export class PaListComponent implements OnInit {
             patientId: patientIdString,
             studyId: studyIdString,
             seriesId: seriesIdString
-        }).subscribe(result => {
-            if (result.code == '200') {
-                this.pageModel = result.data;
+        }).subscribe(response => {
+            if (response.success) {
+                this.pageModel = response.data;
                 this.priMessageService.add({ severity: 'success', detail: 'del succeed.' });
-            }
-            else{
+            } else {
                 this.priMessageService.add({ severity: 'error', detail: 'del failed.' });
             }
-        },(error)=>{
-            this.priMessageService.add({ severity: 'error', detail: 'del failed.' });
-        })
+        });
     }
 
-    // public  download(){
+    // public download(){
     //   this.setDateParams();
     //   this.patientTemplateService.downloadExcel({
     //     patientId:this.patientParam.patientId,
@@ -173,7 +170,6 @@ export class PaListComponent implements OnInit {
                 patientId: id,
             }
         });
-
     }
 
 }
