@@ -9,7 +9,7 @@ from config.path_cfg import file_path_ferry
 from django.shortcuts import render
 from rest_framework.views import APIView
 from service import contour_svc, roi_svc, series_svc
-from utils.img_svr_connector import handle_command
+from utils.img_svr_connector import sync_send_command
 from utils.response_dto import ResponseDto
 from utils.uid_generator import UidGenerator
 from utils.volume_builder import VolumeBuilder
@@ -44,9 +44,8 @@ class WindowSize(APIView):
         try:
             sizedata = request.data.get('view_size', None)
             if sizedata is None:
-                return ResponseDto(success=False, message='resize参数不完整')
-            print(sizedata)
-            return handle_command('resize', view_size=sizedata)
+                return ResponseDto(success=False, message='sizedata is None')
+            return sync_send_command('resize', view_size=sizedata)
         except Exception as e:
             return ResponseDto(success=False, message=e.message)
 
@@ -61,19 +60,14 @@ class LoadVolume(APIView):
         try:
             seriesuid = request.GET.get('seriesuid', None)
             series, msg = series_svc.get_series_by_uid(seriesuid)
-            if not series:
+            if series is None:
                 return ResponseDto(success=False, message=msg)
 
-            volumepath = series.seriespixeldatafilepath
-            if not volumepath:
-                return ResponseDto(success=False, message='volumepath error')
-
-            return handle_command('load', volumepath=volumepath)
+            return sync_send_command('load', volumepath=series.seriespixeldatafilepath)
         except Exception as e:
             return ResponseDto(success=False, message=e.message)
 
     def put(self, request):
-
         request_data = request.data
 
         if request_data is None:
@@ -98,7 +92,7 @@ class LoadVolume(APIView):
             return ResponseDto(success=success, message=msg)
 
         try:
-            return handle_command('load', volumepath=volfilepath)
+            return sync_send_command('load', volumepath=volfilepath)
         except Exception as e:
             return ResponseDto(success=False, message=e.message)
 
@@ -111,9 +105,9 @@ class LoadVolume(APIView):
         try:
             seriesuid = request.GET.get('seriesuid', None)
             if seriesuid is None:
-                return ResponseDto(success=False, message='请输入序列UID')
+                return ResponseDto(success=False, message='seriesuid is None')
 
-            return handle_command('unload', seriesuid=seriesuid)
+            return sync_send_command('unload', seriesuid=seriesuid)
         except Exception as e:
             return ResponseDto(success=False, message=e.message)
 
@@ -125,7 +119,7 @@ class GetImage(APIView):
         :return: rgb image data
         """
         try:
-            return handle_command('show')
+            return sync_send_command('show')
         except Exception as e:
             return ResponseDto(success=False, message=e.message)
 
@@ -135,7 +129,7 @@ class ChangeColor(APIView):
         try:
             colormode = request.GET.get('colormode', '0')
             display_view = request.GET.get('display_view', 'all')
-            return handle_command('color', colormode=colormode, display_view=display_view)
+            return sync_send_command('color', colormode=colormode, display_view=display_view)
         except Exception as e:
             return ResponseDto(success=True, message=e.message)
 
@@ -152,7 +146,7 @@ class TurnPage(APIView):
         try:
             delta = request.GET.get('delta', '0')
             focus_view = request.GET.get('focus_view', None)
-            rst = handle_command('page', delta=delta, focus_view=focus_view)
+            rst = sync_send_command('page', delta=delta, focus_view=focus_view)
 
             img_server_rsp = rst.data['data']
             img_server_rsp_json = json.loads(img_server_rsp)
@@ -197,7 +191,7 @@ class Pan(APIView):
             focus_view = request.GET.get('focus_view', None)
             if pos_pre is None or pos_cur is None:
                 return ResponseDto(success=False, message='请输入完整的请求数据')
-            return handle_command('pan', pos_pre=pos_pre, pos_cur=pos_cur, focus_view=focus_view)
+            return sync_send_command('pan', pos_pre=pos_pre, pos_cur=pos_cur, focus_view=focus_view)
         except Exception as e:
             return ResponseDto(success=True, message=e.message)
 
@@ -214,7 +208,7 @@ class Roll(APIView):
         try:
             cursor = request.GET.get('cursor', '0')
             focus_view = request.GET.get('focus_view', None)
-            return handle_command('roll', cursor=cursor, focus_view=focus_view)
+            return sync_send_command('roll', cursor=cursor, focus_view=focus_view)
         except Exception as e:
             return ResponseDto(success=False, message=e.message)
 
@@ -235,7 +229,7 @@ class Rotate(APIView):
             if pos_pre is None or pos_cur is None or focus_view is None:
                 return ResponseDto(success=False, message='请输入完整的请求数据')
 
-            return handle_command('rotate', pos_pre=pos_pre,
+            return sync_send_command('rotate', pos_pre=pos_pre,
                                   pos_cur=pos_cur, focus_view=focus_view)
         except Exception as e:
             return ResponseDto(success=False, message=e.message)
@@ -255,7 +249,7 @@ class Zoom(APIView):
             focus_view = request.GET.get('focus_view', None)
             if focus_view is None:
                 return ResponseDto(success=False, message='请输入完整的请求数据')
-            return handle_command('zoom', zoom_factor=zoom_factor, focus_view=focus_view)
+            return sync_send_command('zoom', zoom_factor=zoom_factor, focus_view=focus_view)
         except Exception as e:
             return ResponseDto(success=False, message=e.message)
 
@@ -267,7 +261,7 @@ class ReSetVolume(APIView):
         :return: True or False
         """
         try:
-            return handle_command('reset')
+            return sync_send_command('reset')
         except Exception as e:
             return ResponseDto(success=False, message=e.message)
 
@@ -285,7 +279,7 @@ class ChangeWindow(APIView):
             wl = request.GET.get('wl', None)
             if ww is None or wl is None:
                 return ResponseDto(success=False, message='请输入完整的请求数据')
-            return handle_command('wwwl', ww=ww, wl=wl)
+            return sync_send_command('wwwl', ww=ww, wl=wl)
         except Exception as e:
             return ResponseDto(success=False, message=e.message)
 
@@ -298,7 +292,7 @@ class CrossLineLocation(APIView):
 
             if not cross_point or not focus_view:
                 return ResponseDto(success=False, message='请求参数不完整')
-            return handle_command('locate', cross_point=cross_point, focus_view=focus_view)
+            return sync_send_command('locate', cross_point=cross_point, focus_view=focus_view)
         except Exception as e:
             return ResponseDto(success=False, message=e.message)
 
@@ -306,7 +300,7 @@ class CrossLineLocation(APIView):
 class SetCenter(APIView):
     def get(self, request):
         try:
-            return handle_command('center')
+            return sync_send_command('center')
         except Exception as e:
             return ResponseDto(success=False, message=e.message)
 

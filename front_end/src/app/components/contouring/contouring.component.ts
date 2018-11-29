@@ -86,16 +86,8 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
                     return;
                 }
                 canvasSize['view_size'] = that.getCanvasSize();
-                that.conService.noticeSize(canvasSize).subscribe(result => {
-                    if (result.body === "success" && that.hasLoadVolume) {
-                        that.seriesHttpService.GetSeries().subscribe(data => {
-                            data = JSON.parse(data);
-                            that.updateCells(data);
-                            this.updateSliceIndex(data['0']['slice_index']);
-                        });
-                    }
-                });
-            }, 300);
+                that.updateSize(canvasSize);
+            }, 200);
         });
     }
 
@@ -109,7 +101,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
 
     ngOnDestroy() {
         this.hasLoadVolume = false;
-        this.seriesHttpService.UnLoadVolume(this.seriesId).subscribe();
+        this.seriesHttpService.unloadVolume(this.seriesId).subscribe();
     }
     //#endregion
 
@@ -187,10 +179,6 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     saveROI() {
-        if (this.data.activeRoi.name == '') {
-            this.toastService.error('Illegal input.');
-            return;
-        }
         this.data.activeRoi.seriesuid = $('#seriesSelect').val();
         this.roiHttp.create(this.data.activeRoi).subscribe(response => {
             response = response.body;
@@ -199,18 +187,14 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.data.activeRoi.id = response.data;
                 this.data.roiList.push(this.data.activeRoi);
                 EventAggregator.Instance().rois.publish(this.data.roiList);
+                this.newROIDisplay = false;
             } else {
                 this.toastService.success(response.message);
             }
-            this.newROIDisplay = false;
         });
     }
 
     updateROI() {
-        if (this.data.activeRoi.name == '') {
-            this.toastService.error('Illegal input.');
-            return;
-        }
         this.roiHttp.update(this.data.activeRoi).subscribe(result => {
             if (result.body.success) {
                 this.toastService.success('Save succeed.');
@@ -273,7 +257,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private handleLocate(focus: any, display: any, crossPoint: any) {
-        this.seriesHttpService.GetLocatePic(focus, crossPoint).subscribe((value) => {
+        this.seriesHttpService.locate(focus, crossPoint).subscribe((value) => {
             if (value.success) {
                 const data = JSON.parse(value.data);
                 this.updateCells(data, false, display);
@@ -285,9 +269,11 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     //#endregion
 
+    //#region handle Clear graphics event
     handleClearGraphics() {
         EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.clear));
     }
+    //#endregion
 
     //#region handle Scroll event
     handleTransverseScroll(event: any) {
@@ -317,7 +303,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private handleScroll(focus: any, delta: any) {
-        this.seriesHttpService.GetSeriesPic(focus, delta).subscribe((value) => {
+        this.seriesHttpService.page(focus, delta).subscribe((value) => {
             if (value.success) {
                 const data = JSON.parse(value.data);
                 this.updateCells(data, false);
@@ -331,7 +317,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     //#endregion
 
-    getCanvasSize() {
+    private getCanvasSize() {
         const view_size: any = {};
         view_size['transverse'] = [this.cell1.imageCanvas.width, this.cell1.imageCanvas.height];
         view_size['coronal'] = [this.cell2.imageCanvas.width, this.cell2.imageCanvas.height];
@@ -346,12 +332,12 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             return;
         }
         const that = this;
-        this.seriesHttpService.GetZoomPic(e[0], e[1]).subscribe(result => {
+        this.seriesHttpService.zoom(e[0], e[1]).subscribe(result => {
             if (result.success) {
                 result = JSON.parse(result.data);
                 that.updateCells(result);
             } else {
-                this.toastService.error(result.message);
+                that.toastService.error(result.message);
             }
         });
     }
@@ -363,12 +349,12 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             return;
         }
         const that = this;
-        this.seriesHttpService.GetWindowPic(evt[0], evt[1]).subscribe(result => {
+        this.seriesHttpService.wwwl(evt[0], evt[1]).subscribe(result => {
             if (result.success) {
                 result = JSON.parse(result.data);
                 that.updateCells(result);
             } else {
-                this.toastService.error(result.message);
+                that.toastService.error(result.message);
             }
         });
     }
@@ -381,12 +367,12 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             return;
         }
         const that = this;
-        this.seriesHttpService.GetPanPic(e[0], e[1], e[2]).subscribe(result => {
+        this.seriesHttpService.pan(e[0], e[1], e[2]).subscribe(result => {
             if (result.success) {
                 result = JSON.parse(result.data);
                 that.updateCells(result);
             } else {
-                this.toastService.error(result.message);
+                that.toastService.error(result.message);
             }
         });
     }
@@ -399,48 +385,52 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             return;
         }
         const that = this;
-        this.seriesHttpService.GetRotatePic(e[0], e[1], e[2]).subscribe(result => {
+        this.seriesHttpService.rotate(e[0], e[1], e[2]).subscribe(result => {
             if (result.success) {
                 result = JSON.parse(result.data);
                 that.updateCells(result);
             } else {
-                this.toastService.error(result.message);
+                that.toastService.error(result.message);
             }
         });
     }
     //#endregion
 
-    mainSetCenterPro() {
+    //#region handle Center event
+    handleCenter() {
         if (!this.hasLoadVolume) {
             return;
         }
         const that = this;
-        this.seriesHttpService.GetCenterPic().subscribe(result => {
+        this.seriesHttpService.center().subscribe(result => {
             if (result.success) {
                 result = JSON.parse(result.data);
                 that.updateCells(result);
             } else {
-                this.toastService.error(result.message);
+                that.toastService.error(result.message);
             }
         });
     }
+    //#endregion
 
+    //#region handle Reset event
     handleReset() {
         if (!this.hasLoadVolume) {
             return;
         }
         const that = this;
-        this.seriesHttpService.GetResetPic().subscribe(result => {
+        this.seriesHttpService.reset().subscribe(result => {
             if (result.success) {
                 result = JSON.parse(result.data);
                 that.updateCells(result);
             } else {
-                this.toastService.error(result.message);
+                that.toastService.error(result.message);
             }
         });
     }
+    //#endregion
 
-    getSeriesList(patientId: any) {
+    private getSeriesList(patientId: any) {
         this.seriesHttpService.getSeriesList(patientId).subscribe(response => {
             if (response['success']) {
                 this.seriesList = response['data'];
@@ -450,49 +440,58 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         });
     }
 
+    //#region handle Load Volume event
     handleLoadSeries() {
         const seriesId: any = $('#seriesSelect').val();
         const canvasSize: any = {};
         canvasSize['view_size'] = this.getCanvasSize();
         console.log(canvasSize);
-        const that = this;
         if (seriesId === '' || seriesId == null || seriesId === undefined) {
             this.toastService.error('No series selected.');
             return;
         }
         this.toastService.info('Loading now, please wait.');
-        this.seriesHttpService.LoadVolume(seriesId).subscribe(response => {
+        this.seriesHttpService.loadVolume(seriesId).subscribe(response => {
             if (response.success) {
+                this.hasLoadVolume = true;
+                this.seriesId = seriesId;
                 this.handleManageRoi(false);
                 EventAggregator.Instance().volumnSize.publish(response.data);
-                this.conService.noticeSize(canvasSize).subscribe(result => {
-                    if (result.body.success) {
-                        this.seriesHttpService.GetSeries().subscribe((value) => {
-                            if (value.success) {
-                                const data = JSON.parse(value.data);
-                                that.updateCells(data, true);
-                                this.updateSliceIndex(data['0']['slice_index']);
-                                this.toastService.success('Load succeed.');
-                            } else {
-                                this.toastService.success(value.message);
-                            }
-                        }, (error) => {
-                            this.toastService.error('Load failed.');
-                            console.log(error);
-                        });
-                        this.hasLoadVolume = true;
-                        this.seriesId = seriesId;
-                    } else {
-                        this.toastService.error(result.body.message);
-                    }
-                });
+                this.updateSize(canvasSize);
             } else {
                 this.toastService.error(response.message);
             }
         });
     }
+    //#endregion
 
-    saveContour(data: any) {
+    private updateSize(canvasSize) {
+        this.conService.noticeSize(canvasSize).subscribe(result => {
+            if (result.body.success) {
+                this.getImages();
+            } else {
+                this.toastService.error(result.body.message);
+            }
+        });
+    }
+
+    private getImages() {
+        this.seriesHttpService.GetSeries().subscribe((value) => {
+            if (value.success) {
+                const data = JSON.parse(value.data);
+                this.updateCells(data, true);
+                this.updateSliceIndex(data['0']['slice_index']);
+                this.toastService.success('succeed.');
+            } else {
+                this.toastService.error(value.message);
+            }
+        }, (error) => {
+            this.toastService.error('failed.');
+            console.log(error);
+        });
+    }
+
+    private saveContour(data: any) {
         if (data.length > 0) {
             console.log('begin save contour');
 
@@ -507,7 +506,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         }
     }
 
-    deleteContours(data: any) {
+    private deleteContours(data: any) {
         if (data.length > 0) {
             console.log('begin delete contour');
 
@@ -526,7 +525,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         this.data.setSliceIndex(index);
     }
 
-    updateCells(data, updateWwwl: boolean = false, updateViews: string = 'all') {
+    private updateCells(data, updateWwwl: boolean = false, updateViews: string = 'all') {
         if (updateViews === 'all' || updateViews.indexOf('transverse') > -1) {
             this.data.cell1.imageM.imageData = data['0']['image'];
             this.data.cell1.crossM.point = new Point(data['0']['crosshair'][0], data['0']['crosshair'][1]);

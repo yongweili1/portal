@@ -29,7 +29,7 @@ class SeriesService(object):
         try:
             query, msg = series_ctx.retrieve(series_uid=series_uid)
             if query is None or len(query) != 1:
-                return False, 'query error'
+                return None, 'query error'
             else:
                 return query[0], None
         except Exception as e:

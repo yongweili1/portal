@@ -8,8 +8,8 @@ import { ContourModel } from '../model/contour.model';
 @Injectable()
 export class ContouringService {
 
-    headers: HttpHeaders
-    options: any
+    headers: HttpHeaders;
+    options: any;
 
     constructor(
         private http: HttpClient,
@@ -22,7 +22,7 @@ export class ContouringService {
         this.options = {
             headers: this.headers,
             observe: "response",
-        }
+        };
     }
 
     Macro(macro_status: any) {
@@ -50,6 +50,6 @@ export class ContouringService {
         const getParams = new HttpParams()
             .set('roi_uid', roi_uid)
             .set('slice_index', slice_index);
-        return this.http.get(`${this.appConfig.apiUrl}/image/contour/`, { params: getParams })
+        return this.http.get(`${this.appConfig.apiUrl}/image/contour/`, { params: getParams });
     }
 }

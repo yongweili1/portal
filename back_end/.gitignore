@@ -1,3 +1,4 @@
 *.uihlog
 /log.txt
+.pytest_cache
 
