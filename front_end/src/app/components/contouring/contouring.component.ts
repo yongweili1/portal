@@ -50,6 +50,9 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         this.data.setCrossLineColor();
         EventAggregator.Instance().contourCps.subscribe(data => { this.saveContours(data); });
         EventAggregator.Instance().removeCps.subscribe(data => { this.deleteContours(data); });
+        EventAggregator.Instance().faderRadiusDelta.subscribe(delta => {
+            this.data.updateFaderRadius(delta);
+        });
     }
 
     //#region life-cycle hook methods

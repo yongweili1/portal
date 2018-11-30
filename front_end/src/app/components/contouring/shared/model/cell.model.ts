@@ -9,12 +9,14 @@ export class CellModel {
     crossM: CrossModel;
     graphics: any;
     actionInfo: any;
+    faderRadius: any;
 
     constructor() {
         this.sliceIndex = 0;
         this.actionInfo = new KeyValuePair(actions.locate);
         this.imageM = new ImageModel();
         this.crossM = new CrossModel();
+        this.faderRadius = 20;
     }
 }
 

@@ -43,6 +43,9 @@ export class ImageService {
             .set('seriesuid', seriesId);
         return this.http.get(`${this.appConfig.apiUrl}/image/volumes/`, { params: getParams })
             .map(response => {
+                if (response['data'] === '') {
+                    return response;
+                }
                 response['data'] = JSON.parse(response['data']);
                 return response;
             })
@@ -58,6 +61,9 @@ export class ImageService {
     GetSeries(): Observable<any> {
         return this.http.get(`${this.appConfig.apiUrl}/image/images/`)
             .map(response => {
+                if (response['data'] === '') {
+                    return response;
+                }
                 response['data'] = JSON.parse(response['data']);
                 return response;
             });
@@ -69,6 +75,9 @@ export class ImageService {
             .set('focus_view', focus);
         return this.http.get(`${this.appConfig.apiUrl}/image/page/`, { params: getParams })
             .map(response => {
+                if (response['data'] === '') {
+                    return response;
+                }
                 response['data'] = JSON.parse(response['data']);
                 return response;
             });
@@ -80,6 +89,9 @@ export class ImageService {
             .set('cross_point', crossPoint);
         return this.http.get(`${this.appConfig.apiUrl}/image/cross/`, { params: getParams })
             .map(response => {
+                if (response['data'] === '') {
+                    return response;
+                }
                 response['data'] = JSON.parse(response['data']);
                 return response;
             });
@@ -91,6 +103,9 @@ export class ImageService {
             .set('zoom_factor', factor);
         return this.http.get<any>(`${this.appConfig.apiUrl}/image/zoom/`, { params: getParams })
             .map(response => {
+                if (response['data'] === '') {
+                    return response;
+                }
                 response['data'] = JSON.parse(response['data']);
                 return response;
             });
@@ -103,6 +118,9 @@ export class ImageService {
             .set('pos_cur', curPos);
         return this.http.get<any>(`${this.appConfig.apiUrl}/image/pan/`, { params: getParams })
             .map(response => {
+                if (response['data'] === '') {
+                    return response;
+                }
                 response['data'] = JSON.parse(response['data']);
                 return response;
             });
@@ -115,6 +133,9 @@ export class ImageService {
             .set('pos_cur', curPos);
         return this.http.get<any>(`${this.appConfig.apiUrl}/image/rotate/`, { params: getParams })
             .map(response => {
+                if (response['data'] === '') {
+                    return response;
+                }
                 response['data'] = JSON.parse(response['data']);
                 return response;
             });
@@ -123,6 +144,9 @@ export class ImageService {
     reset(): Observable<any> {
         return this.http.get<any>(`${this.appConfig.apiUrl}/image/reset/`)
             .map(response => {
+                if (response['data'] === '') {
+                    return response;
+                }
                 response['data'] = JSON.parse(response['data']);
                 return response;
             });
@@ -134,6 +158,9 @@ export class ImageService {
             .set('wl', wl);
         return this.http.get<any>(`${this.appConfig.apiUrl}/image/windows/`, { params: getParams })
             .map(response => {
+                if (response['data'] === '') {
+                    return response;
+                }
                 response['data'] = JSON.parse(response['data']);
                 return response;
             });
@@ -142,6 +169,9 @@ export class ImageService {
     center(): Observable<any> {
         return this.http.get<any>(`${this.appConfig.apiUrl}/image/center/`)
             .map(response => {
+                if (response['data'] === '') {
+                    return response;
+                }
                 response['data'] = JSON.parse(response['data']);
                 return response;
             });
