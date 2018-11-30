@@ -36,4 +36,4 @@ class ContourContext(object):
                 query = query.filter(roiuid=roi_uid)
             return query, None
         except Exception as ex:
-            return False, ex.message
+            return None, ex.message
