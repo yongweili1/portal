@@ -1,4 +1,4 @@
-import { Directive, ElementRef, HostListener, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Directive, ElementRef, HostListener, Input, OnChanges, OnInit, SimpleChanges, OnDestroy } from '@angular/core';
 import { EventAggregator } from '../../../../shared/common/event_aggregator';
 import { KeyValuePair } from '../../../../shared/common/keyvaluepair';
 import { CircleContainer } from '../container/circle_container';
@@ -9,6 +9,7 @@ import { RectangleContainer } from '../container/rectangle_container';
 import { RoiModel } from '../model/roi.model';
 import { NudgeHelper } from '../tools/nudge_helper';
 import { Point } from '../tools/point';
+import { Subscription } from 'rxjs';
 
 declare var createjs: any;
 declare var actions: any;
@@ -17,7 +18,7 @@ declare var shapes: any;
 @Directive({
     selector: '[overlay-canvas]'
 })
-export class OverlayCanvasDirective implements OnInit, OnChanges {
+export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
     context: CanvasRenderingContext2D;
     stage: any;
     shape: any;
@@ -27,6 +28,9 @@ export class OverlayCanvasDirective implements OnInit, OnChanges {
     rois: Array<RoiModel>;
     roi: RoiModel;
     graphicChanged = true;
+
+    roisSubscriber: Subscription;
+    roiSubscriber: Subscription;
 
     @Input() faderRadius: number;
     @Input() sliceIndex: any;
@@ -47,7 +51,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges {
         this.stage.autoClear = false;
         this.stage.name = this.tag;
 
-        EventAggregator.Instance().rois.subscribe(rois => {
+        this.roisSubscriber = EventAggregator.Instance().rois.subscribe(rois => {
             this.rois = rois;
 
             // delete exilic contours
@@ -68,7 +72,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges {
             this.stage.update();
         });
 
-        EventAggregator.Instance().roi.subscribe(roi => {
+        this.roiSubscriber = EventAggregator.Instance().roi.subscribe(roi => {
             this.roi = roi;
         });
     }
@@ -96,6 +100,15 @@ export class OverlayCanvasDirective implements OnInit, OnChanges {
                 this.fader.setRadius(this.faderRadius);
                 this.fader.update();
             }
+        }
+    }
+
+    ngOnDestroy() {
+        try {
+            this.roisSubscriber.unsubscribe();
+            this.roiSubscriber.unsubscribe();
+        } catch (error) {
+            console.error(error.message);
         }
     }
 

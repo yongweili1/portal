@@ -1,10 +1,9 @@
 import { Point } from '../tools/point';
-import { Hitbar } from '../overlay/hitbar'
 
 declare var createjs: any;
 
 export class Text extends createjs.Text {
-    type: string = 'text';
+    type = 'text';
     overlayStage: any;
     protected _cp: Point;
     protected _is_hover: boolean;
@@ -12,13 +11,13 @@ export class Text extends createjs.Text {
     text: string;
 
     constructor(stage, text) {
-        super(text, "14px Arial", "yellow");
+        super(text, '14px Arial', 'yellow');
         this.overlayStage = stage;
         this._is_hover = false;
         this.color = 'yellow';
-        
-        this.addEventListener("mouseover", this.handleMouseOver.bind(this));
-        this.addEventListener("mouseout", this.handleMouseOut.bind(this));
+
+        this.addEventListener('mouseover', this.handleMouseOver.bind(this));
+        this.addEventListener('mouseout', this.handleMouseOut.bind(this));
         this.overlayStage.addChild(this);
     }
 
@@ -30,9 +29,11 @@ export class Text extends createjs.Text {
         this._cp = point;
     }
 
-    update(){
+    update() {
         this.overlayStage.clear();
-        if (this._cp == null) return;
+        if (this._cp == null) {
+            return;
+        }
         this.x = this._cp.x + 10;
         this.y = this._cp.y;
         this.overlayStage.update();
@@ -41,11 +42,11 @@ export class Text extends createjs.Text {
     handleMouseOver(evt) {
         this._is_hover = true;
         this.color = 'red';
-        this.update()
+        this.update();
     }
     handleMouseOut(evt) {
         this._is_hover = false;
         this.color = 'yellow';
-        this.update()
+        this.update();
     }
 }

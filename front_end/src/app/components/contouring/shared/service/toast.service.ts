@@ -9,18 +9,18 @@ export class ToastService {
     }
 
     info(msg: any) {
-        this._svc.add({ severity: 'info', detail: msg });
+        this._svc.add({ severity: 'info', summary: 'Info Message', detail: msg });
     }
 
     success(msg: any) {
-        this._svc.add({ severity: 'success', detail: msg });
+        this._svc.add({ severity: 'success', summary: 'Success Message', detail: msg });
     }
 
     warning(msg: any) {
-        this._svc.add({ severity: 'warning', detail: msg });
+        this._svc.add({ severity: 'warning', summary: 'Warning Message', detail: msg });
     }
 
     error(msg: any) {
-        this._svc.add({ severity: 'error', detail: msg });
+        this._svc.add({ severity: 'error', summary: 'Error Message', detail: msg });
     }
 }

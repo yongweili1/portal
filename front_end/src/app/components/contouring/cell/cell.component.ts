@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { EventAggregator } from '../../../shared/common/event_aggregator';
-import { Point } from '../shared/tools/point';
 import { CellModel } from '../shared/model/cell.model';
+import { Point } from '../shared/tools/point';
 declare var $: any;
 declare var actions: any;
 
@@ -10,8 +11,12 @@ declare var actions: any;
     templateUrl: './cell.component.html',
     styleUrls: ['./cell.component.less']
 })
-export class CellComponent {
+export class CellComponent implements OnInit, AfterViewInit, OnDestroy {
     id: string;
+
+    pageDeltaSubscriber: Subscription;
+    crossPointSubscriber: Subscription;
+    eventDataSubscriber: Subscription;
 
     container: any; imageCanvas: any; crossCanvas: any; actionCanvas: any; overlayCanvas: any;
 
@@ -30,11 +35,13 @@ export class CellComponent {
 
         this.model = new CellModel();
 
-        EventAggregator.Instance().pageDelta.subscribe(value => {
-            this.page(value);
+        this.pageDeltaSubscriber = EventAggregator.Instance().pageDelta.subscribe(value => {
+            if (value !== undefined && value[0] === this.model.tag) {
+                this.page(value[1]);
+            }
         });
 
-        EventAggregator.Instance().crossPoint.subscribe(value => {
+        this.crossPointSubscriber = EventAggregator.Instance().crossPoint.subscribe(value => {
             if (value[0] !== this.model.tag) {
                 return;
             }
@@ -46,7 +53,7 @@ export class CellComponent {
             this.model.crossM.point = p;
         });
 
-        EventAggregator.Instance().eventData.subscribe(value => {
+        this.eventDataSubscriber = EventAggregator.Instance().eventData.subscribe(value => {
             if (value === undefined || value.length != 2) {
                 return;
             }
@@ -85,8 +92,8 @@ export class CellComponent {
 
     //#region life-cycle hook methods
     ngOnInit() {
-        let that = this;
-        window.addEventListener("resize", function () { that.changeSize(); });
+        const that = this;
+        window.addEventListener('resize', function () { that.changeSize(); });
         this.model.imageM.windowWidth = 2000;
         this.model.imageM.windowLevel = 0;
     }
@@ -102,6 +109,17 @@ export class CellComponent {
         this.changeSize();
 
         this.attachMouseWheelEvent();
+    }
+
+    ngOnDestroy() {
+        // 防止重复订阅
+        try {
+            this.pageDeltaSubscriber.unsubscribe();
+            this.crossPointSubscriber.unsubscribe();
+            this.eventDataSubscriber.unsubscribe();
+        } catch (error) {
+            console.error(error.message);
+        }
     }
     //#endregion
 

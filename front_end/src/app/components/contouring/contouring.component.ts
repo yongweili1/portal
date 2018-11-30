@@ -11,6 +11,7 @@ import { ImageService } from './shared/service/image.service';
 import { ToastService } from './shared/service/toast.service';
 import { ExcuteHelper } from './shared/tools/excute_helper';
 import { Point } from './shared/tools/point';
+import { Subscription } from 'rxjs';
 
 declare var $: any;
 declare var actions: any;
@@ -33,6 +34,12 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     excuteHelper: ExcuteHelper;
     data: ContouringModel;
 
+    // subscription objects
+    contourCpsSubscriber: Subscription;
+    removeCpsSubscriber: Subscription;
+    faderRadiusDeltaSubscriber: Subscription;
+    actionInfoSubscriber: Subscription;
+
     @ViewChild('cell1') cell1;
     @ViewChild('cell2') cell2;
     @ViewChild('cell3') cell3;
@@ -48,11 +55,6 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         this.data = new ContouringModel();
         this.data.setTag();
         this.data.setCrossLineColor();
-        EventAggregator.Instance().contourCps.subscribe(data => { this.saveContours(data); });
-        EventAggregator.Instance().removeCps.subscribe(data => { this.deleteContours(data); });
-        EventAggregator.Instance().faderRadiusDelta.subscribe(delta => {
-            this.data.updateFaderRadius(delta);
-        });
     }
 
     //#region life-cycle hook methods
@@ -61,21 +63,35 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         this.cell2.id = 'cell-2';
         this.cell3.id = 'cell-3';
 
-        EventAggregator.Instance().actionInfo.subscribe(value => {
-            this.data.setActionInfo(value);
-            const priActionArray = ['shape', 'clear', 'select', 'nudge'];
-            let canvasType = '';
-            if (value.key() === actions.locate) {
-                canvasType = 'cross';
-            } else if (priActionArray.indexOf(value.key()) > -1) {
-                canvasType = 'overlay';
-            } else {
-                canvasType = 'action';
-            }
-            this.cell1.riseZIndexOfCanvas(canvasType);
-            this.cell2.riseZIndexOfCanvas(canvasType);
-            this.cell3.riseZIndexOfCanvas(canvasType);
-        });
+        this.contourCpsSubscriber = EventAggregator.Instance().contourCps
+            .subscribe(data => {
+                this.saveContours(data);
+            });
+        this.removeCpsSubscriber = EventAggregator.Instance().removeCps
+            .subscribe(data => {
+                this.deleteContours(data);
+            });
+        this.faderRadiusDeltaSubscriber = EventAggregator.Instance().faderRadiusDelta
+            .subscribe(delta => {
+                this.data.updateFaderRadius(delta);
+            });
+
+        this.actionInfoSubscriber = EventAggregator.Instance().actionInfo
+            .subscribe(value => {
+                this.data.setActionInfo(value);
+                const priActionArray = ['shape', 'clear', 'select', 'nudge'];
+                let canvasType = '';
+                if (value.key() === actions.locate) {
+                    canvasType = 'cross';
+                } else if (priActionArray.indexOf(value.key()) > -1) {
+                    canvasType = 'overlay';
+                } else {
+                    canvasType = 'action';
+                }
+                this.cell1.riseZIndexOfCanvas(canvasType);
+                this.cell2.riseZIndexOfCanvas(canvasType);
+                this.cell3.riseZIndexOfCanvas(canvasType);
+            });
 
         this.activeRoute.queryParams.subscribe(params => {
             this.patientId = params.patientId;
@@ -99,8 +115,17 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.hasLoadVolume = false;
-        this.imageSvc.unloadVolume(this.seriesId).subscribe();
+        try {
+            this.hasLoadVolume = false;
+            this.imageSvc.unloadVolume(this.seriesId).subscribe();
+            // 防止重复订阅
+            this.contourCpsSubscriber.unsubscribe();
+            this.removeCpsSubscriber.unsubscribe();
+            this.faderRadiusDeltaSubscriber.unsubscribe();
+            this.actionInfoSubscriber.unsubscribe();
+        } catch (error) {
+            console.error(error.message);
+        }
     }
     //#endregion
 

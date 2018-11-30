@@ -14,50 +14,55 @@ export class NudgeHelper {
     getMode() {
         return this.mode;
     }
+
     setMode(center: Point, voiPt: Array<Array<Point>>) {
-        let voiPt_Clipper = this.convertPoints(voiPt);
-        let pointInContour: boolean = this.ContourContainsPoint(voiPt_Clipper, { X: center.x, Y: center.y });
-        let virtualFaderPt_Clipper = this.convertPoints([this.fader.getCps()])
+        const voiPt_Clipper = this.convertPoints(voiPt);
+        const pointInContour: boolean = this.ContourContainsPoint(voiPt_Clipper, { X: center.x, Y: center.y });
+        const virtualFaderPt_Clipper = this.convertPoints([this.fader.getCps()]);
         if (pointInContour) {
-            let intersection = ClipperHelper.Clipper(voiPt_Clipper, virtualFaderPt_Clipper, 1, "intersection");
-            if (intersection[0].length == this.fader.getCps().length) {
-                this.mode = "CreateInFader";
+            const intersection = ClipperHelper.Clipper(voiPt_Clipper, virtualFaderPt_Clipper, 1, 'intersection');
+            if (intersection[0].length === this.fader.getCps().length) {
+                this.mode = 'CreateInFader';
             } else {
-                this.mode = "InFader";
+                this.mode = 'InFader';
             }
         } else {
-            let intersection = ClipperHelper.Clipper(voiPt_Clipper, virtualFaderPt_Clipper, 1, "intersection");
-            if (intersection.length == 0) {
-                this.mode = "CreateOutFader";
+            const intersection = ClipperHelper.Clipper(voiPt_Clipper, virtualFaderPt_Clipper, 1, 'intersection');
+            if (intersection.length === 0) {
+                this.mode = 'CreateOutFader';
             } else {
-                this.mode = "OutFader";
+                this.mode = 'OutFader';
             }
         }
-        console.log('fader mode', this.mode)
+        console.log('fader mode', this.mode);
         return this.mode;
     }
 
     setState() {
-        if (this.mode == 'CreateInFader' || this.mode == 'InFader') {
+        if (this.mode === 'CreateInFader' || this.mode === 'InFader') {
             this.fader.showState(1);
-        } else if (this.mode == 'OutFader' || this.mode == 'CreateOutFader') {
+        } else if (this.mode === 'OutFader' || this.mode === 'CreateOutFader') {
             this.fader.showState(-1);
         }
     }
 
     private ContourContainsPoint(contours: Array<Array<ClipPoint>>, point: ClipPoint): boolean {
-        let num: number = 0;
-        for (var contour in contours) {
-            let wn: number = 0, j: number = 0;
+        let num = 0;
+        for (const contour in contours) {
+            if (contour === undefined || contour == null) {
+                continue;
+            }
+            let wn = 0, j = 0;
             for (let i = 0; i < contours[contour].length; i++) {
-                if (i == contours[contour].length - 1) {
+                if (i === contours[contour].length - 1) {
                     j = 0;
                 } else {
                     j = j + 1;
                 }
-
-                if (contours[contour][i].Y <= point.Y) {   // 如果多边形的点 小于等于 选定点的 Y 坐标
-                    if (contours[contour][j].Y > point.Y) {  // 如果多边形的下一点 大于于 选定点的 Y 坐标
+                // 如果多边形的点 小于等于 选定点的 Y 坐标
+                if (contours[contour][i].Y <= point.Y) {
+                    // 如果多边形的下一点 大于于 选定点的 Y 坐标
+                    if (contours[contour][j].Y > point.Y) {
                         if (this.IsLeft(contours[contour][i], contours[contour][j], point) > 0) {
                             wn++;
                         }
@@ -70,9 +75,9 @@ export class NudgeHelper {
                     }
                 }
             }
-            if (wn != 0) { num++; }
+            if (wn !== 0) { num++; }
         }
-        if (num % 2 == 0) {
+        if (num % 2 === 0) {
             return false;
         } else {
             return true;
@@ -80,15 +85,17 @@ export class NudgeHelper {
     }
 
     private convertPoints(contours: Array<Array<Point>>) {
-        let rois = new Array();
+        const rois = new Array();
         contours.forEach(contour => {
-            if (contour == null) return;
-            let roi = new Array();
+            if (contour == null) {
+                return;
+            }
+            const roi = new Array();
             contour.forEach(cp => {
-                let p = new ClipPoint();
+                const p = new ClipPoint();
                 p.X = cp.x;
                 p.Y = cp.y;
-                roi.push(p)
+                roi.push(p);
             });
             rois.push(roi);
         });
@@ -96,47 +103,39 @@ export class NudgeHelper {
     }
 
     private IsLeft(P0: ClipPoint, P1: ClipPoint, P2: ClipPoint): number {
-        let abc: number = ((P1.X - P0.X) * (P2.Y - P0.Y) - (P2.X - P0.X) * (P1.Y - P0.Y));
+        const abc: number = ((P1.X - P0.X) * (P2.Y - P0.Y) - (P2.X - P0.X) * (P1.Y - P0.Y));
         return abc;
     }
 
     Push(contours: Array<Array<Point>>, bridgeClipper: Array<Array<Point>>) {
-        if (contours == null || this.fader.getCps().length == 0 || this.mode == null) {
+        if (contours == null || this.fader.getCps().length === 0 || this.mode == null) {
             return [];
         }
 
-        let voiPt_Clipper = this.convertPoints(contours);
-        let pusherPt_Clipper = this.convertPoints([this.fader.getCps()]);
-        let bridgePts = this.convertPoints(bridgeClipper);
-        let clipper = this.InPush(bridgePts, pusherPt_Clipper)
-        if (this.mode == "InFader") { // push out
+        const voiPt_Clipper = this.convertPoints(contours);
+        const pusherPt_Clipper = this.convertPoints([this.fader.getCps()]);
+        const bridgePts = this.convertPoints(bridgeClipper);
+        const clipper = this.InPush(bridgePts, pusherPt_Clipper);
+        if (this.mode === 'InFader') { // push out
             return this.InPush(voiPt_Clipper, clipper);
-        } else if (this.mode == "OutFader") { // push in
+        } else if (this.mode === 'OutFader') { // push in
             return this.OutPush(voiPt_Clipper, clipper);
-        } else if (this.mode == "CreateOutFader") { // create a new contour
+        } else if (this.mode === 'CreateOutFader') { // create a new contour
             return this.OutPush(voiPt_Clipper, clipper);
-        } else if (this.mode == "CreateInFader") { // push out
+        } else if (this.mode === 'CreateInFader') { // push out
             return this.InPush(voiPt_Clipper, clipper);
         }
     }
 
     private OutPush(voiPt_Clipper: Array<Array<ClipPoint>>, pusherPt_Clipper: any): Array<Array<number>> {
         let difference = [];
-        difference = ClipperHelper.Clipper(voiPt_Clipper, pusherPt_Clipper, 1, "difference");
+        difference = ClipperHelper.Clipper(voiPt_Clipper, pusherPt_Clipper, 1, 'difference');
         return difference;
     }
 
     private InPush(voiPt_Clipper: Array<Array<ClipPoint>>, pusherPt_Clipper: any): Array<Array<number>> {
         let union = [];
-        union = ClipperHelper.Clipper(voiPt_Clipper, pusherPt_Clipper, 1, "union");
+        union = ClipperHelper.Clipper(voiPt_Clipper, pusherPt_Clipper, 1, 'union');
         return union;
-    }
-
-    PointInPoly(pt, poly) {
-        for (var c = false, i = -1, l = poly.length, j = l - 1; ++i < l; j = i)
-            ((poly[i].y <= pt.y && pt.y < poly[j].y) || (poly[j].y <= pt.y && pt.y < poly[i].y))
-                && (pt.x < (poly[j].x - poly[i].x) * (pt.y - poly[i].y) / (poly[j].y - poly[i].y) + poly[i].x)
-                && (c = !c);
-        return c;
     }
 }

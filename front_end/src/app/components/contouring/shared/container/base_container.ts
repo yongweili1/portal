@@ -1,11 +1,11 @@
-import { Point } from '../tools/point'
-import { RoiModel } from '../model/roi.model'
+import { Point } from '../tools/point';
+import { RoiModel } from '../model/roi.model';
 declare var createjs: any;
 
 export class BaseContainer extends createjs.Container {
     uid: string = null;
-    isPaint: boolean = false;
-    isMousedown: boolean = false;
+    isPaint = false;
+    isMousedown = false;
     type: string;
     overlayStage: any;
     protected _tempPoint: Point;
@@ -25,27 +25,27 @@ export class BaseContainer extends createjs.Container {
         this.overlayStage = stage;
         this.type = type;
         this._tempPoint = new Point(0, 0);
-        this.addEventListener("mousedown", this.handleMouseDown.bind(this));
-        this.addEventListener("pressmove", this.handlePressMove.bind(this));
-        this.addEventListener("dblclick", this.handleDbClick.bind(this));
-        this.addEventListener("pressup", this.handlePressUp.bind(this));
+        this.addEventListener('mousedown', this.handleMouseDown.bind(this));
+        this.addEventListener('pressmove', this.handlePressMove.bind(this));
+        this.addEventListener('dblclick', this.handleDbClick.bind(this));
+        this.addEventListener('pressup', this.handlePressUp.bind(this));
         this.overlayStage.addChild(this);
-        this.initCps()
+        this.initCps();
     }
 
-    public get roiConfig(){
+    public get roiConfig() {
         return this._roiConfig;
     }
 
-    public set roiConfig(roiConfig: RoiModel){
+    public set roiConfig(roiConfig: RoiModel) {
         this._roiConfig = roiConfig;
     }
 
-    public get contourInfo(){
+    public get contourInfo() {
         return this._contourInfo;
     }
 
-    public set contourInfo(contourInfo: any){
+    public set contourInfo(contourInfo: any) {
         this._contourInfo = contourInfo;
     }
 
@@ -54,22 +54,23 @@ export class BaseContainer extends createjs.Container {
     }
 
     initCps(count: number = -1) {
-        this.cps = new Array()
+        this.cps = new Array();
         for (let index = 0; index < count; index++) {
-            this.cps.push(new Point(0, 0))
+            this.cps.push(new Point(0, 0));
         }
     }
 
     updateCp(index: number, x, y) {
-        if (index < this.cps.length)
-            this.cps[index].update(x, y)
+        if (index < this.cps.length) {
+            this.cps[index].update(x, y);
+        }
     }
 
-    update(){
+    update() {
     }
 
     handleMouseDown(evt) {
-        console.log('[base_container]handle MouseDown')
+        console.log('[base_container]handle MouseDown');
         this._tempPoint = new Point(evt.stageX, evt.stageY);
         this.isMousedown = true;
         this.currentPressDownBtn = evt.button;
@@ -79,14 +80,14 @@ export class BaseContainer extends createjs.Container {
         this.currentPressDownBtn = -1;
     }
     handlePressMove(evt) {
-        console.log('[base_container]handle PressMove')
+        console.log('[base_container]handle PressMove');
         this.update();
     }
     handlePressUp(evt) {
-        console.log('[base_container]handle PressUp')
+        console.log('[base_container]handle PressUp');
         this._tempPoint = new Point(0, 0);
     }
     handleDbClick(evt) {
-        console.log('[base_container]handle DbClick')
+        console.log('[base_container]handle DbClick');
     }
 }
