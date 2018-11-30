@@ -1,8 +1,8 @@
-import { BaseContainer } from "./base_container";
-import { Fader } from "../overlay/fader";
-import { Point } from "../tools/point";
-import { RoiModel } from "../model/roi.model";
-import { Line } from "../overlay/line";
+import { BaseContainer } from './base_container';
+import { Fader } from '../overlay/fader';
+import { Point } from '../tools/point';
+import { RoiModel } from '../model/roi.model';
+import { Line } from '../overlay/line';
 
 export class FaderContainer extends BaseContainer {
     fader: Fader;
@@ -13,7 +13,7 @@ export class FaderContainer extends BaseContainer {
     // none, none, 0
     // positive, +, 1
     // negative, -, -1
-    state: number = 0;
+    state = 0;
 
     constructor(stage) {
         super(stage, 'nudge');
@@ -24,9 +24,11 @@ export class FaderContainer extends BaseContainer {
     }
 
     public setRoi(roi: RoiModel) {
-        if (roi === undefined) return;
-        super.setRoi(roi)
-           this.fader.color = roi.color;
+        if (roi === undefined) {
+            return;
+        }
+        super.setRoi(roi);
+        this.fader.color = roi.color;
         this.horizontal.color = roi.color;
         this.vertical.color = roi.color;
     }
@@ -37,13 +39,15 @@ export class FaderContainer extends BaseContainer {
     }
 
     showState(state = 0) {
-        if (state != 0) this.state = state;
-        let p = this.getCenter().copy();
-        this.horizontal.update(p.copy().offset(-this.getRadius() / 2, 0), p.copy().offset(this.getRadius() / 2, 0))
-        if (this.state == 1) { // positive, +
-            this.vertical.update(p.copy().offset(0, -this.getRadius() / 2), p.copy().offset(0, this.getRadius() / 2))
+        if (state !== 0) {
+            this.state = state;
+        }
+        const p = this.getCenter().copy();
+        this.horizontal.update(p.copy().offset(-this.getRadius() / 2, 0), p.copy().offset(this.getRadius() / 2, 0));
+        if (this.state === 1) { // positive, +
+            this.vertical.update(p.copy().offset(0, -this.getRadius() / 2), p.copy().offset(0, this.getRadius() / 2));
         } else { // negative, - or none
-            this.vertical.update(this.getCenter(), this.getCenter())
+            this.vertical.update(this.getCenter(), this.getCenter());
         }
     }
 
@@ -53,6 +57,10 @@ export class FaderContainer extends BaseContainer {
 
     getRadius() {
         return this.fader.radius;
+    }
+
+    setRadius(value) {
+        this.fader.radius = value;
     }
 
     updateRadius(delta: number) {
@@ -65,12 +73,12 @@ export class FaderContainer extends BaseContainer {
     }
 
     handleMouseDown(evt) {
-        super.handleMouseDown(evt)
+        super.handleMouseDown(evt);
 
         if (evt.offsetX === undefined || evt.offsetY === undefined) {
-            this.prePos = new Point(evt.stageX, evt.stageY)
+            this.prePos = new Point(evt.stageX, evt.stageY);
         } else {
-            this.prePos = new Point(evt.offsetX, evt.offsetY)
+            this.prePos = new Point(evt.offsetX, evt.offsetY);
         }
 
         this.fader.setCenter(this.prePos);

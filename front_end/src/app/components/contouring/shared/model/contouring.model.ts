@@ -44,4 +44,10 @@ export class ContouringModel {
         this.cell2.actionInfo = value;
         this.cell3.actionInfo = value;
     }
+
+    updateFaderRadius(delta) {
+        this.cell1.faderRadius += delta;
+        this.cell2.faderRadius += delta;
+        this.cell3.faderRadius += delta;
+    }
 }

@@ -42,6 +42,6 @@ class SeriesService(object):
                 'seriespixeldatafilepath': vol_file_path,
                 'buildvolumesign': int(0)
             }
-            return series_ctx.update(data)
+            return series_ctx.update(data=data)
         except Exception as e:
             return False, e.message

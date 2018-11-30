@@ -140,7 +140,7 @@ export class CellComponent {
         const that = this;
         const scrollFunc = function (e) {
             e = e || window.event;
-            let delta = e.wheelDelta / 120;
+            const delta = e.wheelDelta / 120;
             if (that.model.actionInfo.key() === actions.nudge) {
                 EventAggregator.Instance().faderRadiusDelta.publish(delta);
             } else {
