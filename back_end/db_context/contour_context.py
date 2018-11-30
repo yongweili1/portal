@@ -27,7 +27,7 @@ class ContourContext(object):
         except Exception as ex:
             return False, ex.message
 
-    def retrieve(self, image_uid, roi_uid):
+    def retrieve(self, image_uid=None, roi_uid=None):
         try:
             query = Contour.objects
             if image_uid is not None:

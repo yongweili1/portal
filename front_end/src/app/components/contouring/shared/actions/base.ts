@@ -1,6 +1,6 @@
 export class BaseAction {
     tag: string;
-    isMouseDown: boolean = false;
+    isMouseDown = false;
 
     constructor (tag) {
         this.tag = tag;

@@ -1,4 +1,4 @@
-import { BaseAction } from "./base";
+import { BaseAction } from './base';
 
 export class Locate extends BaseAction {
     handleMouseDown(evt) {

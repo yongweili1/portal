@@ -1,3 +1,5 @@
+import os
+
 from db_context import roi_ctx, contour_ctx
 
 
@@ -33,7 +35,13 @@ class RoiService(object):
                 success, msg = roi_ctx.delete(uid)
                 if not success:
                     return success, msg
-                # Delete all contours of this roi
+                # Delete all contours and related cps files of this roi
+                contours, msg = contour_ctx.retrieve(roi_uid=uid)
+                if contours is not None:
+                    for item in contours:
+                        if not os.path.isfile(item.cpspath):
+                            continue
+                        os.remove(item.cpspath)
                 success, msg = contour_ctx.delete(roi_uid=uid)
                 if not success:
                     return success, msg

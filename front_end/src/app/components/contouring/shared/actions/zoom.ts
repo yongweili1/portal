@@ -1,4 +1,4 @@
-import { BaseAction } from "./base";
+import { BaseAction } from './base';
 import { EventAggregator } from '../../../../shared/common/event_aggregator';
 declare var actions: any;
 
@@ -16,13 +16,13 @@ export class Zoom extends BaseAction {
         if (!this.isMouseDown) {
             return;
         }
-        let curY = e.clientY;
-        let shiftY = curY - this.preY;
+        const curY = e.clientY;
+        const shiftY = curY - this.preY;
         this.preY = curY;
         if (shiftY >= 0) {
-            this.zoom_factor = 1.0 + shiftY * 1.0 / 120
+            this.zoom_factor = 1.0 + shiftY * 1.0 / 120;
         } else {
-            this.zoom_factor = 1.0 / (1.0 - shiftY * 1.0 / 120)
+            this.zoom_factor = 1.0 / (1.0 - shiftY * 1.0 / 120);
         }
         const data = [];
         data[0] = actions.zoom;

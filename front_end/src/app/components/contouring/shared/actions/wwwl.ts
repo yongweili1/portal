@@ -1,4 +1,4 @@
-import { BaseAction } from "./base";
+import { BaseAction } from './base';
 import { EventAggregator } from '../../../../shared/common/event_aggregator';
 declare var actions: any;
 
@@ -21,10 +21,10 @@ export class WWWL extends BaseAction {
         if (!this.isMouseDown) {
             return;
         }
-        let curX = e.clientX;
-        let curY = e.clientY;
-        let shiftX = curX - this.preX;
-        let shiftY = curY - this.preY;
+        const curX = e.clientX;
+        const curY = e.clientY;
+        const shiftX = curX - this.preX;
+        const shiftY = curY - this.preY;
 
         if (shiftY >= 0) {
             this.ww_factor = 1.0 + shiftY * 1.0 / 600;
