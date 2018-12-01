@@ -3,24 +3,27 @@ import unittest
 
 class SeriesServiceTest(unittest.TestCase):
     def tearDown(self):
-        print('tearDown')
+        pass
 
     def setUp(self):
-        print('setUp')
+        pass
 
     @classmethod
     def tearDownClass(cls):
-        print('tearDownClass')
+        pass
 
     @classmethod
     def setUpClass(cls):
-        print('setUpClass')
+        pass
 
     def test_create(self):
-        print('test_create')
+        pass
 
     def test_delete(self):
-        print('test_delete')
+        pass
+
+    def test_retrieve(self):
+        pass
 
 
 # https://www.cnblogs.com/feng0815/p/8045850.html
