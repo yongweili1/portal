@@ -1,14 +1,14 @@
-import { Directive, ElementRef, HostListener, Input, OnInit, SimpleChanges } from '@angular/core';
+import { Directive, ElementRef, HostListener, Input, OnInit, SimpleChanges, OnChanges } from '@angular/core';
 import { KeyValuePair } from '../../../../shared/common/keyvaluepair';
 import { Action } from '../actions/action';
-import { ExcuteHelper } from "../../../contouring/shared/tools/excute_helper";
+import { ExcuteHelper } from '../../../contouring/shared/tools/excute_helper';
 
 declare var actions: any;
 
 @Directive({
     selector: '[action-canvas]'
 })
-export class ActionCanvasDirective implements OnInit {
+export class ActionCanvasDirective implements OnInit, OnChanges {
     excuteHelper: ExcuteHelper;
     action: Action;
     isMouseDown: boolean;
@@ -67,5 +67,4 @@ export class ActionCanvasDirective implements OnInit {
     @HostListener('dblclick', ['$event']) onDbClick(event: MouseEvent) {
         console.log('[action-canvas]dblclick');
     }
-
 }

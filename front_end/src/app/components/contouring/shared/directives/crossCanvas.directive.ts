@@ -51,7 +51,7 @@ export class CrossCanvasDirective implements OnInit, OnChanges {
 
         this.stage.addChild(this.horizontal, this.vertical, this.crossPoint);
 
-        this.canvas.addEventListener('mouseup', this.handleMouseUp.bind(this))
+        this.canvas.addEventListener('mouseup', this.handleMouseUp.bind(this));
         this.horizontal.addEventListener('pressmove', this.handlePressMove.bind(this));
         this.vertical.addEventListener('pressmove', this.handlePressMove.bind(this));
         this.crossPoint.addEventListener('pressmove', this.handlePressMove.bind(this));
