@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs';
 import { EventAggregator } from '../../../shared/common/event_aggregator';
 import { CellModel } from '../shared/model/cell.model';
 import { Point } from '../shared/tools/point';
+import { RoiModel } from '../shared/model/roi.model';
 declare var $: any;
 declare var actions: any;
 
@@ -22,6 +23,8 @@ export class CellComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Data model of cell
     @Input() model: CellModel = new CellModel();
+    @Input() roi: any = new RoiModel();
+    @Input() rois: any = new Array<RoiModel>();
 
     @Output() onLocate: EventEmitter<any> = new EventEmitter<any>();
     @Output() onScroll: EventEmitter<any> = new EventEmitter<any>();
