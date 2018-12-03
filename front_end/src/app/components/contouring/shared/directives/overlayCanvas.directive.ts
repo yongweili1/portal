@@ -135,7 +135,6 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
     }
 
     @HostListener('mousemove', ['$event']) onMouseMove(event: MouseEvent) {
-        console.log('[overlay-canvas]mousemove');
         if (this.shape != null) {
             this.shape.handleMouseMove(event);
         }
