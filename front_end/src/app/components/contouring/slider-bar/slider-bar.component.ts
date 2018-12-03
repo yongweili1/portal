@@ -47,6 +47,9 @@ export class SliderBarComponent implements OnInit, OnDestroy {
         console.log('handleChange', e.value);
         const newIndex = e.value / 100 * this.totalSliceCount;
         const pageDelta = Math.floor(newIndex - this.currentSliceNum);
+        if (pageDelta < 1 && pageDelta > -1) {
+            return;
+        }
         this.currentSliceNum = newIndex;
         EventAggregator.Instance().pageDelta.publish([this.tag, pageDelta]);
     }
