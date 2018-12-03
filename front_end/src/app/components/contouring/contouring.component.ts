@@ -329,6 +329,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             if (response.success) {
                 this.updateCells(response.data, false);
                 this.updateSliceIndex(response.data[0].slice_index);
+                this.getContours(response.data[0].slice_index);
             } else {
                 this.toastSvc.error(response.message);
             }
@@ -353,6 +354,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         const that = this;
         this.imageSvc.zoom(e[0], e[1]).subscribe(response => {
             if (response.success) {
+                this.getContours(response.data[0].slice_index);
                 that.updateCells(response.data);
             } else {
                 that.toastSvc.error(response.message);
@@ -384,6 +386,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         this.imageSvc.pan(e[0], e[1], e[2]).subscribe(response => {
             if (response.success) {
+                this.getContours(response.data[0].slice_index);
                 this.updateCells(response.data);
             } else {
                 this.toastSvc.error(response.message);
@@ -401,6 +404,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         const that = this;
         this.imageSvc.rotate(e[0], e[1], e[2]).subscribe(response => {
             if (response.success) {
+                this.getContours(response.data[0].slice_index);
                 that.updateCells(response.data);
             } else {
                 that.toastSvc.error(response.message);
@@ -417,6 +421,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         const that = this;
         this.imageSvc.center().subscribe(response => {
             if (response.success) {
+                this.getContours(response.data[0].slice_index);
                 that.updateCells(response.data);
             } else {
                 that.toastSvc.error(response.message);
@@ -433,6 +438,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         const that = this;
         this.imageSvc.reset().subscribe(response => {
             if (response.success) {
+                this.getContours(response.data[0].slice_index);
                 that.updateCells(response.data);
             } else {
                 that.toastSvc.error(response.message);
@@ -495,7 +501,23 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             if (response.success) {
                 this.updateCells(response.data, true);
                 this.updateSliceIndex(response.data[0].slice_index);
+                this.getContours(response.data[0].slice_index);
                 this.toastSvc.success('succeed.');
+            } else {
+                this.toastSvc.error(response.message);
+            }
+        });
+    }
+
+    //#region contours
+    private getContours(img_uid: string) {
+        const roi_uids = new Array();
+        this.data.roiList.forEach(roi => {
+            roi_uids.push(roi.id);
+        });
+        this.contourSvc.getContours(roi_uids, img_uid).subscribe(response => {
+            if (response.success) {
+                this.data.cell1.graphics = response.data;
             } else {
                 this.toastSvc.error(response.message);
             }
@@ -531,6 +553,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             }
         });
     }
+    //#endregion
 
     private updateSliceIndex(index) {
         EventAggregator.Instance().sliceIndex.publish(index);
