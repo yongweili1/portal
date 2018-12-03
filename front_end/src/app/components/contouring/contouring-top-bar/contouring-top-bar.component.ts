@@ -64,7 +64,6 @@ export class ContouringTopBarComponent implements OnInit, OnChanges {
 
     onImgWindow() {
         EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.window));
-        // this.wlww.emit();
     }
 
     onImgCenter() {

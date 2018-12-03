@@ -9,7 +9,6 @@ import { RectangleContainer } from '../container/rectangle_container';
 import { RoiModel } from '../model/roi.model';
 import { NudgeHelper } from '../tools/nudge_helper';
 import { Point } from '../tools/point';
-import { Subscription } from 'rxjs';
 
 declare var createjs: any;
 declare var actions: any;
@@ -25,13 +24,10 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
     fader: FaderContainer;
     nudgeHelper: NudgeHelper;
     preFaderPos: Point;
-    rois: Array<RoiModel>;
-    roi: RoiModel;
     graphicChanged = true;
 
-    roisSubscriber: Subscription;
-    roiSubscriber: Subscription;
-
+    @Input() rois: any;
+    @Input() roi: RoiModel;
     @Input() faderRadius: number;
     @Input() sliceIndex: any;
     @Input() tag;
@@ -50,31 +46,6 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
         this.stage.mouseMoveOutside = true;
         this.stage.autoClear = false;
         this.stage.name = this.tag;
-
-        this.roisSubscriber = EventAggregator.Instance().rois.subscribe(rois => {
-            this.rois = rois;
-
-            // delete exilic contours
-            const exilicContours = [];
-            this.stage.children.forEach(contour => {
-                if (contour.roiConfig === undefined) {
-                    return;
-                }
-                const roiuid = contour.roiConfig.id;
-                if (contour.type === shapes.freepen && this.rois.findIndex(x => x.id === roiuid) === -1) {
-                    exilicContours.push(contour);
-                }
-            });
-            exilicContours.forEach(freepen => {
-                this.stage.removeChild(freepen);
-            });
-            this.stage.clear();
-            this.stage.update();
-        });
-
-        this.roiSubscriber = EventAggregator.Instance().roi.subscribe(roi => {
-            this.roi = roi;
-        });
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -101,12 +72,37 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
                 this.fader.update();
             }
         }
+
+        if (changes.rois !== undefined) {
+            console.log('rois changed');
+            // delete exilic contours
+            if (this.stage !== undefined) {
+                const exilicContours = [];
+                this.stage.children.forEach(contour => {
+                    if (contour.roiConfig === undefined) {
+                        return;
+                    }
+                    const roiuid = contour.roiConfig.id;
+                    if (contour.type === shapes.freepen && this.rois.findIndex(x => x.id === roiuid) === -1) {
+                        exilicContours.push(contour);
+                    }
+                });
+                exilicContours.forEach(freepen => {
+                    this.stage.removeChild(freepen);
+                });
+                this.stage.clear();
+                this.stage.update();
+            }
+        }
+
+        if (changes.roi !== undefined) {
+            console.log('roi changed');
+        }
     }
 
     ngOnDestroy() {
         try {
-            this.roisSubscriber.unsubscribe();
-            this.roiSubscriber.unsubscribe();
+            console.log('OnDestroy');
         } catch (error) {
             console.error(error.message);
         }

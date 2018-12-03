@@ -149,9 +149,17 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         this.roiSvc.delete(id).subscribe(response => {
             if (response.success) {
                 this.toastSvc.success('Delete succeed.');
-                const index = this.data.roiList.findIndex(x => x.id === id);
-                this.data.roiList.splice(index, 1);
-                EventAggregator.Instance().rois.publish(this.data.roiList);
+                const rois = [];
+                this.data.roiList.forEach(roi => {
+                    if (roi.id === id) {
+                        return;
+                    }
+                    rois.push(roi);
+                });
+                this.data.roiList = rois;
+                if (this.data.roiList !== null && this.data.roiList.length > 0) {
+                    this.onSelectRoi(this.data.roiList[0]);
+                }
             } else {
                 this.toastSvc.error(response.message);
             }
@@ -168,7 +176,6 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             if (response.success) {
                 this.toastSvc.success('Save succeed.');
                 this.data.roiList = response.data;
-                EventAggregator.Instance().rois.publish(this.data.roiList);
                 this.newROIDisplay = false;
             } else {
                 this.toastSvc.error(response.message);
@@ -185,7 +192,6 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             this.roiSvc.get(seriesuid).subscribe(response => {
                 if (response.success) {
                     this.data.roiList = response.data;
-                    EventAggregator.Instance().rois.publish(this.data.roiList);
                     if (this.data.roiList.length > 0) {
                         this.onSelectRoi(this.data.roiList[0]);
                     }
@@ -208,8 +214,13 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             if (response.success) {
                 this.toastSvc.success('Save succeed.');
                 this.data.activeRoi.id = response.data;
-                this.data.roiList.push(this.data.activeRoi);
-                EventAggregator.Instance().rois.publish(this.data.roiList);
+                const rois = [];
+                rois.push(this.data.activeRoi);
+                this.data.roiList.forEach(roi => {
+                    rois.push(roi);
+                });
+                this.data.roiList = rois;
+                this.onSelectRoi(this.data.roiList[0]);
                 this.newROIDisplay = false;
             } else {
                 this.toastSvc.success(response.message);
@@ -235,9 +246,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         });
         this.roiSvc.delete(ids).subscribe(response => {
             if (response.success) {
-                this.toastSvc.success(`Delete succeed.`);
-                this.data.roiList = response.data;
-                EventAggregator.Instance().rois.publish(this.data.roiList);
+                this.toastSvc.success(`Delete all rois succeed.`);
             } else {
                 this.toastSvc.error(response.message);
             }
@@ -250,7 +259,6 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
 
     onSelectRoi(roi) {
         this.data.selectedRoi = roi;
-        EventAggregator.Instance().roi.publish(this.data.selectedRoi);
     }
     //#endregion
 
