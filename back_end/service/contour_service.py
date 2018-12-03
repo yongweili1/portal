@@ -15,9 +15,9 @@ class ContourService(object):
         contours, msg = contour_ctx.retrieve(image_uid, roi_uid)
         if contours is not None:
             for item in contours:
-                if not os.path.isfile(item.cpspath):
+                if not os.path.isfile(item['cpspath']):
                     continue
-                os.remove(item.cpspath)
+                os.remove(item['cpspath'])
         return contour_ctx.delete(image_uid, roi_uid)
 
     def create(self, slice_index, roi_uid, contours):
@@ -44,5 +44,25 @@ class ContourService(object):
         except Exception as e:
             return False, e.message
 
-    def retrieve(self, image_uid, roi_uid=None):
-        return contour_ctx.retrieve(image_uid, roi_uid)
+    def retrieve(self, image_uid, roi_uids=None):
+        if roi_uids is None:
+            return None, 'roi_uids is None'
+        contours = []
+        for uid in roi_uids:
+            records, msg = contour_ctx.retrieve(image_uid, uid)
+            if records is None or len(records) == 0:
+                continue
+            for record in records:
+                if not os.path.isfile(record['cpspath']):
+                    continue
+                contour = {}
+                contour['contouruid'] = record['contouruid']
+                contour['imageuid'] = record['imageuid']
+                contour['roiuid'] = record['roiuid'].roiuid
+                with open(record['cpspath'], 'rb') as f:
+                    cps = f.read()
+                    cps = json.loads(cps)
+                    contour['cps'] = cps
+                    contours.append(contour)
+                    f.close()
+        return contours, None

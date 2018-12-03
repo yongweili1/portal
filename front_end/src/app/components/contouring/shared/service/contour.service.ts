@@ -37,9 +37,9 @@ export class ContourService {
         return this.http.delete(`${this.appConfig.apiUrl}/image/contour/`, { params: getParams });
     }
 
-    getContours(roi_uid, slice_index): Observable<any> {
+    getContours(roi_uids, slice_index): Observable<any> {
         const getParams = new HttpParams()
-            .set('roi_uid', roi_uid)
+            .set('roi_uids', roi_uids)
             .set('slice_index', slice_index);
         return this.http.get(`${this.appConfig.apiUrl}/image/contour/`, { params: getParams });
     }

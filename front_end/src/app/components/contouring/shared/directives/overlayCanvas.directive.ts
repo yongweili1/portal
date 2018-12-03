@@ -301,15 +301,11 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
             if (graphic === undefined || graphic.length === 0) {
                 return;
             }
-            graphic.forEach(shape => {
-                const contour = [];
-                const roiuid = shape.roiuid;
-                const cps = shape.cps;
-                cps.forEach(cp => {
-                    contour.push(new Point(cp.x, cp.y));
-                });
-                contours.push([roiuid, contour]);
+            const contour = [];
+            graphic.cps.forEach(cp => {
+                contour.push(new Point(cp.x, cp.y));
             });
+            contours.push([graphic.roiuid, contour]);
         });
         // draw graphics
         contours.forEach(contour => {

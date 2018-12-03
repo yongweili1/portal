@@ -146,30 +146,7 @@ class TurnPage(APIView):
         try:
             delta = request.GET.get('delta', '0')
             focus_view = request.GET.get('focus_view', None)
-            rst = sync_send_command('page', delta=delta, focus_view=focus_view)
-
-            img_server_rsp = rst.data['data']
-            img_server_rsp_json = json.loads(img_server_rsp)
-            slice_index = img_server_rsp_json['0']['slice_index']
-            graphics, msg = contour_svc.retrieve(slice_index)
-            slice_contours = []
-            for graphic in graphics:
-                file_path = graphic.cpspath
-                if not os.path.isfile(file_path):
-                    continue
-                with open(file_path, 'rb') as f:
-                    cps = f.read()
-                    cps = json.loads(cps)
-                    contour = {
-                        'roiuid': graphic.roiuid.roiuid,
-                        'cps': cps
-                    }
-                    slice_contours.append(contour)
-                    f.close()
-            kk = [slice_contours]
-            img_server_rsp_json.get('0')[u'graphic']['contours'] = kk
-            img_rsp = json.dumps(img_server_rsp_json)
-            return ResponseDto(img_rsp)
+            return sync_send_command('page', delta=delta, focus_view=focus_view)
         except Exception as e:
             return ResponseDto(success=False, message=e.message)
 
@@ -308,13 +285,11 @@ class SetCenter(APIView):
 class Contour(APIView):
 
     def get(self, request):
-        roi_uid = request.GET.get('roi_uid', None)
+        roi_uids = request.GET.get('roi_uids', None)
         slice_index = request.GET.get('slice_index', None)
-        cps, msg = contour_svc.retrieve(slice_index, roi_uid)
-        if cps:
-            return ResponseDto(cps)
-        else:
-            return ResponseDto(success=False, message=msg)
+        roi_uids = roi_uids.split(',')
+        contours, msg = contour_svc.retrieve(slice_index, roi_uids)
+        return ResponseDto(data=contours)
 
     def post(self, request):
         roi_uid = request.data.get('roi_uid', None)
@@ -331,7 +306,6 @@ class Contour(APIView):
 
 
 class Roi(APIView):
-
     def get(self, request):
         series_uid = request.GET.get('seriesuid', None)
         if not series_uid:
