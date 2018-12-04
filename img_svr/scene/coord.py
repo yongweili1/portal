@@ -1,4 +1,5 @@
 import numpy as np
+from md import Image3d
 
 
 class Plane3D:
@@ -46,3 +47,13 @@ def _get_scene_world_origin(scene):
     offset = np.array(view_size) / 2
     axes = np.array([np.array(camera.right), np.array(camera.up)])
     return camera.look_at - np.matmul(offset, axes)
+
+
+def check_point_is_inside_volume(vol, pt3d_world):
+    isinstance(vol, Image3d)
+    pt3d_vol = vol.world_to_voxel(pt3d_world)
+    vol_size = vol.size()
+    if 0 <= pt3d_vol[0] < vol_size[0] and 0 <= pt3d_vol[1] < vol_size[1] and 0 <= pt3d_vol[2] < vol_size[2]:
+        return True
+    else:
+        return False

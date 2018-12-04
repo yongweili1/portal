@@ -4,6 +4,6 @@ class RefreshType(object):
     Crosshair = 'crosshair'
     Text = 'text'
     Mask = 'mask'
-    Wwwl = 'wwwl'
-    Slice_index = 'slice_index'
+    WWWL = 'wwwl'
+    SliceIndex = 'slice_index'
     All = 'all'

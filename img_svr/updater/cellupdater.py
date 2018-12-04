@@ -34,13 +34,13 @@ class CellUpdater(BaseUpdater):
                     self.update_graphic(scene, workflow)
                 elif t == RefreshType.Text:
                     pass
-                elif t == RefreshType.Slice_index:
+                elif t == RefreshType.SliceIndex:
                     self.update_slice_index(scene, workflow)
-                elif t == RefreshType.Wwwl:
+                elif t == RefreshType.WWWL:
                     self.update_wwwl(scene)
                 elif t == RefreshType.All:
-                    self.update(RefreshType.Image, RefreshType.Crosshair, RefreshType.Graphic, RefreshType.Wwwl,
-                                RefreshType.Slice_index)
+                    self.update(RefreshType.Image, RefreshType.Crosshair, RefreshType.Graphic, RefreshType.WWWL,
+                                RefreshType.SliceIndex)
         except Exception, e:
             print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! CellUpdater update() ---> {}'.format(e)
 
@@ -51,14 +51,13 @@ class CellUpdater(BaseUpdater):
     def update_crosshair(self, scene, workflow):
         model_vol = workflow.get_model(GET_CLASS_NAME(VolumeInfo))
         cursor2d = translate_from_world_to_screen(scene, model_vol.cursor3d)
-        self._result[RefreshType.Crosshair] = tuple(cursor2d.tolist())
+        self._result[RefreshType.Crosshair] = tuple(cursor2d)
 
     def update_slice_index(self, scene, workflow):
         model_vol = workflow.get_model(GET_CLASS_NAME(VolumeInfo))
-        vol_pt3d = scene.volume.world_to_voxel(model_vol.cursor3d)
-        print vol_pt3d
-        self._result[RefreshType.Slice_index] = vol_pt3d[2]
-        print self._result[RefreshType.Slice_index]
+        pt3d_voxel = scene.volume.world_to_voxel(model_vol.cursor3d)
+        self._result[RefreshType.SliceIndex] = pt3d_voxel[2]
+        print self._result[RefreshType.SliceIndex]
 
     def update_graphic(self, scene, workflow):
         model_graphic = workflow.get_model(GET_CLASS_NAME(GraphicModel))
@@ -77,4 +76,4 @@ class CellUpdater(BaseUpdater):
 
     def update_wwwl(self, scene):
         wwwl = scene.get_window_level()
-        self._result[RefreshType.Wwwl] = wwwl
+        self._result[RefreshType.WWWL] = wwwl

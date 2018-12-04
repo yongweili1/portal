@@ -11,8 +11,9 @@ from camera import SceneCamera
 
 class SceneType(Enum):
     Slice = 0
-    VR = 1
-    Mesh = 2
+    Fusion = 1
+    VR = 2
+    Mesh = 3
 
 
 class ColorMode(Enum):

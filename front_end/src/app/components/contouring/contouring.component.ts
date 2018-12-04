@@ -513,7 +513,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private getImages() {
-        this.imageSvc.GetSeries().subscribe(response => {
+        this.imageSvc.center().subscribe(response => {
             if (response.success) {
                 this.updateCells(response.data, true);
                 this.updateSliceIndex(response.data[0].slice_index);
