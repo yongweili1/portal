@@ -1,6 +1,7 @@
 import { BaseAction } from './base';
 import { EventAggregator } from '../../../../shared/common/event_aggregator';
-declare var actions: any;
+import { ActionTypeEnum } from '../../../../shared/models/enums';
+
 
 export class Zoom extends BaseAction {
     zoom_factor = 0;
@@ -25,7 +26,7 @@ export class Zoom extends BaseAction {
             this.zoom_factor = 1.0 / (1.0 - shiftY * 1.0 / 120);
         }
         const data = [];
-        data[0] = actions.zoom;
+        data[0] = ActionTypeEnum.zoom;
         data[1] = [this.tag, this.zoom_factor];
         EventAggregator.Instance().eventData.publish(data);
     }

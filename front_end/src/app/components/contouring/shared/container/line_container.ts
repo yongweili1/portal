@@ -4,6 +4,7 @@ import { ControlPoint } from '../overlay/controlpoint';
 import { Text } from '../overlay/text';
 import { Point } from '../tools/point';
 import { RoiModel } from '../model/roi.model';
+import { ShapeTypeEnum } from '../../../../shared/models/enums';
 
 export class LineContainer extends BaseContainer {
     start: ControlPoint;
@@ -13,7 +14,7 @@ export class LineContainer extends BaseContainer {
     cps: Array<Point>;
 
     constructor(stage) {
-        super(stage, 'line');
+        super(stage, ShapeTypeEnum.line);
         this.initCps(2);
         this.start = new ControlPoint(stage);
         this.line = new Line(stage);

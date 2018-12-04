@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { EventAggregator } from '../../shared/common/event_aggregator';
-import { KeyValuePair } from '../../shared/common/keyvaluepair';
 import { ContourModel } from './shared/model/contour.model';
 import { ContouringModel } from './shared/model/contouring.model';
 import { RoiModel } from './shared/model/roi.model';
@@ -12,9 +11,9 @@ import { ToastService } from './shared/service/toast.service';
 import { ExcuteHelper } from './shared/tools/excute_helper';
 import { Point } from './shared/tools/point';
 import { Subscription } from 'rxjs';
+import { ActionTypeEnum, CanvasTypeEnum } from '../../shared/models/enums';
 
 declare var $: any;
-declare var actions: any;
 
 @Component({
     selector: 'mpt-contouring',
@@ -38,7 +37,8 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     contourCpsSubscriber: Subscription;
     removeCpsSubscriber: Subscription;
     faderRadiusDeltaSubscriber: Subscription;
-    actionInfoSubscriber: Subscription;
+    actionTypeObserver: Subscription;
+    shapeTypeObserver: Subscription;
 
     @ViewChild('cell1') cell1;
     @ViewChild('cell2') cell2;
@@ -76,22 +76,29 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.data.updateFaderRadius(delta);
             });
 
-        this.actionInfoSubscriber = EventAggregator.Instance().actionInfo
-            .subscribe(value => {
-                this.data.setActionInfo(value);
-                const priActionArray = ['shape', 'clear', 'select', 'nudge'];
-                let canvasType = '';
-                if (value.key() === actions.locate) {
-                    canvasType = 'cross';
-                } else if (priActionArray.indexOf(value.key()) > -1) {
-                    canvasType = 'overlay';
+        this.actionTypeObserver = EventAggregator.Instance().changeActionTypeEvent
+            .subscribe(action => {
+                this.data.actionType = action;
+                let canvasType = CanvasTypeEnum.unknown;
+                if (action === ActionTypeEnum.locate) {
+                    canvasType = CanvasTypeEnum.cross;
+                } else if (action === ActionTypeEnum.nudge
+                    || action === ActionTypeEnum.shape
+                    || action === ActionTypeEnum.select) {
+                    canvasType = CanvasTypeEnum.overlay;
                 } else {
-                    canvasType = 'action';
+                    canvasType = CanvasTypeEnum.action;
                 }
                 this.cell1.riseZIndexOfCanvas(canvasType);
                 this.cell2.riseZIndexOfCanvas(canvasType);
                 this.cell3.riseZIndexOfCanvas(canvasType);
             });
+        this.shapeTypeObserver = EventAggregator.Instance().changeShapeTypeEvent.subscribe(shape => {
+            this.data.shapeType = shape;
+            this.cell1.riseZIndexOfCanvas(CanvasTypeEnum.overlay);
+            this.cell2.riseZIndexOfCanvas(CanvasTypeEnum.overlay);
+            this.cell3.riseZIndexOfCanvas(CanvasTypeEnum.overlay);
+        });
 
         this.activeRoute.queryParams.subscribe(params => {
             this.patientId = params.patientId;
@@ -122,7 +129,8 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             this.contourCpsSubscriber.unsubscribe();
             this.removeCpsSubscriber.unsubscribe();
             this.faderRadiusDeltaSubscriber.unsubscribe();
-            this.actionInfoSubscriber.unsubscribe();
+            this.actionTypeObserver.unsubscribe();
+            this.shapeTypeObserver.unsubscribe();
         } catch (error) {
             console.error(error.message);
         }
@@ -301,7 +309,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
 
     //#region handle Clear graphics event
     handleClearGraphics() {
-        EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.clear));
+        EventAggregator.Instance().clearGraphicsEvent.publish(undefined);
     }
     //#endregion
 
@@ -505,7 +513,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private getImages() {
-        this.imageSvc.GetSeries().subscribe(response => {
+        this.imageSvc.center().subscribe(response => {
             if (response.success) {
                 this.updateCells(response.data, true);
                 this.updateSliceIndex(response.data[0].slice_index);

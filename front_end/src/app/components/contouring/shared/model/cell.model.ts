@@ -1,6 +1,5 @@
 import { Point } from '../tools/point';
-import { KeyValuePair } from '../../../../shared/common/keyvaluepair';
-declare var actions: any;
+
 
 export class CellModel {
     tag: string;
@@ -8,12 +7,10 @@ export class CellModel {
     imageM: ImageModel;
     crossM: CrossModel;
     graphics: any;
-    actionInfo: any;
     faderRadius: any;
 
     constructor() {
         this.sliceIndex = 0;
-        this.actionInfo = new KeyValuePair(actions.locate);
         this.imageM = new ImageModel();
         this.crossM = new CrossModel();
         this.faderRadius = 20;
@@ -44,6 +41,3 @@ export class CrossModel {
     }
 }
 
-// export class OverlayModel {
-
-// }

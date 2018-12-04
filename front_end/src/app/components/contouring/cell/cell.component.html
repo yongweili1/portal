@@ -22,9 +22,10 @@
     <canvas id="{{ id }}-image" class="imageCanvas" image-canvas [tag]='model.tag' [base64]='model.imageM.imageData'></canvas>
 
     <canvas id="{{ id }}-overlay" class="overlayCanvas" overlay-canvas [tag]='model.tag' [graphics]='model.graphics'
-        [roi]='roi' [rois]='rois' [actionInfo]='model.actionInfo' [sliceIndex]='model.sliceIndex' [faderRadius]='model.faderRadius'></canvas>
+        [roi]='roi' [rois]='rois' [actionType]='actionType' [shapeType]='shapeType' [sliceIndex]='model.sliceIndex'
+        [faderRadius]='model.faderRadius'></canvas>
 
-    <canvas id="{{ id }}-action" class="actionCanvas" action-canvas [tag]='model.tag' [actionInfo]='model.actionInfo'></canvas>
+    <canvas id="{{ id }}-action" class="actionCanvas" action-canvas [tag]='model.tag' [actionType]='actionType'></canvas>
 
     <canvas id="{{ id }}-cross" class="crossCanvas" cross-canvas [tag]='model.tag' [point]='model.crossM.point'
         [hColor]='model.crossM.hColor' [vColor]='model.crossM.vColor'></canvas>

@@ -1,6 +1,7 @@
 import { BaseAction } from './base';
 import { EventAggregator } from '../../../../shared/common/event_aggregator';
-declare var actions: any;
+import { ActionTypeEnum } from '../../../../shared/models/enums';
+
 
 export class Pan extends BaseAction {
     prePos: any;
@@ -16,7 +17,7 @@ export class Pan extends BaseAction {
         }
         const curPos = [e.clientX, e.clientY];
         const data = [];
-        data[0] = actions.pan;
+        data[0] = ActionTypeEnum.pan;
         data[1] = [this.tag, this.prePos, curPos];
         EventAggregator.Instance().eventData.publish(data);
         this.prePos = curPos;

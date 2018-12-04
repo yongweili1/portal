@@ -1,22 +1,29 @@
-enum actions {
+export enum ActionTypeEnum {
     unknown = 0,
     pan,
     zoom,
     rotate,
     locate,
     window,
-    reset,
-    shape,
     nudge,
-    clear,
-    select
+    select,
+    shape
 }
 
-enum shapes {
+export enum ShapeTypeEnum {
     unknown = 0,
     line,
     circle,
     rectangle,
     freepen,
-    freepen_edit
+    freepen2,
+    fader
+}
+
+export enum CanvasTypeEnum {
+    unknown = 0,
+    image,
+    overlay,
+    action,
+    cross
 }

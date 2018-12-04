@@ -3,24 +3,26 @@ import { Subject } from 'rxjs/Subject';
 export class EventAggregator {
     private static _aggregator: EventAggregator;
 
-    public static Instance() {
-        if (this._aggregator == null) {
-            this._aggregator = new EventAggregator();
-        }
-        return this._aggregator;
-    }
-
     //#region observable msg
     contourCps = new ObservableObject();
     removeCps = new ObservableObject();
-    actionInfo = new ObservableObject();
+    changeShapeTypeEvent = new ObservableObject();
+    changeActionTypeEvent = new ObservableObject();
     faderRadiusDelta = new ObservableObject();
     volumnSize = new ObservableObject();
     sliceIndex = new ObservableObject();
     pageDelta = new ObservableObject();
     crossPoint = new ObservableObject();
     eventData = new ObservableObject();
+    clearGraphicsEvent = new ObservableObject();
     //#endregion
+
+    public static Instance() {
+        if (this._aggregator == null) {
+            this._aggregator = new EventAggregator();
+        }
+        return this._aggregator;
+    }
 
     private constructor() { }
 }

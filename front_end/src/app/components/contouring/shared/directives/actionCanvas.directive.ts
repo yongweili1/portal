@@ -1,9 +1,8 @@
 import { Directive, ElementRef, HostListener, Input, OnInit, SimpleChanges, OnChanges } from '@angular/core';
-import { KeyValuePair } from '../../../../shared/common/keyvaluepair';
 import { Action } from '../actions/action';
 import { ExcuteHelper } from '../../../contouring/shared/tools/excute_helper';
+import { ActionTypeEnum } from '../../../../shared/models/enums';
 
-declare var actions: any;
 
 @Directive({
     selector: '[action-canvas]'
@@ -14,25 +13,25 @@ export class ActionCanvasDirective implements OnInit, OnChanges {
     isMouseDown: boolean;
 
     @Input() tag;
-    @Input() actionInfo: KeyValuePair;
+    @Input() actionType: ActionTypeEnum;
 
     constructor(private el: ElementRef) { }
 
     ngOnInit() {
         console.log('[action-canvas]ngOnInit');
         this.excuteHelper = new ExcuteHelper();
-        this.actionInfo = new KeyValuePair(actions.locate);
+        this.actionType = ActionTypeEnum.locate;
         this.action = new Action(this.tag);
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if (this.actionInfo === undefined) {
-            console.log('ActionInfo is wrong.')
+        if (this.actionType === undefined) {
+            console.log('ActionInfo is wrong.');
             return;
         }
-        console.log('[action-canvas]Current action is ' + this.actionInfo.key());
+        console.log('[action-canvas]Current action is ' + this.actionType);
         if (this.action !== undefined) {
-            this.action.set(this.actionInfo.key());
+            this.action.set(this.actionType);
         }
     }
 

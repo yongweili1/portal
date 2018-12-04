@@ -1,6 +1,5 @@
 import { Directive, ElementRef, HostListener, Input, OnChanges, OnInit, SimpleChanges, OnDestroy } from '@angular/core';
 import { EventAggregator } from '../../../../shared/common/event_aggregator';
-import { KeyValuePair } from '../../../../shared/common/keyvaluepair';
 import { CircleContainer } from '../container/circle_container';
 import { FaderContainer } from '../container/fader_container';
 import { FreepenContainer } from '../container/freepen_container';
@@ -9,10 +8,10 @@ import { RectangleContainer } from '../container/rectangle_container';
 import { RoiModel } from '../model/roi.model';
 import { NudgeHelper } from '../tools/nudge_helper';
 import { Point } from '../tools/point';
+import { ActionTypeEnum, ShapeTypeEnum } from '../../../../shared/models/enums';
 
 declare var createjs: any;
-declare var actions: any;
-declare var shapes: any;
+
 
 @Directive({
     selector: '[overlay-canvas]'
@@ -32,7 +31,8 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
     @Input() sliceIndex: any;
     @Input() tag;
     @Input() graphics;
-    @Input() actionInfo: KeyValuePair;
+    @Input() actionType: ActionTypeEnum;
+    @Input() shapeType: ShapeTypeEnum;
 
     constructor(private el: ElementRef) { }
 
@@ -40,26 +40,27 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
         console.log('[overlay-canvas]ngOnInit');
         this.context = this.el.nativeElement.getContext('2d');
         this.stage = new createjs.Stage(this.el.nativeElement);
-        this.actionInfo = new KeyValuePair(actions.locate);
+        this.actionType = ActionTypeEnum.locate;
         createjs.Touch.enable(this.stage);
         this.stage.enableMouseOver();
         this.stage.mouseMoveOutside = true;
         this.stage.autoClear = false;
         this.stage.name = this.tag;
+
+        EventAggregator.Instance().clearGraphicsEvent.subscribe(() => {
+            if (this.stage.children.length > 0) {
+                const roi_uid = this.roi.id;
+                const slice_index = this.sliceIndex;
+                EventAggregator.Instance().removeCps.publish([roi_uid, slice_index]);
+                this.stage.removeAllChildren();
+                this.stage.clear();
+            }
+        });
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if (changes.actionInfo !== undefined) {
-            console.log('[overlay-canvas]Current action is ' + this.actionInfo.key());
-            if (this.actionInfo.key() === actions.clear) {
-                if (this.stage.children.length > 0) {
-                    const roi_uid = this.roi.id;
-                    const slice_index = this.sliceIndex;
-                    EventAggregator.Instance().removeCps.publish([roi_uid, slice_index]);
-                    this.stage.removeAllChildren();
-                    this.stage.clear();
-                }
-            }
+        if (changes.currentShape !== undefined) {
+            console.log('[overlay-canvas]Current shape is ' + this.shapeType);
         }
 
         if (changes.graphics !== undefined) {
@@ -83,7 +84,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
                         return;
                     }
                     const roiuid = contour.roiConfig.id;
-                    if (contour.type === shapes.freepen && this.rois.findIndex(x => x.id === roiuid) === -1) {
+                    if (contour.type === ShapeTypeEnum.freepen && this.rois.findIndex(x => x.id === roiuid) === -1) {
                         exilicContours.push(contour);
                     }
                 });
@@ -111,12 +112,12 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
     @HostListener('mousedown', ['$event']) onMouseDown(event: MouseEvent) {
         console.log('[overlay-canvas]mousedown');
         this.stage.children.forEach(shape => {
-            if (shape.type === shapes.freepen) {
-                shape.editable = this.actionInfo.value() === shapes.freepen_edit ? true : false;
+            if (shape.type === ShapeTypeEnum.freepen) {
+                shape.editable = this.shapeType === ShapeTypeEnum.freepen2 ? true : false;
             }
         });
 
-        if (this.actionInfo.key() === actions.nudge) {
+        if (this.actionType === ActionTypeEnum.nudge) {
             this.fader = this.getFader();
             this.fader.handleMouseDown(event);
             this.preFaderPos = this.fader.getCenter();
@@ -135,7 +136,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
             this.shape.handleMouseMove(event);
         }
 
-        if (this.actionInfo.key() === actions.nudge) {
+        if (this.actionType === ActionTypeEnum.nudge) {
             this.fader = this.getFader();
             this.fader.handleMouseMove(event);
             if (this.fader.isMousedown) {
@@ -161,7 +162,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
             this.shape.handleMouseUp(event);
         }
 
-        if (this.actionInfo.key() === actions.nudge) {
+        if (this.actionType === ActionTypeEnum.nudge) {
             this.fader = this.getFader();
             this.fader.handleMouseUp(event);
         }
@@ -187,20 +188,19 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
     }
 
     getShapeContainerInstance() {
-        if (this.actionInfo.key() !== actions.shape) {
-            console.log('Can not create shape on this action');
+        if (this.actionType !== ActionTypeEnum.shape) {
             return null;
         }
-        switch (this.actionInfo.value()) {
-            case shapes.line:
+        switch (this.shapeType) {
+            case ShapeTypeEnum.line:
                 return new LineContainer(this.stage);
-            case shapes.rectangle:
+            case ShapeTypeEnum.rectangle:
                 return new RectangleContainer(this.stage);
-            case shapes.circle:
+            case ShapeTypeEnum.circle:
                 return new CircleContainer(this.stage);
-            case shapes.freepen:
+            case ShapeTypeEnum.freepen:
                 return new FreepenContainer(this.stage);
-            case shapes.nudge:
+            case ShapeTypeEnum.fader:
                 return new FaderContainer(this.stage);
             default:
                 return null;
@@ -239,7 +239,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
     getFreepenCps(roiuid): Array<Array<Point>> {
         const cps = new Array();
         this.stage.children.forEach(contour => {
-            if (contour.type === shapes.freepen
+            if (contour.type === ShapeTypeEnum.freepen
                 && contour.roiConfig !== undefined
                 && contour.roiConfig.id === roiuid) {
                 cps.push(contour.cps);
@@ -251,7 +251,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
     removeFreepens(roiuid) {
         const freepens = [];
         this.stage.children.forEach(contour => {
-            if (contour.type === shapes.freepen && contour.roiConfig.id === roiuid) {
+            if (contour.type === ShapeTypeEnum.freepen && contour.roiConfig.id === roiuid) {
                 freepens.push(contour);
             }
         });
@@ -286,7 +286,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
         if (this.stage === undefined) {
             return;
         }
-        // if (this.name != data[0]) return;
+
         this.stage.removeAllChildren();
         this.stage.clear();
         const contours = [];

@@ -10,7 +10,7 @@ from scene.camera import SceneCamera
 from scene.scene import CameraPos, SceneType
 from updater.imageupdater import ImageUpdater
 
-from scene.coord import translate_from_screen_to_world
+from scene.coord import translate_from_screen_to_world, check_point_is_inside_volume
 
 
 class ImageEntity(RouterEntity):
@@ -66,23 +66,22 @@ class ImageEntity(RouterEntity):
         """
         assert isinstance(volume, Image3d)
         self._volume = volume
+        center = volume.voxel_to_world((np.array(volume.size()) - 1) / 2)
         volume_model = self._workflow.get_model(GET_CLASS_NAME(VolumeInfo))
-        volume_model.cursor3d = np.array(volume.center())
-        volume_model.default_cursor3d = np.array(volume.center())
+        volume_model.cursor3d = np.array(center)
+        volume_model.default_cursor3d = np.array(center)
+
+        space_x, space_y, space_z = volume.spacing()
+        x, y, z = volume.size()
+        fov = space_x * x, space_y * y
 
         num_cells = len(self._cellviews)
-        # TODO temp fixed fov
-        spacing = volume.spacing()
-        size = volume.size()
-        print('==== size : {} ===='.format(size))
-        fov_3d = np.multiply(np.array(size), np.array(spacing))
         if num_cells > 0:
-            self._cellviews[0].init_scene(volume, CameraPos.Transverse, [fov_3d[0], fov_3d[1]], 2000, 0,
-                                          SceneType.Slice)
+            self._cellviews[0].init_scene(volume, CameraPos.Transverse, fov, 2000, 0, SceneType.Slice)
         if num_cells > 1:
-            self._cellviews[1].init_scene(volume, CameraPos.Coronal, [fov_3d[1], fov_3d[2]], 2000, 0, SceneType.Slice)
+            self._cellviews[1].init_scene(volume, CameraPos.Coronal, fov, 2000, 0, SceneType.Slice)
         if num_cells > 2:
-            self._cellviews[2].init_scene(volume, CameraPos.Sagittal, [fov_3d[0], fov_3d[2]], 2000, 0, SceneType.Slice)
+            self._cellviews[2].init_scene(volume, CameraPos.Sagittal, fov, 2000, 0, SceneType.Slice)
 
     def get_children_views(self):
         return self._cellviews
@@ -162,20 +161,22 @@ class ImageEntity(RouterEntity):
             step = delta * spacing_operate
             camera_operate = scene_operate.camera
             normal_operate = np.cross(camera_operate.up, camera_operate.right)
-            camera_operate.look_at -= step * normal_operate
-            model_volume = self.workflow.get_model(GET_CLASS_NAME(VolumeInfo))
-            model_volume.cursor3d -= step * normal_operate
+            if check_point_is_inside_volume(self._volume, camera_operate.look_at - step * normal_operate):
+                camera_operate.look_at -= step * normal_operate
+                model_volume = self.workflow.get_model(GET_CLASS_NAME(VolumeInfo))
+                model_volume.cursor3d -= step * normal_operate
 
     def locate(self, index, pt2d):
         if self._cellviews is not None and len(self._cellviews) > index:
             scene_operate = self._cellviews[index].get_scene()
             pt3d = translate_from_screen_to_world(scene_operate, pt2d)
-            model_volume = self.workflow.get_model(GET_CLASS_NAME(VolumeInfo))
-            model_volume.cursor3d = pt3d
-            for cell in self._cellviews:
-                scene = cell.get_scene()
-                if scene is not None:
-                    scene.camera.look(pt3d)
+            if check_point_is_inside_volume(self._volume, pt3d):
+                model_volume = self.workflow.get_model(GET_CLASS_NAME(VolumeInfo))
+                model_volume.cursor3d = pt3d
+                for cell in self._cellviews:
+                    scene = cell.get_scene()
+                    if scene is not None:
+                        scene.camera.look(pt3d)
 
     def draw_graphic(self, index, graphic_type, pos_pre, pos_cur, uid):
         if self._cellviews is not None and len(self._cellviews) > index:

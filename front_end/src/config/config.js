@@ -21,26 +21,3 @@ var showcps = true;
 var delta_time = 100;
 
 var delta_count = 4;
-
-var shapes = {
-    line: 'line',
-    circle: 'circle',
-    rectangle: 'rectangle',
-    freepen: 'freepen',
-    freepen_edit: 'freepen_edit',
-}
-
-var actions = {
-    locate: 'locate',
-    zoom: 'zoom',
-    pan: 'pan',
-    rotate: 'rotate',
-    window: 'window',
-    
-    reset: 'reset',
-    
-    shape: 'shape',
-    nudge: 'nudge',
-    clear: 'clear',
-    select: 'select'
-}

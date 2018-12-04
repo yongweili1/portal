@@ -1,11 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, OnChanges } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { EventAggregator } from '../../../shared/common/event_aggregator';
-import { KeyValuePair } from '../../../shared/common/keyvaluepair';
 import { MacroService } from '../shared/service/macro.service';
+import { ActionTypeEnum, ShapeTypeEnum } from '../../../shared/models/enums';
 
-declare var actions: any;
-declare var shapes: any;
 
 @Component({
     selector: 'mpt-contouring-top-bar',
@@ -49,25 +47,24 @@ export class ContouringTopBarComponent implements OnInit, OnChanges {
     }
 
     onImgZoom() {
-        EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.zoom));
+        EventAggregator.Instance().changeActionTypeEvent.publish(ActionTypeEnum.zoom);
     }
 
     onImgPan() {
-        EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.pan));
+        EventAggregator.Instance().changeActionTypeEvent.publish(ActionTypeEnum.pan);
     }
     onImgRotate() {
-        EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.rotate));
+        EventAggregator.Instance().changeActionTypeEvent.publish(ActionTypeEnum.rotate);
     }
     onImgReset() {
         this.onReset.emit();
     }
 
     onImgWindow() {
-        EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.window));
+        EventAggregator.Instance().changeActionTypeEvent.publish(ActionTypeEnum.window);
     }
 
     onImgCenter() {
-        EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.locate));
         this.onCenter.emit();
     }
 
@@ -88,11 +85,11 @@ export class ContouringTopBarComponent implements OnInit, OnChanges {
     }
 
     OnSelect() {
-        EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.select));
+        EventAggregator.Instance().changeActionTypeEvent.publish(ActionTypeEnum.select);
     }
 
     OnCrossSelect() {
-        EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.locate));
+        EventAggregator.Instance().changeActionTypeEvent.publish(ActionTypeEnum.locate);
     }
 
     OnStartMacro() {
@@ -119,34 +116,39 @@ export class ContouringTopBarComponent implements OnInit, OnChanges {
     * 测量，直线
     */
     FuncMeasure() {
-        EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.shape, shapes.line));
+        EventAggregator.Instance().changeActionTypeEvent.publish(ActionTypeEnum.shape);
+        EventAggregator.Instance().changeShapeTypeEvent.publish(ShapeTypeEnum.line);
     }
 
     /**
     * 圆
     */
     FuncCircle() {
-        EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.shape, shapes.circle));
+        EventAggregator.Instance().changeActionTypeEvent.publish(ActionTypeEnum.shape);
+        EventAggregator.Instance().changeShapeTypeEvent.publish(ShapeTypeEnum.circle);
     }
 
     /**
     * 矩形
     */
     FuncRectangle() {
-        EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.shape, shapes.rectangle));
+        EventAggregator.Instance().changeActionTypeEvent.publish(ActionTypeEnum.shape);
+        EventAggregator.Instance().changeShapeTypeEvent.publish(ShapeTypeEnum.rectangle);
     }
 
     /**
     * 自由笔
     */
     FuncFreepen() {
-        EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.shape, shapes.freepen));
+        EventAggregator.Instance().changeActionTypeEvent.publish(ActionTypeEnum.shape);
+        EventAggregator.Instance().changeShapeTypeEvent.publish(ShapeTypeEnum.freepen);
     }
     FuncFreepenModify() {
-        EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.shape, shapes.freepen_edit));
+        EventAggregator.Instance().changeActionTypeEvent.publish(ActionTypeEnum.shape);
+        EventAggregator.Instance().changeShapeTypeEvent.publish(ShapeTypeEnum.freepen2);
     }
 
     FuncNudge() {
-        EventAggregator.Instance().actionInfo.publish(new KeyValuePair(actions.nudge));
+        EventAggregator.Instance().changeActionTypeEvent.publish(ActionTypeEnum.nudge);
     }
 }

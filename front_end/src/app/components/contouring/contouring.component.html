@@ -9,8 +9,9 @@
         <div class='cell_group u-3of5 horizontal'>
             <div class='main_cell'>
                 <mpt-cell #cell1 id='{{ cell1.id }}' [model]='data.cell1' [roi]='data.selectedRoi' [rois]='data.roiList'
-                    (onLocate)="handleTransverseLocate($event)" (onScroll)="handleTransverseScroll($event)" (onZoom)="handleZoom($event)"
-                    (onPan)="handlePan($event)" (onRotate)="handleRotate($event)" (onChangeWwwl)="handleWwwl($event)">
+                    [actionType]='data.actionType' [shapeType]='data.shapeType' (onLocate)="handleTransverseLocate($event)"
+                    (onScroll)="handleTransverseScroll($event)" (onZoom)="handleZoom($event)" (onPan)="handlePan($event)"
+                    (onRotate)="handleRotate($event)" (onChangeWwwl)="handleWwwl($event)">
                 </mpt-cell>
             </div>
 
@@ -22,15 +23,17 @@
         <div class='cell_group u-2of5'>
             <div class='cell'>
                 <mpt-cell #cell2 id='{{ cell2.id }}' [model]='data.cell2' [roi]='data.selectedRoi' [rois]='data.roiList'
-                    (onLocate)="handleCoronalLocate($event)" (onScroll)="handleCoronalScroll($event)" (onZoom)="handleZoom($event)"
-                    (onPan)="handlePan($event)" (onRotate)="handleRotate($event)" (onChangeWwwl)="handleWwwl($event)">
+                    [actionType]='data.actionType' [shapeType]='data.shapeType' (onLocate)="handleCoronalLocate($event)"
+                    (onScroll)="handleCoronalScroll($event)" (onZoom)="handleZoom($event)" (onPan)="handlePan($event)"
+                    (onRotate)="handleRotate($event)" (onChangeWwwl)="handleWwwl($event)">
                 </mpt-cell>
             </div>
 
             <div class='cell'>
                 <mpt-cell #cell3 id='{{ cell3.id }}' [model]='data.cell3' [roi]='data.selectedRoi' [rois]='data.roiList'
-                    (onLocate)="handleSaggitalLocate($event)" (onScroll)="handleSaggitalScroll($event)" (onZoom)="handleZoom($event)"
-                    (onPan)="handlePan($event)" (onRotate)="handleRotate($event)" (onChangeWwwl)="handleWwwl($event)">
+                    [actionType]='data.actionType' [shapeType]='data.shapeType' (onLocate)="handleSaggitalLocate($event)"
+                    (onScroll)="handleSaggitalScroll($event)" (onZoom)="handleZoom($event)" (onPan)="handlePan($event)"
+                    (onRotate)="handleRotate($event)" (onChangeWwwl)="handleWwwl($event)">
                 </mpt-cell>
             </div>
         </div>

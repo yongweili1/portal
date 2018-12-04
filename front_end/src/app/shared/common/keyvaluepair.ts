@@ -2,7 +2,7 @@ export class KeyValuePair {
     protected _key: string;
     protected _value: any;
 
-    constructor(key, value=null) { 
+    constructor(key, value = null) {
         this._key = key;
         this._value = value;
     }
