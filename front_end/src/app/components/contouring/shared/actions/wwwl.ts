@@ -1,6 +1,7 @@
 import { BaseAction } from './base';
 import { EventAggregator } from '../../../../shared/common/event_aggregator';
-declare var actions: any;
+import { ActionTypeEnum } from '../../../../shared/models/enums';
+
 
 export class WWWL extends BaseAction {
     ww_factor = 1;
@@ -36,7 +37,7 @@ export class WWWL extends BaseAction {
         this.preY = curY;
 
         const data = [];
-        data[0] = actions.window;
+        data[0] = ActionTypeEnum.window;
 
         // 判断方向
         if (Math.abs(shiftY) >= Math.abs(shiftX)) {

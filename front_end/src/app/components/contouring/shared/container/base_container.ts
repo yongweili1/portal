@@ -1,12 +1,13 @@
 import { Point } from '../tools/point';
 import { RoiModel } from '../model/roi.model';
+import { ShapeTypeEnum } from '../../../../shared/models/enums';
 declare var createjs: any;
 
 export class BaseContainer extends createjs.Container {
     uid: string = null;
     isPaint = false;
     isMousedown = false;
-    type: string;
+    type: ShapeTypeEnum;
     overlayStage: any;
     protected _tempPoint: Point;
     cps: Array<Point>;
@@ -20,7 +21,7 @@ export class BaseContainer extends createjs.Container {
     protected _roiConfig: RoiModel;
     protected _contourInfo: any;
 
-    constructor(stage, type) {
+    constructor(stage, type: ShapeTypeEnum) {
         super();
         this.overlayStage = stage;
         this.type = type;

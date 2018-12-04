@@ -4,8 +4,9 @@ import { EventAggregator } from '../../../shared/common/event_aggregator';
 import { CellModel } from '../shared/model/cell.model';
 import { Point } from '../shared/tools/point';
 import { RoiModel } from '../shared/model/roi.model';
+import { ActionTypeEnum, CanvasTypeEnum, ShapeTypeEnum } from '../../../shared/models/enums';
+
 declare var $: any;
-declare var actions: any;
 
 @Component({
     selector: 'mpt-cell',
@@ -25,6 +26,8 @@ export class CellComponent implements OnInit, AfterViewInit, OnDestroy {
     @Input() model: CellModel = new CellModel();
     @Input() roi: any = new RoiModel();
     @Input() rois: any = new Array<RoiModel>();
+    @Input() actionType: ActionTypeEnum = ActionTypeEnum.unknown;
+    @Input() shapeType: ShapeTypeEnum = ShapeTypeEnum.unknown;
 
     @Output() onLocate: EventEmitter<any> = new EventEmitter<any>();
     @Output() onScroll: EventEmitter<any> = new EventEmitter<any>();
@@ -57,7 +60,7 @@ export class CellComponent implements OnInit, AfterViewInit, OnDestroy {
         });
 
         this.eventDataSubscriber = EventAggregator.Instance().eventData.subscribe(value => {
-            if (value === undefined || value.length != 2) {
+            if (value === undefined || value.length !== 2) {
                 return;
             }
             const action = value[0];
@@ -66,24 +69,24 @@ export class CellComponent implements OnInit, AfterViewInit, OnDestroy {
                 return;
             }
             switch (action) {
-                case actions.locate:
+                case ActionTypeEnum.locate:
                     break;
-                case actions.pan:
+                case ActionTypeEnum.pan:
                     this.onPan.emit(data);
                     break;
-                case actions.zoom:
+                case ActionTypeEnum.zoom:
                     this.onZoom.emit(data);
                     break;
-                case actions.rotate:
+                case ActionTypeEnum.rotate:
                     this.onRotate.emit(data);
                     break;
-                case actions.window:
+                case ActionTypeEnum.window:
                     const level = Math.round(this.model.imageM.windowLevel + this.model.imageM.windowWidth * data[2]);
                     const width = Math.round(this.model.imageM.windowWidth * data[1]);
-                    if (level == this.model.imageM.windowLevel && width == this.model.imageM.windowWidth) {
+                    if (level === this.model.imageM.windowLevel && width === this.model.imageM.windowWidth) {
                         return;
                     }
-                    console.log(data, 'old wwwl', this.model.imageM.windowWidth, this.model.imageM.windowLevel, 'new wwwl', width, level)
+                    console.log(data, 'old wwwl', this.model.imageM.windowWidth, this.model.imageM.windowLevel, 'new wwwl', width, level);
                     this.model.imageM.setWwwl([width, level]);
                     this.onChangeWwwl.emit([width, level]);
                     break;
@@ -135,7 +138,9 @@ export class CellComponent implements OnInit, AfterViewInit, OnDestroy {
         this.overlayCanvas.style.zIndex = 2;
         this.actionCanvas.style.zIndex = 4;
         this.crossCanvas.style.zIndex = 8;
-        $('#' + this.id + '-' + type).get(0).style.zIndex = 16;
+        const canvasId = '#' + this.id + '-' + CanvasTypeEnum[type];
+        console.log(canvasId);
+        $(canvasId).get(0).style.zIndex = 16;
     }
 
     /**
@@ -162,7 +167,7 @@ export class CellComponent implements OnInit, AfterViewInit, OnDestroy {
         const scrollFunc = function (e) {
             e = e || window.event;
             const delta = e.wheelDelta / 120;
-            if (that.model.actionInfo.key() === actions.nudge) {
+            if (that.actionType === ActionTypeEnum.nudge) {
                 EventAggregator.Instance().faderRadiusDelta.publish(delta);
             } else {
                 that.page(delta);

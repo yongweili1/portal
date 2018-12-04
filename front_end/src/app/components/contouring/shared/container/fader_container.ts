@@ -3,6 +3,7 @@ import { Fader } from '../overlay/fader';
 import { Point } from '../tools/point';
 import { RoiModel } from '../model/roi.model';
 import { Line } from '../overlay/line';
+import { ShapeTypeEnum } from '../../../../shared/models/enums';
 
 export class FaderContainer extends BaseContainer {
     fader: Fader;
@@ -16,7 +17,7 @@ export class FaderContainer extends BaseContainer {
     state = 0;
 
     constructor(stage) {
-        super(stage, 'nudge');
+        super(stage, ShapeTypeEnum.fader);
         this.fader = new Fader(stage);
         this.horizontal = new Line(stage);
         this.vertical = new Line(stage);

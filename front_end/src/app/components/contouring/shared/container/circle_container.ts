@@ -3,6 +3,7 @@ import { Circle } from '../overlay/circle';
 import { ControlPoint } from '../overlay/controlpoint';
 import { Text } from '../overlay/text';
 import { RoiModel } from '../model/roi.model';
+import { ShapeTypeEnum } from '../../../../shared/models/enums';
 
 export class CircleContainer extends BaseContainer {
     start: ControlPoint;
@@ -11,7 +12,7 @@ export class CircleContainer extends BaseContainer {
     text: Text;
 
     constructor(stage) {
-        super(stage, 'circle');
+        super(stage, ShapeTypeEnum.circle);
         this.start = new ControlPoint(stage);
         this.circle = new Circle(stage);
         this.end = new ControlPoint(stage);
