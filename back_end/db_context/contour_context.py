@@ -34,6 +34,15 @@ class ContourContext(object):
                 query = query.filter(imageuid=image_uid)
             if roi_uid is not None:
                 query = query.filter(roiuid=roi_uid)
-            return query, None
+            if query is not None or len(query) > 0:
+                records = []
+                for item in query:
+                    record = {}
+                    record['contouruid'] = item.contouruid
+                    record['roiuid'] = item.roiuid
+                    record['imageuid'] = item.imageuid
+                    record['cpspath'] = item.cpspath
+                    records.append(record)
+            return records, None
         except Exception as ex:
             return None, ex.message
