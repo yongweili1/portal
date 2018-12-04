@@ -20,15 +20,15 @@ class SeriesContext(object):
         except Exception as ex:
             return False, ex.message
 
-    def update(self, seriesuid=None, data=None):
+    def update(self, seriesuid, data):
         try:
-            if seriesuid is not None:
-                Series.objects.filter(seriesuid=seriesuid).update(data)
-            else:
-                query = Series.objects.filter(seriesuid=data['seriesuid'])
-                query.seriespixeldatafilepath = data['seriespixeldatafilepath']
-                query.buildvolumesign = data['buildvolumesign']
-                query.save()
+            query = Series.objects.filter(seriesuid=seriesuid)
+            if len(query) != 1:
+                return None
+
+            query[0].seriespixeldatafilepath = data['seriespixeldatafilepath']
+            query[0].buildvolumesign = data['buildvolumesign']
+            query[0].save()
             return True, None
         except Exception as e:
             return False, e.message
