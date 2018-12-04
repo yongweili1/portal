@@ -38,10 +38,9 @@ class SeriesService(object):
     def upload_volume(self, vol_file_path, series_uid):
         try:
             data = {
-                'seriesuid': series_uid,
                 'seriespixeldatafilepath': vol_file_path,
                 'buildvolumesign': int(0)
             }
-            return series_ctx.update(data=data)
+            return series_ctx.update(seriesuid=series_uid, data=data)
         except Exception as e:
             return False, e.message
