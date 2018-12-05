@@ -313,6 +313,10 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     //#endregion
 
+    handleSlideChangeEnd(event: any) {
+        this.handleScroll('transverse', event);
+    }
+
     //#region handle Scroll event
     handleTransverseScroll(event: any) {
         if (!this.excuteHelper.canExcute(new Date().getTime(), 'a')

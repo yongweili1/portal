@@ -16,7 +16,7 @@
             </div>
 
             <div class='slider_bar'>
-                <mpt-slider-bar [tag]='"transverse"'></mpt-slider-bar>
+                <mpt-slider-bar [tag]='"transverse"' (slideChangeEnd)="handleSlideChangeEnd($event)"></mpt-slider-bar>
             </div>
         </div>
 
