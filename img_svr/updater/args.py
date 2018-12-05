@@ -6,4 +6,5 @@ class RefreshType(object):
     Mask = 'mask'
     WWWL = 'wwwl'
     SliceIndex = 'slice_index'
+    BoundaryPts = 'boundary_pts'
     All = 'all'
