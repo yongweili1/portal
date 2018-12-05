@@ -1,10 +1,9 @@
 from model.imagemodel import VolumeInfo, GraphicModel
 from model.workflow import GET_CLASS_NAME
 from router.routerargs import GraphicType
-from updater.baseupdater import BaseUpdater
-
 from scene.coord import translate_from_world_to_screen
 from updater.args import RefreshType
+from updater.baseupdater import BaseUpdater
 from utilities import convert_rgba_to_base64
 
 
@@ -13,6 +12,7 @@ class CellUpdater(BaseUpdater):
         super(CellUpdater, self).__init__(entity)
         self._result = {'image': None,
                         'crosshair': (),
+                        'boundary_pts': (),
                         'wwwl': (),
                         'slice_index': 0,
                         'graphic': {'prolines': {}, 'circle': {}, 'contours': []}
@@ -38,9 +38,11 @@ class CellUpdater(BaseUpdater):
                     self.update_slice_index(scene, workflow)
                 elif t == RefreshType.WWWL:
                     self.update_wwwl(scene)
+                elif t == RefreshType.BoundaryPts:
+                    self.update_boundary_pts(scene)
                 elif t == RefreshType.All:
                     self.update(RefreshType.Image, RefreshType.Crosshair, RefreshType.Graphic, RefreshType.WWWL,
-                                RefreshType.SliceIndex)
+                                RefreshType.BoundaryPts, RefreshType.SliceIndex)
         except Exception, e:
             print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! CellUpdater update() ---> {}'.format(e)
 
@@ -77,3 +79,6 @@ class CellUpdater(BaseUpdater):
     def update_wwwl(self, scene):
         wwwl = scene.get_window_level()
         self._result[RefreshType.WWWL] = wwwl
+
+    def update_boundary_pts(self, scene):
+        self._result[RefreshType.BoundaryPts] = ()

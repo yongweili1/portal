@@ -336,7 +336,9 @@ def locate(**kwargs):
         return response(success=False, message=err.message)
 
     try:
-        imageentity.locate(focus_view, cursor_2D)
+        success, msg = imageentity.locate(focus_view, cursor_2D)
+        if not success:
+            return response(success=False, message=msg)
         imageentity.updater().update(RefreshType.All)
         result = imageentity.updater().get_result()
         result = view_filter(result, focus_view)
@@ -376,27 +378,38 @@ def wwwl(**kwargs):
         return response(success=False, message=e.message)
 
 
-@command.register('point3d')
+@command.register('point3dto2d')
 def get_point3d(**kwargs):
     try:
         index = get_view_index('transverse')
         view = imageentity.get_children_views()[index]
         scene = view.get_scene()
-        pt3d = translate_from_screen_to_world(scene, kwargs['point_2d'])
-        return response(json.dumps(pt3d.tolist()))
+        contour = kwargs['contour']
+        cps = []
+        for cp in contour:
+            pt2d = translate_from_world_to_screen(scene, cp)
+            cps.append(pt2d.tolist())
+        return response(json.dumps({'contour': cps}))
     except Exception as e:
         print('---------------->', e.message)
         return response(success=False, message=e.message)
 
 
-@command.register('point2d')
-def get_point2d(**kwargs):
+@command.register('point2dto3d')
+def get_point3d(**kwargs):
     try:
         index = get_view_index('transverse')
+        contours = kwargs['contours']
         view = imageentity.get_children_views()[index]
         scene = view.get_scene()
-        pt3d = translate_from_world_to_screen(scene, kwargs['point_3d'])
-        return response(json.dumps(pt3d.tolist()))
+        cps_list = {'contours': []}
+        for contour in contours:
+            cps = []
+            for cp in contour:
+                pt3d = translate_from_screen_to_world(scene, [cp['x'], cp['y']])
+                cps.append(pt3d.tolist())
+            cps_list['contours'].append(cps)
+        return response(json.dumps(cps_list))
     except Exception as e:
         print('---------------->', e.message)
         return response(success=False, message=e.message)

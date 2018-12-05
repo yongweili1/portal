@@ -177,6 +177,9 @@ class ImageEntity(RouterEntity):
                     scene = cell.get_scene()
                     if scene is not None:
                         scene.camera.look(pt3d)
+                return True, None
+            else:
+                return False, 'out of volume'
 
     def draw_graphic(self, index, graphic_type, pos_pre, pos_cur, uid):
         if self._cellviews is not None and len(self._cellviews) > index:
