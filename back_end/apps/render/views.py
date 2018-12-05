@@ -289,12 +289,21 @@ class Contour(APIView):
         slice_index = request.GET.get('slice_index', None)
         roi_uids = roi_uids.split(',')
         contours, msg = contour_svc.retrieve(slice_index, roi_uids)
+        if contours is None:
+            return ResponseDto(success=False, message=msg)
+        for contour in contours:
+            rst = sync_send_command('point3dto2d', contour=contour['cps'])
+            contour['cps'] = json.loads(rst.data['data'])['contour']
         return ResponseDto(data=contours)
 
     def post(self, request):
         roi_uid = request.data.get('roi_uid', None)
         slice_index = request.data.get('slice_index', None)
         contours = request.data.get('contours', None)
+        rst = sync_send_command('point2dto3d', contours=contours)
+        if not rst.data['success']:
+            return rst
+        contours = json.loads(rst.data['data'])['contours']
         success, msg = contour_svc.create(slice_index, roi_uid, contours)
         return ResponseDto(success=success, message=msg)
 
