@@ -1,9 +1,10 @@
 import { BaseContainer } from '../container/base_container';
 import { Freepen } from '../overlay/freepen';
-import { Point } from '../tools/point';
+import { Point, Point3d } from '../tools/point';
 import { Text } from '../overlay/text';
 import { RoiModel } from '../model/roi.model';
 import { ShapeTypeEnum } from '../../../../shared/models/enums';
+import { Utils } from '../tools/utils';
 
 export class FreepenContainer extends BaseContainer {
     shape: Freepen;
@@ -14,6 +15,8 @@ export class FreepenContainer extends BaseContainer {
 
     extendShape: Freepen;
     extendCps: Array<Point>;
+
+    utils = new Utils();
 
     constructor(stage) {
         super(stage, ShapeTypeEnum.freepen);
@@ -143,6 +146,11 @@ export class FreepenContainer extends BaseContainer {
         this.clearPaint();
     }
 
+    setBoundaryPts(pts) {
+        super.setBoundaryPts(pts);
+        this.activeAreaBoundaryPts = this.utils.scaleRectangleBoundary(pts, -1);
+    }
+
     handleMouseDown(evt) {
         console.log('[freepen]handle MouseDown');
         super.handleMouseDown(evt);
@@ -172,7 +180,22 @@ export class FreepenContainer extends BaseContainer {
                 this.update();
             } else {
                 console.log('push a new point');
-                this.cps.push(new Point(evt.offsetX, evt.offsetY));
+                const mousePt = new Point(evt.offsetX, evt.offsetY);
+                if (!this.utils.isInPolygon(mousePt, this.activeAreaBoundaryPts)) {
+                    // Plan A: 求最近点
+                    const intersection = this.utils.getNearestPt(this.activeAreaBoundaryPts, mousePt);
+                    // Plan B: 求鼠标指针和最后一个cp连线与边框的交点，会导致图元紧贴边界的时候运动十分缓慢
+                    // const lineCps = [this.fader.center, mousePt];
+                    // let intersection = this.utils.getShapeIntersectionWithLine(this.activeAreaBoundaryPts, lineCps);
+                    // const center_x = (this.boundaryPts[0].x + this.boundaryPts[2].x) / 2;
+                    // const center_y = (this.boundaryPts[0].y + this.boundaryPts[2].y) / 2;
+                    // intersection = this.utils.closeTo(intersection, new Point(center_x, center_y));
+                    if (intersection != null) {
+                        this.cps.push(intersection);
+                    }
+                } else {
+                    this.cps.push(mousePt);
+                }
                 this.update();
             }
         }

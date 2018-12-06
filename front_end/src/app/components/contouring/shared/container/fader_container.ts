@@ -4,6 +4,7 @@ import { Point } from '../tools/point';
 import { RoiModel } from '../model/roi.model';
 import { Line } from '../overlay/line';
 import { ShapeTypeEnum } from '../../../../shared/models/enums';
+import { Utils } from '../tools/utils';
 
 export class FaderContainer extends BaseContainer {
     fader: Fader;
@@ -15,6 +16,8 @@ export class FaderContainer extends BaseContainer {
     // positive, +, 1
     // negative, -, -1
     state = 0;
+
+    utils = new Utils();
 
     constructor(stage) {
         super(stage, ShapeTypeEnum.fader);
@@ -73,6 +76,11 @@ export class FaderContainer extends BaseContainer {
         return this.fader.cps;
     }
 
+    public setBoundaryPts(pts) {
+        super.setBoundaryPts(pts);
+        this.activeAreaBoundaryPts = this.utils.scaleRectangleBoundary(pts, -this.fader.radius);
+    }
+
     handleMouseDown(evt) {
         super.handleMouseDown(evt);
 
@@ -87,7 +95,22 @@ export class FaderContainer extends BaseContainer {
     }
 
     handleMouseMove(e) {
-        this.fader.setCenter(new Point(e.offsetX, e.offsetY));
+        const mousePt = new Point(e.offsetX, e.offsetY);
+        if (!this.utils.isInPolygon(mousePt, this.activeAreaBoundaryPts)) {
+            // Plan A: 求最近点
+            const intersection = this.utils.getNearestPt(this.activeAreaBoundaryPts, mousePt);
+            // Plan B: 求鼠标指针和最后一个cp连线与边框的交点，会导致图元紧贴边界的时候运动十分缓慢
+            // const lineCps = [this.fader.center, mousePt];
+            // let intersection = this.utils.getShapeIntersectionWithLine(this.activeAreaBoundaryPts, lineCps);
+            // const center_x = (this.boundaryPts[0].x + this.boundaryPts[2].x) / 2;
+            // const center_y = (this.boundaryPts[0].y + this.boundaryPts[2].y) / 2;
+            // intersection = this.utils.closeTo(intersection, new Point(center_x, center_y));
+            if (intersection != null) {
+                this.fader.setCenter(intersection);
+            }
+        } else {
+            this.fader.setCenter(mousePt);
+        }
         this.update();
     }
 

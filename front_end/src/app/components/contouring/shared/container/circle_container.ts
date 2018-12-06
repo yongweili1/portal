@@ -4,12 +4,14 @@ import { ControlPoint } from '../overlay/controlpoint';
 import { Text } from '../overlay/text';
 import { RoiModel } from '../model/roi.model';
 import { ShapeTypeEnum } from '../../../../shared/models/enums';
+import { Utils } from '../tools/utils';
 
 export class CircleContainer extends BaseContainer {
     start: ControlPoint;
     circle: Circle;
     end: ControlPoint;
     text: Text;
+    utils = new Utils();
 
     constructor(stage) {
         super(stage, ShapeTypeEnum.circle);
@@ -46,6 +48,11 @@ export class CircleContainer extends BaseContainer {
         const area = Math.PI * r * r;
         this.text.setText('Area: ' + area.toFixed(2) + ' pixel');
         this.text.update();
+    }
+
+    public setBoundaryPts(pts) {
+        super.setBoundaryPts(pts);
+        this.activeAreaBoundaryPts = this.utils.scaleRectangleBoundary(pts, -1);
     }
 
     handleMouseDown(evt) {
