@@ -110,4 +110,19 @@
             <p-button label="Cancel" icon="fa fa-times" iconPos="left" (onClick)="editROIDisplay=false"></p-button>
         </p-footer>
     </p-dialog>
+
+    <p-dialog header="分割设置" [modal]="true" [(visible)]="segDisplay" [width]="300" [style]="{'border':'none'}"
+        [contentStyle]="{'border':'none','overflow':'visible'}">
+        <div class="multi-selector">
+            <label for="" class="segInfo">请选择分割部位：</label>
+            <p-multiSelect [options]="orgens" [(ngModel)]="selectedOrgens" [panelStyle]="{minWidth:'12em'}" optionLabel="name">
+
+            </p-multiSelect>
+        </div>
+        <p-footer [style]="{'border':'none'}">
+            <p-button label="Save" icon="fa fa-check" iconPos="left" (onClick)="handleSeg()"></p-button>
+            <p-button label="Cancel" icon="fa fa-times" iconPos="left" (onClick)="segDisplay=false"></p-button>
+        </p-footer>
+    </p-dialog>
+
 </div>

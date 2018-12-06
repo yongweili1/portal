@@ -12,6 +12,8 @@ import { ExcuteHelper } from './shared/tools/excute_helper';
 import { Point } from './shared/tools/point';
 import { Subscription } from 'rxjs';
 import { ActionTypeEnum, CanvasTypeEnum } from '../../shared/models/enums';
+import { SegSelectorModel, Orgen } from './shared/model/seg-slector.model';
+
 
 declare var $: any;
 
@@ -27,12 +29,13 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     seriesId: any;
 
     newROIDisplay: any = false;
+    segDisplay: any = false;
     manageROIDisplay: any = false;
     editROIDisplay: any = false;
 
     excuteHelper: ExcuteHelper;
     data: ContouringModel;
-
+    segData: SegSelectorModel;
     // subscription objects
     contourCpsSubscriber: Subscription;
     removeCpsSubscriber: Subscription;
@@ -44,6 +47,9 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('cell2') cell2;
     @ViewChild('cell3') cell3;
 
+
+    selectedOrgens: Orgen[];
+    orgens: Orgen[];
     constructor(
         public activeRoute: ActivatedRoute,
         private roiSvc: RoiService,
@@ -55,6 +61,10 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         this.data = new ContouringModel();
         this.data.setTag();
         this.data.setCrossLineColor();
+
+        this.segData = new SegSelectorModel();
+        this.selectedOrgens = this.segData.slectionOrgens;
+        this.orgens = this.segData.orgens;
     }
 
     //#region life-cycle hook methods
@@ -148,6 +158,28 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         }
     }
 
+    handleSeg() {
+        const ROIData = {
+            seriesuid: $('#seriesSelect').val(),
+            data: this.selectedOrgens,
+            color: '#FFFF00'
+        };
+        if (ROIData.seriesuid != undefined && ROIData.seriesuid != "") {
+            this.roiSvc.CreateNewSegROI(ROIData).subscribe(response => {
+                if (response.success) {
+                    this.toastSvc.success('Save succeed.');
+                    this.data.roiList = response.data;
+                    this.segDisplay = false;
+                } else {
+                    this.toastSvc.error(response.message);
+                }
+            });
+        }
+        else {
+            this.toastSvc.error("Please select a valid series !")
+        }
+    }
+
     handleEditRoi(roi: RoiModel) {
         this.editROIDisplay = true;
         this.data.activeRoi = roi;
@@ -175,20 +207,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     mainautoroi() {
-        const ROIData = {
-            seriesuid: $('#seriesSelect').val(),
-            name: 'heart',
-            color: '#FFFF00'
-        };
-        this.roiSvc.CreateNewSegROI(ROIData).subscribe(response => {
-            if (response.success) {
-                this.toastSvc.success('Save succeed.');
-                this.data.roiList = response.data;
-                this.newROIDisplay = false;
-            } else {
-                this.toastSvc.error(response.message);
-            }
-        });
+        this.segDisplay = true;
     }
 
     handleManageRoi(showDialog = true) {
