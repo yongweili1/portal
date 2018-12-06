@@ -16,6 +16,7 @@ import {
     ColorPickerModule,
     DialogModule,
     SplitButtonModule,
+    MultiSelectModule,
 } from 'primeng/primeng';
 
 
@@ -68,6 +69,7 @@ import { SliderBarComponent } from './slider-bar/slider-bar.component';
         ToastModule,
         SplitButtonModule,
         SliderModule,
+        MultiSelectModule,
     ],
     declarations: [
         ContouringComponent,
