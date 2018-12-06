@@ -21,7 +21,11 @@ class ImageEntity(RouterEntity):
         self._cellviews = []
         self._workflow = Workflow(index)
         self._updater = ImageUpdater(self)
+        self._boundary_pts = []
         self._router.accept() if accept else self._router.ignore()
+        self.zoom_factor = 1
+        self.pan_shift = [0, 0, 0]
+        self.spacing = 1
 
     @property
     def workflow(self):
@@ -34,9 +38,10 @@ class ImageEntity(RouterEntity):
     def set_volume(self, volume):
         assert isinstance(volume, Image3d)
         self._volume = volume
+        center = volume.voxel_to_world((np.array(volume.size()) - 1) / 2)
         volume_model = self._workflow.get_model(GET_CLASS_NAME(VolumeInfo))
-        volume_model.cursor3d = np.array(volume.center())
-        volume_model.default_cursor3d = np.array(volume.center())
+        volume_model.cursor3d = np.array(center)
+        volume_model.default_cursor3d = np.array(center)
 
     def init_default_scenes(self, volume):
         """
@@ -82,6 +87,8 @@ class ImageEntity(RouterEntity):
             self._cellviews[1].init_scene(volume, CameraPos.Coronal, fov, 2000, 0, SceneType.Slice)
         if num_cells > 2:
             self._cellviews[2].init_scene(volume, CameraPos.Sagittal, fov, 2000, 0, SceneType.Slice)
+
+        self.set_boundary_pts()
 
     def get_children_views(self):
         return self._cellviews
@@ -131,6 +138,8 @@ class ImageEntity(RouterEntity):
                 scene = cell.get_scene()
                 if scene is not None:
                     scene.camera.pan(pt3_shift)
+            self.pan_shift = pt3_shift
+            self.set_boundary_pts()
 
     def zoom(self, index, zoom_factor):
         """ zoom view using y-direction mouse shift """
@@ -138,6 +147,8 @@ class ImageEntity(RouterEntity):
             scene = cell.get_scene()
             if scene is not None:
                 scene.camera.zoom(zoom_factor)
+        self.zoom_factor = zoom_factor
+        self.set_boundary_pts()
 
     def window_(self, index, ww_factor, wl_factor):
         if self._cellviews is not None and len(self._cellviews) > index:
@@ -223,3 +234,27 @@ class ImageEntity(RouterEntity):
                 for i, cell in enumerate(self._cellviews):
                     if not i == index:
                         cell.show()
+
+    def get_boundary_pts(self):
+        return self._boundary_pts
+
+    def set_boundary_pts(self):
+        print('set_boundary_pts', self.pan_shift, self.zoom_factor)
+        center_x, center_y, _ = self._volume.center()
+        center_x = center_x + self.pan_shift[0]
+        center_y = center_y + self.pan_shift[1]
+        columns, rows, _ = self._volume.size()
+        spacing_x, spacing_y, _ = self._volume.spacing()
+        left_upper = [center_x - columns * spacing_x * self.zoom_factor / 2, center_y - rows * spacing_y * self.zoom_factor / 2]
+        right_upper = [center_x + columns * spacing_x * self.zoom_factor / 2, center_y - rows * spacing_y * self.zoom_factor / 2]
+        right_bottom = [center_x + columns * spacing_x * self.zoom_factor / 2, center_y + rows * spacing_y * self.zoom_factor / 2]
+        left_bottom = [center_x - columns * spacing_x * self.zoom_factor / 2, center_y + rows * spacing_y * self.zoom_factor / 2]
+        self._boundary_pts = []
+        self._boundary_pts.append(left_upper)
+        self._boundary_pts.append(right_upper)
+        self._boundary_pts.append(right_bottom)
+        self._boundary_pts.append(left_bottom)
+        for cell in self._cellviews:
+            scene = cell.get_scene()
+            if scene is not None:
+                scene.set_boundary_pts(self._boundary_pts)

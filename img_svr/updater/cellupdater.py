@@ -39,7 +39,7 @@ class CellUpdater(BaseUpdater):
                 elif t == RefreshType.WWWL:
                     self.update_wwwl(scene)
                 elif t == RefreshType.BoundaryPts:
-                    self.update_boundary_pts(scene)
+                    self.update_boundary_pts(scene, workflow)
                 elif t == RefreshType.All:
                     self.update(RefreshType.Image, RefreshType.Crosshair, RefreshType.Graphic, RefreshType.WWWL,
                                 RefreshType.BoundaryPts, RefreshType.SliceIndex)
@@ -80,5 +80,10 @@ class CellUpdater(BaseUpdater):
         wwwl = scene.get_window_level()
         self._result[RefreshType.WWWL] = wwwl
 
-    def update_boundary_pts(self, scene):
-        self._result[RefreshType.BoundaryPts] = ()
+    def update_boundary_pts(self, scene, workflow):
+        model_vol = workflow.get_model(GET_CLASS_NAME(VolumeInfo))
+        self._result[RefreshType.BoundaryPts] = []
+        pts = scene.get_boundary_pts()
+        for pt in pts:
+            pt = translate_from_world_to_screen(scene, [pt[0], pt[1], model_vol.cursor3d[2]])
+            self._result[RefreshType.BoundaryPts].append(pt.tolist())

@@ -376,6 +376,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             if (response.success) {
                 this.getContours(response.data[0].slice_index);
                 that.updateCells(response.data);
+                this.updateBoundaryPts(response.data);
             } else {
                 that.toastSvc.error(response.message);
             }
@@ -391,6 +392,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         const that = this;
         this.imageSvc.wwwl(evt[0], evt[1]).subscribe(response => {
             if (response.success) {
+                this.getContours(response.data[0].slice_index);
                 that.updateCells(response.data);
             } else {
                 that.toastSvc.error(response.message);
@@ -408,6 +410,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             if (response.success) {
                 this.getContours(response.data[0].slice_index);
                 this.updateCells(response.data);
+                this.updateBoundaryPts(response.data);
             } else {
                 this.toastSvc.error(response.message);
             }
@@ -426,6 +429,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             if (response.success) {
                 this.getContours(response.data[0].slice_index);
                 that.updateCells(response.data);
+                this.updateBoundaryPts(response.data);
             } else {
                 that.toastSvc.error(response.message);
             }
@@ -522,6 +526,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.updateCells(response.data, true);
                 this.updateSliceIndex(response.data[0].slice_index);
                 this.getContours(response.data[0].slice_index);
+                this.updateBoundaryPts(response.data);
                 this.toastSvc.success('succeed.');
             } else {
                 this.toastSvc.error(response.message);
@@ -578,6 +583,12 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     private updateSliceIndex(index) {
         EventAggregator.Instance().sliceIndex.publish(index);
         this.data.setSliceIndex(index);
+    }
+
+    private updateBoundaryPts(data) {
+        this.data.cell1.setBoundaryPts(data[0].boundary_pts);
+        this.data.cell2.setBoundaryPts(data[1].boundary_pts);
+        this.data.cell3.setBoundaryPts(data[2].boundary_pts);
     }
 
     private updateCells(data, updateWwwl: boolean = false, updateViews: string = 'all') {

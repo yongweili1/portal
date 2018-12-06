@@ -33,6 +33,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
     @Input() graphics;
     @Input() actionType: ActionTypeEnum;
     @Input() shapeType: ShapeTypeEnum;
+    @Input() boundaryPts: any = new Array<Point>();
 
     constructor(private el: ElementRef) { }
 
@@ -316,5 +317,13 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
             freepen.cps = cps;
             freepen.update();
         });
+        this.drawBoundry();
+    }
+
+    drawBoundry() {
+        const freepen = new FreepenContainer(this.stage);
+        freepen.setCps(this.boundaryPts);
+        freepen.setRoi(this.roi);
+        freepen.update();
     }
 }

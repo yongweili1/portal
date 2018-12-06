@@ -122,6 +122,7 @@ class SliceScene(SceneBase):
         self.__contours_list = []
         self.__voi_list = []
         self._page_spacing = 1
+        self._boundary_pts = []
 
     def render(self):
         print 'render start'
@@ -188,6 +189,12 @@ class SliceScene(SceneBase):
 
     def get_page_spacing(self):
         return self._page_spacing
+
+    def set_boundary_pts(self, pts):
+        self._boundary_pts = pts
+
+    def get_boundary_pts(self):
+        return self._boundary_pts
 
 
 class FusionScene(SliceScene):
