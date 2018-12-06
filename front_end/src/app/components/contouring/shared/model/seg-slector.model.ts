@@ -1,10 +1,10 @@
-export interface Orgen {
+export interface Organ {
     name: string;
     code: number;
 }
 export class SegSelectorModel {
-    orgens: Orgen[];
-    slectionOrgens: Orgen[];
+    orgens: Organ[];
+    slectionOrgens: Organ[];
     constructor() {
         this.orgens = [
             { name: "heart", code: 1 },

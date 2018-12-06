@@ -12,7 +12,7 @@ import { ExcuteHelper } from './shared/tools/excute_helper';
 import { Point } from './shared/tools/point';
 import { Subscription } from 'rxjs';
 import { ActionTypeEnum, CanvasTypeEnum } from '../../shared/models/enums';
-import { SegSelectorModel, Orgen } from './shared/model/seg-slector.model';
+import { SegSelectorModel, Organ } from './shared/model/seg-slector.model';
 
 
 declare var $: any;
@@ -48,8 +48,8 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('cell3') cell3;
 
 
-    selectedOrgens: Orgen[];
-    orgens: Orgen[];
+    selectedOrgens: Organ[];
+    orgens: Organ[];
     constructor(
         public activeRoute: ActivatedRoute,
         private roiSvc: RoiService,
