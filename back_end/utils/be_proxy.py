@@ -9,7 +9,7 @@ class BEProxyInstance(comproxy.PyCommProxy):
     _instance_lock = threading.Lock()
 
     def __init__(self):
-        comproxy.PyCommProxy.__init__(self, "", "10.9.19.148:10000")
+        comproxy.PyCommProxy.__init__(self, "", "127.0.0.1:10000")
 
     def __new__(cls, *args, **kwargs):
         if not hasattr(BEProxyInstance, "_instance"):
