@@ -20,7 +20,12 @@ class PyLogInstance(object):
                 lib_name = os.path.join(bin_dir, 'libMcsfLogger.so')
             else:
                 lib_name = os.path.join(bin_dir, 'McsfLogger.dll')
+
+            local_log_path = os.path.join(bin_dir, 'log')
+            if not os.path.isdir(local_log_path):
+                os.makedirs(local_log_path)
             self._lib = ctypes.cdll.LoadLibrary(lib_name)
+            self._lib.GSetLocalLogPath(local_log_path)
         except Exception as e:
             print e
 
