@@ -9,6 +9,7 @@ import { RoiModel } from '../model/roi.model';
 import { NudgeHelper } from '../tools/nudge_helper';
 import { Point } from '../tools/point';
 import { ActionTypeEnum, ShapeTypeEnum } from '../../../../shared/models/enums';
+import { BorderContainer } from '../container/border_container';
 
 declare var createjs: any;
 
@@ -290,6 +291,9 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
 
         this.stage.removeAllChildren();
         this.stage.clear();
+
+        this.drawBoundry();
+
         const contours = [];
         if (this.graphics === undefined || this.graphics.length === 0) {
             return;
@@ -317,13 +321,15 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
             freepen.cps = cps;
             freepen.update();
         });
-        this.drawBoundry();
     }
 
     drawBoundry() {
-        const freepen = new FreepenContainer(this.stage);
-        freepen.setCps(this.boundaryPts);
-        freepen.setRoi(this.roi);
-        freepen.update();
+        if (this.boundaryPts === undefined || this.boundaryPts == null || this.boundaryPts.length !== 5) {
+            return;
+        }
+        const border = new BorderContainer(this.stage);
+        border.setCps(this.boundaryPts);
+        border.setRoi(this.roi);
+        border.update();
     }
 }
