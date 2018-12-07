@@ -77,7 +77,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
                 this.fader.setRadius(this.faderRadius);
                 this.fader.update();
                 this.fader.setBoundaryPts(this.boundaryPts);
-                this.updateBoundry();
+                // this.updateBoundry();
             }
         }
 
@@ -315,7 +315,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
         this.stage.removeAllChildren();
         this.stage.clear();
 
-        this.updateBoundry();
+        // this.updateBoundry();
 
         const contours = [];
         if (this.graphics === undefined || this.graphics.length === 0) {
