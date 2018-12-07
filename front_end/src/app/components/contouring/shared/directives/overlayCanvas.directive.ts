@@ -128,7 +128,13 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
 
         this.stage.children.forEach(shape => {
             if (shape.type === ShapeTypeEnum.freepen) {
-                shape.editable = this.shapeType === ShapeTypeEnum.freepen2 ? true : false;
+                if (this.actionType === ActionTypeEnum.select) {
+                    shape.editable = false;
+                } else if (this.shapeType === ShapeTypeEnum.freepen2) {
+                    shape.editable = true;
+                } else {
+                    shape.editable = false;
+                }
             }
         });
 
