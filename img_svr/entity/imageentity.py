@@ -98,6 +98,10 @@ class ImageEntity(RouterEntity):
         self._workflow.add_cellview(cell_entity)
         self._router.set_sender(cell_entity.router)
 
+    def remove_child_entities(self):
+        self._cellviews = []
+        self._workflow.remove_cellview()
+
     def updater(self):
         return self._updater
 
@@ -138,8 +142,8 @@ class ImageEntity(RouterEntity):
                 scene = cell.get_scene()
                 if scene is not None:
                     scene.camera.pan(pt3_shift)
-            self.pan_shift = pt3_shift
-            self.set_boundary_pts()
+                    self.pan_shift = pt3_shift
+                    self.set_boundary_pts()
 
     def zoom(self, index, zoom_factor):
         """ zoom view using y-direction mouse shift """
@@ -147,8 +151,8 @@ class ImageEntity(RouterEntity):
             scene = cell.get_scene()
             if scene is not None:
                 scene.camera.zoom(zoom_factor)
-        self.zoom_factor = zoom_factor
-        self.set_boundary_pts()
+                self.zoom_factor = zoom_factor
+                self.set_boundary_pts()
 
     def window_(self, index, ww_factor, wl_factor):
         if self._cellviews is not None and len(self._cellviews) > index:
@@ -240,11 +244,12 @@ class ImageEntity(RouterEntity):
 
     def set_boundary_pts(self):
         print('set_boundary_pts', self.pan_shift, self.zoom_factor)
-        center_x, center_y, _ = self._volume.center()
+        center_x, center_y, center_z = self._volume.center()
         center_x = center_x + self.pan_shift[0]
         center_y = center_y + self.pan_shift[1]
+        center_z = center_z + self.pan_shift[2]
         columns, rows, _ = self._volume.size()
-        spacing_x, spacing_y, _ = self._volume.spacing()
+        spacing_x, spacing_y, spacing_z = self._volume.spacing()
         left_upper = [center_x - columns * spacing_x * self.zoom_factor / 2, center_y - rows * spacing_y * self.zoom_factor / 2]
         right_upper = [center_x + columns * spacing_x * self.zoom_factor / 2, center_y - rows * spacing_y * self.zoom_factor / 2]
         right_bottom = [center_x + columns * spacing_x * self.zoom_factor / 2, center_y + rows * spacing_y * self.zoom_factor / 2]

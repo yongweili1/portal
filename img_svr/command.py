@@ -116,6 +116,7 @@ def unload(**kwargs):
 
     print(seriesuid)
     rst, msg = server.unload_volume(seriesuid)
+    imageentity.remove_child_entities()
     print("Unload volume succeed")
     return response(msg)
 
