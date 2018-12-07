@@ -138,9 +138,11 @@ export class CrossCanvasDirective implements OnInit, OnChanges {
         } else if (evt.currentTarget === this.crossPoint) {
             const p = new Point(evt.stageX, evt.stageY);
             if (!this.utils.isInPolygon(p, this.boundaryPts)) {
-                return;
+                const pt = this.utils.getNearestPt(this.boundaryPts, p);
+                this.setCrossPoint(pt);
+            } else {
+                this.setCrossPoint(p);
             }
-            this.setCrossPoint(p);
         }
         this.update();
         console.log('move');

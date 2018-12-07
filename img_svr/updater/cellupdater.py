@@ -59,7 +59,7 @@ class CellUpdater(BaseUpdater):
     def update_slice_index(self, scene, workflow):
         model_vol = workflow.get_model(GET_CLASS_NAME(VolumeInfo))
         pt3d_voxel = scene.volume.world_to_voxel(model_vol.cursor3d)
-        self._result[RefreshType.SliceIndex] = pt3d_voxel[2]
+        self._result[RefreshType.SliceIndex] = int(round(pt3d_voxel[2]))
         print self._result[RefreshType.SliceIndex]
 
     def update_graphic(self, scene, workflow):

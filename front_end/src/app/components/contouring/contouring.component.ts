@@ -466,6 +466,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             if (response.success) {
                 this.getContours(response.data[0].slice_index);
                 that.updateCells(response.data);
+                this.updateBoundaryPts(response.data);
             } else {
                 that.toastSvc.error(response.message);
             }
@@ -483,6 +484,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             if (response.success) {
                 this.getContours(response.data[0].slice_index);
                 that.updateCells(response.data);
+                this.updateBoundaryPts(response.data);
             } else {
                 that.toastSvc.error(response.message);
             }
