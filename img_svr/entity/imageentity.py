@@ -22,9 +22,6 @@ class ImageEntity(RouterEntity):
         self._workflow = Workflow(index)
         self._updater = ImageUpdater(self)
         self._router.accept() if accept else self._router.ignore()
-        self.zoom_factor = 1
-        self.pan_shift = [0, 0, 0]
-        self.spacing = 1
 
     @property
     def workflow(self):

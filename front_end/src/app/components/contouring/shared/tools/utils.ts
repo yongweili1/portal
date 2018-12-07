@@ -41,11 +41,11 @@ export class Utils {
     }
 
     /**
-     * get intersection of two lines
-     * @param p0 first point of line1
-     * @param p1 second point of line1
-     * @param p2 first point of line2
-     * @param p3 second point of line2
+     * 获取两条直线的交点坐标
+     * @param p0 第一条直线的第一个点
+     * @param p1 第一条直线的第二个点
+     * @param p2 第二条直线的第一个点
+     * @param p3 第二条直线的第二个点
      */
     private getLineIntersection(p0: Point, p1: Point, p2: Point, p3: Point) {
         const s10_x = p1.x - p0.x;
@@ -109,11 +109,11 @@ export class Utils {
     }
 
     /**
-     * get intersection of two lines
-     * @param a first point of line1
-     * @param b second point of line1
-     * @param c first point of line2
-     * @param d second point of line2
+     * 获取两条直线的交点坐标
+     * @param a 第一条直线的第一个点
+     * @param b 第一条直线的第二个点
+     * @param c 第二条直线的第一个点
+     * @param d 第二条直线的第二个点
      */
     private segmentsIntr(a, b, c, d) {
 
@@ -191,6 +191,9 @@ export class Utils {
 
     /**
      * 将p点向相对点靠近0.001倍两点连线长度的距离
+     * 该方法主要用于规避某些问题（当直线的某个端在在多边形上时，由于精度问题导致无法
+     * 获得直线和多边形的交点，所以将p点向多边形中心点relatedP移动一点微小的距离），
+     * 不具备普适性，请谨慎使用
      * @param p 被操作的点
      * @param relatedP 相对点
      */
@@ -235,7 +238,7 @@ export class Utils {
     }
 
     /**
-     * 获取多边形上距离p点最近的点坐标
+     * 获取p点到多边形的最近点坐标
      * @param shapeCps 多边形顶点坐标
      * @param p 被操作的点
      */

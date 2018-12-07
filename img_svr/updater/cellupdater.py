@@ -107,7 +107,7 @@ class CellUpdater(BaseUpdater):
             for pt in pts:
                 pt = translate_from_world_to_screen(scene, [model_vol.cursor3d[0], pt[0], pt[1]])
                 self._result[RefreshType.BoundaryPts].append(pt.tolist())
-        else:
+        elif pos == CameraPos.Transverse:
             left_upper = [center_x - columns * spacing_x / 2, center_y - rows * spacing_y / 2]
             right_upper = [center_x + columns * spacing_x / 2, center_y - rows * spacing_y / 2]
             right_bottom = [center_x + columns * spacing_x / 2, center_y + rows * spacing_y / 2]
@@ -116,3 +116,5 @@ class CellUpdater(BaseUpdater):
             for pt in pts:
                 pt = translate_from_world_to_screen(scene, [pt[0], pt[1], model_vol.cursor3d[2]])
                 self._result[RefreshType.BoundaryPts].append(pt.tolist())
+        else:
+            raise StandardError
