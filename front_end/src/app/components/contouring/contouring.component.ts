@@ -48,8 +48,6 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('cell3') cell3;
 
 
-    selectedOrgens: Organ[];
-    orgens: Organ[];
     constructor(
         public activeRoute: ActivatedRoute,
         private roiSvc: RoiService,
@@ -63,8 +61,6 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         this.data.setCrossLineColor();
 
         this.segData = new SegSelectorModel();
-        this.selectedOrgens = this.segData.slectionOrgens;
-        this.orgens = this.segData.orgens;
     }
 
     //#region life-cycle hook methods
@@ -72,6 +68,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         this.cell1.id = 'cell-1';
         this.cell2.id = 'cell-2';
         this.cell3.id = 'cell-3';
+
 
         this.contourCpsSubscriber = EventAggregator.Instance().contourCps
             .subscribe(data => {
@@ -161,7 +158,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     handleSeg() {
         const ROIData = {
             seriesuid: $('#seriesSelect').val(),
-            data: this.selectedOrgens,
+            data: this.segData.slectionOrgans,
             color: '#FFFF00'
         };
         if (ROIData.seriesuid != undefined && ROIData.seriesuid != "") {
