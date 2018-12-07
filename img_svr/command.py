@@ -82,6 +82,7 @@ def load(**kwargs):
         if os.path.isfile(mask_path):
             mask = cio.read_image(mask_path)
         imageentity.set_volume(vol)
+        imageentity.remove_child_entities()
         imageentity.add_child_entity(CellEntity(0, False))
         imageentity.add_child_entity(CellEntity(1, False))
         imageentity.add_child_entity(CellEntity(2, False))
