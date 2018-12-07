@@ -34,9 +34,10 @@ class ImageEntity(RouterEntity):
     def set_volume(self, volume):
         assert isinstance(volume, Image3d)
         self._volume = volume
+        center = volume.voxel_to_world((np.array(volume.size()) - 1) / 2)
         volume_model = self._workflow.get_model(GET_CLASS_NAME(VolumeInfo))
-        volume_model.cursor3d = np.array(volume.center())
-        volume_model.default_cursor3d = np.array(volume.center())
+        volume_model.cursor3d = np.array(center)
+        volume_model.default_cursor3d = np.array(center)
 
     def init_default_scenes(self, volume):
         """
@@ -90,6 +91,10 @@ class ImageEntity(RouterEntity):
         self._cellviews.append(cell_entity)
         self._workflow.add_cellview(cell_entity)
         self._router.set_sender(cell_entity.router)
+
+    def remove_child_entities(self):
+        self._cellviews = []
+        self._workflow.remove_cellview()
 
     def updater(self):
         return self._updater

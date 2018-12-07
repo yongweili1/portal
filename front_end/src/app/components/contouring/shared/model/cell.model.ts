@@ -8,12 +8,23 @@ export class CellModel {
     crossM: CrossModel;
     graphics: any;
     faderRadius: any;
+    boundaryPts: any;
 
     constructor() {
         this.sliceIndex = 0;
         this.imageM = new ImageModel();
         this.crossM = new CrossModel();
         this.faderRadius = 20;
+    }
+
+    setBoundaryPts(pts) {
+        console.log('setBoundaryPts', pts);
+        const pts1 = [];
+        pts.forEach(pt => {
+            pts1.push(new Point(pt[0], pt[1]));
+        });
+        pts1.push(pts1[0].copy());
+        this.boundaryPts = pts1;
     }
 }
 

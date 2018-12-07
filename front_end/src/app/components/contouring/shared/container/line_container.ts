@@ -5,6 +5,7 @@ import { Text } from '../overlay/text';
 import { Point } from '../tools/point';
 import { RoiModel } from '../model/roi.model';
 import { ShapeTypeEnum } from '../../../../shared/models/enums';
+import { Utils } from '../tools/utils';
 
 export class LineContainer extends BaseContainer {
     start: ControlPoint;
@@ -12,6 +13,7 @@ export class LineContainer extends BaseContainer {
     end: ControlPoint;
     text: Text;
     cps: Array<Point>;
+    utils = new Utils();
 
     constructor(stage) {
         super(stage, ShapeTypeEnum.line);
@@ -49,6 +51,11 @@ export class LineContainer extends BaseContainer {
         this.text.update();
     }
 
+    public setBoundaryPts(pts) {
+        super.setBoundaryPts(pts);
+        this.activeAreaBoundaryPts = this.utils.scaleRectangleBoundary(pts, -1);
+    }
+
     handleMouseDown(evt) {
         console.log('[line]handle MouseDown');
         super.handleMouseDown(evt);
@@ -63,7 +70,18 @@ export class LineContainer extends BaseContainer {
         if (this.isMousedown) {
             console.log('[line]handle MouseMove');
             this.isPaint = true;
-            this.updateCp(1, evt.offsetX, evt.offsetY);
+
+            const mousePt = new Point(evt.offsetX, evt.offsetY);
+            if (!this.utils.isInPolygon(mousePt, this.boundaryPts)) {
+                // Plan A: 求最近点
+                const intersection = this.utils.getNearestPt(this.activeAreaBoundaryPts, mousePt);
+                // Plan B: 求鼠标指针和最后一个cp连线与边框的交点，会导致图元紧贴边界的时候运动十分缓慢
+                // const intersection = this.utils.getShapeIntersectionWithLine(this.activeAreaBoundaryPts, [this.cps[0], mousePt]);
+                this.updateCp(1, intersection.x, intersection.y);
+            } else {
+                this.updateCp(1, evt.offsetX, evt.offsetY);
+            }
+
             this.update();
         }
     }

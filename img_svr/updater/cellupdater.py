@@ -2,6 +2,7 @@ from model.imagemodel import VolumeInfo, GraphicModel
 from model.workflow import GET_CLASS_NAME
 from router.routerargs import GraphicType
 from scene.coord import translate_from_world_to_screen
+from scene.scene import CameraPos
 from updater.args import RefreshType
 from updater.baseupdater import BaseUpdater
 from utilities import convert_rgba_to_base64
@@ -39,7 +40,7 @@ class CellUpdater(BaseUpdater):
                 elif t == RefreshType.WWWL:
                     self.update_wwwl(scene)
                 elif t == RefreshType.BoundaryPts:
-                    self.update_boundary_pts(scene)
+                    self.update_boundary_pts(scene, workflow)
                 elif t == RefreshType.All:
                     self.update(RefreshType.Image, RefreshType.Crosshair, RefreshType.Graphic, RefreshType.WWWL,
                                 RefreshType.BoundaryPts, RefreshType.SliceIndex)
@@ -80,5 +81,40 @@ class CellUpdater(BaseUpdater):
         wwwl = scene.get_window_level()
         self._result[RefreshType.WWWL] = wwwl
 
-    def update_boundary_pts(self, scene):
-        self._result[RefreshType.BoundaryPts] = ()
+    def update_boundary_pts(self, scene, workflow):
+        model_vol = workflow.get_model(GET_CLASS_NAME(VolumeInfo))
+        self._result[RefreshType.BoundaryPts] = []
+        volume = scene.volume
+        center_x, center_y, center_z = volume.center()
+        columns, rows, height = volume.size()
+        spacing_x, spacing_y, spacing_z = volume.spacing()
+        pos = scene.get_default_pos()
+        if pos == CameraPos.Coronal:
+            left_upper = [center_x - columns * spacing_x / 2, center_z - height * spacing_z / 2]
+            right_upper = [center_x + columns * spacing_x / 2, center_z - height * spacing_z / 2]
+            right_bottom = [center_x + columns * spacing_x / 2, center_z + height * spacing_z / 2]
+            left_bottom = [center_x - columns * spacing_x / 2, center_z + height * spacing_z / 2]
+            pts = [left_upper, right_upper, right_bottom, left_bottom]
+            for pt in pts:
+                pt = translate_from_world_to_screen(scene, [pt[0], model_vol.cursor3d[1], pt[1]])
+                self._result[RefreshType.BoundaryPts].append(pt.tolist())
+        elif pos == CameraPos.Sagittal:
+            left_upper = [center_y - rows * spacing_y / 2, center_z - height * spacing_z / 2]
+            right_upper = [center_y + rows * spacing_y / 2, center_z - height * spacing_z / 2]
+            right_bottom = [center_y + rows * spacing_y / 2, center_z + height * spacing_z / 2]
+            left_bottom = [center_y - rows * spacing_y / 2, center_z + height * spacing_z / 2]
+            pts = [left_upper, right_upper, right_bottom, left_bottom]
+            for pt in pts:
+                pt = translate_from_world_to_screen(scene, [model_vol.cursor3d[0], pt[0], pt[1]])
+                self._result[RefreshType.BoundaryPts].append(pt.tolist())
+        elif pos == CameraPos.Transverse:
+            left_upper = [center_x - columns * spacing_x / 2, center_y - rows * spacing_y / 2]
+            right_upper = [center_x + columns * spacing_x / 2, center_y - rows * spacing_y / 2]
+            right_bottom = [center_x + columns * spacing_x / 2, center_y + rows * spacing_y / 2]
+            left_bottom = [center_x - columns * spacing_x / 2, center_y + rows * spacing_y / 2]
+            pts = [left_upper, right_upper, right_bottom, left_bottom]
+            for pt in pts:
+                pt = translate_from_world_to_screen(scene, [pt[0], pt[1], model_vol.cursor3d[2]])
+                self._result[RefreshType.BoundaryPts].append(pt.tolist())
+        else:
+            raise StandardError

@@ -3,6 +3,7 @@ import { EventAggregator } from '../../../../shared/common/event_aggregator';
 import { ExcuteHelper } from '../../../contouring/shared/tools/excute_helper';
 import { Hitbar } from '../overlay/hitbar';
 import { Point } from '../tools/point';
+import { Utils } from '../tools/utils';
 declare var createjs: any;
 
 @Directive({
@@ -13,12 +14,16 @@ export class CrossCanvasDirective implements OnInit, OnChanges {
     @Input() point: Point;
     @Input() hColor: string;
     @Input() vColor: string;
+    @Input() boundaryPts: any;
+
     canvas: any;
     stage: any;
     excuteHelper: ExcuteHelper;
     horizontal: any;
     vertical: any;
     crossPoint: any;
+
+    utils = new Utils();
 
     constructor(private el: ElementRef) { }
 
@@ -107,7 +112,11 @@ export class CrossCanvasDirective implements OnInit, OnChanges {
     }
 
     handleMouseUp(evt) {
-        this.setCrossPoint(new Point(evt.offsetX, evt.offsetY));
+        const p = new Point(evt.offsetX, evt.offsetY);
+        if (!this.utils.isInPolygon(p, this.boundaryPts)) {
+            return;
+        }
+        this.setCrossPoint(p);
         this.update();
 
         EventAggregator.Instance().crossPoint.publish([this.tag, this.point]);
@@ -115,11 +124,23 @@ export class CrossCanvasDirective implements OnInit, OnChanges {
 
     handlePressMove(evt) {
         if (evt.currentTarget === this.vertical) {
-            this.setCrossPoint(new Point(evt.stageX, this.point.y));
+            const p = new Point(evt.stageX, this.point.y);
+            if (!this.utils.isInPolygon(p, this.boundaryPts)) {
+                return;
+            }
+            this.setCrossPoint(p);
         } else if (evt.currentTarget === this.horizontal) {
-            this.setCrossPoint(new Point(this.point.x, evt.stageY));
+            const p = new Point(this.point.x, evt.stageY);
+            if (!this.utils.isInPolygon(p, this.boundaryPts)) {
+                return;
+            }
+            this.setCrossPoint(p);
         } else if (evt.currentTarget === this.crossPoint) {
-            this.setCrossPoint(new Point(evt.stageX, evt.stageY));
+            const p = new Point(evt.stageX, evt.stageY);
+            if (!this.utils.isInPolygon(p, this.boundaryPts)) {
+                return;
+            }
+            this.setCrossPoint(p);
         }
         this.update();
         console.log('move');
@@ -132,10 +153,22 @@ export class CrossCanvasDirective implements OnInit, OnChanges {
 
     handlePressUp(evt) {
         if (evt.currentTarget === this.vertical) {
-            this.setCrossPoint(new Point(evt.stageX, this.point.y));
+            const p = new Point(evt.stageX, this.point.y);
+            if (!this.utils.isInPolygon(p, this.boundaryPts)) {
+                return;
+            }
+            this.setCrossPoint(p);
         } else if (evt.currentTarget === this.horizontal) {
+            const p = new Point(this.point.x, evt.stageY);
+            if (!this.utils.isInPolygon(p, this.boundaryPts)) {
+                return;
+            }
             this.setCrossPoint(new Point(this.point.x, evt.stageY));
         } else if (evt.currentTarget === this.crossPoint) {
+            const p = new Point(evt.stageX, evt.stageY);
+            if (!this.utils.isInPolygon(p, this.boundaryPts)) {
+                return;
+            }
             this.setCrossPoint(new Point(evt.stageX, evt.stageY));
         }
         this.update();
