@@ -13,6 +13,8 @@ from netbase import data_checker
 from service import series_svc, patient_svc
 from utils.dcm_sorter import DcmSorter
 from utils.volume_builder import VolumeBuilder
+from netbase.c_log import log
+
 
 if platform.system() == 'Windows':
     import win32file
@@ -29,13 +31,13 @@ class Upload(APIView):
         :param request: a django rest framework request object
         :return: boolean true for success, false for failure
         """
-        print('uploading...')
+        log.dev_info('uploading...')
         file_name_list = []
 
         files = request.FILES.getlist('a')
         if len(files) == 0:
             return Response('请选择上传文件')
-        print(len(files))
+        log.dev_info(len(files))
 
         for f in files:
             file_name = os.path.join(file_path_ferry.dicomPath, f.name)
@@ -48,7 +50,7 @@ class Upload(APIView):
         dataset_list = []
         series_path_list = []
 
-        print('上传完成，正在执行数据入库...')
+        log.dev_info('上传完成，正在执行数据入库...')
         for file_name in file_name_list:
             try:
                 dataset = pydicom.dcmread(file_name, force=True)
@@ -69,14 +71,14 @@ class Upload(APIView):
                     continue
 
                 if platform.system() == 'Windows':
-                    print('begin data checking')
+                    log.dev_info('begin data checking')
                     series_dir = str(seriespath).encode('GB2312')
                     reply = data_checker.DataChecker().data_checking(series_dir)
                     if '' != reply:
                         print reply
                         return Response('dicom文件不符合规范,创建volume失败')
 
-                print('begin build volume')
+                log.dev_info('begin build volume')
                 builder = VolumeBuilder()
                 volfilepath, seriesuid = builder.build(seriespath)
             except Exception as ex:

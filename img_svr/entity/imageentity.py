@@ -11,6 +11,7 @@ from scene.scene import CameraPos, SceneType
 from updater.imageupdater import ImageUpdater
 
 from scene.coord import translate_from_screen_to_world, check_point_is_inside_volume
+from netbase.c_log import log
 
 
 class ImageEntity(RouterEntity):
@@ -196,7 +197,7 @@ class ImageEntity(RouterEntity):
                 model_graphic = self.workflow.get_model(GET_CLASS_NAME(GraphicModel))
                 model_graphic.lines[uid] = (tuple(pt3d_pre), tuple(pt3d_cur))
                 dist = np.linalg.norm(pt3d_cur - pt3d_pre)
-                print 'line distance: {}'.format(dist)
+                log.dev_info('line distance: {}'.format(dist))
             # elif graphic_type == GraphicType.Circle:
             #     overlay_graphic = cell_operate.get_overlay(RefreshType.Graphic)
             #     shift = (pos_cur[0] - pos_pre[0], pos_cur[1] - pos_pre[1])

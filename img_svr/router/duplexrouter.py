@@ -2,6 +2,8 @@ from PyQt5.QtCore import QObject, pyqtSignal
 
 from updater.args import RefreshType
 
+from netbase.c_log import log
+
 
 class SendRouter(QObject):
     """ a router for send command or signal """
@@ -33,7 +35,7 @@ class ReceiveRouter(QObject):
 
     def _on_cmd_handler(self, cmd, path, *args):
         if self._is_accept is True:
-            print 'receive {} by {} with {}'.format(cmd, path, args)
+            log.dev_info('receive {} by {} with {}'.format(cmd, path, args))
 
     def _on_level_cmd_handler(self, cmd, path, level, *args):
         pass
@@ -69,44 +71,44 @@ class DuplexRouter(SendRouter, ReceiveRouter):
     def _on_cmd_handler(self, cmd, path, args):
         try:
             path.append(self._uid)
-            print "------> receive cmd '{}' by {} with args {}".format(cmd, path, args)
+            log.dev_info("------> receive cmd '{}' by {} with args {}".format(cmd, path, args))
             en = self.__entity
             if en is not None and self._is_accept is True:
                 op_fun = getattr(en, cmd)
-                print '---> operation begin <---'
+                log.dev_info('---> operation begin <---')
                 op_fun(path, *args)
-                print '---> operation end <---'
-                print '---> update begin <---'
+                log.dev_info('---> operation end <---')
+                log.dev_info('---> update begin <---')
                 en.updater().update(RefreshType.All)
-                print '---> update end <---'
-                print '---> refresh begin <---'
+                log.dev_info('---> update end <---')
+                log.dev_info('---> refresh begin <---')
                 en.refresh(en.updater().get_result(), RefreshType.All)
-                print '---> refresh end <---'
+                log.dev_info('---> refresh end <---')
             else:
                 self.sRouterCommand.emit(cmd, path, args)
         except Exception, e:
-            print '_on_cmd_handler except: {}'.format(e)
+            log.dev_info('_on_cmd_handler except: {}'.format(e))
 
     def _on_level_cmd_handler(self, cmd, path, level, args):
         try:
             path.append(self._uid)
-            print "------> receive cmd '{}' by {} with args {}".format(cmd, path, args)
+            log.dev_info("------> receive cmd '{}' by {} with args {}".format(cmd, path, args))
             en = self.__entity
             if self.__entity is not None and len(path) == level + 1:
                 op_fun = getattr(en, cmd)
-                print '---> operation begin <---'
+                log.dev_info('---> operation begin <---')
                 op_fun(path, *args)
-                print '---> operation end <---'
-                print '---> update begin <---'
+                log.dev_info('---> operation end <---')
+                log.dev_info('---> update begin <---')
                 en.updater().update(RefreshType.All)
-                print '---> update end <---'
-                print '---> refresh begin <---'
+                log.dev_info('---> update end <---')
+                log.dev_info('---> refresh begin <---')
                 en.refresh(en.updater().get_result(), RefreshType.All)
-                print '---> refresh end <---'
+                log.dev_info('---> refresh end <---')
             else:
                 self.sRouterLevelCommand.emit(cmd, path, level, args)
         except Exception, e:
-            print '_on_level_cmd_handler except: {}'.format(e)
+            log.dev_info('_on_level_cmd_handler except: {}'.format(e))
 
 
 def link_routers(router_lst):

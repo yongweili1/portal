@@ -1,5 +1,6 @@
 import os
 import ctypes
+import sys
 import threading
 
 
@@ -8,12 +9,12 @@ class DataChecker:
 
     def __init__(self):
 
-        path = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(path)
-        path = os.path.join(path, "uAIDataLayer.dll")
+        lib_path = os.path.dirname(os.path.abspath(__file__))
+        os.chdir(lib_path)
+        lib_path = os.path.join(lib_path, "uAIDataChecker.dll" if sys.platform == 'win32' else "uAIDataChecker.so")
 
         try:
-            self._lib = ctypes.cdll.LoadLibrary(path)
+            self._lib = ctypes.cdll.LoadLibrary(lib_path)
         except Exception as e:
             print e
 
@@ -29,5 +30,11 @@ class DataChecker:
 
 
 if __name__ == '__main__':
-    msg = DataChecker().data_checking(r'E:\to_write\problem_data\2')
-    print msg
+    path = (r'E:\to_write\2017_12_28_12_57_46',
+            r'E:\to_write\problem_data\2',
+            r'E:\to_write\problem_data\T1_GRE_FSP_SAG+C_30',
+            r'E:\to_write\segmentation\test_data\577760_1.3.12.2.1107.5.1.4.64606.30000018050818223536400006643\dicom'
+            )
+    for p in path:
+        msg = DataChecker().data_checking(p)
+        print p, "[", msg if msg else 'no problem data', ']'

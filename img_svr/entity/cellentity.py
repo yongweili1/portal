@@ -10,6 +10,7 @@ from updater.cellupdater import CellUpdater
 
 from scene.coord import translate_from_screen_to_world
 from updater.args import RefreshType
+from netbase.c_log import log
 
 
 class CellEntity(RouterEntity):
@@ -121,7 +122,7 @@ class CellEntity(RouterEntity):
                 model_graphic = self.workflow.get_model(GET_CLASS_NAME(GraphicModel))
                 model_graphic.lines.append([pt3d_pre, pt3d_cur])
                 dist = np.linalg.norm(pt3d_cur - pt3d_pre)
-                print 'line distance: {}'.format(dist)
+                log.dev_info('line distance: {}'.format(dist))
 
     def maximize(self, index, is_max_view):
         self.set_max_view(not is_max_view)
