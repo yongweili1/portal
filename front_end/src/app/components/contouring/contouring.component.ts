@@ -161,19 +161,25 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             data: this.segData.slectionOrgans,
             color: '#FFFF00'
         };
-        if (ROIData.seriesuid != undefined && ROIData.seriesuid != "") {
+        if (ROIData.seriesuid !== undefined && ROIData.seriesuid !== '') {
             this.roiSvc.CreateNewSegROI(ROIData).subscribe(response => {
                 if (response.success) {
                     this.toastSvc.success('Save succeed.');
-                    this.data.roiList = response.data;
+                    const rois = [response.data];
+                    this.data.roiList.forEach(roi => {
+                        rois.push(roi);
+                    });
+                    this.data.roiList = rois;
+                    if (this.data.roiList !== null && this.data.roiList.length > 0) {
+                        this.onSelectRoi(this.data.roiList[0]);
+                    }
                     this.segDisplay = false;
                 } else {
                     this.toastSvc.error(response.message);
                 }
             });
-        }
-        else {
-            this.toastSvc.error("Please select a valid series !")
+        } else {
+            this.toastSvc.error('Please select a valid series !');
         }
     }
 

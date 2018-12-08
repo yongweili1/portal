@@ -33,7 +33,8 @@ class CellUpdater(BaseUpdater):
                 elif t == RefreshType.Crosshair:
                     self.update_crosshair(scene, workflow)
                 elif t == RefreshType.Graphic:
-                    self.update_graphic(scene, workflow)
+                    # self.update_graphic(scene, workflow)
+                    pass
                 elif t == RefreshType.Text:
                     pass
                 elif t == RefreshType.SliceIndex:
