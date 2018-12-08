@@ -17,7 +17,6 @@ class MySessionMiddleware(MiddlewareMixin):
 
         try:
             besessionid = request.COOKIES['besessionid']
-            # print(besessionid)
             request.session.allow_save = False
         except:
             besessionid = None
@@ -28,7 +27,6 @@ class MySessionMiddleware(MiddlewareMixin):
             session_svc.process_session(user_ip, besessionid)
 
         sess = request.session._session
-        # print(sess)
 
         if not sess:
             now_time = time.time()

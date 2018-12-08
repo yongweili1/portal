@@ -6,6 +6,7 @@ from twisted.internet.protocol import Protocol, Factory, ClientCreator
 
 from message import RequestData
 from utilities import get_args
+from netbase.c_log import log
 
 
 class Transfer(Protocol):
@@ -29,7 +30,7 @@ class Transfer(Protocol):
     def set_protocol(self, p, port):
         p.set_protocol(self)
         self.protocols.append(p)
-        print('create a new protocol on port {}'.format(port))
+        log.dev_info('create a new protocol on port {}'.format(port))
 
     def __pop(self, length=0, type='data'):
         data = self.received_data[:length]
@@ -46,7 +47,7 @@ class Transfer(Protocol):
         while self.received_data != '':
             if self.current_package_size == 0:
                 self.current_package_size = self.__pop(4, type='head')
-                print('[Dispatcher]Need to received package size: {} bytes'.format(self.current_package_size))
+                log.dev_info('[Dispatcher]Need to received package size: {} bytes'.format(self.current_package_size))
 
             if self.current_package_size <= self.received_size:
                 self.current_package_data += self.__pop(self.current_package_size)
@@ -58,7 +59,7 @@ class Transfer(Protocol):
                 self.current_package_data += self.__pop(self.received_size)
 
     def __send_data_to_server(self):
-        print('[Dispatcher]Send to server package size: {} bytes'.format(len(self.current_package_data)))
+        log.dev_info('[Dispatcher]Send to server package size: {} bytes'.format(len(self.current_package_data)))
         data = RequestData(self.current_package_data)
         if data.session not in self.session_mgr:
             self.session_mgr[data.session] = self.protocols.pop(0)
@@ -70,7 +71,7 @@ class Transfer(Protocol):
 
     def unpacking(self, data):
         size, = struct.unpack('i', data[:4])
-        print('[Dispatcher]package size {} bytes'.format(size))
+        log.dev_info('[Dispatcher]package size {} bytes'.format(size))
         data = data[4:size + 4]
         return size, data
 
@@ -100,5 +101,5 @@ if __name__ == '__main__':
     factory = Factory()
     factory.protocol = Transfer
     reactor.listenTCP(port, factory)
-    print("Dispatcher started, waiting for connection on port {}".format(port))
+    log.dev_info("Dispatcher started, waiting for connection on port {}".format(port))
     reactor.run()

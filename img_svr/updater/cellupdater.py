@@ -6,6 +6,7 @@ from scene.scene import CameraPos
 from updater.args import RefreshType
 from updater.baseupdater import BaseUpdater
 from utilities import convert_rgba_to_base64
+from netbase.c_log import log
 
 
 class CellUpdater(BaseUpdater):
@@ -45,7 +46,7 @@ class CellUpdater(BaseUpdater):
                     self.update(RefreshType.Image, RefreshType.Crosshair, RefreshType.Graphic, RefreshType.WWWL,
                                 RefreshType.BoundaryPts, RefreshType.SliceIndex)
         except Exception, e:
-            print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! CellUpdater update() ---> {}'.format(e)
+            log.dev_info('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! CellUpdater update() ---> {}'.format(e))
 
     def update_image(self, scene, workflow):
         rgba_data = scene.render()
@@ -60,7 +61,7 @@ class CellUpdater(BaseUpdater):
         model_vol = workflow.get_model(GET_CLASS_NAME(VolumeInfo))
         pt3d_voxel = scene.volume.world_to_voxel(model_vol.cursor3d)
         self._result[RefreshType.SliceIndex] = int(round(pt3d_voxel[2]))
-        print self._result[RefreshType.SliceIndex]
+        log.dev_info(self._result[RefreshType.SliceIndex])
 
     def update_graphic(self, scene, workflow):
         model_graphic = workflow.get_model(GET_CLASS_NAME(GraphicModel))
