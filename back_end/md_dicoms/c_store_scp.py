@@ -3,6 +3,7 @@ import os
 import socket
 import sys
 import time
+from netbase.c_log import log
 
 from pydicom.dataset import Dataset, FileDataset
 from pydicom.uid import (
@@ -199,9 +200,9 @@ class CStoreScp(object):
             test_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             try:
                 test_socket.bind((os.popen('hostname').read()[:-1], self.store_ae_port))
-                print("Now listen on port {0:d}".format(self.store_ae_port))
+                log.dev_info("Now listen on port {0:d}".format(self.store_ae_port))
             except socket.error:
-                print("Cannot listen on port {0:d}, insufficient priveleges".format(self.store_ae_port))
+                log.dev_info("Cannot listen on port {0:d}, insufficient priveleges".format(self.store_ae_port))
 
 
 if __name__ == '__main__':

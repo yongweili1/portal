@@ -13,12 +13,13 @@ from utils.img_svr_connector import sync_send_command
 from utils.response_dto import ResponseDto
 from utils.uid_generator import UidGenerator
 from utils.volume_builder import VolumeBuilder
+from netbase.c_log import log
 
 
 class Home(APIView):
     def get(self, request):
-        print('路由分发后:{}'.format(str(time.time())))
-        print('响应经由中间件前:{}'.format(str(time.time())))
+        log.dev_info('路由分发后:{}'.format(str(time.time())))
+        log.dev_info('响应经由中间件前:{}'.format(str(time.time())))
         return render(request, 'main.html')
 
 

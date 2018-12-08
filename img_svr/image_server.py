@@ -128,7 +128,7 @@ class ImageServer(object):
         pixel_spacing_x, pixel_spacing_y = get_two_spacing(view, self.cfg) * self.cfg['zoom_factor']
         pixel_spacing = [pixel_spacing_x, pixel_spacing_y]
         size = [width, height]
-        print(self.cfg['cursor'], axis[0], axis[1], self.cfg['center'], pixel_spacing, size)
+        log.dev_info(self.cfg['cursor'], axis[0], axis[1], self.cfg['center'], pixel_spacing, size)
         raw_data = slice_nn(self.vol,
                             self.cfg['cursor'],
                             axis[0],
@@ -156,8 +156,8 @@ class ImageServer(object):
         else:
             win_center, win_width = self.cfg['win_center'], self.cfg['win_width']
             win_min, win_max = win_center - win_width / 2.0, win_center + win_width / 2.0
-            print("win_center:", str(self.cfg['win_center']))
-            print("win_width:", str(self.cfg['win_width']))
+            log.dev_info("win_center:", str(self.cfg['win_center']))
+            log.dev_info("win_width:", str(self.cfg['win_width']))
             return slice_to_bytes(slice, win_min, win_max)
 
     def __get_rgb_image(self, view, width, height):
@@ -170,7 +170,7 @@ class ImageServer(object):
         """
         axis = get_axis(view, self.cfg)
         byte_slice = self.__get_grayscale_image(view, axis, width, height)
-        print("colormode:", str(self.cfg['colormode']))
+        log.dev_info("colormode:", str(self.cfg['colormode']))
         return bytes_to_colors(byte_slice, self.cfg['colormode'], self.colormap)
 
     def update_zoom_factor(self, shift):

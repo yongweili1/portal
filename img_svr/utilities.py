@@ -6,7 +6,7 @@ from StringIO import StringIO
 import numpy as np
 from PIL import Image
 from enum import IntEnum
-
+from netbase.c_log import log
 
 def get_args(argv):
     kwargs = {}
@@ -15,7 +15,7 @@ def get_args(argv):
     try:
         opts, args = getopt.getopt(argv, "h:p:", ["host=", "port="])
     except getopt.GetoptError:
-        print 'server.py -h <host> -p <port>'
+        log.dev_info('server.py -h <host> -p <port>')
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
@@ -147,7 +147,7 @@ def get_page_filter_view(focus_view):
         focus_view_list = [0, 1, 2]
         return focus_view_list.remove(focus_view)
     except Exception as e:
-        print("focus_view index error")
+        log.dev_info("focus_view index error")
 
 
 def string_int_trans(origin, flag):
@@ -173,5 +173,5 @@ def cal_angle(size, pre_pos, cur_pos):
     angle = np.arccos(cos_angle)
     if pre_vec[0] * cur_vec[1] - pre_vec[1] * cur_vec[0] < 0:
         angle = -angle
-    print("=== angel: {}===".format(angle))
+    log.dev_info("=== angel: {}===".format(angle))
     return angle
