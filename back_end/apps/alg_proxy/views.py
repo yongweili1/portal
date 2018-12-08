@@ -7,6 +7,7 @@ from md_segmentation3d.impl.vseg_cimpl import autoseg_load_model, autoseg_volume
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from netbase.c_log import log
 from service import series_svc, roi_svc
 from utils.response_dto import ResponseDto
 
@@ -53,7 +54,7 @@ class GetAlgResult(APIView):
             seg = autoseg_volume(im, model)
             write_image(seg, r'D:\segmentation_model\test_result.nii.gz')
         except Exception as ex:
-            print ex.message
+            log.dev_error(ex.message)
 
         roi_query = roi_svc.retrieve(series_uid)
         roi_list = []

@@ -46,7 +46,7 @@ class CellUpdater(BaseUpdater):
                     self.update(RefreshType.Image, RefreshType.Crosshair, RefreshType.Graphic, RefreshType.WWWL,
                                 RefreshType.BoundaryPts, RefreshType.SliceIndex)
         except Exception, e:
-            log.dev_info('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! CellUpdater update() ---> {}'.format(e))
+            log.dev_error('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! CellUpdater update() ---> {}'.format(e))
 
     def update_image(self, scene, workflow):
         rgba_data = scene.render()

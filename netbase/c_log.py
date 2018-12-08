@@ -73,9 +73,9 @@ class PyLogInstance(object):
         if code_info == '':
             log.append(os.path.basename(sys._getframe(2).f_code.co_filename) if self._frame_switch else 'unknown')
             log.append('\x02')
-            log.append(sys._getframe(2).f_code.co_name if self._frame_switch else 'unknown')
-            log.append('\x02')
             log.append(sys._getframe(2).f_lineno if self._frame_switch else 'unknown')
+            log.append('\x02')
+            log.append(sys._getframe(2).f_code.co_name if self._frame_switch else 'unknown')
             log.append('\x02')
 
         log.append(hex(log_uid))
