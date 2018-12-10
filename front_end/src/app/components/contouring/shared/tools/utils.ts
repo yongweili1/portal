@@ -270,9 +270,9 @@ export class Utils {
             return P;
         }
 
-        const dis1 = this._distance(p3, p1);
-        const dis2 = this._distance(p3, p2);
-        // const dis3 = this._distance(p3, P);
+        const dis1 = this.getLengthOfTwoPoint(p3, p1);
+        const dis2 = this.getLengthOfTwoPoint(p3, p2);
+        // const dis3 = this.getLengthOfTwoPoint(p3, P);
         if (dis1 < dis2) {
             return p1;
         } else {
@@ -291,16 +291,12 @@ export class Utils {
             const startCp = shapeCps[index];
             const endCp = shapeCps[index + 1];
             const pt = this._getNearestPt(startCp, endCp, p);
-            const dis1 = this._distance(p, pt);
-            const dis2 = this._distance(p, nearestPt);
+            const dis1 = this.getLengthOfTwoPoint(p, pt);
+            const dis2 = this.getLengthOfTwoPoint(p, nearestPt);
             if (dis1 < dis2) {
                 nearestPt = pt;
             }
         }
         return nearestPt;
-    }
-
-    private _distance(p1, p2) {
-        return Math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2);
     }
 }
