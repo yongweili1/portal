@@ -33,7 +33,8 @@ class CellUpdater(BaseUpdater):
                 elif t == RefreshType.Crosshair:
                     self.update_crosshair(scene, workflow)
                 elif t == RefreshType.Graphic:
-                    self.update_graphic(scene, workflow)
+                    # self.update_graphic(scene, workflow)
+                    pass
                 elif t == RefreshType.Text:
                     pass
                 elif t == RefreshType.SliceIndex:
@@ -46,7 +47,7 @@ class CellUpdater(BaseUpdater):
                     self.update(RefreshType.Image, RefreshType.Crosshair, RefreshType.Graphic, RefreshType.WWWL,
                                 RefreshType.BoundaryPts, RefreshType.SliceIndex)
         except Exception, e:
-            log.dev_info('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! CellUpdater update() ---> {}'.format(e))
+            log.dev_error('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! CellUpdater update() ---> {}'.format(e))
 
     def update_image(self, scene, workflow):
         rgba_data = scene.render()

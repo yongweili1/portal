@@ -39,7 +39,7 @@ class ContourContext(object):
                 for item in query:
                     record = {}
                     record['contouruid'] = item.contouruid
-                    record['roiuid'] = item.roiuid
+                    record['roiuid'] = item.roiuid_id
                     record['imageuid'] = item.imageuid
                     record['cpspath'] = item.cpspath
                     records.append(record)

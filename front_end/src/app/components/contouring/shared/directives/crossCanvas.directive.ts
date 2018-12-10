@@ -113,6 +113,9 @@ export class CrossCanvasDirective implements OnInit, OnChanges {
 
     handleMouseUp(evt) {
         const p = new Point(evt.offsetX, evt.offsetY);
+        if (this.boundaryPts === undefined) {
+            return;
+        }
         if (!this.utils.isInPolygon(p, this.boundaryPts)) {
             return;
         }

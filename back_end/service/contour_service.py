@@ -58,7 +58,7 @@ class ContourService(object):
                 contour = {}
                 contour['contouruid'] = record['contouruid']
                 contour['imageuid'] = record['imageuid']
-                contour['roiuid'] = record['roiuid'].roiuid
+                contour['roiuid'] = record['roiuid']
                 with open(record['cpspath'], 'rb') as f:
                     cps = f.read()
                     cps = json.loads(cps)

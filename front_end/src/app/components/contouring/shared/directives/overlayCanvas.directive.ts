@@ -77,7 +77,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
                 this.fader.setRadius(this.faderRadius);
                 this.fader.update();
                 this.fader.setBoundaryPts(this.boundaryPts);
-                this.updateBoundry();
+                // this.updateBoundry();
             }
         }
 
@@ -127,7 +127,11 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
 
         this.stage.children.forEach(shape => {
             if (shape.type === ShapeTypeEnum.freepen) {
-                shape.editable = this.shapeType === ShapeTypeEnum.freepen2 ? true : false;
+                if (this.shapeType === ShapeTypeEnum.freepen2) {
+                    shape.editable = true;
+                } else {
+                    shape.editable = false;
+                }
             }
         });
 
@@ -313,7 +317,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
         this.stage.removeAllChildren();
         this.stage.clear();
 
-        this.updateBoundry();
+        // this.updateBoundry();
 
         const contours = [];
         if (this.graphics === undefined || this.graphics.length === 0) {

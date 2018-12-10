@@ -8,6 +8,7 @@ import os
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from netbase.c_log import log
 from service import series_svc, pacs_svc, patient_svc
 from utils.volume_builder import VolumeBuilder
 
@@ -130,7 +131,7 @@ class DownloadSeries(APIView):
     def get(self, request):
         patients_unicode = request.GET.get('patientId', None)
         patients_str = patients_unicode.encode('utf-8')
-        print patients_str
+        log.dev_info('patient id {}'.format(patients_str))
         if not patients_str:
             return Response('请传入有效的patientID')
         patients_list = patients_str.split(',')

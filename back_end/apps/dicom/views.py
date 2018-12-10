@@ -60,14 +60,14 @@ class Upload(APIView):
                 dataset_list.append(dataset)
                 os.remove(file_name)
             except Exception as ex:
-                print '文件解析失败', file_name, ex.message
+                log.dev_error('file name: {}, ex.message: {}'.format(file_name, ex.message))
 
         patient_svc.upload_dcm(dataset_list, file_path_ferry.splitDicomPath)
 
         for seriespath in set(series_path_list):
             try:
                 if len(os.listdir(seriespath)) <= 1:
-                    print ('series下的dicom文件单一，无法build volume')
+                    log.dev_warning('series下的dicom文件单一，无法build volume')
                     continue
 
                 if platform.system() == 'Windows':
@@ -75,7 +75,7 @@ class Upload(APIView):
                     series_dir = str(seriespath).encode('GB2312')
                     reply = data_checker.DataChecker().data_checking(series_dir)
                     if '' != reply:
-                        print reply
+                        log.dev_info(reply)
                         return Response('dicom文件不符合规范,创建volume失败')
 
                 log.dev_info('begin build volume')
