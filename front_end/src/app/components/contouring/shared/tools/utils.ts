@@ -2,6 +2,49 @@ import { Point, Point3d } from './point';
 
 export class Utils {
     constructor() { }
+    /**
+     * @msg: 计算两点的距离
+     * @param {Point}} 类型两点 p1 p2 
+     * @return {number}
+     */
+    getLengthOfTwoPoint(p1: Point, p2: Point): number {
+        return p1 != undefined && p2 != undefined ? Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2)) : 0;
+    }
+
+    /**
+     * @msg: 计算两点中心点
+     * @param  {Point} 类型两点 p1 p2 
+     * @return {Point} 类型中心点
+     */
+    getCenterPoint(p1: Point, p2: Point): Point {
+        return p1 != undefined && p2 != undefined ? new Point((p1.x + p2.x) / 2, (p1.y + p2.y) / 2) : undefined;
+    }
+
+    /**
+     * @msg: 计算点到矩形四边的最小距离
+     * @param {point}目标点point
+     * @param {Array<point>}目标矩形
+     * @return {number}
+     */
+    getMinLengthToRec(point: Point, rectangle: Array<Point>): number {
+        if (rectangle != undefined && rectangle.length >= 4) {
+            const beginPointX = point.x;
+            const beginPointY = point.y;
+            let diams: number[] = [];
+            diams[0] = beginPointX - rectangle[0].x;
+            diams[2] = rectangle[1].x - beginPointX;
+            diams[1] = beginPointY - rectangle[0].y;
+            diams[3] = rectangle[2].y - beginPointY;
+            let diam: number = diams[0];
+            for (let index = 1; index < 4; index++) {
+                if (diams[index] < diam) {
+                    diam = diams[index];
+                }
+            }
+            return diam;
+        }
+        return 0;
+    }
 
     /**
      * 判断点是否在多边形内
@@ -227,9 +270,9 @@ export class Utils {
             return P;
         }
 
-        const dis1 = this._distance(p3, p1);
-        const dis2 = this._distance(p3, p2);
-        // const dis3 = this._distance(p3, P);
+        const dis1 = this.getLengthOfTwoPoint(p3, p1);
+        const dis2 = this.getLengthOfTwoPoint(p3, p2);
+        // const dis3 = this.getLengthOfTwoPoint(p3, P);
         if (dis1 < dis2) {
             return p1;
         } else {
@@ -248,16 +291,12 @@ export class Utils {
             const startCp = shapeCps[index];
             const endCp = shapeCps[index + 1];
             const pt = this._getNearestPt(startCp, endCp, p);
-            const dis1 = this._distance(p, pt);
-            const dis2 = this._distance(p, nearestPt);
+            const dis1 = this.getLengthOfTwoPoint(p, pt);
+            const dis2 = this.getLengthOfTwoPoint(p, nearestPt);
             if (dis1 < dis2) {
                 nearestPt = pt;
             }
         }
         return nearestPt;
-    }
-
-    private _distance(p1, p2) {
-        return Math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2);
     }
 }

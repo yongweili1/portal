@@ -5,6 +5,7 @@ import { Text } from '../overlay/text';
 import { RoiModel } from '../model/roi.model';
 import { ShapeTypeEnum } from '../../../../shared/models/enums';
 import { Utils } from '../tools/utils';
+import { Point } from '../tools/point';
 
 export class CircleContainer extends BaseContainer {
     start: ControlPoint;
@@ -68,9 +69,18 @@ export class CircleContainer extends BaseContainer {
     handleMouseMove(evt) {
         if (this.isMousedown) {
             console.log('[circle]handle MouseMove');
+            const evtPoint = new Point(evt.offsetX, evt.offsetY);
+            const centerPoint = this.utils.getCenterPoint(this.cps[0], evtPoint);
+            //diameter圆的直径
+            const diameter = this.utils.getLengthOfTwoPoint(this.cps[0], evtPoint);
+            const lengthToRec = this.utils.getMinLengthToRec(centerPoint, this.boundaryPts);
+            console.log("lengthToRec is " + lengthToRec);
+            console.log("diameter is " + diameter);
             this.isPaint = true;
-            this.updateCp(1, evt.offsetX, evt.offsetY);
-            this.update();
+            if (lengthToRec >= diameter / 2) {
+                this.updateCp(1, evt.offsetX, evt.offsetY);
+                this.update();
+            }
         }
     }
     handleMouseUp(evt) {
