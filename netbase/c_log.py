@@ -69,18 +69,18 @@ class PyLogInstance(object):
         if '' == source:
             source = self._source_name
         log = [log_type, '\x02', long(time.time() * 1000), '\x02', source,
-               "({0}:{1})".format(os.getpid(), threading.currentThread().ident)]
+               "({0}:{1})".format(os.getpid(), threading.currentThread().ident), '\x02']
         if code_info == '':
             log.append(os.path.basename(sys._getframe(2).f_code.co_filename) if self._frame_switch else 'unknown')
             log.append('\x02')
-            log.append(sys._getframe(2).f_code.co_name if self._frame_switch else 'unknown')
-            log.append('\x02')
             log.append(sys._getframe(2).f_lineno if self._frame_switch else 'unknown')
+            log.append('\x02')
+            log.append(sys._getframe(2).f_code.co_name if self._frame_switch else 'unknown')
             log.append('\x02')
 
         log.append(hex(log_uid))
         log.append("\x02")
-
+        desc = str(desc)
         log.append(desc[:512] if len(desc) > 512 else desc)
 
         log.append('\x01\n')

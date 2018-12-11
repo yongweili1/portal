@@ -9,6 +9,8 @@ import { RoiModel } from '../model/roi.model';
 import { NudgeHelper } from '../tools/nudge_helper';
 import { Point } from '../tools/point';
 import { ActionTypeEnum, ShapeTypeEnum } from '../../../../shared/models/enums';
+import { BorderContainer } from '../container/border_container';
+import { Utils } from '../tools/utils';
 
 declare var createjs: any;
 
@@ -24,6 +26,8 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
     nudgeHelper: NudgeHelper;
     preFaderPos: Point;
     graphicChanged = true;
+    isMouseDown = false;
+    utils = new Utils();
 
     @Input() rois: any;
     @Input() roi: RoiModel;
@@ -33,6 +37,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
     @Input() graphics;
     @Input() actionType: ActionTypeEnum;
     @Input() shapeType: ShapeTypeEnum;
+    @Input() boundaryPts: any = new Array<Point>();
 
     constructor(private el: ElementRef) { }
 
@@ -71,6 +76,8 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
             if (this.fader !== null && this.fader !== undefined) {
                 this.fader.setRadius(this.faderRadius);
                 this.fader.update();
+                this.fader.setBoundaryPts(this.boundaryPts);
+                // this.updateBoundry();
             }
         }
 
@@ -110,10 +117,21 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
     }
 
     @HostListener('mousedown', ['$event']) onMouseDown(event: MouseEvent) {
-        console.log('[overlay-canvas]mousedown');
+        console.log('[overlay-canvas]handle mousedown event');
+        if (!this.utils.isInPolygon(new Point(event.offsetX, event.offsetY), this.boundaryPts)) {
+            console.log('out of image');
+            return;
+        }
+
+        this.isMouseDown = true;
+
         this.stage.children.forEach(shape => {
             if (shape.type === ShapeTypeEnum.freepen) {
-                shape.editable = this.shapeType === ShapeTypeEnum.freepen2 ? true : false;
+                if (this.shapeType === ShapeTypeEnum.freepen2) {
+                    shape.editable = true;
+                } else {
+                    shape.editable = false;
+                }
             }
         });
 
@@ -128,14 +146,16 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
         if (this.shape != null) {
             this.shape.setRoi(this.roi);
             this.shape.handleMouseDown(event);
+            this.shape.setBoundaryPts(this.boundaryPts);
+        }
+        // event.stopPropagation()不生效;查一下两个的区别是什么？
+        // 只有在选择模式和自由笔2情况下才允许点击事件冒泡。
+        if (this.actionType != ActionTypeEnum.select && this.shapeType != ShapeTypeEnum.freepen2) {
+            event.stopImmediatePropagation();
         }
     }
 
     @HostListener('mousemove', ['$event']) onMouseMove(event: MouseEvent) {
-        if (this.shape != null) {
-            this.shape.handleMouseMove(event);
-        }
-
         if (this.actionType === ActionTypeEnum.nudge) {
             this.fader = this.getFader();
             this.fader.handleMouseMove(event);
@@ -154,13 +174,19 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
                 }
             }
         }
+
+        if (this.shape != null && this.isMouseDown) {
+            this.shape.handleMouseMove(event);
+        }
     }
 
     @HostListener('mouseup', ['$event']) onMouseUp(event: MouseEvent) {
-        console.log('[overlay-canvas]mouseup');
-        if (this.shape != null) {
+        console.log('[overlay-canvas]handle mouseup event');
+
+        if (this.shape != null && this.isMouseDown) {
             this.shape.handleMouseUp(event);
         }
+        this.isMouseDown = false;
 
         if (this.actionType === ActionTypeEnum.nudge) {
             this.fader = this.getFader();
@@ -212,6 +238,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
             this.fader = new FaderContainer(this.stage);
             this.fader.setRoi(this.roi);
             this.fader.setRadius(this.faderRadius);
+            this.fader.setBoundaryPts(this.boundaryPts);
             this.nudgeHelper = new NudgeHelper(this.fader);
         }
         return this.fader;
@@ -289,6 +316,9 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
 
         this.stage.removeAllChildren();
         this.stage.clear();
+
+        // this.updateBoundry();
+
         const contours = [];
         if (this.graphics === undefined || this.graphics.length === 0) {
             return;
@@ -316,5 +346,35 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
             freepen.cps = cps;
             freepen.update();
         });
+    }
+
+    updateBoundry() {
+        if (this.boundaryPts === undefined || this.boundaryPts == null || this.boundaryPts.length !== 5) {
+            return;
+        }
+        this._removeBorders();
+        const border = new BorderContainer(this.stage);
+        border.setCps(this.boundaryPts);
+        border.setRoi(this.roi);
+        border.update();
+        const activeAreaBoundary = this.utils.scaleRectangleBoundary(this.boundaryPts, -this.faderRadius);
+        const border1 = new BorderContainer(this.stage);
+        border1.setCps(activeAreaBoundary);
+        border1.setRoi(this.roi);
+        border1.update();
+    }
+
+    private _removeBorders() {
+        const borders = [];
+        this.stage.children.forEach(child => {
+            if (child.type === ShapeTypeEnum.border) {
+                borders.push(child);
+            }
+        });
+        borders.forEach(border => {
+            this.stage.removeChild(border);
+        });
+        this.stage.clear();
+        this.stage.update();
     }
 }
