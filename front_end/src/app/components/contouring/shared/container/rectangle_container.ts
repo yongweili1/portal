@@ -96,7 +96,8 @@ export class RectangleContainer extends BaseContainer {
         if (this.isMousedown) {
             console.log('[rectangle]handle MouseMove');
             this.isPaint = true;
-            if (this.utils.isRecInPolygon(this.cps[0], new Point(evt.offsetX, evt.offsetY), this.boundaryPts)) {
+            const evtPoint = new Point(evt.offsetX, evt.offsetY);
+            if (this.utils.isRecInPolygon(this.cps[0], evtPoint, this.boundaryPts)) {
                 this.updateCp(7, evt.offsetX, evt.offsetY);
                 this.update();
             }
@@ -110,16 +111,17 @@ export class RectangleContainer extends BaseContainer {
 
     handlePressMove(evt) {
         console.log('[rectangle]handle PressMove');
-        if (this.utils.isInPolygon(new Point(evt.stageX, evt.stageY), this.boundaryPts)) {
+        const evtPoint = new Point(evt.stageX, evt.stageY);
+        if (this.utils.isInPolygon(evtPoint, this.boundaryPts)) {
             let tempX: number = this._tempPoint.x;
             let tempY: number = this._tempPoint.y;
             const delta_x = evt.stageX - tempX;
             const delta_y = evt.stageY - tempY;
-            this.updateCpsByDelta(evt,  delta_x, delta_y);
+            this.updateCpsByDelta(evt, delta_x, delta_y);
         }
     }
 
-    private updateCpsByDelta(evt,  delta_x, delta_y) {
+    private updateCpsByDelta(evt, delta_x, delta_y) {
         let _tempCps0 = this.cps[0].copy();
         console.log("_tempCps0(0) " + _tempCps0.x + "  " + _tempCps0.y);
         let _tempCps7 = this.cps[7].copy();
