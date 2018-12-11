@@ -5,6 +5,7 @@ import { Text } from '../overlay/text';
 import { RoiModel } from '../model/roi.model';
 import { ShapeTypeEnum } from '../../../../shared/models/enums';
 import { Utils } from '../tools/utils';
+import { Point } from '../tools/point';
 
 export class RectangleContainer extends BaseContainer {
     rectangle: Rectangle;
@@ -95,8 +96,10 @@ export class RectangleContainer extends BaseContainer {
         if (this.isMousedown) {
             console.log('[rectangle]handle MouseMove');
             this.isPaint = true;
-            this.updateCp(7, evt.offsetX, evt.offsetY);
-            this.update();
+            if (this.utils.isRecInPolygon(this.cps[0], new Point(evt.offsetX, evt.offsetY), this.boundaryPts)) {
+                this.updateCp(7, evt.offsetX, evt.offsetY);
+                this.update();
+            }
         }
     }
     handleMouseUp(evt) {
@@ -107,34 +110,57 @@ export class RectangleContainer extends BaseContainer {
 
     handlePressMove(evt) {
         console.log('[rectangle]handle PressMove');
-        const delta_x = evt.stageX - this._tempPoint.x;
-        const delta_y = evt.stageY - this._tempPoint.y;
-        this._tempPoint.x = evt.stageX;
-        this._tempPoint.y = evt.stageY;
-
-        if (evt.target === this.top_left) {
-            this.cps[0].offset(delta_x, delta_y);
-        } else if (evt.target === this.top_center) {
-            this.cps[0].offset(null, delta_y);
-        } else if (evt.target === this.top_right) {
-            this.cps[0].offset(null, delta_y);
-            this.cps[7].offset(delta_x, null);
-        } else if (evt.target === this.left_center) {
-            this.cps[0].offset(delta_x, null);
-        } else if (evt.target === this.right_center) {
-            this.cps[7].offset(delta_x, null);
-        } else if (evt.target === this.bottom_left) {
-            this.cps[0].offset(delta_x, null);
-            this.cps[7].offset(null, delta_y);
-        } else if (evt.target === this.bottom_center) {
-            this.cps[7].offset(null, delta_y);
-        } else if (evt.target === this.bottom_right) {
-            this.cps[7].offset(delta_x, delta_y);
-        } else {
-            this.cps[0].offset(delta_x, delta_y);
-            this.cps[7].offset(delta_x, delta_y);
+        if (this.utils.isInPolygon(new Point(evt.stageX, evt.stageY), this.boundaryPts)) {
+            let tempX: number = this._tempPoint.x;
+            let tempY: number = this._tempPoint.y;
+            const delta_x = evt.stageX - tempX;
+            const delta_y = evt.stageY - tempY;
+            this.updateCpsByDelta(evt,  delta_x, delta_y);
         }
+    }
 
-        this.update();
+    private updateCpsByDelta(evt,  delta_x, delta_y) {
+        let _tempCps0 = this.cps[0].copy();
+        console.log("_tempCps0(0) " + _tempCps0.x + "  " + _tempCps0.y);
+        let _tempCps7 = this.cps[7].copy();
+        switch (evt.target) {
+            case this.top_left:
+                _tempCps0.offset(delta_x, delta_y);
+                break;
+            case this.top_center:
+                _tempCps0.offset(null, delta_y);
+                break;
+            case this.top_right:
+                _tempCps0.offset(null, delta_y);
+                _tempCps7.offset(delta_x, null);
+                break;
+            case this.left_center:
+                _tempCps0.offset(delta_x, null);
+                break;
+            case this.right_center:
+                _tempCps7.offset(delta_x, null);
+                break;
+            case this.bottom_left:
+                _tempCps0.offset(delta_x, null);
+                _tempCps7.offset(null, delta_y);
+                break;
+            case this.bottom_center:
+                _tempCps7.offset(null, delta_y);
+                break;
+            case this.bottom_right:
+                _tempCps7.offset(delta_x, delta_y);
+                break;
+            default:
+                _tempCps0.offset(delta_x, delta_y);
+                _tempCps7.offset(delta_x, delta_y);
+                break;
+        }
+        if (this.utils.isRecInPolygon(_tempCps0, _tempCps7, this.boundaryPts)) {
+            this.cps[0] = _tempCps0;
+            this.cps[7] = _tempCps7;
+            this._tempPoint.x = evt.stageX;
+            this._tempPoint.y = evt.stageY;
+            this.update();
+        }
     }
 }

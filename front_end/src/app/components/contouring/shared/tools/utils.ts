@@ -47,6 +47,26 @@ export class Utils {
     }
 
     /**
+     * @msg: 判断矩形是否在图像边界内 
+     * @param {startPoint} 图元矩形起始点
+     * @param {endPoint} 图元矩形终止点
+     * @return: 图元矩形是否在目标矩形内的布尔值
+     */
+    isRecInPolygon(startPoint: Point, endPoint: Point, polygonPoints: Array<Point>): boolean {
+        let rectangle: Array<Point> = new Array<Point>();
+        rectangle.push(startPoint);
+        rectangle.push(endPoint);
+        rectangle.push(new Point(startPoint.x, endPoint.y));
+        rectangle.push(new Point(endPoint.x, startPoint.y));
+        for (let index = 0; index < rectangle.length; index++) {
+            if (!this.isInPolygon(rectangle[index], polygonPoints)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * 判断点是否在多边形内
      * @param checkPoint 被判断的点坐标
      * @param polygonPoints 多边形顶点坐标
