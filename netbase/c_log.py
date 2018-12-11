@@ -80,7 +80,7 @@ class PyLogInstance(object):
 
         log.append(hex(log_uid))
         log.append("\x02")
-
+        desc = str(desc)
         log.append(desc[:512] if len(desc) > 512 else desc)
 
         log.append('\x01\n')

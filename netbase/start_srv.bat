@@ -1,5 +1,5 @@
 %~d0
 cd %~p0
 
-star McsfLoggerServer.exe
-start McsfSystemDispatcher.exe
+start /b McsfLoggerServer.exe
+start /b McsfSystemDispatcher.exe

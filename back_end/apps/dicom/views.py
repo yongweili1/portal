@@ -37,7 +37,7 @@ class Upload(APIView):
         files = request.FILES.getlist('a')
         if len(files) == 0:
             return Response('请选择上传文件')
-        log.dev_info(len(files))
+        log.dev_info('upload {} files!'.format(len(files)))
 
         for f in files:
             file_name = os.path.join(file_path_ferry.dicomPath, f.name)
@@ -65,23 +65,28 @@ class Upload(APIView):
         patient_svc.upload_dcm(dataset_list, file_path_ferry.splitDicomPath)
 
         for seriespath in set(series_path_list):
-            try:
-                log.dev_info('begin data checking')
-                series_dir = str(seriespath).encode('GB2312')
-                reply = data_checker.DataChecker().data_checking(series_dir)
-                if 0 != reply:
-                    log.dev_error('data checking failed! ', series_dir)
-                    return Response('dicom文件不符合规范,创建volume失败')
+            series_dir = str(seriespath).encode('GB2312')
+            log.dev_info('begin data checking:' + series_dir)
+            reply = data_checker.DataChecker().data_checking(series_dir)
+            if 0 != reply:
+                log.dev_error('data checking failed!' + series_dir)
+                return Response('dicom文件不符合规范,创建volume失败')
+            log.dev_info('end data checking:' + series_dir)
 
+            try:
                 log.dev_info('begin build volume')
                 builder = VolumeBuilder()
                 volfilepath, seriesuid = builder.build(seriespath)
             except Exception as ex:
+                log.dev_error('build volume failed!')
                 return Response(ex.message)
+            log.dev_info('end build volume')
 
             try:
                 series_svc.upload_volume(volfilepath, seriesuid)
             except Exception as e:
                 return Response(e.message)
+
+            log.dev_info('end upload volume:' + seriesuid)
 
         return Response('success')
