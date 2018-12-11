@@ -11,7 +11,7 @@ class DataChecker:
 
         lib_path = os.path.dirname(os.path.abspath(__file__))
         os.chdir(lib_path)
-        lib_path = os.path.join(lib_path, "uAIDataChecker.dll" if sys.platform == 'win32' else "uAIDataChecker.so")
+        lib_path = os.path.join(lib_path, "uAIDataChecker.dll" if sys.platform == 'win32' else "libuAIDataChecker.so")
 
         try:
             self._lib = ctypes.cdll.LoadLibrary(lib_path)
