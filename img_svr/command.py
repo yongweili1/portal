@@ -368,14 +368,16 @@ def wwwl(**kwargs):
 
 
 @command.register('point3dto2d')
-def get_point3d(**kwargs):
+def get_point2d(**kwargs):
     try:
         index = get_view_index('transverse')
         view = imageentity.get_children_views()[index]
         scene = view.get_scene()
+        vol = scene.volume
         contour = kwargs['contour']
         cps = []
         for cp in contour:
+            cp = vol.voxel_to_world(cp)
             pt2d = translate_from_world_to_screen(scene, cp)
             cps.append(pt2d.tolist())
         return response(json.dumps({'contour': cps}))
@@ -391,12 +393,14 @@ def get_point3d(**kwargs):
         contours = kwargs['contours']
         view = imageentity.get_children_views()[index]
         scene = view.get_scene()
+        vol = scene.volume
         cps_list = {'contours': []}
         for contour in contours:
             cps = []
             for cp in contour:
                 pt3d = translate_from_screen_to_world(scene, [cp['x'], cp['y']])
-                cps.append(pt3d.tolist())
+                pt3d = vol.world_to_voxel(pt3d)
+                cps.append([int(pt3d[0]), int(pt3d[1]), int(pt3d[2])])
             cps_list['contours'].append(cps)
         return response(json.dumps(cps_list))
     except Exception as e:

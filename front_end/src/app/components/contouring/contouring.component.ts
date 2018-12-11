@@ -183,6 +183,19 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         }
     }
 
+    handleContourToMask() {
+        console.log('contour to mask');
+        const seriesuid = $('#seriesSelect').val();
+        const roiuid = this.data.selectedRoi.id;
+        this.roiSvc.contourToMask(seriesuid, roiuid).subscribe(response => {
+            if (response.success) {
+                this.toastSvc.success('Save contours to mask succeed.');
+            } else {
+                this.toastSvc.error(response.message);
+            }
+        });
+    }
+
     handleEditRoi(roi: RoiModel) {
         this.editROIDisplay = true;
         this.data.activeRoi = roi;

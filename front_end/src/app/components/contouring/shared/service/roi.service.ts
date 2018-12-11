@@ -58,4 +58,11 @@ export class RoiService {
         return this.http.post<any>(`${this.appConfig.apiUrl}/algproxy/results/`, roiData, this.options)
             .map(x => x['body']);
     }
+
+    contourToMask(seriesuid, roiuid): Observable<any> {
+        const getParams = new HttpParams()
+            .set('seriesuid', seriesuid)
+            .set('roiuid', roiuid);
+        return this.http.get<any>(`${this.appConfig.apiUrl}/algproxy/results/`, { params: getParams });
+    }
 }

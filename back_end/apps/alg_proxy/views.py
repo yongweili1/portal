@@ -36,11 +36,23 @@ class LoadAlg(APIView):
 
 
 class GetAlgResult(APIView):
-
     def get(self, request):
+        series_uid = request.GET.get('seriesuid', None)
+        roi_uid = request.GET.get('roiuid', None)
+        contours, msg = contour_svc.get_contours(roi_uid)
+        if contours is None:
+            return ResponseDto(success=False, message=msg)
 
-        resp = None
-        return Response(resp)
+        contour_dict = {}
+        for contour in contours:
+            index = contour['imageuid']
+            if index in contour_dict:
+                contour_dict[index].append(contour['cps'])
+            else:
+                contour_dict[index] = [contour['cps']]
+        mask_fp = file_path_ferry.volumePath + r'{}_mask.nii.gz'.format(series_uid)
+        SegmentationHelper.contours_to_mask(mask_fp, contour_dict)
+        return ResponseDto()
 
     def post(self, request):
         series_uid = request.data.get('seriesuid', None)
