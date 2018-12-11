@@ -4,12 +4,15 @@ import { ControlPoint } from '../overlay/controlpoint';
 import { Text } from '../overlay/text';
 import { RoiModel } from '../model/roi.model';
 import { ShapeTypeEnum } from '../../../../shared/models/enums';
+import { Utils } from '../tools/utils';
+import { Point } from '../tools/point';
 
 export class CircleContainer extends BaseContainer {
     start: ControlPoint;
     circle: Circle;
     end: ControlPoint;
     text: Text;
+    utils = new Utils();
 
     constructor(stage) {
         super(stage, ShapeTypeEnum.circle);
@@ -48,6 +51,11 @@ export class CircleContainer extends BaseContainer {
         this.text.update();
     }
 
+    public setBoundaryPts(pts) {
+        super.setBoundaryPts(pts);
+        this.activeAreaBoundaryPts = this.utils.scaleRectangleBoundary(pts, -1);
+    }
+
     handleMouseDown(evt) {
         console.log('[circle]handle MouseDown');
         super.handleMouseDown(evt);
@@ -61,9 +69,19 @@ export class CircleContainer extends BaseContainer {
     handleMouseMove(evt) {
         if (this.isMousedown) {
             console.log('[circle]handle MouseMove');
+            const evtPoint = new Point(evt.offsetX, evt.offsetY);
+            const centerPoint = this.utils.getCenterPoint(this.cps[0], evtPoint);
+            //diameter圆的直径
+            const diameter = this.utils.getLengthOfTwoPoint(this.cps[0], evtPoint);
+            const nearestPt = this.utils.getNearestPt(this.boundaryPts, centerPoint);
+            const lengthToRec = this.utils.getLengthOfTwoPoint(nearestPt, centerPoint);
+            console.log("lengthToRec is " + lengthToRec);
+            console.log("diameter is " + diameter);
             this.isPaint = true;
-            this.updateCp(1, evt.offsetX, evt.offsetY);
-            this.update();
+            if (lengthToRec >= diameter / 2) {
+                this.updateCp(1, evt.offsetX, evt.offsetY);
+                this.update();
+            }
         }
     }
     handleMouseUp(evt) {
@@ -74,20 +92,39 @@ export class CircleContainer extends BaseContainer {
 
     handlePressMove(evt) {
         console.log('[circle]handle PressMove');
-        const delta_x = evt.stageX - this._tempPoint.x;
-        const delta_y = evt.stageY - this._tempPoint.y;
-        this._tempPoint.x = evt.stageX;
-        this._tempPoint.y = evt.stageY;
-
-        if (evt.target === this.circle || evt.target === this.text) {
-            this.cps[0].offset(delta_x, delta_y);
-            this.cps[1].offset(delta_x, delta_y);
-        } else if (evt.target === this.start) {
-            this.cps[0].offset(delta_x, delta_y);
-        } else if (evt.target === this.end) {
-            this.cps[1].offset(delta_x, delta_y);
+        const evtPoint = new Point(evt.stageX, evt.stageY);
+        if (this.utils.isInPolygon(evtPoint, this.boundaryPts)) {
+            const delta_x = evt.stageX - this._tempPoint.x;
+            const delta_y = evt.stageY - this._tempPoint.y;
+            this.updateCircleByDelta(evt, delta_x, delta_y);
         }
+    }
 
-        this.update();
+    updateCircleByDelta(evt, delta_x, delta_y) {
+        const tempCps0 = this.cps[0].copy();
+        const tempCps1 = this.cps[1].copy();
+        switch (evt.target) {
+            case this.start:
+                tempCps0.offset(delta_x, delta_y);
+                break;
+            case this.end:
+                tempCps1.offset(delta_x, delta_y);
+                break;
+            default:
+                tempCps0.offset(delta_x, delta_y);
+                tempCps1.offset(delta_x, delta_y);
+                break;
+        }
+        const centerPoint = this.utils.getCenterPoint(tempCps0, tempCps1);
+        const diameter = this.utils.getLengthOfTwoPoint(tempCps0, tempCps1);
+        const nearestPt = this.utils.getNearestPt(this.boundaryPts, centerPoint);
+        const lenFromCenterPtToRec = this.utils.getLengthOfTwoPoint(nearestPt, centerPoint);
+        if (lenFromCenterPtToRec >= diameter / 2) {
+            this.cps[0] = tempCps0;
+            this.cps[1] = tempCps1;
+            this.update();
+            this._tempPoint.x = evt.stageX;
+            this._tempPoint.y = evt.stageY;
+        }
     }
 }

@@ -12,6 +12,8 @@ import { ExcuteHelper } from './shared/tools/excute_helper';
 import { Point } from './shared/tools/point';
 import { Subscription } from 'rxjs';
 import { ActionTypeEnum, CanvasTypeEnum } from '../../shared/models/enums';
+import { SegSelectorModel, Organ } from './shared/model/seg-slector.model';
+
 
 declare var $: any;
 
@@ -27,12 +29,13 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     seriesId: any;
 
     newROIDisplay: any = false;
+    segDisplay: any = false;
     manageROIDisplay: any = false;
     editROIDisplay: any = false;
 
     excuteHelper: ExcuteHelper;
     data: ContouringModel;
-
+    segData: SegSelectorModel;
     // subscription objects
     contourCpsSubscriber: Subscription;
     removeCpsSubscriber: Subscription;
@@ -43,6 +46,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('cell1') cell1;
     @ViewChild('cell2') cell2;
     @ViewChild('cell3') cell3;
+
 
     constructor(
         public activeRoute: ActivatedRoute,
@@ -55,6 +59,8 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         this.data = new ContouringModel();
         this.data.setTag();
         this.data.setCrossLineColor();
+
+        this.segData = new SegSelectorModel();
     }
 
     //#region life-cycle hook methods
@@ -62,6 +68,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         this.cell1.id = 'cell-1';
         this.cell2.id = 'cell-2';
         this.cell3.id = 'cell-3';
+
 
         this.contourCpsSubscriber = EventAggregator.Instance().contourCps
             .subscribe(data => {
@@ -148,6 +155,34 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         }
     }
 
+    handleSeg() {
+        const ROIData = {
+            seriesuid: $('#seriesSelect').val(),
+            data: this.segData.slectionOrgans,
+            color: '#FFFF00'
+        };
+        if (ROIData.seriesuid !== undefined && ROIData.seriesuid !== '') {
+            this.roiSvc.CreateNewSegROI(ROIData).subscribe(response => {
+                if (response.success) {
+                    this.toastSvc.success('Save succeed.');
+                    const rois = [response.data];
+                    this.data.roiList.forEach(roi => {
+                        rois.push(roi);
+                    });
+                    this.data.roiList = rois;
+                    if (this.data.roiList !== null && this.data.roiList.length > 0) {
+                        this.onSelectRoi(this.data.roiList[0]);
+                    }
+                    this.segDisplay = false;
+                } else {
+                    this.toastSvc.error(response.message);
+                }
+            });
+        } else {
+            this.toastSvc.error('Please select a valid series !');
+        }
+    }
+
     handleEditRoi(roi: RoiModel) {
         this.editROIDisplay = true;
         this.data.activeRoi = roi;
@@ -175,20 +210,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     mainautoroi() {
-        const ROIData = {
-            seriesuid: $('#seriesSelect').val(),
-            name: 'heart',
-            color: '#FFFF00'
-        };
-        this.roiSvc.CreateNewSegROI(ROIData).subscribe(response => {
-            if (response.success) {
-                this.toastSvc.success('Save succeed.');
-                this.data.roiList = response.data;
-                this.newROIDisplay = false;
-            } else {
-                this.toastSvc.error(response.message);
-            }
-        });
+        this.segDisplay = true;
     }
 
     handleManageRoi(showDialog = true) {
@@ -376,6 +398,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             if (response.success) {
                 this.getContours(response.data[0].slice_index);
                 that.updateCells(response.data);
+                this.updateBoundaryPts(response.data);
             } else {
                 that.toastSvc.error(response.message);
             }
@@ -391,6 +414,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         const that = this;
         this.imageSvc.wwwl(evt[0], evt[1]).subscribe(response => {
             if (response.success) {
+                this.getContours(response.data[0].slice_index);
                 that.updateCells(response.data);
             } else {
                 that.toastSvc.error(response.message);
@@ -408,6 +432,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             if (response.success) {
                 this.getContours(response.data[0].slice_index);
                 this.updateCells(response.data);
+                this.updateBoundaryPts(response.data);
             } else {
                 this.toastSvc.error(response.message);
             }
@@ -426,6 +451,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             if (response.success) {
                 this.getContours(response.data[0].slice_index);
                 that.updateCells(response.data);
+                this.updateBoundaryPts(response.data);
             } else {
                 that.toastSvc.error(response.message);
             }
@@ -443,6 +469,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             if (response.success) {
                 this.getContours(response.data[0].slice_index);
                 that.updateCells(response.data);
+                this.updateBoundaryPts(response.data);
             } else {
                 that.toastSvc.error(response.message);
             }
@@ -460,6 +487,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             if (response.success) {
                 this.getContours(response.data[0].slice_index);
                 that.updateCells(response.data);
+                this.updateBoundaryPts(response.data);
             } else {
                 that.toastSvc.error(response.message);
             }
@@ -522,6 +550,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.updateCells(response.data, true);
                 this.updateSliceIndex(response.data[0].slice_index);
                 this.getContours(response.data[0].slice_index);
+                this.updateBoundaryPts(response.data);
                 this.toastSvc.success('succeed.');
             } else {
                 this.toastSvc.error(response.message);
@@ -578,6 +607,12 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     private updateSliceIndex(index) {
         EventAggregator.Instance().sliceIndex.publish(index);
         this.data.setSliceIndex(index);
+    }
+
+    private updateBoundaryPts(data) {
+        this.data.cell1.setBoundaryPts(data[0].boundary_pts);
+        this.data.cell2.setBoundaryPts(data[1].boundary_pts);
+        this.data.cell3.setBoundaryPts(data[2].boundary_pts);
     }
 
     private updateCells(data, updateWwwl: boolean = false, updateViews: string = 'all') {

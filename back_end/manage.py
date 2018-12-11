@@ -2,8 +2,11 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+from netbase.c_log import log
 
 if __name__ == "__main__":
+    log.create_log()
+    log.set_source('web_be_win')
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "back_end.settings")
     try:
         from django.core.management import execute_from_command_line

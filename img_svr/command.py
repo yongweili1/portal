@@ -14,6 +14,7 @@ from scene.coord import translate_from_screen_to_world, translate_from_world_to_
 from updater.args import RefreshType
 from utilities import get_view_index, get_page_filter_view, \
     view_filter, string_int_trans, cal_angle
+from netbase.c_log import log
 
 
 class Command(object):
@@ -21,11 +22,11 @@ class Command(object):
         self.commands = {}
 
     def register(self, command):
-        print('Register command {} succeed.'.format(command))
+        log.dev_info('Register command {} succeed.'.format(command))
 
         def wrapper(func):
             self.commands[command] = func
-            print('inner command {} succeed.'.format(command))
+            log.dev_info('inner command {} succeed.'.format(command))
             return func
 
         return wrapper
@@ -82,6 +83,7 @@ def load(**kwargs):
         if os.path.isfile(mask_path):
             mask = cio.read_image(mask_path)
         imageentity.set_volume(vol)
+        imageentity.remove_child_entities()
         imageentity.add_child_entity(CellEntity(0, False))
         imageentity.add_child_entity(CellEntity(1, False))
         imageentity.add_child_entity(CellEntity(2, False))
@@ -96,7 +98,7 @@ def load(**kwargs):
             scene = views[2].get_scene()
             scene.add_voi(mask)
 
-        print("load volume succeed")
+        log.dev_info("load volume succeed")
         return response(content=json.dumps(size), success=True, message='load volume succeed')
     except Exception as err:
         return response(success=False, message=err.message)
@@ -114,9 +116,10 @@ def unload(**kwargs):
     except Exception as err:
         return response(success=False, message=err.message)
 
-    print(seriesuid)
+    log.dev_info(seriesuid)
     rst, msg = server.unload_volume(seriesuid)
-    print("Unload volume succeed")
+    imageentity.remove_child_entities()
+    log.dev_info("Unload volume succeed")
     return response(msg)
 
 
@@ -210,7 +213,7 @@ def rotate(**kwargs):
         pos_pre = string_int_trans(kwargs['pos_pre'].split(','), 's2i')
         pos_cur = string_int_trans(kwargs['pos_cur'].split(','), 's2i')
         focus_view = get_view_index(kwargs['focus_view'])
-        print("=== enter rotate ===")
+        log.dev_info("=== enter rotate ===")
     except Exception as err:
         return response(success=False, message=err.message)
 
@@ -391,7 +394,7 @@ def get_point3d(**kwargs):
             cps.append(pt2d.tolist())
         return response(json.dumps({'contour': cps}))
     except Exception as e:
-        print('---------------->', e.message)
+        log.dev_info('---------------->', e.message)
         return response(success=False, message=e.message)
 
 
@@ -411,5 +414,5 @@ def get_point3d(**kwargs):
             cps_list['contours'].append(cps)
         return response(json.dumps(cps_list))
     except Exception as e:
-        print('---------------->', e.message)
+        log.dev_info('---------------->', e.message)
         return response(success=False, message=e.message)

@@ -7,6 +7,7 @@ from md.image3d.python.image3d_tools import slice_nn
 from md.image3d.python.image3d_vis import slice_to_bytes, bytes_to_colors, multi_image_alpha_blend
 
 from camera import SceneCamera
+from netbase.c_log import log
 
 
 class SceneType(Enum):
@@ -124,12 +125,12 @@ class SliceScene(SceneBase):
         self._page_spacing = 1
 
     def render(self):
-        print 'render start'
+        log.dev_info('render start')
         begin = datetime.now()
 
         self._spacing = max(self._camera.fov[0] / float(self._width), self._camera.fov[1] / float(self._height))
-        print 'spacing: {}, fov: {}, size: {}, wwwl: {}'.format(
-            self._spacing, self._camera.fov, [self._width, self._height], self.get_window_level())
+        log.dev_info('spacing: {}, fov: {}, size: {}, wwwl: {}'.format(
+            self._spacing, self._camera.fov, [self._width, self._height], self.get_window_level()))
         raw_data = slice_nn(self._image3d, self._camera.look_at,
                             self._camera.right, self._camera.up,
                             self._camera.look_at, [self._spacing, self._spacing],
@@ -160,8 +161,7 @@ class SliceScene(SceneBase):
             self.__contours_list.append(contour)
 
         end = datetime.now()
-        print 'render slice time: {}'.format(end - begin)
-        print 'render end'
+        log.dev_info('render slice time: {}'.format(end - begin))
         self._image_result = color_data
         return color_data
 

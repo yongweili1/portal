@@ -21,6 +21,9 @@ class Workflow:
             self.__cellview.append(cell)
             cell.workflow = self
 
+    def remove_cellview(self):
+        self.__cellview = []
+
     def add_model(self, model_name, model):
         self.__dict_models[model_name] = model
 

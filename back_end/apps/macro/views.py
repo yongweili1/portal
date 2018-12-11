@@ -8,6 +8,7 @@ from service import macro_svc, series_svc
 from back_end.settings import STATIC_ROOT
 from utils.macro_recorder import MacroRecorder
 from utils.response_dto import ResponseDto
+from netbase.c_log import log
 
 
 class MacroRecording(APIView):
@@ -68,7 +69,7 @@ class RunSript(APIView):
             command = 'python static/macro/{}.py {} {}'.format(scriptname, seriesuid, volumepath)
             r = os.popen(command)
             info = r.readlines()
-            print(info)
+            log.dev_info(info)
         except:
             return ResponseDto('script执行异常')
 

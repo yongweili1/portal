@@ -11,6 +11,8 @@ export class BaseContainer extends createjs.Container {
     overlayStage: any;
     protected _tempPoint: Point;
     cps: Array<Point>;
+    boundaryPts: Array<Point>;
+    activeAreaBoundaryPts: Array<Point>;
 
     // -1: no mouse button down
     // 0: left mouse button down
@@ -52,6 +54,10 @@ export class BaseContainer extends createjs.Container {
 
     public setRoi(roi) {
         this.roiConfig = roi;
+    }
+
+    public setBoundaryPts(pts) {
+        this.boundaryPts = pts;
     }
 
     initCps(count: number = -1) {

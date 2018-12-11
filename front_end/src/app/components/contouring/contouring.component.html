@@ -110,4 +110,27 @@
             <p-button label="Cancel" icon="fa fa-times" iconPos="left" (onClick)="editROIDisplay=false"></p-button>
         </p-footer>
     </p-dialog>
+
+    <p-dialog header="分割设置" [modal]="true" [(visible)]="segDisplay" [width]="auto" [style]="{'border':'none'}"
+        [contentStyle]="{'border':'none','overflow':'visible','padding':'10,5,10,10'}">
+        <ng-container>
+            <label for="" class="segInfo">请选择分割部位：</label>
+            <div>
+                <table class="center">
+                    <tbody>
+                        <tr *ngFor="let row of segData.organs">
+                            <td *ngFor="let item of row" class="td-checkbox">
+                                <p-checkbox [value]="item" [label]="item.name" [(ngModel)]="segData.slectionOrgans"></p-checkbox>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </ng-container>
+        <p-footer [style]="{'border':'none'}">
+            <p-button label="Segment" icon="fa fa-check" iconPos="left" (onClick)="handleSeg()"></p-button>
+            <p-button label="Cancel" icon="fa fa-times" iconPos="left" (onClick)="segDisplay=false"></p-button>
+        </p-footer>
+    </p-dialog>
+
 </div>

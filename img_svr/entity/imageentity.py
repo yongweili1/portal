@@ -11,6 +11,7 @@ from scene.scene import CameraPos, SceneType
 from updater.imageupdater import ImageUpdater
 
 from scene.coord import translate_from_screen_to_world, check_point_is_inside_volume
+from netbase.c_log import log
 
 
 class ImageEntity(RouterEntity):
@@ -34,9 +35,10 @@ class ImageEntity(RouterEntity):
     def set_volume(self, volume):
         assert isinstance(volume, Image3d)
         self._volume = volume
+        center = volume.voxel_to_world((np.array(volume.size()) - 1) / 2)
         volume_model = self._workflow.get_model(GET_CLASS_NAME(VolumeInfo))
-        volume_model.cursor3d = np.array(volume.center())
-        volume_model.default_cursor3d = np.array(volume.center())
+        volume_model.cursor3d = np.array(center)
+        volume_model.default_cursor3d = np.array(center)
 
     def init_default_scenes(self, volume):
         """
@@ -90,6 +92,10 @@ class ImageEntity(RouterEntity):
         self._cellviews.append(cell_entity)
         self._workflow.add_cellview(cell_entity)
         self._router.set_sender(cell_entity.router)
+
+    def remove_child_entities(self):
+        self._cellviews = []
+        self._workflow.remove_cellview()
 
     def updater(self):
         return self._updater
@@ -191,7 +197,7 @@ class ImageEntity(RouterEntity):
                 model_graphic = self.workflow.get_model(GET_CLASS_NAME(GraphicModel))
                 model_graphic.lines[uid] = (tuple(pt3d_pre), tuple(pt3d_cur))
                 dist = np.linalg.norm(pt3d_cur - pt3d_pre)
-                print 'line distance: {}'.format(dist)
+                log.dev_info('line distance: {}'.format(dist))
             # elif graphic_type == GraphicType.Circle:
             #     overlay_graphic = cell_operate.get_overlay(RefreshType.Graphic)
             #     shift = (pos_cur[0] - pos_pre[0], pos_cur[1] - pos_pre[1])

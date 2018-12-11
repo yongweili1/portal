@@ -1,5 +1,6 @@
 import os
 import ctypes
+import sys
 import threading
 
 
@@ -8,12 +9,12 @@ class DataChecker:
 
     def __init__(self):
 
-        path = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(path)
-        path = os.path.join(path, "uAIDataLayer.dll")
+        lib_path = os.path.dirname(os.path.abspath(__file__))
+        os.chdir(lib_path)
+        lib_path = os.path.join(lib_path, "uAIDataChecker.dll" if sys.platform == 'win32' else "uAIDataChecker.so")
 
         try:
-            self._lib = ctypes.cdll.LoadLibrary(path)
+            self._lib = ctypes.cdll.LoadLibrary(lib_path)
         except Exception as e:
             print e
 
@@ -25,9 +26,31 @@ class DataChecker:
         return DataChecker._instance
 
     def data_checking(self, series_dir):
-        return ctypes.c_char_p(self._lib.data_checking(series_dir)).value
+        return self._lib.data_checking(series_dir)
+
+
+def main_win32():
+    root_dir = r'E:\to_write\problem_data'
+    dir_list = []
+    for root, dirs, files in os.walk(root_dir):
+        if len(files) > 0:
+            dir_list.append(root)
+
+    # dir_list.append(r'E:\to_write\problem_data\ImageData\CT\PDB19')
+
+    for p in dir_list:
+        msg = DataChecker().data_checking(p)
+        print p, "[", "Y" if 0 == msg else 'N', ']'
+
+
+def main_ubuntu():
+    msg = DataChecker().data_checking(r'/home/lyw/work/dcm_checker_test/2')
+    print msg
+
+    msg = DataChecker().data_checking(r'/home/lyw/work/dcm_checker_test/T1_GRE_FSP_SAG+C_30')
+
+    print '---------------', msg
 
 
 if __name__ == '__main__':
-    msg = DataChecker().data_checking(r'E:\to_write\problem_data\2')
-    print msg
+    main_win32() if sys.platform == 'win32' else main_ubuntu()

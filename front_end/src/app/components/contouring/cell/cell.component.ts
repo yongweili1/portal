@@ -147,8 +147,8 @@ export class CellComponent implements OnInit, AfterViewInit, OnDestroy {
      * 改变窗口大小
      */
     private changeSize() {
-        let containerWidth = this.container.clientWidth;
-        let containerHeight = this.container.clientHeight;
+        const containerWidth = this.container.clientWidth;
+        const containerHeight = this.container.clientHeight;
         this.imageCanvas.setAttribute('width', containerWidth);
         this.imageCanvas.setAttribute('height', containerHeight);
         this.crossCanvas.setAttribute('width', containerWidth);

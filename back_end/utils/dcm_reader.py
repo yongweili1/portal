@@ -7,6 +7,8 @@ import time
 import pydicom
 from enum import Enum
 
+from netbase.c_log import log
+
 
 class DateTimeType(Enum):
     Date = 1
@@ -482,16 +484,16 @@ if __name__ == '__main__':
 
     a = DcmPatient()
     patient_dic = a.get_dicom_patient(dataset)
-    print patient_dic
+    log.dev_info(patient_dic)
 
     b = DcmStudy()
     study_dic = b.get_dicom_study(dataset)
-    print study_dic
+    log.dev_info(study_dic)
 
     c = DcmSeries()
     series_dic = c.get_dicom_series(dataset)
-    print series_dic
+    log.dev_info(series_dic)
 
     d = DcmImage()
     image_dic = d.get_dicom_image(dataset)
-    print image_dic
+    log.dev_info(image_dic)
