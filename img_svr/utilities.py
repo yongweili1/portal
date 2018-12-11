@@ -1,12 +1,26 @@
 import base64
 import getopt
 import sys
+import time
 from StringIO import StringIO
 
 import numpy as np
 from PIL import Image
 from enum import IntEnum
 from netbase.c_log import log
+
+
+def execute_time(func):
+    def wrapper(*args, **kwargs):
+        t0 = time.time()
+        rst = func(*args, **kwargs)
+        t = time.time() - t0
+        msg = "[TIME] %s used %.3f ms" % (func.__name__, t * 1000)
+        log.dev_info(msg)
+        print msg
+        return rst
+    return wrapper
+
 
 def get_args(argv):
     kwargs = {}
@@ -112,6 +126,7 @@ def get_spacing(view, cfg):
         return cfg['spacing'][2]
 
 
+@execute_time
 def convert_rgba_to_base64(rgba, format):
     im = Image.fromarray(rgba)
     output_buffer = StringIO()

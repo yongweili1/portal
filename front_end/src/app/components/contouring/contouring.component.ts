@@ -183,6 +183,19 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         }
     }
 
+    handleContourToMask() {
+        console.log('contour to mask');
+        const seriesuid = $('#seriesSelect').val();
+        const roiuid = this.data.selectedRoi.id;
+        this.roiSvc.contourToMask(seriesuid, roiuid).subscribe(response => {
+            if (response.success) {
+                this.toastSvc.success('Save contours to mask succeed.');
+            } else {
+                this.toastSvc.error(response.message);
+            }
+        });
+    }
+
     handleEditRoi(roi: RoiModel) {
         this.editROIDisplay = true;
         this.data.activeRoi = roi;
@@ -619,7 +632,6 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         if (updateViews === 'all' || updateViews.indexOf('transverse') > -1) {
             this.data.cell1.imageM.imageData = data['0']['image'];
             this.data.cell1.crossM.point = new Point(data['0']['crosshair'][0], data['0']['crosshair'][1]);
-            this.data.cell1.graphics = data['0']['graphic']['contours'];
             if (updateWwwl) {
                 this.data.cell1.imageM.setWwwl(data['0']['wwwl']);
             }
@@ -627,7 +639,6 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         if (updateViews === 'all' || updateViews.indexOf('coronal') > -1) {
             this.data.cell2.imageM.imageData = data['1']['image'];
             this.data.cell2.crossM.point = new Point(data['1']['crosshair'][0], data['1']['crosshair'][1]);
-            this.data.cell2.graphics = data['1']['graphic']['contours'];
             if (updateWwwl) {
                 this.data.cell2.imageM.setWwwl(data['1']['wwwl']);
             }
@@ -635,7 +646,6 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         if (updateViews === 'all' || updateViews.indexOf('saggital') > -1) {
             this.data.cell3.imageM.imageData = data['2']['image'];
             this.data.cell3.crossM.point = new Point(data['2']['crosshair'][0], data['2']['crosshair'][1]);
-            this.data.cell3.graphics = data['2']['graphic']['contours'];
             if (updateWwwl) {
                 this.data.cell3.imageM.setWwwl(data['2']['wwwl']);
             }

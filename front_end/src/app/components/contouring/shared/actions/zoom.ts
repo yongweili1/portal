@@ -19,6 +19,9 @@ export class Zoom extends BaseAction {
         }
         const curY = e.clientY;
         const shiftY = curY - this.preY;
+        if (shiftY === 0) {
+            return;
+        }
         this.preY = curY;
         if (shiftY >= 0) {
             this.zoom_factor = 1.0 + shiftY * 1.0 / 120;

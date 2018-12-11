@@ -26,6 +26,9 @@ export class WWWL extends BaseAction {
         const curY = e.clientY;
         const shiftX = curX - this.preX;
         const shiftY = curY - this.preY;
+        if (shiftX === 0 && shiftY === 0) {
+            return;
+        }
 
         if (shiftY >= 0) {
             this.ww_factor = 1.0 + shiftY * 1.0 / 600;

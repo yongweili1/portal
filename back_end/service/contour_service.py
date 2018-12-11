@@ -44,7 +44,7 @@ class ContourService(object):
         except Exception as e:
             return False, e.message
 
-    def retrieve(self, image_uid, roi_uids=None):
+    def retrieve(self, image_uid=None, roi_uids=None):
         if roi_uids is None:
             return None, 'roi_uids is None'
         contours = []
@@ -65,4 +65,27 @@ class ContourService(object):
                     contour['cps'] = cps
                     contours.append(contour)
                     f.close()
+        return contours, None
+
+    def get_contours(self, roi_uid):
+        if roi_uid is None:
+            return None, 'roi_uid is None'
+        contours = []
+
+        records, msg = contour_ctx.retrieve(roi_uid=roi_uid)
+        if records is None or len(records) == 0:
+            return None, 'No contours'
+        for record in records:
+            if not os.path.isfile(record['cpspath']):
+                continue
+            contour = {}
+            contour['contouruid'] = record['contouruid']
+            contour['imageuid'] = record['imageuid']
+            contour['roiuid'] = record['roiuid']
+            with open(record['cpspath'], 'rb') as f:
+                cps = f.read()
+                cps = json.loads(cps)
+                contour['cps'] = cps
+                contours.append(contour)
+                f.close()
         return contours, None

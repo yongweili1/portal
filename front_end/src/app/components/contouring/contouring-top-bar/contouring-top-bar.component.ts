@@ -20,6 +20,7 @@ export class ContouringTopBarComponent implements OnInit, OnChanges {
     @Output() onAddRoi: EventEmitter<any> = new EventEmitter<any>();
     @Output() onManageRoi: EventEmitter<any> = new EventEmitter<any>();
     @Output() autoroi: EventEmitter<any> = new EventEmitter<any>();
+    @Output() contourToMask: EventEmitter<any> = new EventEmitter<any>();
 
     @Input() seriesList: string[];
 
@@ -110,6 +111,10 @@ export class ContouringTopBarComponent implements OnInit, OnChanges {
 
     OnSegmentation() {
         this.autoroi.emit();
+    }
+
+    OnSaveSegmentation() {
+        this.contourToMask.emit();
     }
 
     /**

@@ -18,7 +18,6 @@ export class CellModel {
     }
 
     setBoundaryPts(pts) {
-        console.log('setBoundaryPts', pts);
         const pts1 = [];
         pts.forEach(pt => {
             pts1.push(new Point(pt[0], pt[1]));

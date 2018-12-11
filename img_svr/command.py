@@ -77,26 +77,12 @@ def load(**kwargs):
         vol = cio.read_image(volume_path)
         size = vol.size().tolist()
 
-        mask_path = volume_path.rstrip('.nii.gz') + '_mask.nii.gz'
-
-        mask = None
-        if os.path.isfile(mask_path):
-            mask = cio.read_image(mask_path)
         imageentity.set_volume(vol)
         imageentity.remove_child_entities()
         imageentity.add_child_entity(CellEntity(0, False))
         imageentity.add_child_entity(CellEntity(1, False))
         imageentity.add_child_entity(CellEntity(2, False))
         imageentity.init_default_scenes(vol)
-
-        views = imageentity.get_children_views()
-        if mask is not None:
-            scene = views[0].get_scene()
-            scene.add_voi(mask)
-            scene = views[1].get_scene()
-            scene.add_voi(mask)
-            scene = views[2].get_scene()
-            scene.add_voi(mask)
 
         log.dev_info("load volume succeed")
         return response(content=json.dumps(size), success=True, message='load volume succeed')
@@ -382,14 +368,16 @@ def wwwl(**kwargs):
 
 
 @command.register('point3dto2d')
-def get_point3d(**kwargs):
+def get_point2d(**kwargs):
     try:
         index = get_view_index('transverse')
         view = imageentity.get_children_views()[index]
         scene = view.get_scene()
+        vol = scene.volume
         contour = kwargs['contour']
         cps = []
         for cp in contour:
+            cp = vol.voxel_to_world(cp)
             pt2d = translate_from_world_to_screen(scene, cp)
             cps.append(pt2d.tolist())
         return response(json.dumps({'contour': cps}))
@@ -405,12 +393,14 @@ def get_point3d(**kwargs):
         contours = kwargs['contours']
         view = imageentity.get_children_views()[index]
         scene = view.get_scene()
+        vol = scene.volume
         cps_list = {'contours': []}
         for contour in contours:
             cps = []
             for cp in contour:
                 pt3d = translate_from_screen_to_world(scene, [cp['x'], cp['y']])
-                cps.append(pt3d.tolist())
+                pt3d = vol.world_to_voxel(pt3d)
+                cps.append([int(pt3d[0]), int(pt3d[1]), int(pt3d[2])])
             cps_list['contours'].append(cps)
         return response(json.dumps(cps_list))
     except Exception as e:
