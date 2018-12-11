@@ -73,7 +73,7 @@ export class CircleContainer extends BaseContainer {
             const centerPoint = this.utils.getCenterPoint(this.cps[0], evtPoint);
             //diameter圆的直径
             const diameter = this.utils.getLengthOfTwoPoint(this.cps[0], evtPoint);
-            const lengthToRec = this.utils.getMinLengthToRec(centerPoint, this.boundaryPts);
+            const lengthToRec =this.utils.getLengthOfTwoPoint(this.utils.getNearestPt(this.boundaryPts,centerPoint),centerPoint);
             console.log("lengthToRec is " + lengthToRec);
             console.log("diameter is " + diameter);
             this.isPaint = true;
