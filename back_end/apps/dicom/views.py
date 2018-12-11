@@ -66,17 +66,12 @@ class Upload(APIView):
 
         for seriespath in set(series_path_list):
             try:
-                if len(os.listdir(seriespath)) <= 1:
-                    log.dev_warning('series下的dicom文件单一，无法build volume')
-                    continue
-
-                if platform.system() == 'Windows':
-                    log.dev_info('begin data checking')
-                    series_dir = str(seriespath).encode('GB2312')
-                    reply = data_checker.DataChecker().data_checking(series_dir)
-                    if '' != reply:
-                        log.dev_info(reply)
-                        return Response('dicom文件不符合规范,创建volume失败')
+                log.dev_info('begin data checking')
+                series_dir = str(seriespath).encode('GB2312')
+                reply = data_checker.DataChecker().data_checking(series_dir)
+                if 0 != reply:
+                    log.dev_error('data checking failed! ', series_dir)
+                    return Response('dicom文件不符合规范,创建volume失败')
 
                 log.dev_info('begin build volume')
                 builder = VolumeBuilder()
