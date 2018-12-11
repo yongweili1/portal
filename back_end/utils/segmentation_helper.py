@@ -7,7 +7,6 @@ from scipy.ndimage import binary_fill_holes
 from skimage.draw import line_aa
 
 from netbase.c_log import log
-from service import contour_svc
 
 
 class SegmentationHelper(object):
@@ -84,9 +83,9 @@ if __name__ == '__main__':
     # contours = SegmentationHelper.mask_to_contours(mask_fp)
     pass
 
-    series_uid = '1.2.840.113619.2.55.3.604655767.808.1412648222.944'
-    size = [512, 512, 77]
-    roi_uid = '1.2.156.112605.21.20181210.140242.96'
-    contours, msg = contour_svc.get_contours(roi_uid)
-    SegmentationHelper.contours_to_mask(series_uid, contours, size)
-    pass
+    # series_uid = '1.2.840.113619.2.55.3.604655767.808.1412648222.944'
+    # size = [512, 512, 77]
+    # roi_uid = '1.2.156.112605.21.20181210.140242.96'
+    # contours, msg = contour_svc.get_contours(roi_uid)
+    # SegmentationHelper.contours_to_mask(series_uid, contours, size)
+    # pass
