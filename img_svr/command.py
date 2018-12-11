@@ -77,26 +77,12 @@ def load(**kwargs):
         vol = cio.read_image(volume_path)
         size = vol.size().tolist()
 
-        mask_path = volume_path.rstrip('.nii.gz') + '_mask.nii.gz'
-
-        mask = None
-        if os.path.isfile(mask_path):
-            mask = cio.read_image(mask_path)
         imageentity.set_volume(vol)
         imageentity.remove_child_entities()
         imageentity.add_child_entity(CellEntity(0, False))
         imageentity.add_child_entity(CellEntity(1, False))
         imageentity.add_child_entity(CellEntity(2, False))
         imageentity.init_default_scenes(vol)
-
-        views = imageentity.get_children_views()
-        if mask is not None:
-            scene = views[0].get_scene()
-            scene.add_voi(mask)
-            scene = views[1].get_scene()
-            scene.add_voi(mask)
-            scene = views[2].get_scene()
-            scene.add_voi(mask)
 
         log.dev_info("load volume succeed")
         return response(content=json.dumps(size), success=True, message='load volume succeed')

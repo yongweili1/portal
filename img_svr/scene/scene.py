@@ -8,6 +8,7 @@ from md.image3d.python.image3d_vis import slice_to_bytes, bytes_to_colors, multi
 
 from camera import SceneCamera
 from netbase.c_log import log
+from utilities import execute_time
 
 
 class SceneType(Enum):
@@ -124,6 +125,7 @@ class SliceScene(SceneBase):
         self.__voi_list = []
         self._page_spacing = 1
 
+    @execute_time
     def render(self):
         log.dev_info('render start')
         begin = datetime.now()
@@ -144,24 +146,7 @@ class SliceScene(SceneBase):
         else:
             color_data = bytes_to_colors(raw_data, self.__color_mode.value, self.__color_map)
 
-        voi_color = [(255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 0), (255, 0, 255), (0, 255, 255)]
-        self.__contours_list = []
-        for i, voi in enumerate(self.__voi_list):
-            voi.from_numpy(voi.to_numpy(), np.uint8)
-            voi_slice = slice_nn(voi, self._camera.look_at,
-                                 self._camera.right, self._camera.up,
-                                 self._camera.look_at, [self._spacing, self._spacing],
-                                 [self._width, self._height], self.__default_v)
-            import cv2
-            _, thresh = cv2.threshold(voi_slice, 0, 255, cv2.THRESH_BINARY)
-            _, contour, _ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-            # cv2.drawContours(color_data, contour, -1, voi_color[i], 2)
-            if contour is not None and len(contour) > 0:
-                contour = [item.tolist() for item in contour]
-            self.__contours_list.append(contour)
-
-        end = datetime.now()
-        log.dev_info('render slice time: {}'.format(end - begin))
+        log.dev_info('render finish')
         self._image_result = color_data
         return color_data
 

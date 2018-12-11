@@ -150,7 +150,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
         }
         // event.stopPropagation()不生效;查一下两个的区别是什么？
         // 只有在选择模式和自由笔2情况下才允许点击事件冒泡。
-        if (this.actionType != ActionTypeEnum.select && this.shapeType != ShapeTypeEnum.freepen2) {
+        if (this.actionType !== ActionTypeEnum.select && this.shapeType !== ShapeTypeEnum.freepen2) {
             event.stopImmediatePropagation();
         }
     }

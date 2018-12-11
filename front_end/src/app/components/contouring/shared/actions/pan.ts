@@ -15,6 +15,9 @@ export class Pan extends BaseAction {
         if (!this.isMouseDown) {
             return;
         }
+        if (e.clientX === this.prePos[0] && e.clientY === this.prePos[1]) {
+            return;
+        }
         const curPos = [e.clientX, e.clientY];
         const data = [];
         data[0] = ActionTypeEnum.pan;
