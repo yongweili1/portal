@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import os
+import random
 
 from md.image3d.python.image3d_io import read_image, write_image
 from md_segmentation3d.impl.vseg_cimpl import autoseg_load_model, autoseg_volume
@@ -16,7 +17,7 @@ from utils.segmentation_helper import SegmentationHelper
 from utils.uid_generator import UidGenerator
 
 from config.path_cfg import file_path_ferry
-import random
+from db_context.models import Series, Roi
 
 
 class LoadAlg(APIView):
@@ -46,7 +47,22 @@ class GetAlgResult(APIView):
         if series_uid is None:
             return Response('请输入序列UID')
 
+        series_object = Series.objects.filter(seriesuid=series_uid)
+        if len(series_object) == 0:
+            return Response('请输入正确的序列ID')
+
         mask_fp = file_path_ferry.volumePath + r'{}_mask.nii.gz'.format(series_uid)
+        volume_path = series_object[0].seriespixeldatafilepath
+
+        im = read_image(volume_path)
+        try:
+            model = autoseg_load_model(r'D:\segmentation_model\VSEG_Heart_20180611_01', 0)
+            seg = autoseg_volume(im, model)
+            write_image(seg, mask_fp)
+        except Exception as ex:
+            print ex.messag
+
+
         if not os.path.isfile(mask_fp):
             return ResponseDto(success=False, message='Please check mask file path.')
 
