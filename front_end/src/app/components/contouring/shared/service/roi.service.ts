@@ -54,7 +54,7 @@ export class RoiService {
         return this.http.delete<any>(`${this.appConfig.apiUrl}/image/roi/`, { params: getParams });
     }
 
-    CreateNewSegROI(roiData): Observable<any> {
+    startSeg(roiData): Observable<any> {
         return this.http.post<any>(`${this.appConfig.apiUrl}/algproxy/results/`, roiData, this.options)
             .map(x => x['body']);
     }

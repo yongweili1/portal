@@ -1,6 +1,5 @@
 import json
 import os
-import random
 
 from db_context import contour_ctx, series_ctx, roi_ctx
 from utils.segmentation_helper import SegmentationHelper
@@ -103,11 +102,15 @@ class ContourService(object):
 
             mask_fp = file_path_ferry.volumePath + r'{}_mask.nii.gz'.format(series_uid)
 
+            if os.path.isfile(mask_fp):
+                os.remove(mask_fp)
+
             volume_path = series[0].seriespixeldatafilepath
             im = read_image(volume_path)
             model = autoseg_load_model(r'D:\segmentation_model\VSEG_Heart_20180611_01', 0)
             seg = autoseg_volume(im, model)
             write_image(seg, mask_fp)
+
             return mask_fp, None
         except Exception as ex:
             return False, ex.message
@@ -128,36 +131,15 @@ class ContourService(object):
         SegmentationHelper.contours_to_mask(mask_fp, contour_dict)
         return True, None
 
-    def mask_2_contour(self, series_uid, mask_fp):
-        if not os.path.isfile(mask_fp):
-            return False, 'Please check mask file path.'
+    def mask_2_contour(self, roi_uid, mask_fp):
+        try:
+            if not os.path.isfile(mask_fp):
+                return False, 'Please check mask file path.'
 
-        # create a new roi for current segmentation
-        roi_query = roi_ctx.retrieve(series_uid)
-        roi_uid = UidGenerator.roi_uid()
-        roi = {
-            'seriesuid': series_uid,
-            'roiname': 'organ' + str(len(roi_query) + 1),
-            'roicolor': self.random_color(),
-            'roiuid': roi_uid
-        }
-        duplicate = roi_ctx.duplicate(series_uid, roi['roiname'])
-        if duplicate:
-            return duplicate, 'duplicated roi'
-
-        success, msg = roi_ctx.create(roi)
-        if not success:
-            return success, msg
-
-        # get current segmentation's contours
-        contours = SegmentationHelper.mask_to_contours(mask_fp)
-        for index in contours:
-            self.create(index, roi_uid, contours[index])
-        return roi_ctx.single(roi_uid), None
-
-    def random_color(self):
-        colors = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f']
-        color = "#ff"
-        for i in range(4):
-            color += colors[random.randint(0, 15)]
-        return color
+            # get current segmentation's contours
+            contours = SegmentationHelper.mask_to_contours(mask_fp)
+            for index in contours:
+                self.create(index, roi_uid, contours[index])
+            return True, None
+        except Exception as e:
+            return False, e.message
