@@ -1,5 +1,7 @@
-import { Directive, ElementRef, HostListener, Input, OnChanges, OnInit, SimpleChanges, OnDestroy } from '@angular/core';
+import { Directive, ElementRef, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { EventAggregator } from '../../../../shared/common/event_aggregator';
+import { ActionTypeEnum, ShapeTypeEnum } from '../../../../shared/models/enums';
+import { BorderContainer } from '../container/border_container';
 import { CircleContainer } from '../container/circle_container';
 import { FaderContainer } from '../container/fader_container';
 import { FreepenContainer } from '../container/freepen_container';
@@ -8,8 +10,6 @@ import { RectangleContainer } from '../container/rectangle_container';
 import { RoiModel } from '../model/roi.model';
 import { NudgeHelper } from '../tools/nudge_helper';
 import { Point } from '../tools/point';
-import { ActionTypeEnum, ShapeTypeEnum } from '../../../../shared/models/enums';
-import { BorderContainer } from '../container/border_container';
 import { Utils } from '../tools/utils';
 
 declare var createjs: any;
@@ -25,7 +25,6 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
     fader: FaderContainer;
     nudgeHelper: NudgeHelper;
     preFaderPos: Point;
-    graphicChanged = true;
     isMouseDown = false;
     utils = new Utils();
 
@@ -56,7 +55,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
             if (this.stage.children.length > 0) {
                 const roi_uid = this.roi.id;
                 const slice_index = this.sliceIndex;
-                EventAggregator.Instance().removeCps.publish([roi_uid, slice_index]);
+                EventAggregator.Instance().deleteContoursEvent.publish([roi_uid, slice_index]);
                 this.stage.removeAllChildren();
                 this.stage.clear();
             }
@@ -66,6 +65,17 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
     ngOnChanges(changes: SimpleChanges) {
         if (changes.currentShape !== undefined) {
             console.log('[overlay-canvas]Current shape is ' + this.shapeType);
+            if (this.actionType === ActionTypeEnum.shape) {
+                this.stage.children.forEach(shape => {
+                    if (shape.type === ShapeTypeEnum.freepen) {
+                        if (this.shapeType === ShapeTypeEnum.freepen2) {
+                            shape.editable = true;
+                        } else {
+                            shape.editable = false;
+                        }
+                    }
+                });
+            }
         }
 
         if (changes.graphics !== undefined) {
@@ -118,22 +128,15 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
 
     @HostListener('mousedown', ['$event']) onMouseDown(event: MouseEvent) {
         console.log('[overlay-canvas]handle mousedown event');
+        if (this.boundaryPts === undefined) {
+            return;
+        }
         if (!this.utils.isInPolygon(new Point(event.offsetX, event.offsetY), this.boundaryPts)) {
             console.log('out of image');
             return;
         }
 
         this.isMouseDown = true;
-
-        this.stage.children.forEach(shape => {
-            if (shape.type === ShapeTypeEnum.freepen) {
-                if (this.shapeType === ShapeTypeEnum.freepen2) {
-                    shape.editable = true;
-                } else {
-                    shape.editable = false;
-                }
-            }
-        });
 
         if (this.actionType === ActionTypeEnum.nudge) {
             this.fader = this.getFader();
@@ -142,11 +145,9 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
             this.nudgeHelper.setMode(this.fader.getCenter(), this.getFreepenCps(this.roi.id));
         }
 
-        this.shape = this.getShapeContainerInstance();
+        this.shape = this._createShape();
         if (this.shape != null) {
-            this.shape.setRoi(this.roi);
             this.shape.handleMouseDown(event);
-            this.shape.setBoundaryPts(this.boundaryPts);
         }
         // event.stopPropagation()不生效;查一下两个的区别是什么？
         // 只有在选择模式和自由笔2情况下才允许点击事件冒泡。
@@ -161,7 +162,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
             this.fader.handleMouseMove(event);
             if (this.fader.isMousedown) {
                 const curFaderPos = this.fader.getCenter();
-                const bridge = this.CreatBridgeRectCps(this.preFaderPos, curFaderPos);
+                const bridge = this.utils.creatBridgeRectCps(this.preFaderPos, curFaderPos, this.fader.getRadius());
                 this.preFaderPos = curFaderPos;
                 this.clip([bridge]);
             } else {
@@ -185,6 +186,9 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
 
         if (this.shape != null && this.isMouseDown) {
             this.shape.handleMouseUp(event);
+            if (!this.shape.validate()) {
+                this.stage.removeChild(this.shape);
+            }
         }
         this.isMouseDown = false;
 
@@ -194,10 +198,10 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
         }
 
         const contours = this.getFreepenCps(this.roi.id);
-        if (contours.length > 0 && this.graphicChanged) {
+        if (contours.length > 0) {
             const roi_uid = this.roi.id;
             const slice_index = this.sliceIndex;
-            EventAggregator.Instance().contourCps.publish([roi_uid, slice_index, contours]);
+            EventAggregator.Instance().saveContoursEvent.publish([roi_uid, slice_index, contours]);
         }
     }
 
@@ -213,24 +217,35 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
         console.log('[overlay-canvas]dblclick');
     }
 
-    getShapeContainerInstance() {
+    private _createShape() {
         if (this.actionType !== ActionTypeEnum.shape) {
             return null;
         }
+        let _shape = null;
         switch (this.shapeType) {
             case ShapeTypeEnum.line:
-                return new LineContainer(this.stage);
+                _shape = new LineContainer(this.stage);
+                break;
             case ShapeTypeEnum.rectangle:
-                return new RectangleContainer(this.stage);
+                _shape = new RectangleContainer(this.stage);
+                break;
             case ShapeTypeEnum.circle:
-                return new CircleContainer(this.stage);
+                _shape = new CircleContainer(this.stage);
+                break;
             case ShapeTypeEnum.freepen:
-                return new FreepenContainer(this.stage);
+                _shape = new FreepenContainer(this.stage);
+                break;
             case ShapeTypeEnum.fader:
-                return new FaderContainer(this.stage);
+                _shape = new FaderContainer(this.stage);
+                break;
             default:
-                return null;
+                _shape = null;
         }
+        if (_shape != null) {
+            _shape.setRoi(this.roi);
+            _shape.setBoundaryPts(this.boundaryPts);
+        }
+        return _shape;
     }
 
     getFader() {
@@ -287,26 +302,6 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
         });
         this.stage.clear();
         this.stage.update();
-    }
-
-    private CreatBridgeRectCps(prePoint: Point, currPoint: Point) {
-        const radius = this.fader.getRadius();
-        const start = prePoint;
-        const end = currPoint;
-        if (start.equals(end)) {
-            return null;
-        }
-        let vec = [end.x - start.x, end.y - start.y];
-        const deno = Math.sqrt(vec[0] ** 2 + vec[1] ** 2);
-        vec = [vec[0] / deno, vec[1] / deno];
-        const crossVec = [-vec[1], vec[0]];
-
-        // the rect
-        const p1 = new Point(start.x + crossVec[0] * radius, start.y + crossVec[1] * radius);
-        const p2 = new Point(end.x + crossVec[0] * radius, end.y + crossVec[1] * radius);
-        const p3 = new Point(end.x - crossVec[0] * radius, end.y - crossVec[1] * radius);
-        const p4 = new Point(start.x - crossVec[0] * radius, start.y - crossVec[1] * radius);
-        return [p1, p2, p3, p4, p1.copy()];
     }
 
     update() {

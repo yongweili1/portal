@@ -12,13 +12,16 @@ export enum ActionTypeEnum {
 
 export enum ShapeTypeEnum {
     unknown = 0,
+    controlpoint,
+    text,
     line,
     circle,
     rectangle,
     freepen,
     freepen2,
     fader,
-    border
+    border,
+    ellipse
 }
 
 export enum CanvasTypeEnum {

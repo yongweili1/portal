@@ -1,7 +1,8 @@
 import { Overlay } from '../overlay/overlay';
+import { ShapeTypeEnum } from '../../../../shared/models/enums';
 
 export class Ellipse extends Overlay {
-    type = 'ellipse';
+    type = ShapeTypeEnum.ellipse;
 
     constructor(stage) {
         super(stage);

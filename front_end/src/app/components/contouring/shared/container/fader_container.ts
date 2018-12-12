@@ -77,6 +77,9 @@ export class FaderContainer extends BaseContainer {
     }
 
     public setBoundaryPts(pts) {
+        if (pts === undefined) {
+            return;
+        }
         super.setBoundaryPts(pts);
         this.activeAreaBoundaryPts = this.utils.scaleRectangleBoundary(pts, -this.fader.radius);
     }
@@ -95,6 +98,9 @@ export class FaderContainer extends BaseContainer {
     }
 
     handleMouseMove(e) {
+        if (this.activeAreaBoundaryPts === undefined) {
+            return;
+        }
         const mousePt = new Point(e.offsetX, e.offsetY);
         if (!this.utils.isInPolygon(mousePt, this.activeAreaBoundaryPts)) {
             // Plan A: 求最近点

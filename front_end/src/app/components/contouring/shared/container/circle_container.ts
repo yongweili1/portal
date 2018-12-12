@@ -56,13 +56,24 @@ export class CircleContainer extends BaseContainer {
         this.activeAreaBoundaryPts = this.utils.scaleRectangleBoundary(pts, -1);
     }
 
+    validate() {
+        super.validate();
+        if (this.cps.length !== 2) {
+            return false;
+        }
+        if (this.cps[0].equals(this.cps[1])) {
+            return false;
+        }
+        return true;
+    }
+
     handleMouseDown(evt) {
         console.log('[circle]handle MouseDown');
         super.handleMouseDown(evt);
         this.isMousedown = true;
-        if (evt.target.type !== 'circle'
-            && evt.target.type !== 'controlpoint'
-            && evt.target.type !== 'text') {
+        if (evt.target.type !== ShapeTypeEnum.circle
+            && evt.target.type !== ShapeTypeEnum.controlpoint
+            && evt.target.type !== ShapeTypeEnum.text) {
             this.updateCp(0, evt.offsetX, evt.offsetY);
         }
     }
@@ -71,12 +82,12 @@ export class CircleContainer extends BaseContainer {
             console.log('[circle]handle MouseMove');
             const evtPoint = new Point(evt.offsetX, evt.offsetY);
             const centerPoint = this.utils.getCenterPoint(this.cps[0], evtPoint);
-            //diameter圆的直径
+            // diameter圆的直径
             const diameter = this.utils.getLengthOfTwoPoint(this.cps[0], evtPoint);
             const nearestPt = this.utils.getNearestPt(this.boundaryPts, centerPoint);
             const lengthToRec = this.utils.getLengthOfTwoPoint(nearestPt, centerPoint);
-            console.log("lengthToRec is " + lengthToRec);
-            console.log("diameter is " + diameter);
+            console.log('lengthToRec is', lengthToRec);
+            console.log('diameter is', diameter);
             this.isPaint = true;
             if (lengthToRec >= diameter / 2) {
                 this.updateCp(1, evt.offsetX, evt.offsetY);

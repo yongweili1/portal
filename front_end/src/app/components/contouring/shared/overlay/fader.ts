@@ -1,8 +1,9 @@
 import { Point } from '../tools/point';
 import { Overlay } from './overlay';
+import { ShapeTypeEnum } from '../../../../shared/models/enums';
 
 export class Fader extends Overlay {
-    type = 'fader';
+    type = ShapeTypeEnum.fader;
     radius: number;
     center: Point;
     cps: Array<Point>;

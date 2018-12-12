@@ -56,13 +56,24 @@ export class LineContainer extends BaseContainer {
         this.activeAreaBoundaryPts = this.utils.scaleRectangleBoundary(pts, -1);
     }
 
+    validate() {
+        super.validate();
+        if (this.cps.length !== 2) {
+            return false;
+        }
+        if (this.cps[0].equals(this.cps[1])) {
+            return false;
+        }
+        return true;
+    }
+
     handleMouseDown(evt) {
         console.log('[line]handle MouseDown');
         super.handleMouseDown(evt);
         this.isMousedown = true;
-        if (evt.target.type !== 'line'
-            && evt.target.type !== 'controlpoint'
-            && evt.target.type !== 'text') {
+        if (evt.target.type !== ShapeTypeEnum.line
+            && evt.target.type !== ShapeTypeEnum.controlpoint
+            && evt.target.type !== ShapeTypeEnum.text) {
             this.updateCp(0, evt.offsetX, evt.offsetY);
         }
     }
@@ -74,9 +85,9 @@ export class LineContainer extends BaseContainer {
             const mousePt = new Point(evt.offsetX, evt.offsetY);
             if (!this.utils.isInPolygon(mousePt, this.boundaryPts)) {
                 // Plan A: 求最近点
-                const intersection = this.utils.getNearestPt(this.activeAreaBoundaryPts, mousePt);
+                // const intersection = this.utils.getNearestPt(this.activeAreaBoundaryPts, mousePt);
                 // Plan B: 求鼠标指针和最后一个cp连线与边框的交点，会导致图元紧贴边界的时候运动十分缓慢
-                // const intersection = this.utils.getShapeIntersectionWithLine(this.activeAreaBoundaryPts, [this.cps[0], mousePt]);
+                const intersection = this.utils.getShapeIntersectionWithLine(this.activeAreaBoundaryPts, [this.cps[0], mousePt]);
                 this.updateCp(1, intersection.x, intersection.y);
             } else {
                 this.updateCp(1, evt.offsetX, evt.offsetY);

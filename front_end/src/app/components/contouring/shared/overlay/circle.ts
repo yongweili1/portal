@@ -1,8 +1,9 @@
 import { Overlay } from '../overlay/overlay';
 import { Hitbar } from '../overlay/hitbar';
+import { ShapeTypeEnum } from '../../../../shared/models/enums';
 
 export class Circle extends Overlay {
-    type = 'circle';
+    type = ShapeTypeEnum.circle;
 
     constructor(stage) {
         super(stage);
