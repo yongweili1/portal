@@ -56,7 +56,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
             if (this.stage.children.length > 0) {
                 const roi_uid = this.roi.id;
                 const slice_index = this.sliceIndex;
-                EventAggregator.Instance().removeCps.publish([roi_uid, slice_index]);
+                EventAggregator.Instance().deleteContoursEvent.publish([roi_uid, slice_index]);
                 this.stage.removeAllChildren();
                 this.stage.clear();
             }
@@ -197,7 +197,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
         if (contours.length > 0 && this.graphicChanged) {
             const roi_uid = this.roi.id;
             const slice_index = this.sliceIndex;
-            EventAggregator.Instance().contourCps.publish([roi_uid, slice_index, contours]);
+            EventAggregator.Instance().saveContoursEvent.publish([roi_uid, slice_index, contours]);
         }
     }
 
