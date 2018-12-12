@@ -70,7 +70,8 @@ class Upload(APIView):
             reply = data_checker.DataChecker().data_checking(series_dir)
             if 0 != reply:
                 log.dev_error('data checking failed!' + series_dir)
-                return Response('dicom文件不符合规范,创建volume失败')
+                # return Response('dicom文件不符合规范,创建volume失败')
+                continue
             log.dev_info('end data checking:' + series_dir)
 
             try:
@@ -78,14 +79,17 @@ class Upload(APIView):
                 builder = VolumeBuilder()
                 volfilepath, seriesuid = builder.build(seriespath)
             except Exception as ex:
-                log.dev_error('build volume failed!')
-                return Response(ex.message)
+                log.dev_error('build volume failed!' + ex.message)
+                # return Response(ex.message)
+                continue
             log.dev_info('end build volume')
 
             try:
                 series_svc.upload_volume(volfilepath, seriesuid)
             except Exception as e:
-                return Response(e.message)
+                # return Response(e.message)
+                log.dev_error('upload volume failed!' + e.message)
+                continue
 
             log.dev_info('end upload volume:' + seriesuid)
 
