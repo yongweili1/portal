@@ -118,6 +118,9 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
 
     @HostListener('mousedown', ['$event']) onMouseDown(event: MouseEvent) {
         console.log('[overlay-canvas]handle mousedown event');
+        if (this.boundaryPts === undefined) {
+            return;
+        }
         if (!this.utils.isInPolygon(new Point(event.offsetX, event.offsetY), this.boundaryPts)) {
             console.log('out of image');
             return;
@@ -161,7 +164,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
             this.fader.handleMouseMove(event);
             if (this.fader.isMousedown) {
                 const curFaderPos = this.fader.getCenter();
-                const bridge = this.CreatBridgeRectCps(this.preFaderPos, curFaderPos);
+                const bridge = this.utils.creatBridgeRectCps(this.preFaderPos, curFaderPos, this.fader.getRadius());
                 this.preFaderPos = curFaderPos;
                 this.clip([bridge]);
             } else {
@@ -287,26 +290,6 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
         });
         this.stage.clear();
         this.stage.update();
-    }
-
-    private CreatBridgeRectCps(prePoint: Point, currPoint: Point) {
-        const radius = this.fader.getRadius();
-        const start = prePoint;
-        const end = currPoint;
-        if (start.equals(end)) {
-            return null;
-        }
-        let vec = [end.x - start.x, end.y - start.y];
-        const deno = Math.sqrt(vec[0] ** 2 + vec[1] ** 2);
-        vec = [vec[0] / deno, vec[1] / deno];
-        const crossVec = [-vec[1], vec[0]];
-
-        // the rect
-        const p1 = new Point(start.x + crossVec[0] * radius, start.y + crossVec[1] * radius);
-        const p2 = new Point(end.x + crossVec[0] * radius, end.y + crossVec[1] * radius);
-        const p3 = new Point(end.x - crossVec[0] * radius, end.y - crossVec[1] * radius);
-        const p4 = new Point(start.x - crossVec[0] * radius, start.y - crossVec[1] * radius);
-        return [p1, p2, p3, p4, p1.copy()];
     }
 
     update() {

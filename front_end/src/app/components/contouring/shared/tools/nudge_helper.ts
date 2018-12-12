@@ -16,6 +16,9 @@ export class NudgeHelper {
     }
 
     setMode(center: Point, voiPt: Array<Array<Point>>) {
+        if (center === undefined || voiPt === undefined) {
+            return;
+        }
         const voiPt_Clipper = this.convertPoints(voiPt);
         const pointInContour: boolean = this.ContourContainsPoint(voiPt_Clipper, { X: center.x, Y: center.y });
         const virtualFaderPt_Clipper = this.convertPoints([this.fader.getCps()]);
