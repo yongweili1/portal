@@ -97,17 +97,17 @@ class ContourService(object):
 
     def seg(self, series_uid):
         try:
-            series = series_ctx.retrieve(series_uid=series_uid)
+            series, msg = series_ctx.retrieve(series_uid=series_uid)
             if len(series) == 0:
                 return False, 'series_uid is wrong'
 
             mask_fp = file_path_ferry.volumePath + r'{}_mask.nii.gz'.format(series_uid)
 
-            # volume_path = series[0].seriespixeldatafilepath
-            # im = read_image(volume_path)
-            # model = autoseg_load_model(r'D:\segmentation_model\VSEG_Heart_20180611_01', 0)
-            # seg = autoseg_volume(im, model)
-            # write_image(seg, mask_fp)
+            volume_path = series[0].seriespixeldatafilepath
+            im = read_image(volume_path)
+            model = autoseg_load_model(r'D:\segmentation_model\VSEG_Heart_20180611_01', 0)
+            seg = autoseg_volume(im, model)
+            write_image(seg, mask_fp)
             return mask_fp, None
         except Exception as ex:
             return False, ex.message
