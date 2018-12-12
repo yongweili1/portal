@@ -1,9 +1,10 @@
 import { Overlay } from '../overlay/overlay';
 import { Hitbar } from '../overlay/hitbar';
 import { Point } from '../tools/point';
+import { ShapeTypeEnum } from '../../../../shared/models/enums';
 
 export class Freepen extends Overlay {
-    type = 'freepen';
+    type = ShapeTypeEnum.freepen;
     protected _cps: Array<Point>;
 
     constructor(stage) {

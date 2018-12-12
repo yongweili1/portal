@@ -4,20 +4,20 @@ export class Utils {
     constructor() { }
     /**
      * @msg: 计算两点的距离
-     * @param {Point}} 类型两点 p1 p2 
+     * @param {Point}} 类型两点 p1 p2
      * @return {number}
      */
     getLengthOfTwoPoint(p1: Point, p2: Point): number {
-        return p1 != undefined && p2 != undefined ? Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2)) : 0;
+        return p1 !== undefined && p2 !== undefined ? Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2)) : 0;
     }
 
     /**
      * @msg: 计算两点中心点
-     * @param  {Point} 类型两点 p1 p2 
+     * @param  {Point} 类型两点 p1 p2
      * @return {Point} 类型中心点
      */
     getCenterPoint(p1: Point, p2: Point): Point {
-        return p1 != undefined && p2 != undefined ? new Point((p1.x + p2.x) / 2, (p1.y + p2.y) / 2) : undefined;
+        return p1 !== undefined && p2 !== undefined ? new Point((p1.x + p2.x) / 2, (p1.y + p2.y) / 2) : undefined;
     }
 
     /**
@@ -27,10 +27,10 @@ export class Utils {
      * @return {number}
      */
     getMinLengthToRec(point: Point, rectangle: Array<Point>): number {
-        if (rectangle != undefined && rectangle.length >= 4) {
+        if (rectangle !== undefined && rectangle.length >= 4) {
             const beginPointX = point.x;
             const beginPointY = point.y;
-            let diams: number[] = [];
+            const diams: number[] = [];
             diams[0] = beginPointX - rectangle[0].x;
             diams[2] = rectangle[1].x - beginPointX;
             diams[1] = beginPointY - rectangle[0].y;
@@ -47,13 +47,13 @@ export class Utils {
     }
 
     /**
-     * @msg: 判断矩形是否在图像边界内 
+     * @msg: 判断矩形是否在图像边界内
      * @param {startPoint} 图元矩形起始点
      * @param {endPoint} 图元矩形终止点
      * @return: 图元矩形是否在目标矩形内的布尔值
      */
     isRecInPolygon(startPoint: Point, endPoint: Point, polygonPoints: Array<Point>): boolean {
-        let rectangle: Array<Point> = new Array<Point>();
+        const rectangle: Array<Point> = new Array<Point>();
         rectangle.push(startPoint);
         rectangle.push(endPoint);
         rectangle.push(new Point(startPoint.x, endPoint.y));

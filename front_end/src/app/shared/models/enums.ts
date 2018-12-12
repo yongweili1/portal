@@ -20,7 +20,8 @@ export enum ShapeTypeEnum {
     freepen,
     freepen2,
     fader,
-    border
+    border,
+    ellipse
 }
 
 export enum CanvasTypeEnum {

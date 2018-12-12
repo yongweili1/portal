@@ -7,6 +7,7 @@ export class BaseContainer extends createjs.Container {
     uid: string = null;
     isPaint = false;
     isMousedown = false;
+    isSaved = false;
     type: ShapeTypeEnum;
     overlayStage: any;
     protected _tempPoint: Point;
@@ -33,7 +34,7 @@ export class BaseContainer extends createjs.Container {
         this.addEventListener('dblclick', this.handleDbClick.bind(this));
         this.addEventListener('pressup', this.handlePressUp.bind(this));
         this.overlayStage.addChild(this);
-        this.initCps();
+        this.isSaved = true;
     }
 
     public get roiConfig() {
@@ -75,6 +76,8 @@ export class BaseContainer extends createjs.Container {
 
     update() {
     }
+
+    validate() {}
 
     handleMouseDown(evt) {
         console.log('[base_container]handle MouseDown');

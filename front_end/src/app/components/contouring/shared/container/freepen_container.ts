@@ -150,6 +150,14 @@ export class FreepenContainer extends BaseContainer {
         this.activeAreaBoundaryPts = this.utils.scaleRectangleBoundary(pts, -1);
     }
 
+    validate() {
+        super.validate();
+        if (this.cps.length < 2) {
+            return false;
+        }
+        return true;
+    }
+
     handleMouseDown(evt) {
         console.log('[freepen]handle MouseDown');
         super.handleMouseDown(evt);
@@ -161,9 +169,9 @@ export class FreepenContainer extends BaseContainer {
             this.extendCps.push(this.nearestStartCp[1]);
             this.extendCps.push(point);
         } else {
-            if (evt.target.type !== 'freepen'
-                && evt.target.type !== 'controlpoint'
-                && evt.target.type !== 'text') {
+            if (evt.target.type !== ShapeTypeEnum.freepen
+                && evt.target.type !== ShapeTypeEnum.controlpoint
+                && evt.target.type !== ShapeTypeEnum.text) {
                 this.cps.push(new Point(evt.offsetX, evt.offsetY));
             }
         }

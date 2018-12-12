@@ -82,13 +82,24 @@ export class RectangleContainer extends BaseContainer {
         this.updateCp(6, start.x + (end.x - start.x) / 2, end.y);
     }
 
+    validate() {
+        super.validate();
+        if (this.cps.length !== 8) {
+            return false;
+        }
+        if (this.cps[0].equals(this.cps[7])) {
+            return false;
+        }
+        return true;
+    }
+
     handleMouseDown(evt) {
         console.log('[rectangle]handle MouseDown');
         super.handleMouseDown(evt);
         this.isMousedown = true;
-        if (evt.target.type !== 'rectangle'
-            && evt.target.type !== 'controlpoint'
-            && evt.target.type !== 'text') {
+        if (evt.target.type !== ShapeTypeEnum.rectangle
+            && evt.target.type !== ShapeTypeEnum.controlpoint
+            && evt.target.type !== ShapeTypeEnum.text) {
             this.updateCp(0, evt.offsetX, evt.offsetY);
         }
     }
