@@ -158,29 +158,25 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     handleSeg() {
         const ROIData = {
             seriesuid: $('#seriesSelect').val(),
-            data: this.segData.slectionOrgans,
-            color: '#FFFF00'
+            organs: this.segData.slectionOrgans
         };
-        if (ROIData.seriesuid !== undefined && ROIData.seriesuid !== '') {
-            this.roiSvc.CreateNewSegROI(ROIData).subscribe(response => {
-                if (response.success) {
-                    this.toastSvc.success('Save succeed.');
-                    const rois = [response.data];
-                    this.data.roiList.forEach(roi => {
-                        rois.push(roi);
-                    });
-                    this.data.roiList = rois;
-                    if (this.data.roiList !== null && this.data.roiList.length > 0) {
-                        this.onSelectRoi(this.data.roiList[0]);
-                    }
-                    this.segDisplay = false;
-                } else {
-                    this.toastSvc.error(response.message);
-                }
-            });
-        } else {
+        if (ROIData.seriesuid === undefined || ROIData.seriesuid === '') {
             this.toastSvc.error('Please select a valid series !');
+            return;
         }
+        this.roiSvc.startSeg(ROIData).subscribe(response => {
+            if (response.success) {
+                this.toastSvc.success('Save succeed.');
+                this.data.roiList = response.data;
+                if (this.data.roiList !== null && this.data.roiList.length > 0) {
+                    this.onSelectRoi(this.data.roiList[this.data.roiList.length - 1]);
+                }
+                this.getContours(this.data.cell1.sliceIndex.toString());
+                this.segDisplay = false;
+            } else {
+                this.toastSvc.error(response.message);
+            }
+        });
     }
 
     handleContourToMask() {

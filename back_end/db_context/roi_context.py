@@ -60,7 +60,11 @@ class RoiContext(object):
         return roi
 
     def duplicate(self, series_uid, name):
-        if Roi.objects.filter(seriesuid=series_uid, roiname=name):
-            return True
+        rois = Roi.objects.filter(seriesuid=series_uid, roiname=name)
+        if rois:
+            uids = []
+            for roi in rois:
+                uids.append(roi.roiuid)
+            return True, uids
         else:
-            return False
+            return False, None

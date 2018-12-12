@@ -7,10 +7,14 @@ class RoiService(object):
     def __init__(self):
         pass
 
+    def duplicate(self, seriesuid, roiname):
+        duplicate, uids = roi_ctx.duplicate(seriesuid, roiname)
+        return duplicate, uids
+
     def create(self, data):
-        duplicate = roi_ctx.duplicate(data['seriesuid'], data['roiname'])
+        duplicate, uids = self.duplicate(data['seriesuid'], data['roiname'])
         if duplicate:
-            return duplicate, 'duplicated'
+            return duplicate, uids
 
         return roi_ctx.create(data)
 
@@ -21,7 +25,7 @@ class RoiService(object):
                 return False, 'Can not find roi'
 
             series_uid = roi['seriesuid']
-            duplicate = roi_ctx.duplicate(series_uid, data['roiname'])
+            duplicate, uids = roi_ctx.duplicate(series_uid, data['roiname'])
             if duplicate:
                 return False, 'duplicated'
             data['seriesuid'] = series_uid
