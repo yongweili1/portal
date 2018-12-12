@@ -15,7 +15,6 @@ export class FreepenContainer extends BaseContainer {
 
     extendShape: Freepen;
     extendCps: Array<Point>;
-
     utils = new Utils();
 
     constructor(stage) {
@@ -237,12 +236,24 @@ export class FreepenContainer extends BaseContainer {
             this.handleMouseMove(evt);
             return;
         }
+        const tempCps: Array<Point> = new Array<Point>();
+        console.log('boudaryPts : ' + this.boundaryPts);
         if (evt.target === this.shape || evt.target === this.text) {
-            this.cps.forEach(cp => {
-                cp.offset(delta_x, delta_y);
+            const res = this.cps.every(cp => {
+                const _temp = cp.copy();
+                _temp.offset(delta_x, delta_y);
+                if (!this.utils.isInPolygon(_temp, this.boundaryPts)) {
+                    console.log('out of polygon');
+                    return false;
+                }
+                console.log('is in polygon');
+                tempCps.push(_temp);
+                return true;
             });
+            if (res) {
+                this.cps = tempCps;
+                this.update();
+            }
         }
-
-        this.update();
     }
 }
