@@ -113,8 +113,8 @@ export class RectangleContainer extends BaseContainer {
         console.log('[rectangle]handle PressMove');
         const evtPoint = new Point(evt.stageX, evt.stageY);
         if (this.utils.isInPolygon(evtPoint, this.boundaryPts)) {
-            let tempX: number = this._tempPoint.x;
-            let tempY: number = this._tempPoint.y;
+            const tempX: number = this._tempPoint.x;
+            const tempY: number = this._tempPoint.y;
             const delta_x = evt.stageX - tempX;
             const delta_y = evt.stageY - tempY;
             this.updateCpsByDelta(evt, delta_x, delta_y);
@@ -122,9 +122,9 @@ export class RectangleContainer extends BaseContainer {
     }
 
     private updateCpsByDelta(evt, delta_x, delta_y) {
-        let _tempCps0 = this.cps[0].copy();
-        console.log("_tempCps0(0) " + _tempCps0.x + "  " + _tempCps0.y);
-        let _tempCps7 = this.cps[7].copy();
+        const _tempCps0 = this.cps[0].copy();
+        console.log('[_tempCps0] ' + _tempCps0.x + '  ' + _tempCps0.y);
+        const _tempCps7 = this.cps[7].copy();
         switch (evt.target) {
             case this.top_left:
                 _tempCps0.offset(delta_x, delta_y);

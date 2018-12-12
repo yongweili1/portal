@@ -344,6 +344,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
             const freepen = new FreepenContainer(this.stage);
             freepen.setRoi(this.rois.find(x => x.id === roiuid));
             freepen.cps = cps;
+            freepen.setBoundaryPts(this.boundaryPts);
             freepen.update();
         });
     }
