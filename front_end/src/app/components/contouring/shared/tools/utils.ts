@@ -319,4 +319,23 @@ export class Utils {
         }
         return nearestPt;
     }
+
+    creatBridgeRectCps(prePoint: Point, currPoint: Point, radius: number) {
+        const start = prePoint;
+        const end = currPoint;
+        if (start.equals(end)) {
+            return null;
+        }
+        let vec = [end.x - start.x, end.y - start.y];
+        const deno = Math.sqrt(vec[0] ** 2 + vec[1] ** 2);
+        vec = [vec[0] / deno, vec[1] / deno];
+        const crossVec = [-vec[1], vec[0]];
+
+        // the rect
+        const p1 = new Point(start.x + crossVec[0] * radius, start.y + crossVec[1] * radius);
+        const p2 = new Point(end.x + crossVec[0] * radius, end.y + crossVec[1] * radius);
+        const p3 = new Point(end.x - crossVec[0] * radius, end.y - crossVec[1] * radius);
+        const p4 = new Point(start.x - crossVec[0] * radius, start.y - crossVec[1] * radius);
+        return [p1, p2, p3, p4, p1.copy()];
+    }
 }

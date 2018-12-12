@@ -1,9 +1,10 @@
 import { Point } from '../tools/point';
+import { ShapeTypeEnum } from '../../../../shared/models/enums';
 
 declare var createjs: any;
 
 export class Text extends createjs.Text {
-    type = 'text';
+    type = ShapeTypeEnum.text;
     overlayStage: any;
     protected _cp: Point;
     protected _is_hover: boolean;

@@ -20,7 +20,7 @@ export class SliderBarComponent implements OnInit, OnDestroy {
 
     @Input() tag: string;
     @Output() slideChangeEnd: EventEmitter<any> = new EventEmitter<any>();
-    
+
     constructor() {
         this.totalSliceCount = 0;
         this.currentSliceNum = 0;
@@ -34,11 +34,10 @@ export class SliderBarComponent implements OnInit, OnDestroy {
         });
 
         this.sliceIndexSubscriber = EventAggregator.Instance().sliceIndex.subscribe(value => {
-            console.log('value: ',value,' currentSliceValue ', this.currentSliceValue);
             this.currentSliceNum = value;
-            if (value != Math.floor(this.currentSliceValue / this.perSliceCount))
+            if (value !== Math.floor(this.currentSliceValue / this.perSliceCount)) {
                 this.progress = this.currentSliceNum / this.totalSliceCount * 100;
-            console.log('Current progress', this.progress);
+            }
         });
     }
 

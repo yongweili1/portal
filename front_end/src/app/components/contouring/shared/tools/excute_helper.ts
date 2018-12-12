@@ -27,7 +27,6 @@ export class ExcuteHelper {
         } else {
             return true;
         }
-        console.log(type, delta);
         return !(delta < delta_time);
     }
 

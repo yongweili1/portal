@@ -12,6 +12,8 @@ export enum ActionTypeEnum {
 
 export enum ShapeTypeEnum {
     unknown = 0,
+    controlpoint,
+    text,
     line,
     circle,
     rectangle,

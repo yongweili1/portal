@@ -1,11 +1,12 @@
 import { Point } from '../tools/point';
 import { Hitbar } from '../overlay/hitbar';
+import { ShapeTypeEnum } from '../../../../shared/models/enums';
 
 declare var createjs: any;
 declare var showcps: any;
 
 export class ControlPoint extends createjs.Shape {
-    type = 'controlpoint';
+    type = ShapeTypeEnum.controlpoint;
     overlayStage: any;
     host: any;
     index: string;

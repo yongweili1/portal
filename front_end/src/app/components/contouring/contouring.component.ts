@@ -12,7 +12,7 @@ import { ExcuteHelper } from './shared/tools/excute_helper';
 import { Point } from './shared/tools/point';
 import { Subscription } from 'rxjs';
 import { ActionTypeEnum, CanvasTypeEnum } from '../../shared/models/enums';
-import { SegSelectorModel, Organ } from './shared/model/seg-slector.model';
+import { SegSelectorModel } from './shared/model/seg-slector.model';
 
 
 declare var $: any;
@@ -70,11 +70,11 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         this.cell3.id = 'cell-3';
 
 
-        this.contourCpsSubscriber = EventAggregator.Instance().contourCps
+        this.contourCpsSubscriber = EventAggregator.Instance().saveContoursEvent
             .subscribe(data => {
                 this.saveContours(data);
             });
-        this.removeCpsSubscriber = EventAggregator.Instance().removeCps
+        this.removeCpsSubscriber = EventAggregator.Instance().deleteContoursEvent
             .subscribe(data => {
                 this.deleteContours(data);
             });
@@ -82,7 +82,6 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             .subscribe(delta => {
                 this.data.updateFaderRadius(delta);
             });
-
         this.actionTypeObserver = EventAggregator.Instance().changeActionTypeEvent
             .subscribe(action => {
                 this.data.actionType = action;
@@ -100,13 +99,13 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.cell2.riseZIndexOfCanvas(canvasType);
                 this.cell3.riseZIndexOfCanvas(canvasType);
             });
-        this.shapeTypeObserver = EventAggregator.Instance().changeShapeTypeEvent.subscribe(shape => {
-            this.data.shapeType = shape;
-            this.cell1.riseZIndexOfCanvas(CanvasTypeEnum.overlay);
-            this.cell2.riseZIndexOfCanvas(CanvasTypeEnum.overlay);
-            this.cell3.riseZIndexOfCanvas(CanvasTypeEnum.overlay);
-        });
-
+        this.shapeTypeObserver = EventAggregator.Instance().changeShapeTypeEvent
+            .subscribe(shape => {
+                this.data.shapeType = shape;
+                this.cell1.riseZIndexOfCanvas(CanvasTypeEnum.overlay);
+                this.cell2.riseZIndexOfCanvas(CanvasTypeEnum.overlay);
+                this.cell3.riseZIndexOfCanvas(CanvasTypeEnum.overlay);
+            });
         this.activeRoute.queryParams.subscribe(params => {
             this.patientId = params.patientId;
         });
@@ -285,6 +284,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         });
         this.roiSvc.delete(ids).subscribe(response => {
             if (response.success) {
+                this.data.roiList = [];
                 this.toastSvc.success(`Delete all rois succeed.`);
             } else {
                 this.toastSvc.error(response.message);
