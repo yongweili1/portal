@@ -32,6 +32,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     segDisplay: any = false;
     manageROIDisplay: any = false;
     editROIDisplay: any = false;
+    fillGraphic = true;
 
     excuteHelper: ExcuteHelper;
     data: ContouringModel;
@@ -298,6 +299,10 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
 
     onSelectRoi(roi) {
         this.data.selectedRoi = roi;
+    }
+
+    fillGraphicChanged(value) {
+        this.data.updateFillGraphic(value);
     }
     //#endregion
 

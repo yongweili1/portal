@@ -26,7 +26,7 @@ export class SegSelectorModel {
                 { name: '..', code: 9 }
             ],
         ];
-        this.slectionOrgans = [this.organs[0].find((organ: Organ) => organ.code === 1 && organ.name === 'heart'),];
+        this.slectionOrgans = [this.organs[0].find((organ: Organ) => organ.code === 1 && organ.name === 'heart'), ];
     }
 
 

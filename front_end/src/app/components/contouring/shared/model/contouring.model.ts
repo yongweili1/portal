@@ -49,4 +49,10 @@ export class ContouringModel {
         this.cell2.faderRadius += delta;
         this.cell3.faderRadius += delta;
     }
+
+    updateFillGraphic(value) {
+        this.cell1.fillGraphic = value;
+        this.cell2.fillGraphic = value;
+        this.cell3.fillGraphic = value;
+    }
 }

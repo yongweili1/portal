@@ -9,12 +9,14 @@ export class CellModel {
     graphics: any;
     faderRadius: any;
     boundaryPts: any;
+    fillGraphic: boolean;
 
     constructor() {
         this.sliceIndex = 0;
         this.imageM = new ImageModel();
         this.crossM = new CrossModel();
         this.faderRadius = 20;
+        this.fillGraphic = true;
     }
 
     setBoundaryPts(pts) {

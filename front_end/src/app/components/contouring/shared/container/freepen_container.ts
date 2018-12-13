@@ -36,8 +36,8 @@ export class FreepenContainer extends BaseContainer {
 
     update() {
         super.update();
-        this.shape.update(this.cps);
-        this.extendShape.update(this.extendCps);
+        this.shape.update(this.cps, this.isFill);
+        this.extendShape.update(this.extendCps, this.isFill);
         // this.cps.forEach(cp => {
         //     cp.update()
         // });
@@ -50,7 +50,7 @@ export class FreepenContainer extends BaseContainer {
 
     clearPaint() {
         this.extendCps = new Array();
-        this.extendShape.update(this.extendCps);
+        this.extendShape.update(this.extendCps, this.isFill);
     }
 
     getNearestCp(p: Point) {

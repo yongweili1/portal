@@ -39,7 +39,7 @@ export class FaderContainer extends BaseContainer {
 
     update() {
         this.showState();
-        this.fader.update(this.fader.center);
+        this.fader.update(this.fader.center, this.isFill);
     }
 
     showState(state = 0) {
