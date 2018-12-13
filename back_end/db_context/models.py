@@ -133,6 +133,7 @@ class Contour(models.Model):
     contouruid = models.CharField(unique=True, max_length=64)
     roiuid = models.ForeignKey(Roi, on_delete=models.CASCADE, db_column='roiuid', related_name='sub5',
                                to_field='roiuid')
+    type = models.IntegerField()
     imageuid = models.CharField(max_length=64)
     cpspath = models.CharField(max_length=255, blank=True, null=True)
     updatetime = models.DateTimeField(auto_now=True)

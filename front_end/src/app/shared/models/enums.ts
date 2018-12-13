@@ -31,3 +31,10 @@ export enum CanvasTypeEnum {
     action,
     cross
 }
+
+export enum ContourTypeEnum {
+    freepen = 0,
+    line,
+    circle,
+    rectangle,
+}

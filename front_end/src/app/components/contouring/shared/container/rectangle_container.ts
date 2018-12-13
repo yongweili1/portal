@@ -3,7 +3,7 @@ import { Rectangle } from '../overlay/rectangle';
 import { ControlPoint } from '../overlay/controlpoint';
 import { Text } from '../overlay/text';
 import { RoiModel } from '../model/roi.model';
-import { ShapeTypeEnum } from '../../../../shared/models/enums';
+import { ShapeTypeEnum, ContourTypeEnum } from '../../../../shared/models/enums';
 import { Utils } from '../tools/utils';
 import { Point } from '../tools/point';
 
@@ -22,6 +22,7 @@ export class RectangleContainer extends BaseContainer {
 
     constructor(stage) {
         super(stage, ShapeTypeEnum.rectangle);
+        this.contour_type = ContourTypeEnum.rectangle;
         this.top_left = new ControlPoint(stage);
         this.top_center = new ControlPoint(stage);
         this.top_right = new ControlPoint(stage);

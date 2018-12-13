@@ -3,7 +3,7 @@ import { Freepen } from '../overlay/freepen';
 import { Point, Point3d } from '../tools/point';
 import { Text } from '../overlay/text';
 import { RoiModel } from '../model/roi.model';
-import { ShapeTypeEnum } from '../../../../shared/models/enums';
+import { ShapeTypeEnum, ContourTypeEnum } from '../../../../shared/models/enums';
 import { Utils } from '../tools/utils';
 
 export class FreepenContainer extends BaseContainer {
@@ -19,6 +19,7 @@ export class FreepenContainer extends BaseContainer {
 
     constructor(stage) {
         super(stage, ShapeTypeEnum.freepen);
+        this.contour_type = ContourTypeEnum.freepen;
         this.shape = new Freepen(stage);
         this.extendShape = new Freepen(stage);
         this.addChild(this.extendShape);

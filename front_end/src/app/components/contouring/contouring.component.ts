@@ -79,6 +79,14 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             .subscribe(data => {
                 this.deleteContours(data);
             });
+        EventAggregator.Instance().updateSigleContourEvent
+            .subscribe(data => {
+                this.saveSingleContour(data);
+            });
+        EventAggregator.Instance().deleteSigleContourEvent
+            .subscribe(data => {
+                // this.deleteContours(data);
+            });
         this.faderRadiusDeltaSubscriber = EventAggregator.Instance().faderRadiusDelta
             .subscribe(delta => {
                 this.data.updateFaderRadius(delta);
@@ -588,13 +596,15 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private saveContours(data: any) {
+        console.log('saveContours');
         if (data === undefined || data.length === 0) {
             return;
         }
         const dto = new ContourModel();
-        dto.roi_uid = data[0];
-        dto.slice_index = data[1];
-        dto.contours = data[2];
+        dto.contours = data[0];
+        dto.contour_type = data[1];
+        dto.roi_uid = data[2];
+        dto.slice_index = data[3];
         this.contourSvc.save(dto).subscribe(response => {
             if (response.success) {
                 this.toastSvc.success('Success.');
@@ -602,6 +612,29 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.toastSvc.error(response.message);
             }
         });
+    }
+
+
+    private saveSingleContour(data: any) {
+        console.log('saveSingleContour');
+        if (data === undefined || data.length === 0) {
+            return;
+        }
+        if (data[5] === 'transverse') {
+            const dto = new ContourModel();
+            dto.contours = data[0];
+            dto.contour_type = data[1];
+            dto.contour_uid = data[2];
+            dto.roi_uid = data[3];
+            dto.slice_index = data[4];
+            this.contourSvc.save(dto).subscribe(response => {
+                if (response.success) {
+                    this.toastSvc.success('Success.');
+                } else {
+                    this.toastSvc.error(response.message);
+                }
+            });
+        }
     }
 
     private deleteContours(data: any) {

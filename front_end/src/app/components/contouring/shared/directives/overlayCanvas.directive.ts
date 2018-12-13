@@ -1,6 +1,6 @@
 import { Directive, ElementRef, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { EventAggregator } from '../../../../shared/common/event_aggregator';
-import { ActionTypeEnum, ShapeTypeEnum } from '../../../../shared/models/enums';
+import { ActionTypeEnum, ShapeTypeEnum, ContourTypeEnum } from '../../../../shared/models/enums';
 import { BorderContainer } from '../container/border_container';
 import { CircleContainer } from '../container/circle_container';
 import { FaderContainer } from '../container/fader_container';
@@ -206,11 +206,18 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
             this.fader.handleMouseUp(event);
         }
 
-        const contours = this.getFreepenCps(this.roi.id);
-        if (contours.length > 0) {
-            const roi_uid = this.roi.id;
-            const slice_index = this.sliceIndex;
-            EventAggregator.Instance().saveContoursEvent.publish([roi_uid, slice_index, contours]);
+        if (this.shapeType === ShapeTypeEnum.freepen || this.shapeType === ShapeTypeEnum.freepen2) {
+            const contours = this.getFreepenCps(this.roi.id);
+            if (contours.length > 0) {
+                const roi_uid = this.roi.id;
+                const slice_index = this.sliceIndex;
+                EventAggregator.Instance().saveContoursEvent.publish([contours, ContourTypeEnum.freepen, roi_uid, slice_index]);
+            }
+        } else if (this.actionType === ActionTypeEnum.select) {
+
+        } else {
+            EventAggregator.Instance().updateSigleContourEvent.publish
+                ([[this.shape.cps], this.shape.contour_type, this.shape.contour_uid, this.roi.id, this.sliceIndex, this.tag]);
         }
     }
 
@@ -224,6 +231,27 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
 
     @HostListener('dblclick', ['$event']) onDbClick(event: MouseEvent) {
         console.log('[overlay-canvas]dblclick');
+    }
+
+    private _createShapeByContourType(shapeType: ContourTypeEnum) {
+        let _shape = null;
+        switch (shapeType) {
+            case ContourTypeEnum.rectangle:
+                _shape = new RectangleContainer(this.stage);
+                break;
+            case ContourTypeEnum.line:
+                _shape = new LineContainer(this.stage);
+                break;
+            case ContourTypeEnum.freepen:
+                _shape = new FreepenContainer(this.stage);
+                break;
+            case ContourTypeEnum.circle:
+                _shape = new CircleContainer(this.stage);
+                break;
+            default:
+                break;
+        }
+        return _shape;
     }
 
     private _createShape() {
@@ -324,9 +352,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
 
         this.stage.removeAllChildren();
         this.stage.clear();
-
         // this.updateBoundry();
-
         const contours = [];
         if (this.graphics === undefined || this.graphics.length === 0) {
             return;
@@ -339,7 +365,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
             graphic.cps.forEach(cp => {
                 contour.push(new Point(cp[0], cp[1]));
             });
-            contours.push([graphic.roiuid, contour]);
+            contours.push([graphic.roiuid, contour, graphic.type]);
         });
         // draw graphics
         if (contours.length === 0) {
@@ -349,12 +375,13 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
             const roiuid = contour[0];
             const cps = contour[1];
             cps.push(cps[0].copy());
-            const freepen = new FreepenContainer(this.stage);
-            freepen.setRoi(this.rois.find(x => x.id === roiuid));
-            freepen.cps = cps;
-            freepen.isFill = this.fillGraphic;
-            freepen.setBoundaryPts(this.boundaryPts);
-            freepen.update();
+            const loadShape = this._createShapeByContourType(contour[2]);
+            // const freepen = new FreepenContainer(this.stage);
+            loadShape.setRoi(this.rois.find(x => x.id === roiuid));
+            loadShape.cps = cps;
+            loadShape.isFill = this.fillGraphic;
+            loadShape.setBoundaryPts(this.boundaryPts);
+            loadShape.update();
         });
     }
 
