@@ -1,7 +1,9 @@
 import Queue
+import os
 import sys
 import threading
 import time
+import xml.etree.ElementTree as XmlEt
 
 from c_log import log
 
@@ -105,14 +107,26 @@ class PyASyncCmdCallbackHandler(c_net_base.ICommandCallbackHandler):
         return 0
 
 
+def load_address():
+    path = os.path.dirname(os.path.abspath(__file__))
+    xml_path = os.path.join(path, 'config/dispatcher_config.xml')
+
+    root = XmlEt.parse(xml_path).getroot()
+    return root.find('IP').text + ':' + root.find('Port').text
+
+
 class PyCommProxy:
-    def __init__(self, name, dispatcher_address, listen_address=""):
+    def __init__(self, name, listen_address="", dispatcher_address=""):
         self._thread = WorkingThread()
         self._thread.start()
         self._handler = PyCommonHandler(self._thread)
         self.callbacks = []
         self.proxy = c_net_base.CommunicationProxy()
         self.proxy.SetName(name)
+        if not dispatcher_address.strip():
+            dispatcher_address = load_address()
+        if not dispatcher_address.strip():
+            dispatcher_address = "127.0.0.1:10000"
         if 0 != self.proxy.CheckCastToSystemDispatcher(dispatcher_address):
             raise Exception(name, " CheckCastToSystemDispatcher failed.")
         if 0 != self.proxy.StartListener(listen_address):
@@ -173,8 +187,8 @@ def event_handler(s_event):
 
 if __name__ == '__main__':
     log.create_log()
-    fe = PyCommProxy("proxy_fe", "localhost:10000")
-    be = PyCommProxy("proxy_be", "localhost:10000")
+    fe = PyCommProxy("proxy_fe")
+    be = PyCommProxy("proxy_be")
     be.register_cmd_handler(10, command_handler)
     be.register_event_handler(11, event_handler)
 

@@ -4,6 +4,7 @@ import json
 
 from utils.response_dto import ResponseDto
 from be_proxy import proxy
+from netbase.cmd_event_id import CmdId
 from utils import image_msg_pb2 as msg
 from utils.macro_recorder import MacroRecorder
 
@@ -14,7 +15,7 @@ def sync_send_command(command, **kwargs):
     data.command = command
     data.content = json.dumps(kwargs)
     data = data.SerializeToString()
-    rst = proxy.sync_send_command(data, 100, 'img_srv')
+    rst = proxy.sync_send_command(data, CmdId.cmd_id_render, 'img_srv')
 
     data = msg.ResponseMsg()
     data.ParseFromString(rst)

@@ -9,6 +9,7 @@ log.dev_info('first log of img_srv.')
 from command import command as cmd
 from message import RequestData
 from netbase import comproxy
+from netbase.cmd_event_id import CmdId
 
 
 def command_handler(p_context):
@@ -23,8 +24,7 @@ def command_handler(p_context):
 
 
 if __name__ == '__main__':
-    proxy = comproxy.PyCommProxy("img_srv", "127.0.0.1:10000")
-    proxy.register_cmd_handler(100, command_handler)
-    log.dev_info('register_cmd_handler 100')
-    e = threading.Event()
-    e.wait()
+    proxy = comproxy.PyCommProxy("img_srv")
+    proxy.register_cmd_handler(CmdId.cmd_id_render, command_handler)
+    log.dev_info('register_cmd_handler {}'.format(CmdId.cmd_id_render))
+    threading.Event().wait()
