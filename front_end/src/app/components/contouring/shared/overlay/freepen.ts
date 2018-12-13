@@ -20,7 +20,7 @@ export class Freepen extends Overlay {
         this.graphics.clear();
         this.graphics.setStrokeStyle(1);
         if (isFill) {
-            this.fillCommand = this.graphics.beginFill(this._color + '44').command;
+            this.fillCommand = this.graphics.beginFill(this._color + this._alpha).command;
             this.strokeCommand = this.graphics.beginStroke(this._color).command;
         }
 

@@ -16,7 +16,7 @@ export class Rectangle extends Overlay {
         const height = end.y - start.y;
         this.graphics.beginStroke(this._color);
         if (isFill) {
-            this.graphics.beginFill(this._color + '44');
+            this.graphics.beginFill(this._color + this._alpha);
         }
         this.graphics.rect(start.x, start.y, width, height);
         const hit = new Hitbar();

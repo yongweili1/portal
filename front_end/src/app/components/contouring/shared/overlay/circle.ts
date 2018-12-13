@@ -20,7 +20,7 @@ export class Circle extends Overlay {
         const radio = Math.sqrt(x_side * x_side + y_side * y_side) / 2;
         this.graphics.beginStroke(this._color);
         if (isFill) {
-            this.graphics.beginFill(this._color + '44');
+            this.graphics.beginFill(this._color + this._alpha);
         }
         this.graphics.drawCircle(x, y, radio);
         const hit = new Hitbar();
