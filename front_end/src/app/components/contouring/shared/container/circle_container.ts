@@ -32,7 +32,7 @@ export class CircleContainer extends BaseContainer {
     update() {
         super.update();
         this.start.update(this.cps[0]);
-        this.circle.update(this.cps[0], this.cps[1]);
+        this.circle.update(this.cps[0], this.cps[1], this.isFill);
         this.end.update(this.cps[1]);
         this.updateText();
     }

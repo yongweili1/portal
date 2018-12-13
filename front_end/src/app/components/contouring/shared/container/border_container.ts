@@ -20,7 +20,7 @@ export class BorderContainer extends BaseContainer {
 
     update() {
         super.update();
-        this.shape.update(this.cps);
+        this.shape.update(this.cps, this.isFill);
     }
 
     setCps(cps) {

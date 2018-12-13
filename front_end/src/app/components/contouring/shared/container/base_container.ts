@@ -14,6 +14,7 @@ export class BaseContainer extends createjs.Container {
     cps: Array<Point>;
     boundaryPts: Array<Point>;
     activeAreaBoundaryPts: Array<Point>;
+    isFill: boolean;
 
     // -1: no mouse button down
     // 0: left mouse button down

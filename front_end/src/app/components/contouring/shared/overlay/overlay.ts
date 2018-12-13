@@ -7,10 +7,12 @@ export class Overlay extends createjs.Shape {
     protected _endPoint: Point;
     protected _is_hover: boolean;
     protected _color: string;
+    protected _alpha: string;
 
     constructor(stage) {
         super();
         this.overlayStage = stage;
+        this._alpha = '44';
         this._is_hover = false;
         this.addEventListener('mouseover', this.handleMouseOver.bind(this));
         this.addEventListener('mouseout', this.handleMouseOut.bind(this));

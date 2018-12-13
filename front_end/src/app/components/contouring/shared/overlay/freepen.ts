@@ -12,16 +12,23 @@ export class Freepen extends Overlay {
         this._cps = new Array();
     }
 
-    update(cps) {
+    update(cps, isFill) {
+        if (cps === undefined || cps.length === 0) {
+            return;
+        }
         this.overlayStage.clear();
         this.graphics.clear();
+        this.graphics.setStrokeStyle(1);
+        if (isFill) {
+            this.fillCommand = this.graphics.beginFill(this._color + this._alpha).command;
+            this.strokeCommand = this.graphics.beginStroke(this._color).command;
+        }
 
+        this.graphics.beginStroke(this._color);
+        this.graphics.moveTo(cps[0].x, cps[0].y);
         for (let index = 1; index < cps.length; index++) {
-            const start = cps[index - 1];
-            const end = cps[index];
-            this.graphics.beginStroke(this._color).moveTo(start.x, start.y).lineTo(end.x, end.y);
-            const hit = new Hitbar();
-            hit.graphics.moveTo(start.x, start.y).lineTo(end.x, end.y);
+            const pt = cps[index];
+            this.graphics.lineTo(pt.x, pt.y);
         }
 
         this.overlayStage.update();

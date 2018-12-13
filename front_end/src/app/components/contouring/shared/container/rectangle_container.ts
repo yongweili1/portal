@@ -46,7 +46,7 @@ export class RectangleContainer extends BaseContainer {
     update() {
         super.update();
         this._updateFollowCps();
-        this.rectangle.update(this.cps[0], this.cps[7]);
+        this.rectangle.update(this.cps[0], this.cps[7], this.isFill);
         this.top_left.update(this.cps[0]);
         this.top_center.update(this.cps[1]);
         this.top_right.update(this.cps[2]);

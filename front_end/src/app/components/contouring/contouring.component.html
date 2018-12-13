@@ -60,6 +60,7 @@
     <!-- Manage ROI Dialog -->
     <p-dialog header="Manage ROI" [(visible)]="manageROIDisplay" [width]="250" [style]="{'border':'none'}"
         [contentStyle]="{'border':'none','overflow':'visible'}">
+        <p-checkbox binary="true" [label]="'填充'" (onChange)='fillGraphicChanged($event)' [(ngModel)]="fillGraphic"></p-checkbox>
         <table class="roi-table" style="border-collapse:collapse" cellspacing="5">
             <tbody>
                 <div *ngIf="data.roiList.length == 0">

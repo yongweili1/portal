@@ -23,19 +23,23 @@ export class Fader extends Overlay {
         this.generateCps();
     }
 
-    update(center) {
+    update(center, isFill) {
         this.setCenter(center);
         this.overlayStage.clear();
         this.graphics.clear();
+        this.graphics.setStrokeStyle(1);
+        if (isFill) {
+            this.fillCommand = this.graphics.beginFill(this._color + this._alpha).command;
+            this.strokeCommand = this.graphics.beginStroke(this._color).command;
+        }
+        this.graphics.beginStroke(this._color);
+        this.graphics.moveTo(this.cps[0].x, this.cps[0].y);
         for (let index = 1; index < this.cps.length; index++) {
-            const start = this.cps[index - 1];
-            const end = this.cps[index];
-            this.graphics.beginStroke(this._color).moveTo(start.x, start.y).lineTo(end.x, end.y);
+            const pt = this.cps[index];
+            this.graphics.lineTo(pt.x, pt.y);
         }
         // close the circle
-        this.graphics.beginStroke(this._color)
-            .moveTo(this.cps[this.cps.length - 1].x, this.cps[this.cps.length - 1].y)
-            .lineTo(this.cps[0].x, this.cps[0].y);
+        this.graphics.lineTo(this.cps[0].x, this.cps[0].y);
         this.overlayStage.update();
     }
 

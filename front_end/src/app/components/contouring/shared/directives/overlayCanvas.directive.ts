@@ -37,6 +37,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
     @Input() actionType: ActionTypeEnum;
     @Input() shapeType: ShapeTypeEnum;
     @Input() boundaryPts: any = new Array<Point>();
+    @Input() fillGraphic: boolean;
 
     constructor(private el: ElementRef) { }
 
@@ -115,6 +116,14 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
 
         if (changes.roi !== undefined) {
             console.log('roi changed');
+        }
+
+        if (changes.fillGraphic !== undefined && this.stage !== undefined && this.stage.children !== undefined) {
+            console.log(this.fillGraphic);
+            this.stage.children.forEach(shape => {
+                shape.isFill = this.fillGraphic;
+                shape.update();
+            });
         }
     }
 
@@ -242,6 +251,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
                 _shape = null;
         }
         if (_shape != null) {
+            _shape.isFill = this.fillGraphic;
             _shape.setRoi(this.roi);
             _shape.setBoundaryPts(this.boundaryPts);
         }
@@ -251,6 +261,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
     getFader() {
         if (this.fader == null || this.fader === undefined) {
             this.fader = new FaderContainer(this.stage);
+            this.fader.isFill = this.fillGraphic;
             this.fader.setRoi(this.roi);
             this.fader.setRadius(this.faderRadius);
             this.fader.setBoundaryPts(this.boundaryPts);
@@ -272,6 +283,8 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
             cps.push(cps[0].copy());
             const freepen = new FreepenContainer(this.stage);
             freepen.setRoi(this.roi);
+            freepen.isFill = this.fillGraphic;
+            freepen.setBoundaryPts(this.boundaryPts);
             this.stage.addChild(freepen);
             freepen.setCps(cps);
             freepen.update();
@@ -339,6 +352,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
             const freepen = new FreepenContainer(this.stage);
             freepen.setRoi(this.rois.find(x => x.id === roiuid));
             freepen.cps = cps;
+            freepen.isFill = this.fillGraphic;
             freepen.setBoundaryPts(this.boundaryPts);
             freepen.update();
         });
