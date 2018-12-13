@@ -39,7 +39,7 @@ class PyLogInstance(object):
     def create_log(self, xml_path=''):
         if '' == xml_path:
             path = os.path.dirname(os.path.abspath(__file__))
-            xml_path = os.path.join(path, 'log_config.xml')
+            xml_path = os.path.join(path, 'config/log_config.xml')
         self._lib.GLogLoadConfig(xml_path)
 
         root = XmlEt.parse(xml_path).getroot()
