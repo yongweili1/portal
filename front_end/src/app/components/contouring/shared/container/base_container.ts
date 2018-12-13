@@ -1,10 +1,14 @@
 import { Point } from '../tools/point';
 import { RoiModel } from '../model/roi.model';
-import { ShapeTypeEnum } from '../../../../shared/models/enums';
+import { ShapeTypeEnum, ContourTypeEnum } from '../../../../shared/models/enums';
+import { Utils } from '../tools/utils';
+
 declare var createjs: any;
 
 export class BaseContainer extends createjs.Container {
     uid: string = null;
+    contour_uid: string;
+    contour_type: ContourTypeEnum = ContourTypeEnum.freepen;
     isPaint = false;
     isMousedown = false;
     isSaved = false;
@@ -16,6 +20,7 @@ export class BaseContainer extends createjs.Container {
     activeAreaBoundaryPts: Array<Point>;
     isFill: boolean;
 
+    utils: Utils;
     // -1: no mouse button down
     // 0: left mouse button down
     // 1: middle mouse button down
@@ -36,6 +41,8 @@ export class BaseContainer extends createjs.Container {
         this.addEventListener('pressup', this.handlePressUp.bind(this));
         this.overlayStage.addChild(this);
         this.isSaved = true;
+        this.utils = new Utils();
+        this.contour_uid = this.utils.generateContourUid();
     }
 
     public get roiConfig() {
@@ -78,7 +85,7 @@ export class BaseContainer extends createjs.Container {
     update() {
     }
 
-    validate() {}
+    validate() { }
 
     handleMouseDown(evt) {
         console.log('[base_container]handle MouseDown');

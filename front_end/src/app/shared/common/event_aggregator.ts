@@ -6,6 +6,8 @@ export class EventAggregator {
     //#region observable msg
     saveContoursEvent = new ObservableObject();
     deleteContoursEvent = new ObservableObject();
+    updateSigleContourEvent = new ObservableObject();
+    deleteSigleContourEvent = new ObservableObject();
     changeShapeTypeEvent = new ObservableObject();
     changeActionTypeEvent = new ObservableObject();
     faderRadiusDelta = new ObservableObject();

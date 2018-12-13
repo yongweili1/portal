@@ -208,7 +208,7 @@ class Rotate(APIView):
                 return ResponseDto(success=False, message='请输入完整的请求数据')
 
             return sync_send_command('rotate', pos_pre=pos_pre,
-                                  pos_cur=pos_cur, focus_view=focus_view)
+                                     pos_cur=pos_cur, focus_view=focus_view)
         except Exception as e:
             return ResponseDto(success=False, message=e.message)
 
@@ -301,11 +301,16 @@ class Contour(APIView):
         roi_uid = request.data.get('roi_uid', None)
         slice_index = request.data.get('slice_index', None)
         contours = request.data.get('contours', None)
+        contour_type = int(request.data.get('contour_type', None))
+        contour_uid = request.data.get('contour_uid', None)
         rst = sync_send_command('point2dto3d', contours=contours)
         if not rst.data['success']:
             return rst
         contours = json.loads(rst.data['data'])['contours']
-        success, msg = contour_svc.create(slice_index, roi_uid, contours)
+        if contour_type == 0 or contour_uid is None:
+            success, msg = contour_svc.create(slice_index, roi_uid, contours, contour_type)
+        else:
+            success, msg = contour_svc.createByContourUid(slice_index, roi_uid, contours, contour_type, contour_uid)
         return ResponseDto(success=success, message=msg)
 
     def delete(self, request):

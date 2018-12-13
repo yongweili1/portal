@@ -7,6 +7,8 @@ from utils.uid_generator import UidGenerator
 from config.path_cfg import file_path_ferry
 
 from md.image3d.python.image3d_io import read_image, write_image
+
+
 from md_segmentation3d.impl.vseg_cimpl import autoseg_load_model, autoseg_volume
 
 
@@ -14,9 +16,9 @@ class ContourService(object):
     def __init__(self):
         pass
 
-    def delete(self, image_uid, roi_uid):
+    def delete(self, image_uid, roi_uid, contour_type):
         # delete cps files firstly
-        contours, msg = contour_ctx.retrieve(image_uid, roi_uid)
+        contours, msg = contour_ctx.retrieve(image_uid, roi_uid, contour_type)
         if contours is not None:
             for item in contours:
                 if not os.path.isfile(item['cpspath']):
@@ -24,12 +26,41 @@ class ContourService(object):
                 os.remove(item['cpspath'])
         return contour_ctx.delete(image_uid, roi_uid)
 
-    def create(self, slice_index, roi_uid, contours):
+    def deleteByContourUid(self, contour_uid):
+        # delete cps files firstly
+        contours, msg = contour_ctx.retrieveByContourUid(contour_uid)
+        if contours is not None:
+            for item in contours:
+                if not os.path.isfile(item['cpspath']):
+                    continue
+                os.remove(item['cpspath'])
+        return contour_ctx.deleteByContourUid(contour_uid)
+
+    def createByContourUid(self, slice_index, roi_uid, contour, contour_type, contour_uid):
         try:
-            success, msg = self.delete(slice_index, roi_uid)
+            success, msg = self.deleteByContourUid(contour_uid)
             if not success:
                 return success, msg
+            cpspath = os.path.join(file_path_ferry.cpsPath, contour_uid)
+            with open(cpspath, 'wb') as f:
+                f.write(json.dumps(contour[0]))
+            params = {
+                'roiuid': roi_uid,
+                'contouruid': contour_uid,
+                'type': contour_type,
+                'cpspath': cpspath,
+                'imageuid': slice_index
+            }
+            contour_ctx.create(params)
+            return True, None
+        except Exception as e:
+            return False, e.message
 
+    def create(self, slice_index, roi_uid, contours, contour_type):
+        try:
+            success, msg = self.delete(slice_index, roi_uid, contour_type)
+            if not success:
+                return success, msg
             for cps in contours:
                 contour_uid = UidGenerator.contour_uid()
                 file_name = contour_uid
@@ -40,6 +71,7 @@ class ContourService(object):
                 params = {
                     'roiuid': roi_uid,
                     'contouruid': contour_uid,
+                    'type': contour_type,
                     'cpspath': cpspath,
                     'imageuid': slice_index
                 }
@@ -63,6 +95,7 @@ class ContourService(object):
                 contour['contouruid'] = record['contouruid']
                 contour['imageuid'] = record['imageuid']
                 contour['roiuid'] = record['roiuid']
+                contour['type'] = record['type']
                 with open(record['cpspath'], 'rb') as f:
                     cps = f.read()
                     cps = json.loads(cps)

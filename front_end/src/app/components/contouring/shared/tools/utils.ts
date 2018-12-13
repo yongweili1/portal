@@ -2,6 +2,14 @@ import { Point, Point3d } from './point';
 
 export class Utils {
     constructor() { }
+
+    generateContourUid(): string {
+        const org_root = '1.2.156.112605.22.';
+        const dateStr = new Date().getTime();
+        const randomNum: string = String(Math.floor(Math.random() * 1000));
+        return org_root + dateStr + '.' + randomNum;
+    }
+
     /**
      * @msg: 计算两点的距离
      * @param {Point}} 类型两点 p1 p2

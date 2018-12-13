@@ -10,10 +10,21 @@ class ContourContext(object):
     def delete(self, image_uid=None, roi_uid=None):
         try:
             query = Contour.objects
+            query = query.filter(type=0)
             if roi_uid is not None:
                 query = query.filter(roiuid=roi_uid)
             if image_uid is not None:
                 query = query.filter(imageuid=image_uid)
+            query.delete()
+            return True, None
+        except Exception as ex:
+            return False, ex.message
+
+    def deleteByContourUid(self, contour_uid=None):
+        try:
+            query = Contour.objects
+            if contour_uid is not None:
+                query = query.filter(contouruid=contour_uid)
             query.delete()
             return True, None
         except Exception as ex:
@@ -27,9 +38,11 @@ class ContourContext(object):
         except Exception as ex:
             return False, ex.message
 
-    def retrieve(self, image_uid=None, roi_uid=None):
+    def retrieve(self, image_uid=None, roi_uid=None, contour_type=None):
         try:
             query = Contour.objects
+            if contour_type is not None:
+                query = query.filter(type=contour_type)
             if image_uid is not None:
                 query = query.filter(imageuid=image_uid)
             if roi_uid is not None:
@@ -42,6 +55,26 @@ class ContourContext(object):
                     record['roiuid'] = item.roiuid_id
                     record['imageuid'] = item.imageuid
                     record['cpspath'] = item.cpspath
+                    record['type'] = item.type
+                    records.append(record)
+            return records, None
+        except Exception as ex:
+            return None, ex.message
+
+    def retrieveByContourUid(self, contour_uid=None):
+        try:
+            query = Contour.objects
+            if contour_uid is not None:
+                query = query.filter(contouruid=contour_uid)
+            if query is not None or len(query) == 1:
+                records = []
+                for item in query:
+                    record = {}
+                    record['contouruid'] = item.contouruid
+                    record['roiuid'] = item.roiuid_id
+                    record['imageuid'] = item.imageuid
+                    record['cpspath'] = item.cpspath
+                    record['type'] = item.type
                     records.append(record)
             return records, None
         except Exception as ex:
