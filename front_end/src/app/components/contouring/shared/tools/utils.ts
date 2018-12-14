@@ -3,11 +3,17 @@ import { Point, Point3d } from './point';
 export class Utils {
     constructor() { }
 
+    /**
+     * @msg: 为每个Contour生成唯一的带时间戳的id
+     * @return {string} contourUID
+     */
     generateContourUid(): string {
         const org_root = '1.2.156.112605.22.';
         const dateStr = new Date().getTime();
         const randomNum: string = String(Math.floor(Math.random() * 1000));
-        return org_root + dateStr + '.' + randomNum;
+        const res = org_root + dateStr + '.' + randomNum;
+        console.log('generateContourUid ', res);
+        return res;
     }
 
     /**

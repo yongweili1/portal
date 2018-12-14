@@ -13,7 +13,7 @@ import { Point } from '../tools/point';
 import { Utils } from '../tools/utils';
 
 declare var createjs: any;
-
+declare var contourUid: [number, string];
 
 @Directive({
     selector: '[overlay-canvas]'
@@ -214,7 +214,11 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
                 EventAggregator.Instance().saveContoursEvent.publish([contours, ContourTypeEnum.freepen, roi_uid, slice_index]);
             }
         } else if (this.actionType === ActionTypeEnum.select) {
-
+            if (contourUid[0] !== ContourTypeEnum.freepen) {
+                const contour = this.stage.children.find((child) => child.contour_uid === contourUid[1]);
+                EventAggregator.Instance().updateSigleContourEvent.publish
+                    ([[contour.cps], contour.contour_type, contour.contour_uid, contour.roiConfig.id, this.sliceIndex, this.tag]);
+            }
         } else {
             EventAggregator.Instance().updateSigleContourEvent.publish
                 ([[this.shape.cps], this.shape.contour_type, this.shape.contour_uid, this.roi.id, this.sliceIndex, this.tag]);
@@ -365,7 +369,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
             graphic.cps.forEach(cp => {
                 contour.push(new Point(cp[0], cp[1]));
             });
-            contours.push([graphic.roiuid, contour, graphic.type]);
+            contours.push([graphic.roiuid, contour, graphic.type, graphic.contouruid]);
         });
         // draw graphics
         if (contours.length === 0) {
@@ -379,6 +383,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
             // const freepen = new FreepenContainer(this.stage);
             loadShape.setRoi(this.rois.find(x => x.id === roiuid));
             loadShape.cps = cps;
+            loadShape.contour_uid = contour[3];
             loadShape.isFill = this.fillGraphic;
             loadShape.setBoundaryPts(this.boundaryPts);
             loadShape.update();

@@ -21,3 +21,5 @@ var showcps = true;
 var delta_time = 100;
 
 var delta_count = 4;
+
+var contourUid = [0, ''];
