@@ -34,6 +34,9 @@ if __name__ == '__main__':
         ret = srv_manager.release_render_srv(p_context.get_serialize_object())
         p_context.reply(str(ret))
 
+    def handle_algor_srv_free(event_dict):
+        srv_manager.reset_gpu_stat(event_dict['sender'], int(event_dict['data']))
+
 
     proxy.register_cmd_handler(CmdId.cmd_id_find_algor_srv, handle_find_algor_srv)
     proxy.register_cmd_handler(CmdId.cmd_id_report_gpu_info, handle_report_gpu)

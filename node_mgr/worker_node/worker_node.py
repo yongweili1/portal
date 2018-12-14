@@ -24,12 +24,12 @@ def run_render_srv(number_to_run):
 
 
 def run_algor_srv(gpu_id, server_name):
-
-    AIServer().call_server(gpu_id, server_name)
-    pass
+    return AIServer().call_server(gpu_id, server_name)
 
 
 def restart_a_fresh_algor_srv(gpu_instance, alg_name):
+    kill()
+    run_algor_srv
     return 'proxy_name'
 
 
@@ -58,14 +58,18 @@ def get_mac_address():
     return ":".join([mac[el:el + 2] for el in range(0, 11, 2)])
 
 
+
+
 if __name__ == '__main__':
     log.create_log()
     log.set_source('WorkNode')
 
-    proxy = comproxy.PyCommProxy('work_node_{}'.format(get_mac_address()))
+    proxy = comproxy.PyCommProxy('work_node_{}'.format(get_mac_address()), ':4200', '10.9.19.153:10000')
     proxy.register_cmd_handler(CmdId.cmd_id_restart_algor_srv, handle_restart_algor_srv)
 
     start_initial_srv()
+
+    proxy.sync_send_command('')
 
     const_center_node = 'center_node'
     reply = proxy.sync_send_command(get_gpu_info(), CmdId.cmd_id_report_gpu_info, const_center_node)

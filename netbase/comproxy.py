@@ -75,7 +75,7 @@ class PyCommonHandler(c_net_base.ICLRCommandHandlerEx, c_net_base.IEventHandler)
 
     def HandleEvent(self, sSender, iChannelId, iEventId, sEvent):
         if iEventId in self._handlers:
-            self._thread.post(self._handlers[iEventId], sEvent)
+            self._thread.post(self._handlers[iEventId], dict(sender=sSender,data=sEvent))
         return 0
 
 
@@ -184,8 +184,8 @@ def command_handler(p_context):
         p_context.reply(str(sum(map(int, equation.split('+')))))
 
 
-def event_handler(s_event):
-    print 'handle_event, ' + s_event
+def event_handler(event_dict):
+    print 'handle_event, sender=' + event_dict['sender'], 'data=', event_dict['data']
 
 
 if __name__ == '__main__':
