@@ -6,17 +6,26 @@ import uuid
 from netbase.c_log import log
 from netbase import comproxy
 from netbase.cmd_event_id import CmdId
+from gpu_manager import GpuManager
+from ai_server import AIServer
+
+
+gpu_manager = GpuManager()
 
 
 def get_gpu_info():
-    return json.dumps({'number': 4, 'memory': 1024})
+    free_gpu_id = gpu_manager.get_gpu_memory_infos()
+    return json.dumps(free_gpu_id)
+    # return json.dumps({'number': 4, 'memory': 1024})
 
 
 def run_render_srv(number_to_run):
     pass
 
 
-def run_algor_srv(gpu_instance, alg_name):
+def run_algor_srv(gpu_id, server_name):
+
+    AIServer().call_server(gpu_id, server_name)
     pass
 
 
