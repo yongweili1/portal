@@ -1,9 +1,38 @@
+import Queue
 import threading
 
 from netbase import comproxy
 from netbase.c_log import log
-from netbase.cmd_event_id import CmdId
+from netbase.cmd_event_id import CmdId,EventId
 import srv_manager
+
+
+class WorkingThread(threading.Thread):
+    def __init__(self, srv_mgr):
+        threading.Thread.__init__(self)
+        self.evt = threading.Event()
+        self.Queue = Queue.Queue(0)
+        self.srv_manager = srv_mgr
+
+    def run(self):
+        while True:
+            p_context = self.Queue.get(True)
+            while True:
+                name = self.srv_manager.provide_algor_srv(p_context.get_serialize_object())
+                if 0 == len(name):
+                    self.evt.clear()
+                    self.evt.wait()
+                else:
+                    p_context.reply(name)
+                    break
+
+            self.Queue.task_done()
+
+    def post(self, p_context):
+        self.Queue.put_nowait(p_context)
+
+    def wake(self):
+        self.evt.set()
 
 
 if __name__ == '__main__':
@@ -14,9 +43,11 @@ if __name__ == '__main__':
 
     srv_manager = srv_manager.ServiceManager(proxy)
 
+    work_thread = WorkingThread(srv_manager)
+    work_thread.start()
+
     def handle_find_algor_srv(p_context):
-        name = srv_manager.provide_algor_srv(p_context.get_serialize_object())
-        p_context.reply(name)
+        work_thread.post(p_context)
 
     def handle_find_render_srv(p_context):
         name = srv_manager.provide_render_srv()
@@ -43,5 +74,6 @@ if __name__ == '__main__':
     proxy.register_cmd_handler(CmdId.cmd_id_report_srv_info, handle_report_svr_list)
     proxy.register_cmd_handler(CmdId.cmd_id_find_render_srv, handle_find_render_srv)
     proxy.register_cmd_handler(CmdId.cmd_id_release_render_srv, handle_release_render_srv)
+    proxy.register_cmd_handler(EventId.event_id_broadcast_free, handle_algor_srv_free)
 
     threading.Event().wait()
