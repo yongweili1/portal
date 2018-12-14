@@ -40,7 +40,7 @@ def get_current_srv_list():
 def handle_restart_algor_srv(p_context):
     content = p_context.get_serialize_object()
     req = json.loads(content)
-    proxy_name = restart_a_fresh_algor_srv(req.gpu_instance, req.algor_name)
+    proxy_name = restart_a_fresh_algor_srv(req['gpu'], req['alg_name'])
     p_context.reply(proxy_name)
 
 

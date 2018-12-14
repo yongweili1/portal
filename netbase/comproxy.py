@@ -145,6 +145,9 @@ class PyCommProxy:
         self._handler.register_handler(event_id, p_event_handler)
         return self.proxy.RegisterEventHandler(0, event_id, self._handler)
 
+    def get_name(self):
+        return self.proxy.GetName()
+
     def unregister_event_handler(self, event_id):
         self.proxy.UnRegisterEventHandler(0, event_id)
         self._handler.remove_handler(event_id)
