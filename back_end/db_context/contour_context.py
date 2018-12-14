@@ -7,10 +7,11 @@ class ContourContext(object):
     def __init__(self):
         pass
 
-    def delete(self, image_uid=None, roi_uid=None):
+    def delete(self, image_uid=None, roi_uid=None, type=None):
         try:
             query = Contour.objects
-            query = query.filter(type=0)
+            if type is not None:
+                query = query.filter(type=type)
             if roi_uid is not None:
                 query = query.filter(roiuid=roi_uid)
             if image_uid is not None:

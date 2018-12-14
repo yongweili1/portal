@@ -316,7 +316,7 @@ class Contour(APIView):
     def delete(self, request):
         roi_uid = request.GET.get('roi_uid', None)
         slice_index = request.GET.get('slice_index', None)
-        success, msg = contour_svc.delete(slice_index, roi_uid)
+        success, msg = contour_svc.delete(slice_index)
         return ResponseDto(success=success, message=msg)
 
 

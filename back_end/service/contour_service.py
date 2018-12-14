@@ -6,17 +6,18 @@ from utils.segmentation_helper import SegmentationHelper
 from utils.uid_generator import UidGenerator
 from config.path_cfg import file_path_ferry
 
-from md.image3d.python.image3d_io import read_image, write_image
+
+# from md.image3d.python.image3d_io import read_image, write_image
 
 
-from md_segmentation3d.impl.vseg_cimpl import autoseg_load_model, autoseg_volume
+# from md_segmentation3d.impl.vseg_cimpl import autoseg_load_model, autoseg_volume
 
 
 class ContourService(object):
     def __init__(self):
         pass
 
-    def delete(self, image_uid, roi_uid, contour_type):
+    def delete(self, image_uid, roi_uid=None, contour_type=None):
         # delete cps files firstly
         contours, msg = contour_ctx.retrieve(image_uid, roi_uid, contour_type)
         if contours is not None:
@@ -24,7 +25,7 @@ class ContourService(object):
                 if not os.path.isfile(item['cpspath']):
                     continue
                 os.remove(item['cpspath'])
-        return contour_ctx.delete(image_uid, roi_uid)
+        return contour_ctx.delete(image_uid, roi_uid, contour_type)
 
     def deleteByContourUid(self, contour_uid):
         # delete cps files firstly
