@@ -1,3 +1,4 @@
+import sys
 import threading
 import time
 
@@ -24,7 +25,11 @@ def command_handler(p_context):
 
 
 if __name__ == '__main__':
-    proxy = comproxy.PyCommProxy("img_srv")
+    proxy_name = 'img_srv'
+    if sys.argc > 1:
+        proxy_name = sys.argv[1]
+
+    proxy = comproxy.PyCommProxy(proxy_name)
     proxy.register_cmd_handler(CmdId.cmd_id_render, command_handler)
     log.dev_info('register_cmd_handler {}'.format(CmdId.cmd_id_render))
     threading.Event().wait()
