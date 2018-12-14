@@ -9,7 +9,9 @@ class CmdId(object):
     cmd_id_find_algor_srv = 106
     cmd_id_find_render_srv = 107
     cmd_id_release_render_srv = 108
+    cmd_id_process_ready = 109
 
 
 class EventId(object):
+    event_id_broadcast_free = 10000
     pass
