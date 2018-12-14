@@ -621,6 +621,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             return;
         }
         if (data[5] === 'transverse') {
+            console.log('save contour start !');
             const dto = new ContourModel();
             dto.contours = data[0];
             dto.contour_type = data[1];

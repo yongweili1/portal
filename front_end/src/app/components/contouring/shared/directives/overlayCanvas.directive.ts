@@ -27,6 +27,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
     preFaderPos: Point;
     isMouseDown = false;
     utils = new Utils();
+    _shapeType: ShapeTypeEnum = ShapeTypeEnum.freepen;
 
     @Input() rois: any;
     @Input() roi: RoiModel;
@@ -35,9 +36,29 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
     @Input() tag;
     @Input() graphics;
     @Input() actionType: ActionTypeEnum;
-    @Input() shapeType: ShapeTypeEnum;
+    // @Input() shapeType: ShapeTypeEnum;
     @Input() boundaryPts: any = new Array<Point>();
     @Input() fillGraphic: boolean;
+    @Input()
+    public set shapeType(_shape: ShapeTypeEnum) {
+        if (_shape === undefined) { return; }
+        if (this._shapeType !== _shape) {
+            this._shapeType = _shape;
+            if (this.stage === undefined || this.stage.children === undefined) { return; }
+            this.stage.children.forEach(contour => {
+                if (contour.type === ShapeTypeEnum.freepen) {
+                    if (_shape === ShapeTypeEnum.freepen2 && this.actionType !== ActionTypeEnum.select) {
+                        contour.editable = true;
+                    } else {
+                        contour.editable = false;
+                    }
+                }
+            });
+        }
+    }
+    public get shapeType() {
+        return this._shapeType;
+    }
 
     constructor(private el: ElementRef) { }
 
@@ -137,6 +158,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
 
     @HostListener('mousedown', ['$event']) onMouseDown(event: MouseEvent) {
         console.log('[overlay-canvas]handle mousedown event');
+
         if (this.boundaryPts === undefined) {
             return;
         }
@@ -144,7 +166,6 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
             console.log('out of image');
             return;
         }
-
         this.isMouseDown = true;
 
         if (this.actionType === ActionTypeEnum.nudge) {
@@ -153,7 +174,6 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
             this.preFaderPos = this.fader.getCenter();
             this.nudgeHelper.setMode(this.fader.getCenter(), this.getFreepenCps(this.roi.id));
         }
-
         this.shape = this._createShape();
         if (this.shape != null) {
             this.shape.handleMouseDown(event);
@@ -275,6 +295,13 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
                 break;
             case ShapeTypeEnum.freepen:
                 _shape = new FreepenContainer(this.stage);
+                break;
+            case ShapeTypeEnum.freepen2:
+                this.stage.children.forEach(contour => {
+                    if (contour.type === ShapeTypeEnum.freepen) {
+                        contour.editable = true;
+                    }
+                });
                 break;
             case ShapeTypeEnum.fader:
                 _shape = new FaderContainer(this.stage);
