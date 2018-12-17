@@ -309,13 +309,6 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
             case ShapeTypeEnum.freepen:
                 _shape = new FreepenContainer(this.stage);
                 break;
-            // case ShapeTypeEnum.freepen2:
-            //     this.stage.children.forEach(contour => {
-            //         if (contour.type === ShapeTypeEnum.freepen) {
-            //             contour.editable = true;
-            //         }
-            //     });
-            //     break;
             case ShapeTypeEnum.fader:
                 _shape = new FaderContainer(this.stage);
                 break;
