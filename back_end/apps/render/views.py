@@ -286,6 +286,7 @@ class SetCenter(APIView):
 class Contour(APIView):
 
     def get(self, request):
+        print('get data')
         roi_uids = request.GET.get('roi_uids', None)
         slice_index = request.GET.get('slice_index', None)
         roi_uids = roi_uids.split(',')
@@ -298,6 +299,7 @@ class Contour(APIView):
         return ResponseDto(data=contours)
 
     def post(self, request):
+        print('post data')
         roi_uid = request.data.get('roi_uid', None)
         slice_index = request.data.get('slice_index', None)
         contours = request.data.get('contours', None)
@@ -322,12 +324,12 @@ class Contour(APIView):
     def put(self, request):
         print('update contour!')
         cps = [request.data.get('contours', None)]
-        contours_uid = request.data.get('contour_uid', None)
+        contour_uid = request.data.get('contour_uid', None)
         rst = sync_send_command('point2dto3d', contours=cps)
         if not rst.data['success']:
             return rst
         cps = json.loads(rst.data['data'])['contours']
-        success, msg = contour_svc.update_by_contouruid(contours_uid, cps)
+        success, msg = contour_svc.update_by_contouruid(contour_uid, cps)
         return ResponseDto(success=success, message=msg)
 
 

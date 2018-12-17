@@ -33,7 +33,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
     @Input() roi: RoiModel;
     @Input() faderRadius: number;
     @Input() sliceIndex: any;
-    @Input() tag;
+    @Input() tag = 'transverse';
     @Input() graphics;
     @Input() actionType: ActionTypeEnum;
     // @Input() shapeType: ShapeTypeEnum;
@@ -87,10 +87,22 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
             if (data.length === 3) {
                 EventAggregator.Instance().saveSigleContourEvent.publish(data.concat(
                     [this.roi.id, this.sliceIndex, this.tag]));
-            } else {
+            } else if (data === ContourTypeEnum.freepen || data === ContourTypeEnum.fader) {
                 // EventAggregator.Instance().updateSigleContourEvent.publish(data.push(this.tag));
+                if (this.tag === 'transverse') {
+
+                    const contours = this.getFreepenCps(this.roi.id);
+                    if (contours.length > 0) {
+                        const roi_uid = this.roi.id;
+                        const slice_index = this.sliceIndex;
+                        EventAggregator.Instance().saveContoursEvent.publish([contours, ContourTypeEnum.freepen, roi_uid, slice_index]);
+                    }
+                }
+
+            } else {
                 console.log('contour data error');
             }
+
         });
     }
 
@@ -231,7 +243,6 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
 
     @HostListener('mouseup', ['$event']) onMouseUp(event: MouseEvent) {
         console.log('[overlay-canvas]handle mouseup event');
-
         if (this.shape != null && this.isMouseDown) {
             this.shape.handleMouseUp(event);
             if (!this.shape.validate()) {
@@ -243,15 +254,6 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
         if (this.actionType === ActionTypeEnum.nudge) {
             this.fader = this.getFader();
             this.fader.handleMouseUp(event);
-        }
-
-        if (this.shapeType === ShapeTypeEnum.freepen || this.shapeType === ShapeTypeEnum.freepen2) {
-            const contours = this.getFreepenCps(this.roi.id);
-            if (contours.length > 0) {
-                const roi_uid = this.roi.id;
-                const slice_index = this.sliceIndex;
-                EventAggregator.Instance().saveContoursEvent.publish([contours, ContourTypeEnum.freepen, roi_uid, slice_index]);
-            }
         }
     }
 
@@ -307,13 +309,13 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
             case ShapeTypeEnum.freepen:
                 _shape = new FreepenContainer(this.stage);
                 break;
-            case ShapeTypeEnum.freepen2:
-                this.stage.children.forEach(contour => {
-                    if (contour.type === ShapeTypeEnum.freepen) {
-                        contour.editable = true;
-                    }
-                });
-                break;
+            // case ShapeTypeEnum.freepen2:
+            //     this.stage.children.forEach(contour => {
+            //         if (contour.type === ShapeTypeEnum.freepen) {
+            //             contour.editable = true;
+            //         }
+            //     });
+            //     break;
             case ShapeTypeEnum.fader:
                 _shape = new FaderContainer(this.stage);
                 break;
