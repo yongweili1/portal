@@ -3,8 +3,9 @@ import { Fader } from '../overlay/fader';
 import { Point } from '../tools/point';
 import { RoiModel } from '../model/roi.model';
 import { Line } from '../overlay/line';
-import { ShapeTypeEnum } from '../../../../shared/models/enums';
+import { ShapeTypeEnum, ContourTypeEnum } from '../../../../shared/models/enums';
 import { Utils } from '../tools/utils';
+import { EventAggregator } from '../../../../shared/common/event_aggregator';
 
 export class FaderContainer extends BaseContainer {
     fader: Fader;
@@ -21,6 +22,7 @@ export class FaderContainer extends BaseContainer {
 
     constructor(stage) {
         super(stage, ShapeTypeEnum.fader);
+        this.contour_type = ContourTypeEnum.fader;
         this.fader = new Fader(stage);
         this.horizontal = new Line(stage);
         this.vertical = new Line(stage);
@@ -123,6 +125,7 @@ export class FaderContainer extends BaseContainer {
     handleMouseUp(e) {
         super.handleMouseUp(e);
         this.isPaint = false;
+        EventAggregator.Instance().contourReadyEvent.publish(this.contour_type);
     }
 
     handlePressMove(e) {

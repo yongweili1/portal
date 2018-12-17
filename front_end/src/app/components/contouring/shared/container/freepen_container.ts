@@ -5,6 +5,7 @@ import { Text } from '../overlay/text';
 import { RoiModel } from '../model/roi.model';
 import { ShapeTypeEnum, ContourTypeEnum } from '../../../../shared/models/enums';
 import { Utils } from '../tools/utils';
+import { EventAggregator } from '../../../../shared/common/event_aggregator';
 
 export class FreepenContainer extends BaseContainer {
     shape: Freepen;
@@ -228,6 +229,7 @@ export class FreepenContainer extends BaseContainer {
         }
         this.isMousedown = false;
         this.isPaint = false;
+        EventAggregator.Instance().contourReadyEvent.publish(this.contour_type);
     }
     handlePressUp(evt) {
         super.handlePressUp(evt);

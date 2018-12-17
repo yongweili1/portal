@@ -37,4 +37,5 @@ export enum ContourTypeEnum {
     line,
     circle,
     rectangle,
+    fader
 }
