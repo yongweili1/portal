@@ -6,9 +6,10 @@ from utils.segmentation_helper import SegmentationHelper
 from utils.uid_generator import UidGenerator
 from config.path_cfg import file_path_ferry
 
-
 from md.image3d.python.image3d_io import read_image, write_image
-from md_segmentation3d.impl.vseg_cimpl import autoseg_load_model, autoseg_volume
+
+
+# from md_segmentation3d.impl.vseg_cimpl import autoseg_load_model, autoseg_volume
 
 
 class ContourService(object):
@@ -25,19 +26,17 @@ class ContourService(object):
                 os.remove(item['cpspath'])
         return contour_ctx.delete(image_uid, roi_uid, contour_type)
 
-    def deleteByContourUid(self, contour_uid):
+    def delete_by_contouruid(self, contour_uid):
         # delete cps files firstly
-        contours, msg = contour_ctx.retrieveByContourUid(contour_uid)
-        if contours is not None:
-            for item in contours:
-                if not os.path.isfile(item['cpspath']):
-                    continue
-                os.remove(item['cpspath'])
-        return contour_ctx.deleteByContourUid(contour_uid)
+        contour, msg = contour_ctx.retrieve_by_contouruid(contour_uid)
+        if contour is not None and len(contour) > 0:
+            if os.path.exists(contour['cpspath']):
+                os.remove(contour['cpspath'])
+        return contour_ctx.delete_by_contouruid(contour_uid)
 
-    def createByContourUid(self, slice_index, roi_uid, contour, contour_type, contour_uid):
+    def create_by_contouruid(self, slice_index, roi_uid, contour, contour_type, contour_uid):
         try:
-            success, msg = self.deleteByContourUid(contour_uid)
+            success, msg = self.delete_by_contouruid(contour_uid)
             if not success:
                 return success, msg
             cpspath = os.path.join(file_path_ferry.cpsPath, contour_uid)
@@ -52,6 +51,19 @@ class ContourService(object):
             }
             contour_ctx.create(params)
             return True, None
+        except Exception as e:
+            return False, e.message
+
+    def update_by_contouruid(self, contour_uid, cps):
+        try:
+            contour = contour_ctx.retrieve_by_contouruid(contour_uid)
+            if contour is not None:
+                cpspath = contour[0]['cpspath']
+                if os.path.isfile(cpspath):
+                    os.remove(cpspath)
+                with open(cpspath, 'wb') as f:
+                    f.write(json.dumps(cps[0]))
+                return True, None
         except Exception as e:
             return False, e.message
 

@@ -138,7 +138,7 @@ export class RectangleContainer extends BaseContainer {
 
     handlePressUp(evt) {
         super.handlePressUp(evt);
-        EventAggregator.Instance().updateSigleContourEvent.publish([[this.cps], this.contour_uid]);
+        EventAggregator.Instance().updateSigleContourEvent.publish([this.cps, this.contour_uid]);
     }
 
     private updateCpsByDelta(evt, delta_x, delta_y) {

@@ -21,7 +21,7 @@ class ContourContext(object):
         except Exception as ex:
             return False, ex.message
 
-    def deleteByContourUid(self, contour_uid=None):
+    def delete_by_contouruid(self, contour_uid=None):
         try:
             query = Contour.objects
             if contour_uid is not None:
@@ -62,21 +62,19 @@ class ContourContext(object):
         except Exception as ex:
             return None, ex.message
 
-    def retrieveByContourUid(self, contour_uid=None):
+    def retrieve_by_contouruid(self, contour_uid=None):
         try:
             query = Contour.objects
             if contour_uid is not None:
                 query = query.filter(contouruid=contour_uid)
-            if query is not None or len(query) == 1:
-                records = []
-                for item in query:
-                    record = {}
-                    record['contouruid'] = item.contouruid
-                    record['roiuid'] = item.roiuid_id
-                    record['imageuid'] = item.imageuid
-                    record['cpspath'] = item.cpspath
-                    record['type'] = item.type
-                    records.append(record)
-            return records, None
+            if query is not None and len(query) == 1:
+                record = {}
+                item = query[0]
+                record['contouruid'] = item.contouruid
+                record['roiuid'] = item.roiuid_id
+                record['imageuid'] = item.imageuid
+                record['cpspath'] = item.cpspath
+                record['type'] = item.type
+            return record, None
         except Exception as ex:
             return None, ex.message

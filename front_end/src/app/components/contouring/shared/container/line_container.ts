@@ -108,7 +108,7 @@ export class LineContainer extends BaseContainer {
 
     handlePressUp(evt) {
         super.handlePressUp(evt);
-        EventAggregator.Instance().updateSigleContourEvent.publish([[this.cps], this.contour_uid]);
+        EventAggregator.Instance().updateSigleContourEvent.publish([this.cps, this.contour_uid]);
     }
 
     handlePressMove(evt) {
