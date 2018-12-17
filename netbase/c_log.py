@@ -13,6 +13,7 @@ class PyLogInstance(object):
     def __init__(self):
         self._source_name = ''
         self._frame_switch = 0
+        self._address = ''
 
         try:
             bin_dir = os.path.dirname(os.path.abspath(os.path.realpath(__file__)))
@@ -36,18 +37,27 @@ class PyLogInstance(object):
                     PyLogInstance._instance = object.__new__(cls)
         return PyLogInstance._instance
 
-    def create_log(self, xml_path=''):
+    def create_log(self, server_addr='', xml_path=''):
         if '' == xml_path:
             path = os.path.dirname(os.path.abspath(__file__))
             xml_path = os.path.join(path, 'config/log_config.xml')
-        self._lib.GLogLoadConfig(xml_path)
 
-        root = XmlEt.parse(xml_path).getroot()
+        tree = XmlEt.parse(xml_path)
+        root = tree.getroot()
         client_name = root.find('LOG_CLIENT_NAME').text
         if '' != client_name:
             self._source_name = client_name
         if root.find('LOG_TRACE_SOURCE_CODE_INFO').text.lower() == 'on':
             self._frame_switch = 1
+
+        if '' != server_addr:
+            ip, port = server_addr.split(':', 1)
+            root.find('ServerIP').text = ip
+            root.find('LogServerPort').text = port
+            tree.write(xml_path)
+        self._address = '{}:{}'.format(root.find('ServerIP').text, root.find('LogServerPort').text)
+
+        self._lib.GLogLoadConfig(xml_path)
 
     def erase_log(self):
         self._lib.GLogUnloadConfig()
@@ -86,6 +96,9 @@ class PyLogInstance(object):
         log.append('\x01\n')
         log_content = ''.join(list(map(bytes, log)))
         self._lib.GLogWriteToBuffer(log_content)
+
+    def get_address(self):
+        return self._address
 
 
 log = PyLogInstance()

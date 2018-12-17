@@ -2,55 +2,11 @@ import json
 import threading
 import uuid
 
-
 from netbase.c_log import log
 from netbase import comproxy
 from netbase.cmd_event_id import CmdId
-from gpu_manager import GpuManager
-from ai_server import AIServer
-
-
-gpu_manager = GpuManager()
-
-
-def get_gpu_info():
-    free_gpu_id = gpu_manager.get_gpu_memory_infos()
-    return json.dumps(free_gpu_id)
-    # return json.dumps({'number': 4, 'memory': 1024})
-
-
-def run_render_srv(number_to_run):
-    pass
-
-
-def run_algor_srv(gpu_id, server_name):
-    return AIServer().call_server(gpu_id, server_name)
-
-
-def restart_a_fresh_algor_srv(gpu_instance, alg_name):
-    kill()
-    run_algor_srv
-    return 'proxy_name'
-
-
-def start_initial_srv():
-    run_render_srv(4)
-    run_algor_srv()
-
-
-def get_current_srv_list():
-    srv_list = [{'srv': 'render', 'gpu': -1, 'proxy': 'img_srv#0', 'stat': 0},
-                {'srv': 'render', 'gpu': -1, 'proxy': 'img_srv#1', 'stat': 0},
-                {'srv': 'algor', 'gpu': 0, 'proxy': 'auto_segment#0', 'stat': 0, 'alg_name': 'auto_segment'}]
-
-    return json.dumps(srv_list)
-
-
-def handle_restart_algor_srv(p_context):
-    content = p_context.get_serialize_object()
-    req = json.loads(content)
-    proxy_name = restart_a_fresh_algor_srv(req['gpu'], req['alg_name'])
-    p_context.reply(proxy_name)
+from ai_server_mgr import AIServerManager
+from process_manager import RenderManager
 
 
 def get_mac_address():
@@ -58,22 +14,54 @@ def get_mac_address():
     return ":".join([mac[el:el + 2] for el in range(0, 11, 2)])
 
 
-
-
 if __name__ == '__main__':
     log.create_log()
     log.set_source('WorkNode')
+    log.dev_info('first log of work node on {}'.format(get_mac_address()))
 
-    proxy = comproxy.PyCommProxy('work_node_{}'.format(get_mac_address()), ':4200', '10.9.19.153:10000')
-    proxy.register_cmd_handler(CmdId.cmd_id_restart_algor_srv, handle_restart_algor_srv)
+    proxy = comproxy.PyCommProxy('work_node_{}'.format(get_mac_address()))
+    render_srv_manager = RenderManager()
+    render_srv_manager.create_srv(proxy.get_name(), 4)
 
-    start_initial_srv()
+    ai_srv_mgr = AIServerManager()
+    ai_srv_mgr.create_algor_srv(0, 'auto_segment', proxy.get_name())
 
-    proxy.sync_send_command('')
+    def handle_run_algor_srv(p_context):
+        info = json.loads(p_context.get_serialize_object())
+        gpu_id = info['gpu']
+        alg_name = info['alg_name']
+        if p_context.get_command_id() == CmdId.cmd_id_run_algor_srv:
+            proxy_name = ai_srv_mgr.create_algor_srv(gpu_id, alg_name, proxy.get_name())
+        else:
+            proxy_name = ai_srv_mgr.restart_a_fresh_algor_srv(gpu_id, alg_name, proxy.get_name())
+        p_context.reply(proxy_name)
+
+
+    proxy.register_cmd_func(CmdId.cmd_id_run_algor_srv, handle_run_algor_srv)
+    proxy.register_cmd_func(CmdId.cmd_id_restart_algor_srv, handle_run_algor_srv)
+
+    def handle_docker_ready(p_context):
+        ai_srv_mgr.handle_docker_ready()
+        p_context.reply(str(True))
+
+    proxy.register_cmd_func(CmdId.cmd_id_process_ready, handle_docker_ready)
+
+    # report to center_node gpu info and current svr_list
+    def get_gpu_info():
+        return json.dumps(dict(number=4, memory=1024))
 
     const_center_node = 'center_node'
     reply = proxy.sync_send_command(get_gpu_info(), CmdId.cmd_id_report_gpu_info, const_center_node)
     log.dev_info('report gpu info reply {}'.format(reply))
+
+    def get_current_srv_list():
+        srv_list = []
+        for x in render_srv_manager.to_list():
+            srv_list.append(x)
+
+        for x in ai_srv_mgr.to_list():
+            srv_list.append(x)
+        return json.dumps(srv_list)
 
     reply = proxy.sync_send_command(get_current_srv_list(), CmdId.cmd_id_report_srv_info, const_center_node)
     log.dev_info('report srv info reply {}'.format(reply))

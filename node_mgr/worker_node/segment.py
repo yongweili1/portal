@@ -28,7 +28,7 @@ if __name__ == '__main__':
         proxy.send_event(str(gpu_id), EventId.event_id_broadcast_free)
 
 
-    proxy.register_cmd_handler(CmdId.cmd_id_restart_algor_srv, handle_algor_task)
+    proxy.register_cmd_func(CmdId.cmd_id_restart_algor_srv, handle_algor_task)
 
     proxy.sync_send_command('', CmdId.cmd_id_process_ready, parent_node_name)
 

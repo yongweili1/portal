@@ -13,7 +13,7 @@ from netbase import comproxy
 from netbase.cmd_event_id import CmdId
 
 
-def command_handler(p_context):
+def command_func(p_context):
     current_package_data = p_context.get_serialize_object()
     data = RequestData(current_package_data)
     b = time.time()
@@ -26,10 +26,10 @@ def command_handler(p_context):
 
 if __name__ == '__main__':
     proxy_name = 'img_srv'
-    if sys.argc > 1:
+    if len(sys.argv) > 1:
         proxy_name = sys.argv[1]
 
     proxy = comproxy.PyCommProxy(proxy_name)
-    proxy.register_cmd_handler(CmdId.cmd_id_render, command_handler)
+    proxy.register_cmd_func(CmdId.cmd_id_render, command_func)
     log.dev_info('register_cmd_handler {}'.format(CmdId.cmd_id_render))
     threading.Event().wait()
