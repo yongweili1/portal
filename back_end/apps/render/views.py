@@ -329,7 +329,6 @@ class Contour(APIView):
         contours = json.loads(rst.data['data'])['contours']
         success, msg = contour_svc.updateByContourUid(contours_uid, contours)
         return ResponseDto(success=success, message=msg)
-        pass
 
 
 class Roi(APIView):
