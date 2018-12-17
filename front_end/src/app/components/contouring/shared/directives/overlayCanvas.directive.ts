@@ -109,17 +109,6 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
     ngOnChanges(changes: SimpleChanges) {
         if (changes.currentShape !== undefined) {
             console.log('[overlay-canvas]Current shape is ' + this.shapeType);
-            if (this.actionType === ActionTypeEnum.shape) {
-                this.stage.children.forEach(shape => {
-                    if (shape.type === ShapeTypeEnum.freepen) {
-                        if (this.shapeType === ShapeTypeEnum.freepen2) {
-                            shape.editable = true;
-                        } else {
-                            shape.editable = false;
-                        }
-                    }
-                });
-            }
         }
 
         if (changes.graphics !== undefined) {
