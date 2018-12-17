@@ -6,6 +6,8 @@ import { Point } from '../tools/point';
 import { RoiModel } from '../model/roi.model';
 import { ShapeTypeEnum, ContourTypeEnum } from '../../../../shared/models/enums';
 import { Utils } from '../tools/utils';
+import { EventAggregator } from '../../../../shared/common/event_aggregator';
+
 
 export class LineContainer extends BaseContainer {
     start: ControlPoint;
@@ -101,6 +103,12 @@ export class LineContainer extends BaseContainer {
         console.log('[line]handle MouseUp');
         this.isMousedown = false;
         this.isPaint = false;
+        EventAggregator.Instance().contourReadyEvent.publish([[this.cps], this.contour_type, this.contour_uid]);
+    }
+
+    handlePressUp(evt) {
+        super.handlePressUp(evt);
+        EventAggregator.Instance().updateSigleContourEvent.publish([[this.cps], this.contour_uid]);
     }
 
     handlePressMove(evt) {

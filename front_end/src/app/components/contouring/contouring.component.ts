@@ -81,6 +81,10 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             });
         EventAggregator.Instance().updateSigleContourEvent
             .subscribe(data => {
+                this.updateSingleContour(data);
+            });
+        EventAggregator.Instance().saveSigleContourEvent
+            .subscribe(data => {
                 this.saveSingleContour(data);
             });
         EventAggregator.Instance().deleteSigleContourEvent
@@ -614,6 +618,18 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         });
     }
 
+    private updateSingleContour(data: any) {
+        console.log('updateSingleContour');
+        const dto = new ContourModel();
+        [dto.contours, dto.contour_uid] = data;
+        this.contourSvc.update(dto).subscribe(response => {
+            if (response.success) {
+                this.toastSvc.success('Success.');
+            } else {
+                this.toastSvc.error(response.message);
+            }
+        });
+    }
 
     private saveSingleContour(data: any) {
         console.log('saveSingleContour');
@@ -623,11 +639,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         if (data[5] === 'transverse') {
             console.log('save contour start !');
             const dto = new ContourModel();
-            dto.contours = data[0];
-            dto.contour_type = data[1];
-            dto.contour_uid = data[2];
-            dto.roi_uid = data[3];
-            dto.slice_index = data[4];
+            [dto.contours, dto.contour_type, dto.contour_uid, dto.roi_uid, dto.slice_index] = data;
             this.contourSvc.save(dto).subscribe(response => {
                 if (response.success) {
                     this.toastSvc.success('Success.');

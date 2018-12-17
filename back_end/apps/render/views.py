@@ -319,6 +319,18 @@ class Contour(APIView):
         success, msg = contour_svc.delete(slice_index)
         return ResponseDto(success=success, message=msg)
 
+    def put(self, request):
+        print('update contour!')
+        contours = request.data.get('contours', None)
+        contours_uid = request.data.get('contour_uid', None)
+        rst = sync_send_command('point2dto3d', contours=contours)
+        if not rst.data['success']:
+            return rst
+        contours = json.loads(rst.data['data'])['contours']
+        success, msg = contour_svc.updateByContourUid(contours_uid, contours)
+        return ResponseDto(success=success, message=msg)
+        pass
+
 
 class Roi(APIView):
     def get(self, request):
