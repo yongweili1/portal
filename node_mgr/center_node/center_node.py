@@ -69,11 +69,11 @@ if __name__ == '__main__':
         srv_manager.reset_gpu_stat(event_dict['sender'], int(event_dict['data']))
 
 
-    proxy.register_cmd_handler(CmdId.cmd_id_find_algor_srv, handle_find_algor_srv)
-    proxy.register_cmd_handler(CmdId.cmd_id_report_gpu_info, handle_report_gpu)
-    proxy.register_cmd_handler(CmdId.cmd_id_report_srv_info, handle_report_svr_list)
-    proxy.register_cmd_handler(CmdId.cmd_id_find_render_srv, handle_find_render_srv)
-    proxy.register_cmd_handler(CmdId.cmd_id_release_render_srv, handle_release_render_srv)
-    proxy.register_cmd_handler(EventId.event_id_broadcast_free, handle_algor_srv_free)
+    proxy.register_cmd_func(CmdId.cmd_id_find_algor_srv, handle_find_algor_srv)
+    proxy.register_cmd_func(CmdId.cmd_id_report_gpu_info, handle_report_gpu)
+    proxy.register_cmd_func(CmdId.cmd_id_report_srv_info, handle_report_svr_list)
+    proxy.register_cmd_func(CmdId.cmd_id_find_render_srv, handle_find_render_srv)
+    proxy.register_cmd_func(CmdId.cmd_id_release_render_srv, handle_release_render_srv)
+    proxy.register_event_func(EventId.event_id_broadcast_free, handle_algor_srv_free)
 
     threading.Event().wait()

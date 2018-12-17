@@ -37,14 +37,14 @@ if __name__ == '__main__':
         p_context.reply(proxy_name)
 
 
-    proxy.register_cmd_handler(CmdId.cmd_id_run_algor_srv, handle_run_algor_srv)
-    proxy.register_cmd_handler(CmdId.cmd_id_restart_algor_srv, handle_run_algor_srv)
+    proxy.register_cmd_func(CmdId.cmd_id_run_algor_srv, handle_run_algor_srv)
+    proxy.register_cmd_func(CmdId.cmd_id_restart_algor_srv, handle_run_algor_srv)
 
     def handle_docker_ready(p_context):
         ai_srv_mgr.handle_docker_ready()
         p_context.reply(str(True))
 
-    proxy.register_cmd_handler(CmdId.cmd_id_process_ready, handle_docker_ready)
+    proxy.register_cmd_func(CmdId.cmd_id_process_ready, handle_docker_ready)
 
     # report to center_node gpu info and current svr_list
     def get_gpu_info():

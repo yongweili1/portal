@@ -52,6 +52,28 @@ class PyCommandContextEx(object):
         return self._command_context.Reply(reply_object)
 
 
+class PyCommandHandlerEx(c_net_base.ICLRCommandHandlerEx):
+    def __init__(self):
+        c_net_base.ICLRCommandHandlerEx.__init__(self)
+
+    def handle_command(self, p_context):
+        pass
+
+    def HandleCommandCLR(self, pContext):
+        return self.handle_command(PyCommandContextEx(pContext))
+
+
+class PyEventHandler(c_net_base.IEventHandler):
+    def __init__(self):
+        c_net_base.IEventHandler.__init__(self)
+
+    def handle_event(self, sender, event_id, s_event):
+        pass
+
+    def HandleEvent(self, sSender, iChannelId, iEventId, sEvent):
+        return self.handle_event(sSender, iEventId, sEvent)
+
+
 class PyCommonHandler(c_net_base.ICLRCommandHandlerEx, c_net_base.IEventHandler):
     def __init__(self, thread):
         c_net_base.ICLRCommandHandlerEx.__init__(self)
@@ -123,6 +145,8 @@ class PyCommProxy:
         self.callbacks = []
         self.proxy = c_net_base.CommunicationProxy()
         self.proxy.SetName(name)
+        self._event_handler_ex = {}
+        self._cmd_handler_ex = {}
         if not dispatcher_address.strip():
             dispatcher_address = load_address()
         if not dispatcher_address.strip():
@@ -132,25 +156,36 @@ class PyCommProxy:
         if 0 != self.proxy.StartListener(listen_address):
             raise Exception(name, " StartListener failed.")
 
-    def register_cmd_handler(self, cmd_id, p_cmd_handler):
-        self._handler.register_handler(cmd_id, p_cmd_handler)
+    def register_cmd_func(self, cmd_id, p_cmd_func):
+        self._handler.register_handler(cmd_id, p_cmd_func)
         p_cmd_handler_boost = c_net_base.SwigSharedCharArrayUtil_New(self._handler)
         return self.proxy.RegisterCommandHandlerEx(cmd_id, p_cmd_handler_boost)
 
-    def unregister_cmd_handler(self, cmd_id):
+    def register_cmd_handler(self, cmd_id, p_cmd_handler):
+        self._cmd_handler_ex[cmd_id] = p_cmd_handler
+        p_cmd_handler_boost = c_net_base.SwigSharedCharArrayUtil_New(p_cmd_handler)
+        return self.proxy.RegisterCommandHandlerEx(cmd_id, p_cmd_handler_boost)
+
+    def unregister_cmd(self, cmd_id):
         self.proxy.UnRegisterCommandHandler(cmd_id)
         self._handler.remove_handler(cmd_id)
+        self._cmd_handler_ex.pop(cmd_id)
+
+    def register_event_func(self, event_id, p_event_func):
+        self._handler.register_handler(event_id, p_event_func)
+        return self.proxy.RegisterEventHandler(0, event_id, self._handler)
 
     def register_event_handler(self, event_id, p_event_handler):
-        self._handler.register_handler(event_id, p_event_handler)
-        return self.proxy.RegisterEventHandler(0, event_id, self._handler)
+        self._event_handler_ex[event_id] = p_event_handler
+        return self.proxy.RegisterEventHandler(0, event_id, p_event_handler)
 
     def get_name(self):
         return self.proxy.GetName()
 
-    def unregister_event_handler(self, event_id):
+    def unregister_event(self, event_id):
         self.proxy.UnRegisterEventHandler(0, event_id)
         self._handler.remove_handler(event_id)
+        self._event_handler_ex.pop(event_id)
 
     def sync_send_command(self, data, cmd_id, receiver, timeout=0):
         cx = c_net_base.CommandContext()
@@ -188,18 +223,49 @@ def event_handler(event_dict):
     print 'handle_event, sender=' + event_dict['sender'], 'data=', event_dict['data']
 
 
+class CouldInputParaCmdHandler(PyCommandHandlerEx):
+    def __init__(self, para):
+        PyCommandHandlerEx.__init__(self)
+        self.para = para
+
+    def handle_command(self, p_context):
+        equation = p_context.get_serialize_object()
+        print self.para
+        p_context.reply(str(sum(map(int, equation.split('+')))))
+
+
+class CouldInputParaEventHandler(PyEventHandler):
+    def __init__(self):
+        PyEventHandler.__init__(self)
+
+    def handle_event(self, sender, event_id, s_event):
+        print 'handle_event, event_id = ', event_id
+
+
 if __name__ == '__main__':
     log.create_log()
     fe = PyCommProxy("proxy_fe")
     be = PyCommProxy("proxy_be")
-    be.register_cmd_handler(10, command_handler)
-    be.register_event_handler(11, event_handler)
+
+    # first parameters using
+    be.register_cmd_func(10, command_handler)
+    be.register_event_func(11, event_handler)
 
     print 'Sync result:', fe.sync_send_command('1+2+3', 10, 'proxy_be')
 
     print 'return ', fe.async_send_command('1+2+3', 10, 'proxy_be', async_func_cb)
 
     fe.send_event('event broadcast!', 11)
+
+    # second parameters using
+    be.register_cmd_handler(12, CouldInputParaCmdHandler('para'))
+    be.register_event_handler(13, CouldInputParaEventHandler())
+
+    print '10+20+30=', fe.sync_send_command('10+20+30', 12, 'proxy_be')
+
+    print '10+20+30 return ', fe.async_send_command('10+20+30', 12, 'proxy_be', async_func_cb)
+
+    fe.send_event('event broadcast!', 13)
 
     time.sleep(10000)
 
