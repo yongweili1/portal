@@ -26,7 +26,7 @@ def command_handler(p_context):
 
 if __name__ == '__main__':
     proxy_name = 'img_srv'
-    if sys.argc > 1:
+    if len(sys.argv) > 1:
         proxy_name = sys.argv[1]
 
     proxy = comproxy.PyCommProxy(proxy_name)
