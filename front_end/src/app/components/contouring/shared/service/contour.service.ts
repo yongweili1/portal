@@ -25,6 +25,11 @@ export class ContourService {
         };
     }
 
+    update(data: any): Observable<any> {
+        return this.http.put<ContourModel>(`${this.appConfig.apiUrl}/image/contour/`, data, this.options)
+            .map(response => response['body']);
+    }
+
     save(dto: ContourModel): Observable<any> {
         return this.http.post<ContourModel>(`${this.appConfig.apiUrl}/image/contour/`, dto, this.options)
             .map(response => response['body']);

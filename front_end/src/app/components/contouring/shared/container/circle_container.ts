@@ -6,6 +6,7 @@ import { RoiModel } from '../model/roi.model';
 import { ShapeTypeEnum, ContourTypeEnum } from '../../../../shared/models/enums';
 import { Utils } from '../tools/utils';
 import { Point } from '../tools/point';
+import { EventAggregator } from '../../../../shared/common/event_aggregator';
 
 export class CircleContainer extends BaseContainer {
     start: ControlPoint;
@@ -100,6 +101,12 @@ export class CircleContainer extends BaseContainer {
         console.log('[circle]handle MouseUp');
         this.isMousedown = false;
         this.isPaint = false;
+        EventAggregator.Instance().contourReadyEvent.publish([[this.cps], this.contour_type, this.contour_uid]);
+    }
+
+    handlePressUp(evt) {
+        super.handlePressMove(evt);
+        EventAggregator.Instance().updateSigleContourEvent.publish([this.cps, this.contour_uid]);
     }
 
     handlePressMove(evt) {

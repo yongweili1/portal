@@ -6,6 +6,8 @@ import { RoiModel } from '../model/roi.model';
 import { ShapeTypeEnum, ContourTypeEnum } from '../../../../shared/models/enums';
 import { Utils } from '../tools/utils';
 import { Point } from '../tools/point';
+import { EventAggregator } from '../../../../shared/common/event_aggregator';
+
 
 export class RectangleContainer extends BaseContainer {
     rectangle: Rectangle;
@@ -119,6 +121,7 @@ export class RectangleContainer extends BaseContainer {
         console.log('[rectangle]handle MouseUp');
         this.isMousedown = false;
         this.isPaint = false;
+        EventAggregator.Instance().contourReadyEvent.publish([[this.cps], this.contour_type, this.contour_uid]);
     }
 
     handlePressMove(evt) {
@@ -131,6 +134,11 @@ export class RectangleContainer extends BaseContainer {
             const delta_y = evt.stageY - tempY;
             this.updateCpsByDelta(evt, delta_x, delta_y);
         }
+    }
+
+    handlePressUp(evt) {
+        super.handlePressUp(evt);
+        EventAggregator.Instance().updateSigleContourEvent.publish([this.cps, this.contour_uid]);
     }
 
     private updateCpsByDelta(evt, delta_x, delta_y) {

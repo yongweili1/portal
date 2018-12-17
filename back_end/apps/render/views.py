@@ -310,13 +310,24 @@ class Contour(APIView):
         if contour_type == 0 or contour_uid is None:
             success, msg = contour_svc.create(slice_index, roi_uid, contours, contour_type)
         else:
-            success, msg = contour_svc.createByContourUid(slice_index, roi_uid, contours, contour_type, contour_uid)
+            success, msg = contour_svc.create_by_contouruid(slice_index, roi_uid, contours, contour_type, contour_uid)
         return ResponseDto(success=success, message=msg)
 
     def delete(self, request):
         roi_uid = request.GET.get('roi_uid', None)
         slice_index = request.GET.get('slice_index', None)
         success, msg = contour_svc.delete(slice_index)
+        return ResponseDto(success=success, message=msg)
+
+    def put(self, request):
+        print('update contour!')
+        cps = [request.data.get('contours', None)]
+        contours_uid = request.data.get('contour_uid', None)
+        rst = sync_send_command('point2dto3d', contours=cps)
+        if not rst.data['success']:
+            return rst
+        cps = json.loads(rst.data['data'])['contours']
+        success, msg = contour_svc.update_by_contouruid(contours_uid, cps)
         return ResponseDto(success=success, message=msg)
 
 

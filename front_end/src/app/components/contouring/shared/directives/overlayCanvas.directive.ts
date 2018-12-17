@@ -82,6 +82,16 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
                 this.stage.clear();
             }
         });
+
+        EventAggregator.Instance().contourReadyEvent.subscribe((data) => {
+            if (data.length === 3) {
+                EventAggregator.Instance().saveSigleContourEvent.publish(data.concat(
+                    [this.roi.id, this.sliceIndex, this.tag]));
+            } else {
+                // EventAggregator.Instance().updateSigleContourEvent.publish(data.push(this.tag));
+                console.log('contour data error');
+            }
+        });
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -242,17 +252,9 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
                 const slice_index = this.sliceIndex;
                 EventAggregator.Instance().saveContoursEvent.publish([contours, ContourTypeEnum.freepen, roi_uid, slice_index]);
             }
-        } else if (this.actionType === ActionTypeEnum.select) {
-            if (contourUid[0] !== ContourTypeEnum.freepen) {
-                const contour = this.stage.children.find((child) => child.contour_uid === contourUid[1]);
-                EventAggregator.Instance().updateSigleContourEvent.publish
-                    ([[contour.cps], contour.contour_type, contour.contour_uid, contour.roiConfig.id, this.sliceIndex, this.tag]);
-            }
-        } else {
-            EventAggregator.Instance().updateSigleContourEvent.publish
-                ([[this.shape.cps], this.shape.contour_type, this.shape.contour_uid, this.roi.id, this.sliceIndex, this.tag]);
         }
     }
+
 
     @HostListener('mouseleave', ['$event']) onMouseLeave(event: MouseEvent) {
         console.log('[overlay-canvas]mouseleave');

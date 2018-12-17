@@ -4,7 +4,6 @@ import { ShapeTypeEnum, ContourTypeEnum } from '../../../../shared/models/enums'
 import { Utils } from '../tools/utils';
 
 declare var createjs: any;
-declare var contourUid: [number, string];
 
 export class BaseContainer extends createjs.Container {
     uid: string = null;
@@ -83,10 +82,6 @@ export class BaseContainer extends createjs.Container {
         }
     }
 
-    updateCurrentContour() {
-        contourUid = [this.contour_type, this.contour_uid];
-    }
-
     update() {
     }
 
@@ -97,7 +92,6 @@ export class BaseContainer extends createjs.Container {
         this._tempPoint = new Point(evt.stageX, evt.stageY);
         this.isMousedown = true;
         this.currentPressDownBtn = evt.button;
-        this.updateCurrentContour();
     }
     handleMouseUp(e) {
         this.isMousedown = false;
