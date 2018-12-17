@@ -20,3 +20,11 @@ def sync_send_command(command, **kwargs):
     data = msg.ResponseMsg()
     data.ParseFromString(rst)
     return ResponseDto(success=data.success, message=data.comment, data=data.content)
+
+
+@MacroRecorder()
+def sync_load_volume(vol):
+    rst = proxy.sync_send_command(vol, CmdId.cmd_id_load_volume, 'img_srv')
+    data = msg.ResponseMsg()
+    data.ParseFromString(rst)
+    return ResponseDto(success=data.success, message=data.comment, data=data.content)

@@ -10,6 +10,7 @@ class CmdId(object):
     cmd_id_find_render_srv = 107
     cmd_id_release_render_srv = 108
     cmd_id_process_ready = 109
+    cmd_id_load_volume = 110
 
 
 class EventId(object):
