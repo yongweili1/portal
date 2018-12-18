@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, ElementRef, ViewChildren, QueryList } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { EventAggregator } from '../../shared/common/event_aggregator';
 import { ContourModel } from './shared/model/contour.model';
@@ -49,7 +49,6 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('cell1') cell1;
     @ViewChild('cell2') cell2;
     @ViewChild('cell3') cell3;
-    @ViewChildren('roimanager') viewelements: QueryList<any>;
 
     constructor(
         public activeRoute: ActivatedRoute,
@@ -57,7 +56,6 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         private imageSvc: ImageService,
         private contourSvc: ContourService,
         private toastSvc: ToastService,
-        private ele: ElementRef
     ) {
         this.excuteHelper = new ExcuteHelper();
         this.data = new ContouringModel();
@@ -69,8 +67,6 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
 
     //#region life-cycle hook methods
     ngOnInit() {
-        // @ViewChildren('roimanager') viewelements: ElementRef;
-
         this.cell1.id = 'cell-1';
         this.cell2.id = 'cell-2';
         this.cell3.id = 'cell-3';
