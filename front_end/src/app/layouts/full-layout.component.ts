@@ -1,4 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { MenuItem } from 'primeng/api';
+import { CustomContextMenu } from '../models/contextmenu';
 
 @Component({
   selector: 'mpt-full-layout',
@@ -6,10 +8,12 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
   styleUrls: ['./layout.component.less'],
   encapsulation: ViewEncapsulation.None
 })
-export class FullLayoutComponent {
+export class FullLayoutComponent implements OnInit {
 
-  public disabled: boolean = false;
+  private items: MenuItem[];
+  public disabled = false;
   public status: { isopen: boolean } = { isopen: false };
+  cmModel: CustomContextMenu;
 
   public toggled(open: boolean): void { }
 
@@ -18,4 +22,11 @@ export class FullLayoutComponent {
     $event.stopPropagation();
     this.status.isopen = !this.status.isopen;
   }
+
+  ngOnInit() {
+    this.cmModel = new CustomContextMenu();
+    this.items = this.cmModel.getMenItems();
+  }
+
 }
+

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule, PreloadAllModules } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule, HttpClient} from '@angular/common/http';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ROUTES } from './app.routes';
@@ -15,7 +15,7 @@ import { NoContentComponent } from './base/no-content/no-content.component';
 import { HeaderModule } from './components/header/header.module';
 import { SideBarModule } from './components/sidebar/sidebar.module';
 import { EasyUIModule } from 'ng-easyui/components/easyui/easyui.module';
-import { ElModule } from 'element-angular'
+import { ElModule } from 'element-angular';
 import { ToastModule } from 'primeng/toast';
 
 
@@ -24,13 +24,14 @@ import { SimpleLayoutComponent } from './layouts/simple-layout.component';
 
 import { ForgotPasswordModule } from './base/forgot-password/forgot-password.module';
 import { RenewPasswordModule } from './base/renew-password/renew-password.module';
-import { ContouringModule} from './components/contouring/contouring.module';
+import { ContouringModule } from './components/contouring/contouring.module';
 import { HomeComponent } from './components/home/home.component';
 
 import { MessageService } from 'primeng/api';
 
 
 import { from } from 'rxjs';
+import { ContextMenuModule } from 'primeng/primeng';
 
 export function HttpLoaderFactory(http: HttpClient) {
   const appConfig = window['appConfig'] || {};
@@ -72,7 +73,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     ForgotPasswordModule,
     RenewPasswordModule,
     ContouringModule,
-    ToastModule
+    ToastModule,
+    ContextMenuModule
   ],
   providers: [
     AppConfigService,
