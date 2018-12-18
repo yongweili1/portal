@@ -161,6 +161,14 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     //#endregion
 
     //#region Roi
+
+    nomenu(evt) {
+        evt.preventDefault();
+        /*
+            Implementation of custom menu
+        */
+    }
+
     handleAddRoi() {
         const seriesuid = $('#seriesSelect').val();
         if (seriesuid !== undefined && seriesuid != null && seriesuid !== '') {

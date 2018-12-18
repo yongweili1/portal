@@ -21,11 +21,12 @@ export class Circle extends Overlay {
         this.graphics.beginStroke(this._color);
         if (isFill) {
             this.graphics.beginFill(this._color + this._alpha);
+        } else {
+            const hit = new Hitbar();
+            hit.graphics.drawCircle(x, y, radio);
+            this.hitArea = hit;
+            this.overlayStage.update();
         }
         this.graphics.drawCircle(x, y, radio);
-        const hit = new Hitbar();
-        hit.graphics.drawCircle(x, y, radio);
-        this.hitArea = hit;
-        this.overlayStage.update();
     }
 }
