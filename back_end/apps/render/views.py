@@ -9,7 +9,7 @@ from config.path_cfg import file_path_ferry
 from django.shortcuts import render
 from rest_framework.views import APIView
 from service import contour_svc, roi_svc, series_svc
-from utils.img_svr_connector import sync_send_command
+from utils.img_svr_connector import sync_send_command, sync_load_volume
 from utils.response_dto import ResponseDto
 from utils.uid_generator import UidGenerator
 from utils.volume_builder import VolumeBuilder
@@ -64,7 +64,9 @@ class LoadVolume(APIView):
             if series is None:
                 return ResponseDto(success=False, message=msg)
 
-            return sync_send_command('load', volumepath=series.seriespixeldatafilepath)
+            with open(series.seriespixeldatafilepath, 'rb') as f:
+                vol = f.read()
+            return sync_load_volume(vol)
         except Exception as e:
             return ResponseDto(success=False, message=e.message)
 

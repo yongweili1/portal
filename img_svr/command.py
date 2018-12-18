@@ -70,11 +70,14 @@ def load(**kwargs):
     """
     try:
         volume_path = kwargs['volumepath']
+        if not os.path.isfile(volume_path):
+            return response(success=False, message='volume data not exist.')
     except Exception as err:
         return response(success=False, message=err.message)
 
     try:
         vol = cio.read_image(volume_path)
+        os.remove(volume_path)
         size = vol.size().tolist()
 
         imageentity.set_volume(vol)
