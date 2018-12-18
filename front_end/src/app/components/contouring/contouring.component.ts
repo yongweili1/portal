@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, ElementRef, ViewChildren, QueryList } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { EventAggregator } from '../../shared/common/event_aggregator';
 import { ContourModel } from './shared/model/contour.model';
@@ -40,21 +40,24 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     // subscription objects
     contourCpsSubscriber: Subscription;
     removeCpsSubscriber: Subscription;
+    updateCpsSubscriber: Subscription;
+    saveSingleCpsSubscriber: Subscription;
+    removeSingleCpsSubscriber: Subscription;
     faderRadiusDeltaSubscriber: Subscription;
     actionTypeObserver: Subscription;
     shapeTypeObserver: Subscription;
-
     @ViewChild('cell1') cell1;
     @ViewChild('cell2') cell2;
     @ViewChild('cell3') cell3;
-
+    @ViewChildren('roimanager') viewelements: QueryList<any>;
 
     constructor(
         public activeRoute: ActivatedRoute,
         private roiSvc: RoiService,
         private imageSvc: ImageService,
         private contourSvc: ContourService,
-        private toastSvc: ToastService
+        private toastSvc: ToastService,
+        private ele: ElementRef
     ) {
         this.excuteHelper = new ExcuteHelper();
         this.data = new ContouringModel();
@@ -66,6 +69,8 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
 
     //#region life-cycle hook methods
     ngOnInit() {
+        // @ViewChildren('roimanager') viewelements: ElementRef;
+
         this.cell1.id = 'cell-1';
         this.cell2.id = 'cell-2';
         this.cell3.id = 'cell-3';
@@ -79,15 +84,15 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             .subscribe(data => {
                 this.deleteContours(data);
             });
-        EventAggregator.Instance().updateSigleContourEvent
+        this.updateCpsSubscriber = EventAggregator.Instance().updateSigleContourEvent
             .subscribe(data => {
                 this.updateSingleContour(data);
             });
-        EventAggregator.Instance().saveSigleContourEvent
+        this.saveSingleCpsSubscriber = EventAggregator.Instance().saveSigleContourEvent
             .subscribe(data => {
                 this.saveSingleContour(data);
             });
-        EventAggregator.Instance().deleteSigleContourEvent
+        this.removeSingleCpsSubscriber = EventAggregator.Instance().deleteSigleContourEvent
             .subscribe(data => {
                 // this.deleteContours(data);
             });
@@ -150,6 +155,9 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             this.faderRadiusDeltaSubscriber.unsubscribe();
             this.actionTypeObserver.unsubscribe();
             this.shapeTypeObserver.unsubscribe();
+            this.updateCpsSubscriber.unsubscribe();
+            this.saveSingleCpsSubscriber.unsubscribe();
+            this.removeSingleCpsSubscriber.unsubscribe();
         } catch (error) {
             console.error(error.message);
         }
@@ -221,9 +229,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
                     rois.push(roi);
                 });
                 this.data.roiList = rois;
-                if (this.data.roiList !== null && this.data.roiList.length > 0) {
-                    this.onSelectRoi(this.data.roiList[0]);
-                }
+                this.onSelectRoi(this.data.selectedRoi);
             } else {
                 this.toastSvc.error(response.message);
             }
@@ -234,18 +240,20 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         this.segDisplay = true;
     }
 
-    handleManageRoi(showDialog = true) {
+    manageRoiDisplay() {
         const seriesuid = $('#seriesSelect').val();
         if (seriesuid !== '' && seriesuid !== undefined) {
-            if (showDialog) {
-                this.manageROIDisplay = true;
-            }
+            this.manageROIDisplay = !this.manageROIDisplay;
+        }
+    }
+
+    handleManageRoi() {
+        const seriesuid = $('#seriesSelect').val();
+        if (seriesuid !== '' && seriesuid !== undefined) {
             this.roiSvc.get(seriesuid).subscribe(response => {
                 if (response.success) {
                     this.data.roiList = response.data;
-                    if (this.data.roiList.length > 0) {
-                        this.onSelectRoi(this.data.roiList[0]);
-                    }
+                    this.onSelectRoi(this.data.selectedRoi);
                 } else {
                     this.toastSvc.error(response.message);
                 }
@@ -271,7 +279,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
                     rois.push(roi);
                 });
                 this.data.roiList = rois;
-                this.onSelectRoi(this.data.roiList[0]);
+                this.onSelectRoi(this.data.selectedRoi);
                 this.newROIDisplay = false;
             } else {
                 this.toastSvc.success(response.message);
@@ -310,7 +318,13 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     onSelectRoi(roi) {
-        this.data.selectedRoi = roi;
+        if (this.data.roiList !== undefined && this.data.roiList.length > 0) {
+            if (this.data.roiList.filter((_roi) => _roi.id === roi.id).length > 0) {
+                this.data.selectedRoi = roi;
+            } else {
+                this.data.selectedRoi = this.data.roiList[0];
+            }
+        }
     }
 
     fillGraphicChanged(value) {
@@ -550,7 +564,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             if (response.success) {
                 this.hasLoadVolume = true;
                 this.seriesId = seriesId;
-                this.handleManageRoi(false);
+                this.handleManageRoi();
                 EventAggregator.Instance().volumnSize.publish(response.data);
                 this.updateCanvasSize(canvasSize);
             } else {

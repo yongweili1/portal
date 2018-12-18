@@ -1,7 +1,7 @@
 <div class="my-page">
     <div class="top_Button">
         <mpt-contouring-top-bar (onLoadVolume)="handleLoadVolume()" (onClearGraphics)="handleClearGraphics()"
-            (onAddRoi)="handleAddRoi()" (onManageRoi)="handleManageRoi()" (autoroi)="mainautoroi()" (onReset)="handleReset()"
+            (onAddRoi)="handleAddRoi()" (onManageRoi)="manageRoiDisplay()" (autoroi)="mainautoroi()" (onReset)="handleReset()"
             (onCenter)="handleCenter()" (contourToMask)='handleContourToMask()' [seriesList]="seriesList"></mpt-contouring-top-bar>
     </div>
 
@@ -75,7 +75,7 @@
                     <td>
                         <div class="roi-color-div" [ngStyle]="{'width':'20px','height':'20px','background-color':item.color}"></div>
                     </td>
-                    <td class="select-td" (click)="onSelectRoi(item)">
+                    <td class="select-td" #roimanager (click)="onSelectRoi(item)">
                         <span>{{ item.name }}</span>
                     </td>
                     <td class="delete-td">
