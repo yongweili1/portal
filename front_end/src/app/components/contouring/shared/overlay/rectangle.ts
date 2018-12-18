@@ -17,11 +17,12 @@ export class Rectangle extends Overlay {
         this.graphics.beginStroke(this._color);
         if (isFill) {
             this.graphics.beginFill(this._color + this._alpha);
+        } else {
+            const hit = new Hitbar();
+            hit.graphics.rect(start.x, start.y, width, height);
+            this.hitArea = hit;
         }
         this.graphics.rect(start.x, start.y, width, height);
-        const hit = new Hitbar();
-        hit.graphics.rect(start.x, start.y, width, height);
-        this.hitArea = hit;
         this.overlayStage.update();
     }
 }
