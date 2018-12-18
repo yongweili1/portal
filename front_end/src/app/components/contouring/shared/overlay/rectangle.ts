@@ -21,8 +21,8 @@ export class Rectangle extends Overlay {
             const hit = new Hitbar();
             hit.graphics.rect(start.x, start.y, width, height);
             this.hitArea = hit;
-            this.overlayStage.update();
         }
         this.graphics.rect(start.x, start.y, width, height);
+        this.overlayStage.update();
     }
 }

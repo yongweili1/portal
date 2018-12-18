@@ -25,8 +25,8 @@ export class Circle extends Overlay {
             const hit = new Hitbar();
             hit.graphics.drawCircle(x, y, radio);
             this.hitArea = hit;
-            this.overlayStage.update();
         }
         this.graphics.drawCircle(x, y, radio);
+        this.overlayStage.update();
     }
 }

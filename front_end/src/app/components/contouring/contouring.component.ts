@@ -162,7 +162,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
 
     //#region Roi
 
-    nomenu(evt) {
+    disableContextMenu(evt) {
         evt.preventDefault();
         /*
             Implementation of custom menu
