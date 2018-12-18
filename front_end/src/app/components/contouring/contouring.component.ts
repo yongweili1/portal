@@ -163,7 +163,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     //#region Roi
     handleAddRoi() {
         const seriesuid = $('#seriesSelect').val();
-        if (seriesuid !== '' && seriesuid !== undefined) {
+        if (seriesuid !== undefined && seriesuid != null && seriesuid !== '') {
             this.newROIDisplay = true;
             this.data.activeRoi = new RoiModel();
         } else {
@@ -184,9 +184,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
             if (response.success) {
                 this.toastSvc.success('Save succeed.');
                 this.data.roiList = response.data;
-                if (this.data.roiList !== null && this.data.roiList.length > 0) {
-                    this.onSelectRoi(this.data.roiList[this.data.roiList.length - 1]);
-                }
+                this.onSelectRoi(this.data.selectedRoi);
                 this.getContours(this.data.cell1.sliceIndex.toString());
                 this.segDisplay = false;
             } else {
@@ -238,14 +236,14 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
 
     manageRoiDisplay() {
         const seriesuid = $('#seriesSelect').val();
-        if (seriesuid !== '' && seriesuid !== undefined) {
+        if (seriesuid !== undefined && seriesuid !== null && seriesuid !== '') {
             this.manageROIDisplay = !this.manageROIDisplay;
         }
     }
 
     handleManageRoi() {
         const seriesuid = $('#seriesSelect').val();
-        if (seriesuid !== '' && seriesuid !== undefined) {
+        if (seriesuid !== undefined && seriesuid !== null && seriesuid !== '') {
             this.roiSvc.get(seriesuid).subscribe(response => {
                 if (response.success) {
                     this.data.roiList = response.data;
@@ -314,7 +312,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     onSelectRoi(roi) {
-        if (this.data.roiList !== undefined && this.data.roiList.length > 0) {
+        if (this.data.roiList !== undefined && this.data.roiList !== null && this.data.roiList.length > 0) {
             if (this.data.roiList.filter((_roi) => _roi.id === roi.id).length > 0) {
                 this.data.selectedRoi = roi;
             } else {

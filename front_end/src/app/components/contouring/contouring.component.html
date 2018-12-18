@@ -75,7 +75,7 @@
                     <td>
                         <div class="roi-color-div" [ngStyle]="{'width':'20px','height':'20px','background-color':item.color}"></div>
                     </td>
-                    <td class="select-td" #roimanager (click)="onSelectRoi(item)">
+                    <td class="select-td" (click)="onSelectRoi(item)">
                         <span>{{ item.name }}</span>
                     </td>
                     <td class="delete-td">
