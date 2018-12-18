@@ -12,7 +12,6 @@ export class Utils {
         const dateStr = new Date().getTime();
         const randomNum: string = String(Math.floor(Math.random() * 1000));
         const res = org_root + dateStr + '.' + randomNum;
-        console.log('generateContourUid ', res);
         return res;
     }
 

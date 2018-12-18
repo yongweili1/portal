@@ -6,6 +6,8 @@ import { Directive, ElementRef, Input, OnChanges, OnInit, SimpleChanges } from '
 export class ImageCanvasDirective implements OnInit, OnChanges {
     @Input() tag;
     @Input() base64;
+    @Input() refreash;
+
     canvas: any;
     context: CanvasRenderingContext2D;
 
@@ -21,18 +23,28 @@ export class ImageCanvasDirective implements OnInit, OnChanges {
         if (this.base64 === undefined) {
             return;
         }
-        this.update();
+
+        if (changes.base64 !== undefined) {
+            this.update();
+        }
+
+        if (changes.refreash !== undefined) {
+            this.update();
+        }
     }
 
     private update() {
         const img = new Image();
-        const base64Header = 'data:image/jpeg;base64,';
-        const imgData = base64Header + this.base64;
-        img.src = imgData;
+
         const that = this;
         img.onload = function () {
             that.context.clearRect(0, 0, that.canvas.width, that.canvas.height);
             that.context.drawImage(img, 0, 0, that.canvas.width, that.canvas.height);
+            this.onload = null;
         };
+
+        const base64Header = 'data:image/jpeg;base64,';
+        const imgData = base64Header + this.base64;
+        img.src = imgData;
     }
 }

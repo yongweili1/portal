@@ -198,11 +198,13 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
         const seriesuid = $('#seriesSelect').val();
         const roiuid = this.data.selectedRoi.id;
         this.roiSvc.contourToMask(seriesuid, roiuid).subscribe(response => {
-            if (response.success) {
-                this.toastSvc.success('Save contours to mask succeed.');
-            } else {
-                this.toastSvc.error(response.message);
-            }
+            const link = document.createElement('a');
+            link.setAttribute('href', window.URL.createObjectURL(response));
+            link.setAttribute('download', seriesuid + '_mask.nii.gz');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         });
     }
 
@@ -276,7 +278,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.onSelectRoi(this.data.selectedRoi);
                 this.newROIDisplay = false;
             } else {
-                this.toastSvc.success(response.message);
+                this.toastSvc.error(response.message);
             }
         });
     }
@@ -585,7 +587,6 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.updateSliceIndex(response.data[0].slice_index);
                 this.getContours(response.data[0].slice_index);
                 this.updateBoundaryPts(response.data);
-                this.toastSvc.success('succeed.');
             } else {
                 this.toastSvc.error(response.message);
             }
@@ -685,21 +686,33 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private updateCells(data, updateWwwl: boolean = false, updateViews: string = 'all') {
         if (updateViews === 'all' || updateViews.indexOf('transverse') > -1) {
-            this.data.cell1.imageM.imageData = data['0']['image'];
+            if (this.data.cell1.imageM.imageData === data['0']['image']) {
+                this.data.cell1.imageM.refreash = !this.data.cell1.imageM.refreash;
+            } else {
+                this.data.cell1.imageM.imageData = data['0']['image'];
+            }
             this.data.cell1.crossM.point = new Point(data['0']['crosshair'][0], data['0']['crosshair'][1]);
             if (updateWwwl) {
                 this.data.cell1.imageM.setWwwl(data['0']['wwwl']);
             }
         }
         if (updateViews === 'all' || updateViews.indexOf('coronal') > -1) {
-            this.data.cell2.imageM.imageData = data['1']['image'];
+            if (this.data.cell2.imageM.imageData === data['1']['image']) {
+                this.data.cell2.imageM.refreash = !this.data.cell1.imageM.refreash;
+            } else {
+                this.data.cell2.imageM.imageData = data['1']['image'];
+            }
             this.data.cell2.crossM.point = new Point(data['1']['crosshair'][0], data['1']['crosshair'][1]);
             if (updateWwwl) {
                 this.data.cell2.imageM.setWwwl(data['1']['wwwl']);
             }
         }
         if (updateViews === 'all' || updateViews.indexOf('saggital') > -1) {
-            this.data.cell3.imageM.imageData = data['2']['image'];
+            if (this.data.cell3.imageM.imageData === data['2']['image']) {
+                this.data.cell3.imageM.refreash = !this.data.cell1.imageM.refreash;
+            } else {
+                this.data.cell3.imageM.imageData = data['2']['image'];
+            }
             this.data.cell3.crossM.point = new Point(data['2']['crosshair'][0], data['2']['crosshair'][1]);
             if (updateWwwl) {
                 this.data.cell3.imageM.setWwwl(data['2']['wwwl']);

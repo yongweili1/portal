@@ -7,9 +7,7 @@ from utils.uid_generator import UidGenerator
 from config.path_cfg import file_path_ferry
 
 from md.image3d.python.image3d_io import read_image, write_image
-
-
-# from md_segmentation3d.impl.vseg_cimpl import autoseg_load_model, autoseg_volume
+from md_segmentation3d.impl.vseg_cimpl import autoseg_load_model, autoseg_volume
 
 
 class ContourService(object):

@@ -107,7 +107,6 @@ export class CrossCanvasDirective implements OnInit, OnChanges {
     }
 
     setCrossPoint(point: Point) {
-        console.log(point.x, point.y);
         this.point = point;
     }
 

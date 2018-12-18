@@ -19,7 +19,8 @@
         </div>
     </div>
 
-    <canvas id="{{ id }}-image" class="imageCanvas" image-canvas [tag]='model.tag' [base64]='model.imageM.imageData'></canvas>
+    <canvas id="{{ id }}-image" class="imageCanvas" image-canvas [tag]='model.tag' [base64]='model.imageM.imageData'
+        [refreash]='model.imageM.refreash'></canvas>
 
     <canvas id="{{ id }}-overlay" class="overlayCanvas" overlay-canvas [tag]='model.tag' [graphics]='model.graphics'
         [fillGraphic]='model.fillGraphic' [boundaryPts]='model.boundaryPts' [roi]='roi' [rois]='rois' [actionType]='actionType'
