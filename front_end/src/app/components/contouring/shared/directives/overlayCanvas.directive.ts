@@ -13,7 +13,6 @@ import { Point } from '../tools/point';
 import { Utils } from '../tools/utils';
 
 declare var createjs: any;
-declare var contourUid: [number, string];
 
 @Directive({
     selector: '[overlay-canvas]'
@@ -92,7 +91,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
                 if (this.tag === 'transverse') {
 
                     const contours = this.getFreepenCps(this.roi.id);
-                    if (contours.length > 0) {
+                    if (contours.length >= 0) {
                         const roi_uid = this.roi.id;
                         const slice_index = this.sliceIndex;
                         EventAggregator.Instance().saveContoursEvent.publish([contours, ContourTypeEnum.freepen, roi_uid, slice_index]);
