@@ -168,6 +168,10 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
 
     @HostListener('mousedown', ['$event']) onMouseDown(event: MouseEvent) {
         console.log('[overlay-canvas]handle mousedown event');
+        if (this.rois === undefined || this.rois.length === 0) {
+            console.error('no roi is enable');
+            return;
+        }
         this.stage.children.forEach(contour => {
             if (contour.type === ShapeTypeEnum.freepen) {
                 if (this.actionType === ActionTypeEnum.shape && this.shapeType === ShapeTypeEnum.freepen2) {

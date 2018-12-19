@@ -50,9 +50,7 @@ export class BaseContainer extends createjs.Container {
     OnInit() {
         this.selectedRoi_id = this.roiConfig === undefined ? '' : this.roiConfig.id === undefined ? '' : this.roiConfig.id;
         EventAggregator.Instance().selectRoiEvent.subscribe((roi_id) => {
-            if (roi_id !== '') {
-                this.selectedRoi_id = roi_id;
-            }
+            this.selectedRoi_id = roi_id;
         });
     }
     public get roiConfig() {
