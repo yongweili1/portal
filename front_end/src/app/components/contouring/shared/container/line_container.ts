@@ -107,26 +107,36 @@ export class LineContainer extends BaseContainer {
     }
 
     handlePressUp(evt) {
-        super.handlePressUp(evt);
-        EventAggregator.Instance().updateSigleContourEvent.publish([this.cps, this.contour_uid]);
+        if (this.roiConfig.id === this.selectedRoi_id) {
+            super.handlePressUp(evt);
+            EventAggregator.Instance().updateSigleContourEvent.publish([this.cps, this.contour_uid]);
+        }
     }
 
     handlePressMove(evt) {
         console.log('[line]handle PressMove');
-        const delta_x = evt.stageX - this._tempPoint.x;
-        const delta_y = evt.stageY - this._tempPoint.y;
-        this._tempPoint.x = evt.stageX;
-        this._tempPoint.y = evt.stageY;
+        if (this.roiConfig.id === this.selectedRoi_id) {
+            const delta_x = evt.stageX - this._tempPoint.x;
+            const delta_y = evt.stageY - this._tempPoint.y;
+            this._tempPoint.x = evt.stageX;
+            this._tempPoint.y = evt.stageY;
 
-        if (evt.target === this.line || evt.target === this.text) {
-            this.cps[0].offset(delta_x, delta_y);
-            this.cps[1].offset(delta_x, delta_y);
-        } else if (evt.target === this.start) {
-            this.cps[0].offset(delta_x, delta_y);
-        } else if (evt.target === this.end) {
-            this.cps[1].offset(delta_x, delta_y);
+            const tempCp0: Point = this.cps[0].copy();
+            const tempCp1: Point = this.cps[1].copy();
+
+            if (evt.target === this.line || evt.target === this.text) {
+                tempCp0.offset(delta_x, delta_y);
+                tempCp1.offset(delta_x, delta_y);
+            } else if (evt.target === this.start) {
+                tempCp0.offset(delta_x, delta_y);
+            } else if (evt.target === this.end) {
+                tempCp1.offset(delta_x, delta_y);
+            }
+            if (this.utils.isInPolygon(tempCp0, this.boundaryPts) && this.utils.isInPolygon(tempCp1, this.boundaryPts)) {
+                this.cps[0] = tempCp0;
+                this.cps[1] = tempCp1;
+                this.update();
+            }
         }
-
-        this.update();
     }
 }

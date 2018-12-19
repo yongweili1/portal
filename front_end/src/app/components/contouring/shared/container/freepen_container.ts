@@ -232,38 +232,42 @@ export class FreepenContainer extends BaseContainer {
         EventAggregator.Instance().contourReadyEvent.publish(this.contour_type);
     }
     handlePressUp(evt) {
-        super.handlePressUp(evt);
-        this.handleMouseUp(evt);
+        if (this.roiConfig.id === this.selectedRoi_id) {
+            super.handlePressUp(evt);
+            this.handleMouseUp(evt);
+        }
     }
 
     handlePressMove(evt) {
         console.log('[freepen]handle PressMove');
-        const delta_x = evt.stageX - this._tempPoint.x;
-        const delta_y = evt.stageY - this._tempPoint.y;
-        this._tempPoint.x = evt.stageX;
-        this._tempPoint.y = evt.stageY;
+        if (this.roiConfig.id === this.selectedRoi_id) {
+            const delta_x = evt.stageX - this._tempPoint.x;
+            const delta_y = evt.stageY - this._tempPoint.y;
+            this._tempPoint.x = evt.stageX;
+            this._tempPoint.y = evt.stageY;
 
-        if (this.editable) {
-            this.handleMouseMove(evt);
-            return;
-        }
-        const tempCps: Array<Point> = new Array<Point>();
-        console.log('boudaryPts : ' + this.boundaryPts);
-        if (evt.target === this.shape || evt.target === this.text) {
-            const res = this.cps.every(cp => {
-                const _temp = cp.copy();
-                _temp.offset(delta_x, delta_y);
-                if (!this.utils.isInPolygon(_temp, this.boundaryPts)) {
-                    console.log('out of polygon');
-                    return false;
+            if (this.editable) {
+                this.handleMouseMove(evt);
+                return;
+            }
+            const tempCps: Array<Point> = new Array<Point>();
+            console.log('boudaryPts : ' + this.boundaryPts);
+            if (evt.target === this.shape || evt.target === this.text) {
+                const res = this.cps.every(cp => {
+                    const _temp = cp.copy();
+                    _temp.offset(delta_x, delta_y);
+                    if (!this.utils.isInPolygon(_temp, this.boundaryPts)) {
+                        console.log('out of polygon');
+                        return false;
+                    }
+                    console.log('is in polygon');
+                    tempCps.push(_temp);
+                    return true;
+                });
+                if (res) {
+                    this.cps = tempCps;
+                    this.update();
                 }
-                console.log('is in polygon');
-                tempCps.push(_temp);
-                return true;
-            });
-            if (res) {
-                this.cps = tempCps;
-                this.update();
             }
         }
     }

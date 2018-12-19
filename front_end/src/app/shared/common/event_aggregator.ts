@@ -4,6 +4,7 @@ export class EventAggregator {
     private static _aggregator: EventAggregator;
 
     //#region observable msg
+    selectRoiEvent = new ObservableObject();
     saveContoursEvent = new ObservableObject();
     deleteContoursEvent = new ObservableObject();
     saveSigleContourEvent = new ObservableObject();

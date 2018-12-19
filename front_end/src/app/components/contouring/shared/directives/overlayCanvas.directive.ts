@@ -306,6 +306,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
             _shape.isFill = this.fillGraphic;
             _shape.setRoi(this.roi);
             _shape.setBoundaryPts(this.boundaryPts);
+            _shape.selectedRoi_id = this.roi.id;
         }
         return _shape;
     }
@@ -405,6 +406,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
             loadShape.cps = cps;
             loadShape.contour_uid = contour[3];
             loadShape.isFill = this.fillGraphic;
+            loadShape.selectedRoi_id = this.roi.id;
             loadShape.setBoundaryPts(this.boundaryPts);
             loadShape.update();
         });

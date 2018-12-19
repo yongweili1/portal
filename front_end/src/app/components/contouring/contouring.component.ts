@@ -324,7 +324,10 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     onSelectRoi(roi) {
         if (this.data.roiList !== undefined && this.data.roiList !== null && this.data.roiList.length > 0) {
             if (this.data.roiList.filter((_roi) => _roi.id === roi.id).length > 0) {
-                this.data.selectedRoi = roi;
+                if (this.data.selectedRoi.id !== roi.id) {
+                    this.data.selectedRoi = roi;
+                    EventAggregator.Instance().selectRoiEvent.publish(this.data.selectedRoi.id);
+                }
             } else {
                 this.data.selectedRoi = this.data.roiList[0];
             }

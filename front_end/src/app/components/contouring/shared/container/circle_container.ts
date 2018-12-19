@@ -105,17 +105,22 @@ export class CircleContainer extends BaseContainer {
     }
 
     handlePressUp(evt) {
-        super.handlePressMove(evt);
-        EventAggregator.Instance().updateSigleContourEvent.publish([this.cps, this.contour_uid]);
+        if (this.roiConfig.id === this.selectedRoi_id) {
+            super.handlePressMove(evt);
+            EventAggregator.Instance().updateSigleContourEvent.publish([this.cps, this.contour_uid]);
+        }
     }
 
     handlePressMove(evt) {
         console.log('[circle]handle PressMove');
-        const evtPoint = new Point(evt.stageX, evt.stageY);
-        if (this.utils.isInPolygon(evtPoint, this.boundaryPts)) {
-            const delta_x = evt.stageX - this._tempPoint.x;
-            const delta_y = evt.stageY - this._tempPoint.y;
-            this.updateCircleByDelta(evt, delta_x, delta_y);
+        console.log('selected roi id is : ', this.selectedRoi_id);
+        if (this.roiConfig.id === this.selectedRoi_id) {
+            const evtPoint = new Point(evt.stageX, evt.stageY);
+            if (this.utils.isInPolygon(evtPoint, this.boundaryPts)) {
+                const delta_x = evt.stageX - this._tempPoint.x;
+                const delta_y = evt.stageY - this._tempPoint.y;
+                this.updateCircleByDelta(evt, delta_x, delta_y);
+            }
         }
     }
 
