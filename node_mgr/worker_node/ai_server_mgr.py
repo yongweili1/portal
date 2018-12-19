@@ -7,6 +7,8 @@ from netbase.c_log import log
 
 from docker_manager import DockerManager
 
+# from gpu_manager import gpu_mgr
+
 
 class AIServerManager(object):
     def __init__(self):
@@ -43,26 +45,28 @@ class AIServerManager(object):
             return proxy_name
         return ''
 
+    def create_mount_algor_srv(self, alg_name, node_name, count):
+        names = []
+        # free_device = gpu_mgr.get_free_gpu_list()
+        free_device = range(2)
+        count = count if count < len(free_device) else len(free_device)
+        for i in range(count):
+            names.append(self.create_algor_srv(free_device[i], alg_name, node_name))
+        return names
+
     def restart_a_fresh_algor_srv(self, gpu_id, alg_name, node_name):
+        pass
 
     def handle_docker_ready(self):
         self._evt.set()
-
-    def ribfracture_server(self):
-        pass
-
-    def registration_server(self):
-        pass
-
-    def call_server(self, gpu_id, server_name):
-        self.seg_server(gpu_id)
 
     def query_image(self, alg_name):
         return 'heart_seg:latest'
 
     def to_list(self):
-        for k, v in self.pro_list.items():
+        for k, v in self._docker_list.items():
             yield v
+
 
 if __name__ == '__main__':
     m = AIServerManager()

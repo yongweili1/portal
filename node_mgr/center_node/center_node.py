@@ -50,8 +50,9 @@ if __name__ == '__main__':
         work_thread.post(p_context)
 
     def handle_find_render_srv(p_context):
+        # TODO: post to work_thread
         name = srv_manager.provide_render_srv()
-        p_context.reply(name)
+        p_context.reply(str(name))
 
     def handle_report_gpu(p_context):
         srv_manager.register_gpu_info(p_context.get_serialize_object(), p_context.get_sender())
@@ -64,9 +65,14 @@ if __name__ == '__main__':
     def handle_release_render_srv(p_context):
         ret = srv_manager.release_render_srv(p_context.get_serialize_object())
         p_context.reply(str(ret))
+        work_thread.wake()
 
     def handle_algor_srv_free(event_dict):
         srv_manager.reset_gpu_stat(event_dict['sender'], int(event_dict['data']))
+        work_thread.wake()
+
+    def handle_srv_dead(event_dict):
+        srv_manager.erase_srv(event_dict['data'], event_dict['sender'])
 
 
     proxy.register_cmd_func(CmdId.cmd_id_find_algor_srv, handle_find_algor_srv)
@@ -75,5 +81,6 @@ if __name__ == '__main__':
     proxy.register_cmd_func(CmdId.cmd_id_find_render_srv, handle_find_render_srv)
     proxy.register_cmd_func(CmdId.cmd_id_release_render_srv, handle_release_render_srv)
     proxy.register_event_func(EventId.event_id_broadcast_free, handle_algor_srv_free)
+    proxy.register_event_func(EventId.event_id_broadcast_srv_dead, handle_srv_dead)
 
     threading.Event().wait()

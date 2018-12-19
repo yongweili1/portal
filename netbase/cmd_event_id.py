@@ -15,4 +15,5 @@ class CmdId(object):
 
 class EventId(object):
     event_id_broadcast_free = 10000
+    event_id_broadcast_srv_dead = 10001
     pass

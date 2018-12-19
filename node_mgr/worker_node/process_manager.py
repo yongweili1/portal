@@ -1,17 +1,20 @@
+import json
 import os
 
 from netbase.c_log import log
+from netbase.cmd_event_id import EventId
 import subprocess
 import threading
 import time
 
 
 class RenderManager(threading.Thread):
-    def __init__(self):
+    def __init__(self, proxy):
         threading.Thread.__init__(self)
         self.pro_list = {}
         self.pro_name_index = 0
         self._stopped = False
+        self.proxy = proxy
 
     def create_srv(self, node_name, count):
         cwd = os.path.abspath(__file__)
@@ -50,6 +53,7 @@ class RenderManager(threading.Thread):
                 if x.poll() is not None:
                     print '{} is dead! return {}'.format(k, x.returncode)
                     log.dev_error('{} is dead! return {}'.format(k, x.returncode))
+                    self.proxy.send_event(json.dumps(srv='render', proxy=k), EventId.event_id_broadcast_srv_dead)
                     self.pro_list.pop(k)
 
             time.sleep(1)

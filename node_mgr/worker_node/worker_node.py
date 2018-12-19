@@ -1,5 +1,6 @@
 import json
 import threading
+import time
 import uuid
 
 from netbase.c_log import log
@@ -20,11 +21,11 @@ if __name__ == '__main__':
     log.dev_info('first log of work node on {}'.format(get_mac_address()))
 
     proxy = comproxy.PyCommProxy('work_node_{}'.format(get_mac_address()))
-    render_srv_manager = RenderManager()
+    render_srv_manager = RenderManager(proxy)
     render_srv_manager.create_srv(proxy.get_name(), 4)
 
     ai_srv_mgr = AIServerManager()
-    ai_srv_mgr.create_algor_srv(0, 'auto_segment', proxy.get_name())
+    #ai_srv_mgr.create_algor_srv(0, 'auto_segment', proxy.get_name())
 
     def handle_run_algor_srv(p_context):
         info = json.loads(p_context.get_serialize_object())
@@ -51,8 +52,9 @@ if __name__ == '__main__':
         return json.dumps(dict(number=4, memory=1024))
 
     const_center_node = 'center_node'
-    reply = proxy.sync_send_command(get_gpu_info(), CmdId.cmd_id_report_gpu_info, const_center_node)
-    log.dev_info('report gpu info reply {}'.format(reply))
+    while not proxy.sync_send_command(get_gpu_info(), CmdId.cmd_id_report_gpu_info, const_center_node).strip():
+        time.sleep(1)
+        log.dev_info('can not find center_node')
 
     def get_current_srv_list():
         srv_list = []
