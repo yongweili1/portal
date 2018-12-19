@@ -33,6 +33,7 @@ export class ImageModel {
     imageData: string;
     windowLevel: any = 0;
     windowWidth: any = 2000;
+    refreash: boolean;
 
     setWwwl(wwwl) {
         if (wwwl === undefined || !Array.isArray(wwwl)) {

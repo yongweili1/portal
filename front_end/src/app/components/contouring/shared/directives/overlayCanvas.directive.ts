@@ -245,7 +245,6 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
         }
     }
 
-
     @HostListener('mouseleave', ['$event']) onMouseLeave(event: MouseEvent) {
         console.log('[overlay-canvas]mouseleave');
         this.stage.removeChild(this.fader);

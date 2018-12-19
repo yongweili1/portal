@@ -63,6 +63,7 @@ export class RoiService {
         const getParams = new HttpParams()
             .set('seriesuid', seriesuid)
             .set('roiuid', roiuid);
-        return this.http.get<any>(`${this.appConfig.apiUrl}/algproxy/results/`, { params: getParams });
+        return this.http.get(`${this.appConfig.apiUrl}/algproxy/results/`,
+            { params: getParams, responseType: 'blob' });
     }
 }

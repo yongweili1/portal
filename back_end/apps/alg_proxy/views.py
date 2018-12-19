@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 
 from netbase.c_log import log
 from service import series_svc, contour_svc, roi_svc
-from utils.response_dto import ResponseDto
+from utils.response_dto import ResponseDto, FileResponseDto
 
 from config.path_cfg import file_path_ferry
 from utils.uid_generator import UidGenerator
@@ -33,8 +33,11 @@ class GetAlgResult(APIView):
         series_uid = request.GET.get('seriesuid', None)
         roi_uid = request.GET.get('roiuid', None)
         mask_fp = file_path_ferry.volumePath + r'{}_mask.nii.gz'.format(series_uid)
-        contour_svc.contour_2_mask(mask_fp, roi_uid)
-        return ResponseDto()
+        success, msg = contour_svc.contour_2_mask(mask_fp, roi_uid)
+        if not success:
+            return ResponseDto(success=False, message=msg)
+
+        return FileResponseDto(mask_fp)
 
     def post(self, request):
         series_uid = request.data.get('seriesuid', None)
