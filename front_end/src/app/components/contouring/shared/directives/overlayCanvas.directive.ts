@@ -168,6 +168,10 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
 
     @HostListener('mousedown', ['$event']) onMouseDown(event: MouseEvent) {
         console.log('[overlay-canvas]handle mousedown event');
+        if (this.rois === undefined || this.rois.length === 0) {
+            console.error('no roi is enable');
+            return;
+        }
         this.stage.children.forEach(contour => {
             if (contour.type === ShapeTypeEnum.freepen) {
                 if (this.actionType === ActionTypeEnum.shape && this.shapeType === ShapeTypeEnum.freepen2) {
@@ -306,6 +310,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
             _shape.isFill = this.fillGraphic;
             _shape.setRoi(this.roi);
             _shape.setBoundaryPts(this.boundaryPts);
+            _shape.selectedRoi_id = this.roi.id;
         }
         return _shape;
     }
@@ -405,6 +410,7 @@ export class OverlayCanvasDirective implements OnInit, OnChanges, OnDestroy {
             loadShape.cps = cps;
             loadShape.contour_uid = contour[3];
             loadShape.isFill = this.fillGraphic;
+            loadShape.selectedRoi_id = this.roi.id;
             loadShape.setBoundaryPts(this.boundaryPts);
             loadShape.update();
         });

@@ -2,6 +2,7 @@ import { Point } from '../tools/point';
 import { RoiModel } from '../model/roi.model';
 import { ShapeTypeEnum, ContourTypeEnum } from '../../../../shared/models/enums';
 import { Utils } from '../tools/utils';
+import { EventAggregator } from '../../../../shared/common/event_aggregator';
 
 declare var createjs: any;
 
@@ -19,7 +20,7 @@ export class BaseContainer extends createjs.Container {
     boundaryPts: Array<Point>;
     activeAreaBoundaryPts: Array<Point>;
     isFill: boolean;
-
+    selectedRoi_id: string;
     utils: Utils;
     // -1: no mouse button down
     // 0: left mouse button down
@@ -43,8 +44,15 @@ export class BaseContainer extends createjs.Container {
         this.isSaved = true;
         this.utils = new Utils();
         this.contour_uid = this.utils.generateContourUid();
+        this.OnInit();
     }
 
+    OnInit() {
+        this.selectedRoi_id = this.roiConfig === undefined ? '' : this.roiConfig.id === undefined ? '' : this.roiConfig.id;
+        EventAggregator.Instance().selectRoiEvent.subscribe((roi_id) => {
+            this.selectedRoi_id = roi_id;
+        });
+    }
     public get roiConfig() {
         return this._roiConfig;
     }

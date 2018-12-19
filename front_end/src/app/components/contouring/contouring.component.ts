@@ -33,6 +33,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     manageROIDisplay: any = false;
     editROIDisplay: any = false;
     fillGraphic = true;
+    sliceIndex = null;
 
     excuteHelper: ExcuteHelper;
     data: ContouringModel;
@@ -222,9 +223,16 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     handleDeleteRoi(id: string) {
+        /*
+           TODO : add a confirm dialog for removing a roi
+        */
         this.roiSvc.delete(id).subscribe(response => {
             if (response.success) {
-                this.toastSvc.success('Delete succeed.');
+                if (this.sliceIndex != null) {
+                    this.getContours(this.sliceIndex);
+                } else {
+                    this.getImages();
+                }
                 const rois = [];
                 this.data.roiList.forEach(roi => {
                     if (roi.id === id) {
@@ -234,6 +242,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
                 });
                 this.data.roiList = rois;
                 this.onSelectRoi(this.data.selectedRoi);
+                this.toastSvc.success('Delete succeed.');
             } else {
                 this.toastSvc.error(response.message);
             }
@@ -283,7 +292,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
                     rois.push(roi);
                 });
                 this.data.roiList = rois;
-                this.onSelectRoi(this.data.selectedRoi);
+                this.onSelectRoi(this.data.activeRoi);
                 this.newROIDisplay = false;
             } else {
                 this.toastSvc.error(response.message);
@@ -303,6 +312,9 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     deleteAllROI() {
+        /*
+           TODO : add a confirm dialog for removing a roi
+        */
         const ids = [];
         this.data.roiList.forEach(element => {
             ids.push(element.id);
@@ -324,7 +336,10 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     onSelectRoi(roi) {
         if (this.data.roiList !== undefined && this.data.roiList !== null && this.data.roiList.length > 0) {
             if (this.data.roiList.filter((_roi) => _roi.id === roi.id).length > 0) {
-                this.data.selectedRoi = roi;
+                if (this.data.selectedRoi.id !== roi.id) {
+                    this.data.selectedRoi = roi;
+                    EventAggregator.Instance().selectRoiEvent.publish(this.data.selectedRoi.id);
+                }
             } else {
                 this.data.selectedRoi = this.data.roiList[0];
             }
@@ -591,9 +606,10 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
     private getImages() {
         this.imageSvc.center().subscribe(response => {
             if (response.success) {
+                this.sliceIndex = response.data[0].slice_index;
                 this.updateCells(response.data, true);
-                this.updateSliceIndex(response.data[0].slice_index);
-                this.getContours(response.data[0].slice_index);
+                this.updateSliceIndex(this.sliceIndex);
+                this.getContours(this.sliceIndex);
                 this.updateBoundaryPts(response.data);
             } else {
                 this.toastSvc.error(response.message);

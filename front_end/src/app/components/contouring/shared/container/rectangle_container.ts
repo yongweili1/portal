@@ -123,22 +123,25 @@ export class RectangleContainer extends BaseContainer {
         this.isPaint = false;
         EventAggregator.Instance().contourReadyEvent.publish([[this.cps], this.contour_type, this.contour_uid]);
     }
-
     handlePressMove(evt) {
         console.log('[rectangle]handle PressMove');
-        const evtPoint = new Point(evt.stageX, evt.stageY);
-        if (this.utils.isInPolygon(evtPoint, this.boundaryPts)) {
-            const tempX: number = this._tempPoint.x;
-            const tempY: number = this._tempPoint.y;
-            const delta_x = evt.stageX - tempX;
-            const delta_y = evt.stageY - tempY;
-            this.updateCpsByDelta(evt, delta_x, delta_y);
+        if (this.roiConfig.id === this.selectedRoi_id) {
+            const evtPoint = new Point(evt.stageX, evt.stageY);
+            if (this.utils.isInPolygon(evtPoint, this.boundaryPts)) {
+                const tempX: number = this._tempPoint.x;
+                const tempY: number = this._tempPoint.y;
+                const delta_x = evt.stageX - tempX;
+                const delta_y = evt.stageY - tempY;
+                this.updateCpsByDelta(evt, delta_x, delta_y);
+            }
         }
     }
 
     handlePressUp(evt) {
-        super.handlePressUp(evt);
-        EventAggregator.Instance().updateSigleContourEvent.publish([this.cps, this.contour_uid]);
+        if (this.roiConfig.id === this.selectedRoi_id) {
+            super.handlePressUp(evt);
+            EventAggregator.Instance().updateSigleContourEvent.publish([this.cps, this.contour_uid]);
+        }
     }
 
     private updateCpsByDelta(evt, delta_x, delta_y) {
