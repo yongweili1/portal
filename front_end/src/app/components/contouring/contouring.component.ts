@@ -224,7 +224,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
 
     handleDeleteRoi(id: string) {
         /*
-           need implement : add a confirm dialog for removing a roi
+           TODO : add a confirm dialog for removing a roi
         */
         this.roiSvc.delete(id).subscribe(response => {
             if (response.success) {
@@ -313,7 +313,7 @@ export class ContouringComponent implements OnInit, AfterViewInit, OnDestroy {
 
     deleteAllROI() {
         /*
-           need implement : add a confirm dialog for removing a roi
+           TODO : add a confirm dialog for removing a roi
         */
         const ids = [];
         this.data.roiList.forEach(element => {
